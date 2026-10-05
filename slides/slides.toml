@@ -1,0 +1,22 @@
+# Which slides are shown at which step of babykev.
+#
+# Each line is:  step-name = [ slides, in the order they are shown ]
+#
+#   "uv.md"         every slide in slides/uv.md
+#   "uv.md#2"       only its second slide
+#   "uv.md#2-3"     its second and third
+#   "pictures/mask.svg"       a picture on its own
+#
+# A Markdown file holds one slide or several. A line that is exactly --- starts the next slide.
+# The first build's slides are kept in history/first-build/slides/, with their own manifest.
+
+[slides]
+step-00 = ["00-start.md", "uv.md#1-2", "just.md"]
+step-01 = ["01-contract.md"]
+step-02 = ["02-format-lint.md", "uv.md#3"]
+step-03 = ["03-check.md"]
+step-04 = ["04-docs.md#1-4"]
+step-04b = ["04-docs.md#5"]
+step-05 = ["05-model.md"]
+step-05a = ["05a-mask.md"]
+step-05b = ["05b-images.md"]
