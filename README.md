@@ -54,7 +54,9 @@ babykev-walk/
   `--discard-edits`, so a move to another step throws away your edits there.
 - **Main** is a terminal in `repo/`, your clone of babykev. A move never touches it. Work there on
   `main`, commit, and push to your own fork.
-- **PDF** makes a PDF of the notes of every step. `just pdf` makes the same file, `walk.pdf`.
+- **PDF** makes a PDF of the notes of every step. `just pdf` makes the same file, `walk.pdf`. Git
+  ignores `walk.pdf`, so your own PDF never changes your fork. The kit may also ship `babykev.pdf`, the
+  PDF of the walk as written.
 
 ## Downloads and accounts
 
