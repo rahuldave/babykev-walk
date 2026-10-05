@@ -25,5 +25,7 @@ the code. Clicking a command in the script types it into the terminal at that st
 in a copy of the repository, `babykev-replay`, which it makes itself; your clone is never moved.
 
 The commands are written for macOS: on Linux, `sed -i ''` is `sed -i` and `open` is `xdg-open`.
-The steps that run on Modal need an account there and a `.env` of your own; `.env.example` says what
-goes in it. Everything else runs on this machine.
+Two downloads happen once: at step 05, `just setup` fetches torch and the other libraries, a few hundred
+megabytes, and the first `just smoke local` fetches the base model, about 1 GB, into the Hugging Face
+cache. The steps that run on Modal need an account there and a `.env` of your own; `.env.example` says
+what goes in it. Everything else runs on this machine.
