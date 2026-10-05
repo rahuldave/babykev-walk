@@ -5,7 +5,7 @@
 
 project := "babykev"
 upstream := "rahuldave"
-timewalk := "git+https://github.com/rahuldave/timewalk@v1.0.1"
+timewalk := "git+https://github.com/rahuldave/timewalk@v1.0.2"
 
 [private]
 default:
