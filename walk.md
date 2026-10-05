@@ -1,19 +1,17 @@
 # The walk through babykev, step by step
 
-Only the presenter page shows these. One section per step: `## step-name Title`.
+This file holds the notes of every step. timewalk shows the notes of the current step in the column on the
+right of the page.
 
-- `time: 0:23` is when the step should start, as minutes:seconds into the class.
-- A line starting `$ ` is a command for the terminal at this step. One click on the presenter page types it on the projector.
-- `runs$ ` sends the command to the Runs tab instead, for commands that take a while. `main$ ` sends it to the finished project.
-- A line starting `> ` is a cue for the presenter only (`> Say: ...`, `> Note: ...`); it is shown indented, and the
-  student edition of these notes (`just student-kit`) leaves it out. Everything else is the script, and students get it.
-- Everything else is shown as written.
-- The browser is started with `--discard-edits`: moving to another step throws away every edit made in the replay
-  copy, and replaces a new file only where the step has one of that name. So an edit is put back inside a step only
-  when a later command of the same step needs the clean file.
-
-Each section is written at its step, from a rehearsal at the tag. The first build's notes for every step are
-kept whole in `history/first-build/notes.md`; nothing of them is here.
+- **A command** is a line that starts with `$ `. A click on it types the command into the terminal of the
+  step, and you press Enter to run it. With **run on click** on, a click also runs it.
+- **Other tabs:** a line that starts with `runs$ ` goes to the **Runs** tab, for a command that takes a
+  while. A line that starts with `main$ ` goes to the **Main** tab, in `repo/`.
+- **A cue** is a line that starts with `> `. The notes column shows it shaded.
+- **Edit** at the top of the column changes the notes of the step, and **Save** writes them into
+  `walk.md`. Commit `walk.md` to your fork to keep your notes.
+- **A move throws away edits.** The kit starts timewalk with `--discard-edits`, so a move to another step
+  throws away your edits in `worktree/`.
 
 ## The environment at each step
 
@@ -577,4 +575,131 @@ $ open docs/_site/guide/01_mask.html
 
 $ just test -k notebook
 
-**What the next step does.** 05b puts the project in a container, in preparation for the platforms; 05c runs this smoke on a GPU at Modal. Both later.
+**What the next step does.** 05b puts the project in two images, so it runs the same on any system with Docker, and is ready for the platforms.
+
+## step-05b Two images from one lockfile
+
+**Init.** `just setup` brings one package, hadolint 2.15.1, the Dockerfile's linter, as a wheel from PyPI: there are wheels for the Mac and for Linux on both architectures. 0.5 s.
+
+$ just setup
+
+**What arrives:** a `Dockerfile` that builds two images from `uv.lock`, and a `.dockerignore`; the `image` recipe; hadolint as a line of `lint-config`; `tests/integration/test_real_model.py`, the smoke on the real model, marked `integration` and left out of `just test`; a section of the README on Docker. Clean: 103 tests and 1 deselected, 155 of 155 documented, green.
+
+**A. The run image, in the file.** The `sed` line prints lines 11 to 39 of the `Dockerfile`. Line 12 takes uv from its own image. Lines 16 to 28 are a build stage: the packages from the lockfile first (line 25), then the code (lines 27 and 28), so a change to the code reinstalls one package and not torch. Lines 31 to 39 are the run image: a fresh Python, the finished environment copied over from the build stage (line 32), the sample data, and `babykev` as the command it starts. No uv, no just, no dev tools.
+
+$ sed -n '11,39p' Dockerfile
+
+**B. Build it, run it.** `docker build --target run` builds that image and names it `babykev-run`: 20 s with the cache warm. `docker run --rm babykev-run` starts it with no words, which runs line 39's default, `babykev help`, and removes the container when it exits.
+
+$ docker build --target run --tag babykev-run .
+$ docker run --rm babykev-run
+
+`docker image ls` with a format prints the name and the size: 1.15 GB, nearly all of it torch.
+
+$ docker image ls babykev-run --format '{{.Repository}}:{{.Tag}}  {{.Size}}'
+
+**C. The smoke on Linux.** The same smoke, in the image. The `-v` mounts this Mac's Hugging Face cache at `/hf`, where line 36 tells the image to look, so the 953 MB model is not downloaded again. It says `on cpu`: a container on a Mac is Linux in a virtual machine, and sees no Apple GPU. 4 of 15 right, 2.9 s a request, 33 s in all. On the Mac (05a) it was 362 ms a request on `mps`, and the fifteen answers are identical, line for line, to the two decimals printed.
+
+$ docker run --rm -v ~/.cache/huggingface:/hf babykev-run smoke
+
+**D. The dev image.** Lines 41 to 77: the image to work in. Debian packages for git and curl (lines 49 to 51), Quarto from its release (lines 53 to 56), uv (line 57), just from PyPI (line 68), and then the whole project with its dev group (lines 71 to 74). The environment is in `/opt/venv` (line 58), outside the project folder. Line 76 declares the port the step browser uses. It starts a shell.
+
+$ sed -n '41,77p' Dockerfile
+
+`docker build --target dev`: 2 s with the cache warm; 61 s cold. 1.84 GB: the dev tools, Quarto and git on top of the run image's 1.15.
+
+$ docker build --target dev --tag babykev-dev .
+
+**E. Working inside it.** `docker run -it` gives a terminal in the container; `-v "$PWD":/work` mounts this folder as the project, so an edit here is seen in there at once. The prompt changes: we are in Linux, in `/work`.
+
+$ docker run --rm -it -v "$PWD":/work babykev-dev
+
+`which` shows where each tool is: Python from `/opt/venv`, just, Quarto and uv from `/usr/local/bin`. This folder's own `.venv` is the Mac's, and nothing in the container looks at it.
+
+$ which python just quarto uv
+
+`just check`, inside: the same lines as on the Mac, and green. 103 passed, 1 deselected, 155 of 155. 24 s.
+
+$ just check
+$ exit
+
+**F. The recipe.** `just --show image`: one recipe, three words. `build dev|run` runs the `docker build` of B or D and names the image by the commit, so the image always says which code it holds; `shell` is E's `docker run`; `run WORDS` is C's. On a machine with no Docker, and inside the image, it says so instead of failing.
+
+$ just --show image
+
+From now on `just image`. Both builds are instant from the cache, and `docker image ls` shows each image under two names: `latest`, from B and D, and the commit's short hash.
+
+$ just image build dev
+$ just image build run
+
+$ docker image ls 'babykev-*' --format '{{.Repository}}:{{.Tag}}  {{.Size}}'
+
+`just image shell` starts a new container every time, and `exit` deletes it: whatever was installed or run in there is gone, and only the mounted folder keeps what changed. To keep one, `just image start` leaves a container named `babykev-dev` running in the background; `just image shell` then goes into that one (`docker exec`), and a second `just image start` refuses. Both publish the dev image's port 8765, the step browser's, on the first free port here from 8765 up, and print the address: in the rehearsal `http://localhost:8766`, because the step browser on this Mac holds 8765. `docker ps` shows it running, with the port. `just test` inside: 103 passed, 1 deselected. `just image stop` removes it.
+
+$ just image start
+$ docker ps --filter name=babykev-dev --format '{{.Names}}  {{.Image}}  {{.Status}}  {{.Ports}}'
+
+$ just image shell
+$ just test
+$ exit
+
+$ just image stop
+
+**G. hadolint.** A linter for Dockerfiles. `uv run hadolint Dockerfile` says nothing: clean.
+
+$ uv run hadolint Dockerfile
+
+Lines 46 to 48 say why: hadolint's rule DL3008 asks for a pinned version of every Debian package, and we declined it, with the reason beside the line. The `perl` line deletes the ignore, line 48; hadolint then names the rule at the `RUN` line. A pinned Debian version is removed from the archive at its next security fix, and the build breaks within weeks; the base image's tag is the pin. The `git restore` line puts the ignore back, because the next command checks the file.
+
+$ sed -n '46,48p' Dockerfile
+$ perl -ni -e 'print unless /^# hadolint ignore=DL3008$/' Dockerfile
+$ uv run hadolint Dockerfile
+$ git restore Dockerfile
+
+`just --show lint-config`: hadolint is the second line. `just lint-config`: green, 1.5 s. So the hook runs it on every commit.
+
+$ just --show lint-config
+$ just lint-config
+
+**H. The test that is not hermetic.** `pyproject.toml` lines 53 to 57: pytest now leaves out every test marked `integration` (line 56), and line 57 declares the marker.
+
+$ sed -n '53,57p' pyproject.toml
+
+The test, `tests/integration/test_real_model.py`: the docstring says why it is apart, line 14 marks every test in the file, and the test runs the smoke's `main` and asserts what holds on any device: exit code 0, fifteen verdicts, and a count of them. Not the score: an untrained model guesses.
+
+$ sed -n '1,27p' tests/integration/test_real_model.py
+
+`just test`: 103 passed, 1 deselected. `just test -m integration`: 1 passed, 103 deselected, 19 s on the Mac's GPU. Its coverage table shows `smoke.py` at 94%: `main`, lines 102 to 122, which no unit test reaches.
+
+$ just test
+$ just test -m integration
+
+**I. Hermetic, by experiment.** `just image shell` with `--network none`: extra words go to docker, and this container has no network at all.
+
+$ just image shell --network none
+
+`just check`: green, 25 s, as with the network. Everything the hook runs is hermetic.
+
+$ just check
+
+The integration test passes too, 29 s on the CPU: not because it is hermetic, but because the model is in the mounted cache.
+
+$ just test -m integration
+
+Point the cache at an empty folder and it fails, in 48 s: "We couldn't connect to 'https://huggingface.co' to load the files, and couldn't find them in the cached files."
+
+$ HF_HOME=/tmp/empty just test -m integration
+$ exit
+
+**J. If there is time: amd64.** This Mac is arm64; most platforms and CI runners are amd64. `--platform linux/amd64` goes through to `docker build`: 33 s, under Rosetta. `docker image inspect` says `linux/amd64`. The smoke runs, with a warning that the image's platform is not the host's: 4 of 15 again, 10.4 s a request, three and a half times slower than native.
+
+$ just image build run --platform linux/amd64
+$ docker image inspect babykev-run:$(git rev-parse --short HEAD) --format '{{.Os}}/{{.Architecture}}'
+$ just image run smoke
+
+**K. The site, published.** So far the site was a folder on this machine, `docs/_site/`. `just --show docs`: one more word, `publish`. It checks that the remote `origin` exists and is on GitHub, and says so and stops if not; then `quarto publish gh-pages docs` renders the site and pushes it to the `gh-pages` branch, which GitHub Pages serves. Once, in the repository's settings, Pages is set to deploy from that branch.
+
+$ just --show docs
+$ just docs publish
+
+**What the next step does.** This is the end of the first lecture. Running on the platforms is a different class.
