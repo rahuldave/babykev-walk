@@ -2,5 +2,5 @@
 # that timewalk moves from step to step.
 /repo/
 /worktree/
-# Your own PDF, made by `just pdf`. The PDF that this repository ships has another name, babykev.pdf.
-/walk.pdf
+# Your own PDF, made by `just pdf`, goes into build/. The PDF that this repository ships is babykev.pdf, beside this file.
+/build/

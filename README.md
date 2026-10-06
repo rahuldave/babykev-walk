@@ -57,8 +57,8 @@ babykev-walk/
 - **Main** is a terminal in `repo/`, your clone of babykev. A move never touches it. Work there on
   `main`, commit, and push to your own fork.
 - **PDF** makes a PDF of the slides, one page each. The notes are not in it: they are for this page. `just pdf` makes
-  the same file, `walk.pdf`. Git
-  ignores `walk.pdf`, so your own PDF never changes your fork. This repository may also ship `babykev.pdf`, the
+  the same file, `build/walk.pdf`. Git
+  ignores `build/`, so your own PDF never changes your fork. This repository may also ship `babykev.pdf`, the
   PDF of the walk as written.
 
 ## Downloads and accounts
