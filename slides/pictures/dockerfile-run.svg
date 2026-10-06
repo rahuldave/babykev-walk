@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1420 440">
+<rect width="1420" height="440" fill="#ffffff"/>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#a85b00"/></marker></defs>
+<rect x="12" y="18" width="921" height="406" rx="8" fill="#f6f8fa"/>
+<g font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="15" fill="#24292e">
+<text x="24" y="40"><tspan fill="#005cc5" font-weight="700">FROM</tspan> ghcr.io/astral-sh/uv:0.12.13 AS <tspan fill="#d73a49" font-weight="700">uv</tspan></text>
+<text x="24" y="88"><tspan fill="#005cc5" font-weight="700">FROM</tspan> python:3.13-slim-trixie AS <tspan fill="#d73a49" font-weight="700">build</tspan></text>
+<text x="24" y="112"><tspan fill="#005cc5" font-weight="700">COPY</tspan> --from=uv /uv /usr/local/bin/uv</text>
+<text x="24" y="136">...</text>
+<text x="24" y="160"><tspan fill="#005cc5" font-weight="700">COPY</tspan> pyproject.toml uv.lock .python-version ./</text>
+<text x="24" y="184"><tspan fill="#005cc5" font-weight="700">RUN</tspan> uv sync --locked --no-dev --no-install-project</text>
+<text x="24" y="208"><tspan fill="#005cc5" font-weight="700">COPY</tspan> src ./src</text>
+<text x="24" y="232"><tspan fill="#005cc5" font-weight="700">RUN</tspan> uv sync --locked --no-dev --no-editable</text>
+<text x="24" y="280"><tspan fill="#005cc5" font-weight="700">FROM</tspan> python:3.13-slim-trixie AS <tspan fill="#d73a49" font-weight="700">run</tspan></text>
+<text x="24" y="304"><tspan fill="#005cc5" font-weight="700">COPY</tspan> --from=build /opt/venv /opt/venv</text>
+<text x="24" y="328"><tspan fill="#005cc5" font-weight="700">COPY</tspan> data ./data</text>
+<text x="24" y="352">...</text>
+<text x="24" y="376"><tspan fill="#005cc5" font-weight="700">ENTRYPOINT</tspan> [&quot;babykev&quot;]</text>
+<text x="24" y="400"><tspan fill="#005cc5" font-weight="700">CMD</tspan> [&quot;help&quot;]</text>
+</g>
+<g stroke="#a85b00" stroke-width="1.8" fill="none">
+<line x1="967" y1="30.0" x2="386" y2="35" marker-end="url(#a)"/>
+<line x1="967" y1="78.0" x2="368" y2="83" marker-end="url(#a)"/>
+<path d="M483,144 H489 V189 H483"/>
+<line x1="967" y1="162.0" x2="493" y2="167.0" marker-end="url(#a)"/>
+<path d="M420,192 H426 V237 H420"/>
+<line x1="967" y1="210.0" x2="430" y2="215.0" marker-end="url(#a)"/>
+<line x1="967" y1="270.0" x2="350" y2="275" marker-end="url(#a)"/>
+<line x1="967" y1="318.0" x2="368" y2="299" marker-end="url(#a)"/>
+<path d="M231,360 H237 V405 H231"/>
+<line x1="967" y1="378.0" x2="241" y2="383.0" marker-end="url(#a)"/>
+</g>
+<g font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="15" fill="#17202b">
+<text x="975" y="26">Stage 1, <tspan font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" fill="#a85b00">uv</tspan>: uv&#x27;s own image. Nothing runs in it:</text>
+<text x="975" y="44">the next stage copies the uv program out of it</text>
+<text x="975" y="74">Stage 2, <tspan font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" fill="#a85b00">build</tspan>: a fresh Python where the</text>
+<text x="975" y="92">environment is made. It is not shipped</text>
+<text x="975" y="158">The packages first, from the lockfile: torch and the</text>
+<text x="975" y="176">rest. This step is reused until the lockfile changes</text>
+<text x="975" y="206">Then our code, and install it. A change to the code</text>
+<text x="975" y="224">reinstalls one package, not torch</text>
+<text x="975" y="266">Stage 3, <tspan font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" fill="#a85b00">run</tspan>: a fresh Python again. Nothing of</text>
+<text x="975" y="284">stage 2 comes with it, except what is copied next</text>
+<text x="975" y="314">The finished environment, and only that. No uv, no just,</text>
+<text x="975" y="332">no Quarto, no dev tools, no leftovers of the build</text>
+<text x="975" y="383">What starts: <tspan font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" fill="#a85b00">babykev</tspan>. With no word, <tspan font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" fill="#a85b00">help</tspan></text>
+</g></svg>

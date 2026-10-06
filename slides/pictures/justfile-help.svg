@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1420 506">
+<rect width="1420" height="506" fill="#ffffff"/>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#a85b00"/></marker></defs>
+<rect x="12" y="18" width="921" height="472" rx="8" fill="#f6f8fa"/>
+<g font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="17" fill="#24292e">
+<text x="24" y="40"><tspan fill="#6f42c1">[no-exit-message]</tspan></text>
+<text x="24" y="90"><tspan fill="#005cc5" font-weight="700">help</tspan><tspan fill="#e36209"> *verb</tspan>:</text>
+<text x="65" y="140">#!/usr/bin/env sh</text>
+<text x="65" y="190">if [ &quot;$#&quot; -eq 0 ]; then just --list --unsorted; exit 0; fi</text>
+<text x="65" y="240">shown=$(just --show &quot;$1&quot;) || exit 1</text>
+<text x="65" y="290">printf &#x27;%s\n&#x27; &quot;$shown&quot; | head -1 | sed &#x27;s/^# //&#x27;</text>
+<text x="65" y="340">if printf &#x27;%s\n&#x27; &quot;$shown&quot; | grep -qF &#x27;<tspan fill="#d73a49">{{ &quot;{{ program }}</tspan>&quot; }} &#x27;&quot;$1&quot;; then</text>
+<text x="106" y="390">uv run <tspan fill="#d73a49">{{ program }}</tspan> &quot;$1&quot; help</text>
+<text x="65" y="440">fi</text>
+</g>
+<g stroke="#a85b00" stroke-width="1.8" fill="none">
+<line x1="967" y1="30.0" x2="208" y2="35" marker-end="url(#a)"/>
+<line x1="967" y1="87.5" x2="147" y2="85" marker-end="url(#a)"/>
+<line x1="967" y1="135.5" x2="249" y2="135" marker-end="url(#a)"/>
+<line x1="967" y1="183.5" x2="669" y2="185" marker-end="url(#a)"/>
+<line x1="967" y1="241.0" x2="433" y2="235" marker-end="url(#a)"/>
+<line x1="967" y1="298.5" x2="566" y2="285" marker-end="url(#a)"/>
+<line x1="967" y1="365.5" x2="802" y2="335" marker-end="url(#a)"/>
+<path d="M421,374 H427 V445 H421"/>
+<line x1="967" y1="451.5" x2="431" y2="410.0" marker-end="url(#a)"/>
+</g>
+<g font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="15" fill="#17202b">
+<text x="975" y="16">When a recipe fails, just adds a line of its own:</text>
+<text x="975" y="35"><tspan font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" fill="#a85b00">error: Recipe help failed with exit code 1</tspan>.</text>
+<text x="975" y="54">This turns that line off: the script&#x27;s message is enough</text>
+<text x="975" y="83">help: the recipe. *verb: any number of words, or none.</text>
+<text x="975" y="102">It uses the first, <tspan font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" fill="#a85b00">&quot;$1&quot;</tspan>, and ignores the rest</text>
+<text x="975" y="131">#!: the body is one sh script. Without it, just runs</text>
+<text x="975" y="150">each line as a separate command</text>
+<text x="975" y="179"><tspan font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" fill="#a85b00">$#</tspan> is how many words there are. None, as in</text>
+<text x="975" y="198"><tspan font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" fill="#a85b00">just help</tspan>: print the list, and stop</text>
+<text x="975" y="227">Keep the text of the recipe named by the first word,</text>
+<text x="975" y="246">as <tspan font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" fill="#a85b00">just --show</tspan> prints it. No such recipe: just says so,</text>
+<text x="975" y="265">and we stop</text>
+<text x="975" y="294">Print its first line, the comment above it,</text>
+<text x="975" y="313">without the <tspan font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" fill="#a85b00"># </tspan>. That is the recipe&#x27;s description</text>
+<text x="975" y="342">Does the recipe run the program with this word?</text>
+<text x="975" y="361">This looks for the text {{ program }} and the word,</text>
+<text x="975" y="380">as in {{ program }} docs. <tspan font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" fill="#a85b00">-F</tspan>: plain text, not a pattern.</text>
+<text x="975" y="399">{{ &quot;…&quot; }} writes the braces as they are</text>
+<text x="975" y="428">If it does, ask the program for its own help too,</text>
+<text x="975" y="447">as <tspan font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" fill="#a85b00">uv run babykev docs help</tspan> from step 04. At step 00</text>
+<text x="975" y="466">no recipe runs the program with its own name, so this</text>
+<text x="975" y="485">never happens yet</text>
+</g></svg>

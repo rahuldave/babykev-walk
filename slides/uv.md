@@ -15,11 +15,12 @@
 - **`pyproject.toml`** is written by people: what the project needs, loosely
 - **`uv.lock`** is written by uv: exactly which version of everything, for every platform
 - Both are committed. Every machine gets the same environment
-- `uv sync --locked` refuses a lockfile that is out of date. The justfile exports `UV_LOCKED=1`, so no recipe ever re-locks quietly
+- `uv sync --locked` installs exactly what `uv.lock` says. Say a new package needs a newer version of one you already have: it will not quietly upgrade it. It stops with an error, and the upgrade happens only when someone runs `uv lock` on purpose, which updates `uv.lock`
+- The justfile sets `UV_LOCKED=1`, so every recipe behaves the same way
 
 ---
 
-## Groups: what only developers need
+## `uv` Groups: sequester packages   only developers need
 
 ```toml
 [project]
