@@ -13,6 +13,38 @@ right of the page.
 - **A move throws away edits.** `just present` starts timewalk with `--discard-edits`, so a move to another step
   throws away your edits in `worktree/`.
 
+## step-00 Where we start
+
+**The first three slides.** No commands. The title, SOFTWARE DEVELOPMENT FOR MACHINE LEARNING, with Rahul Dave's name under it. Then the worried Pavlos, the cartoon, with a hand raised: he is worried about this lecture. Then a picture of Rahul, in a T-shirt that says "You're Absolutely Right!". After them the first slide of the talk, "What goes into a machine-learning project?". The pictures are `slides/pictures/pavlos-worried.png` and `slides/pictures/rahul.jpg`.
+
+**Init.** The environment is made by uv, before any recipe. `uv sync --locked` reads `pyproject.toml` and `uv.lock` and makes `.venv` with exactly what the lockfile says: Python 3.13 from `.python-version`, and babykev alone, editable. It prints `Resolved 1 package` and what it installed (or `Checked 1 package` when the venv already matches). `--locked` means: refuse if the lockfile is out of date with `pyproject.toml`, never re-lock on the quiet.
+
+$ uv sync --locked
+
+**The recipe.** `just --show setup` prints the recipe behind the word: one line, `uv sync --locked`, inside an `if` that answers `help`. That is the whole trick of the justfile: a verb on the left, the command on the right, and `just` lists the verbs. `just setup` runs it again and prints `Checked 1 package`: nothing to do, because it was just done. From now on, `just setup`.
+
+$ just --show setup
+$ just setup
+
+**What is here.** A README, the licence and its notice, `pyproject.toml` with no dependencies, a justfile with `setup` and `help`, and a `babykev` command whose only word is `help`. No code of kev's yet. kev's code comes in one file at a time, at the step that needs it, and we rebuild each file as it arrives.
+
+**The justfile is the interface.** `just` lists every task; `just help VERB` or `just VERB help` explains one; a recipe wraps one command.
+
+$ just
+$ just help setup
+
+**How a recipe gets its words.** In `just help setup`, `setup` is a word for the recipe `help`. Line 6 of the justfile, `set positional-arguments`, makes just give each word to the recipe's commands whole: the first as `"$1"`, the second as `"$2"`, all of them as `"$@"`. `help` uses `"$1"`: `just help setup` runs `just --show "$1"` with `$1` set to `setup`. A word is never pasted into a command as text, so a space, a quote or a `*` inside it stays part of the word.
+
+$ sed -n '5,6p' justfile
+
+**The command.** `babykev help` prints the help; any other word is refused with exit code 2. The two lines under `[project.scripts]` in `pyproject.toml` are what make `babykev` a command: a name on the left, a function on the right.
+
+$ uv run babykev help
+$ uv run babykev train
+$ cat pyproject.toml
+
+**`.gitignore`** is complete from the first commit: nothing a run writes will ever show up as a stray file.
+
 ## step-01 The contract, and its tests
 
 **Init.** `just setup` adds 13 packages: pydantic and pydantic-core, pytest, pytest-cov and coverage, and their dependencies. `.venv` goes from 1 package to 14.
@@ -121,7 +153,7 @@ $ uv run ruff format --check
 
 $ just --show fmt
 
-`just fmt`: "1 file reformatted". 114 lines become 141; the longest line goes from 209 characters to 107. `just fmt --check`: "6 files already formatted". On the presenter page `api.py` now has an **Edits** button; it opens "Edits since the step", the rewrite against this commit, on the projector. `just test`: 52 passed. The formatter changed the look of every long line and the meaning of none.
+`just fmt`: "1 file reformatted". 114 lines become 141; the longest line goes from 209 characters to 107. `just fmt --check`: "6 files already formatted". `just test`: 52 passed. The formatter changed the look of every long line and the meaning of none.
 
 $ just fmt
 $ just fmt --check
