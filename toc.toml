@@ -1,0 +1,25 @@
+# The walks of the babykev tutorial. tutorial and tutorial-do are the same tutorial: the tags tut-* on the branch
+# tutorial of babykev, and the moves between them. They differ only in the mode they start in; the switch Do / Watch
+# changes it at any time. Every path is read from this folder.
+
+[[walk]]
+id = "tutorial"
+title = "babykev, shown one move at a time"
+description = "Watch babykev and the engineering around it grow, one commit at a time: uv, just, tests, format, lint, docs, the model and its tests."
+kind = "tutorial"
+tags = "tut-*"
+loose = ["pyproject.toml", "uv.lock"]   # compared without the versions: a later uv add writes newer ones
+folder = "walks/tutorial"
+intro = "walks/tutorial/intro.md"       # what the copies say before the first step, in place of the opening of the notes
+moves = "watch"                         # Show checks out the commit of each move: for the projector
+
+[[walk]]
+id = "tutorial-do"
+title = "babykev, one move at a time, by hand"
+description = "Build babykev yourself, one move at a time, from the notes. Each move ends with a command that shows what it did."
+kind = "tutorial"
+tags = "tut-*"
+loose = ["pyproject.toml", "uv.lock"]
+folder = "walks/tutorial"
+intro = "walks/tutorial/intro.md"
+moves = "do"                            # the student makes each move from the notes, and presses Done

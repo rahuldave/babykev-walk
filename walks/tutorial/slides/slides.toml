@@ -1,0 +1,12 @@
+# Which slides are shown at which step and move of the babykev tutorial. Each line is
+#   step-or-move = [ slides, in the order they are shown ]
+# "uv.md" is every slide of slides/uv.md, "uv.md#2" its second slide, "uv.md#1-2" its first and second.
+# A key with a dot, the name of a move, is quoted: "tut-01.4" = [...].
+# The files come from slides/ on main, the slides of the narrative, changed where the tutorial differs.
+
+[slides]
+tut-00 = ["00-start.md"]
+tut-01 = ["uv.md#1"]
+"tut-01.4" = ["just.md#1-2"]
+"tut-01.5" = ["just.md#3-4"]
+# uv.md#2 waits for the move that sets UV_LOCKED, and just.md#5 for the recipe test
