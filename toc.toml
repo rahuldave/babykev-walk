@@ -1,6 +1,7 @@
-# The walks of the babykev tutorial. tutorial and tutorial-do are the same tutorial: the tags tut-* on the branch
-# tutorial of babykev, and the moves between them. They differ only in the mode they start in; the switch Do / Watch
-# changes it at any time. Every path is read from this folder.
+# The walks of babykev. tutorial and tutorial-do are the same tutorial: the tags tut-* on the branch tutorial of
+# babykev, and the moves between them. They differ only in the mode they start in. The switch Do / Watch changes the
+# mode at any time. narrative is the first lecture, the tags step-* on main, with its own notes and slides. Every path
+# is read from this folder.
 
 [[walk]]
 id = "tutorial"
@@ -23,3 +24,12 @@ loose = ["pyproject.toml", "uv.lock"]
 folder = "walks/tutorial"
 intro = "walks/tutorial/intro.md"
 moves = "do"                            # the student makes each move from the notes, and presses Done
+
+[[walk]]
+id = "narrative"
+title = "babykev, the first lecture"
+description = "The first lecture, on the branch main of babykev: the steps step-00 to step-05b, with no moves between them."
+kind = "narrative"
+tags = "step-*"
+folder = "walks/narrative"
+intro = "walks/narrative/intro.md"

@@ -1,21 +1,6 @@
-# The walk through babykev, step by step
-
-This file holds the notes of every step. timewalk shows the notes of the current step in the column on the
-right of the page.
-
-- **A command** is a line that starts with `$ `. A click on it types the command into the terminal of the
-  step, and you press Enter to run it. With **run on click** on, a click also runs it.
-- **Other tabs:** a line that starts with `runs$ ` goes to the **Runs** tab, for a command that takes a
-  while. A line that starts with `main$ ` goes to the **Main** tab, in `repo/`.
-- **A cue** is a line that starts with `> `. The notes column shows it shaded.
-- **Edit** at the top of the column changes the notes of the step, and **Save** writes them into
-  `walk.md`. Commit `walk.md` to your fork to keep your notes.
-- **A move throws away edits.** `just present` starts timewalk with `--discard-edits`, so a move to another step
-  throws away your edits in `worktree/`.
-
 ## step-00 Where we start
 
-**The first three slides.** No commands. The title, SOFTWARE DEVELOPMENT FOR MACHINE LEARNING, with Rahul Dave's name under it. Then the worried Pavlos, the cartoon, with a hand raised: he is worried about this lecture. Then a picture of Rahul, in a T-shirt that says "You're Absolutely Right!". After them the first slide of the talk, "What goes into a machine-learning project?". The pictures are `slides/pictures/pavlos-worried.png` and `slides/pictures/rahul.jpg`.
+**The first three slides.** No commands. The title, SOFTWARE DEVELOPMENT FOR MACHINE LEARNING, with Rahul Dave's name under it. Then the worried Pavlos, the cartoon, with a hand raised: he is worried about this lecture. Then a picture of Rahul, in a T-shirt that says "You're Absolutely Right!". After them the first slide of the talk, "What goes into a machine-learning project?". The pictures are `walks/narrative/slides/pictures/pavlos-worried.png` and `walks/narrative/slides/pictures/rahul.jpg`.
 
 **Init.** The environment is made by uv, before any recipe. `uv sync --locked` reads `pyproject.toml` and `uv.lock` and makes `.venv` with exactly what the lockfile says: Python 3.13 from `.python-version`, and babykev alone, editable. It prints `Resolved 1 package` and what it installed (or `Checked 1 package` when the venv already matches). `--locked` means: refuse if the lockfile is out of date with `pyproject.toml`, never re-lock on the quiet.
 
@@ -56,6 +41,7 @@ $ just setup
 **Start from the data.** One line is a request about a cheese, with a `label` on every question. The five lines are test data, kept in the repository so the tests can read them; they are not the students' data, which comes with training.
 
 $ head -n 1 data/cheese/sample.jsonl | python3 -m json.tool
+
 
 $ just
 $ just help test
@@ -796,7 +782,7 @@ $ just lint-config
 
 **Kinds of tests, and which can run on every commit.** The table of step 05 again, with an example of ours for each kind and whether it is hermetic. Unit: a confidence function on a list of numbers. Integration: the mask, the packing and the model together, and the whole smoke on the tiny model; hermetic, because the tiny model stands in for the real one. End-to-end: the smoke on the real model, `test_real_model.py`; not hermetic. Smoke: the same smoke, by hand, `just smoke local`. Acceptance: none yet. pytest has no built-in kinds: a marker is a name we make up in `pyproject.toml`, put on a test as `@pytest.mark.NAME`, and choose with `-m NAME`. Our one marker is `system`, the end-to-end kind of the table: it is on the one test that needs the Hub, the weights and a device.
 
-**2 unit tests, 0 integration tests.** The meme: two window handles that each work when used alone, and block each other when used together. Made popular by Randal Olson in January 2016; the clip's author is unknown. The file in `slides/pictures/memes/` is the clip from Giphy, cut to 300 pixels wide and 8 frames a second, 2.6 MB; an earlier copy was Giphy's "This content is not available" placeholder.
+**2 unit tests, 0 integration tests.** The meme: two window handles that each work when used alone, and block each other when used together. Made popular by Randal Olson in January 2016; the clip's author is unknown. The file in `walks/narrative/slides/pictures/memes/` is the clip from Giphy, cut to 300 pixels wide and 8 frames a second, 2.6 MB; an earlier copy was Giphy's "This content is not available" placeholder.
 
 **H. The test that is not hermetic.** `pyproject.toml` lines 53 to 57: pytest now leaves out every test marked `system` (line 56), and line 57 declares the marker.
 
@@ -832,7 +818,7 @@ $ exit
 
 **A test is anything that can fail and stop you.** The table lists what is checked, how, with which recipe, and whether it runs on every commit: the functions, the mask and the model with pytest, hypothesis and the tiny model, `just test`; types with ty, `just types`; documentation, `just docs check`; format and lint with ruff; the config files and the Dockerfile with yamllint, validate-pyproject, uv and hadolint, `just lint-config`; all of these on every commit. The real model from the Hub, the smoke marked `system`, `just test -m system`, does not run on every commit: it is not hermetic. More generally, a test is anything that can fail and stop a commit. Most of these are not pytest. All of them are `just`.
 
-**You may even call it a gate.** The distracted girlfriend: the agent looks back at the gate, and the general test, her boyfriend, watches. A widely shared stock photo, labelled by us; the template is on imgflip, imgflip.com/memetemplate/118429510. The file is `slides/pictures/memes/distracted-agent-gate.jpg`.
+**You may even call it a gate.** The distracted girlfriend: the agent looks back at the gate, and the general test, her boyfriend, watches. A widely shared stock photo, labelled by us; the template is on imgflip, imgflip.com/memetemplate/118429510. The file is `walks/narrative/slides/pictures/memes/distracted-agent-gate.jpg`.
 
 **J. If there is time: amd64.** This Mac is arm64; most platforms and CI runners are amd64. `--platform linux/amd64` goes through to `docker build`: 33 s, under Rosetta. `docker image inspect` says `linux/amd64`. The smoke runs, with a warning that the image's platform is not the host's: 4 of 15 again, 10.4 s a request, three and a half times slower than native.
 

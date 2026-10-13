@@ -22,7 +22,7 @@ did. The tutorial has three forms, with the same text:
 - **[walks/tutorial/notes.md](walks/tutorial/notes.md)** has the notes that timewalk reads. timewalk-export makes
   the website and the two Markdown files from these notes.
 
-The slides are in [walks/tutorial/slides/](walks/tutorial/slides/).
+The slides are in [walks/tutorial/slides/](walks/tutorial/slides/). The notes and the slides of the first lecture are in [walks/narrative/](walks/narrative/).
 
 ## The steps and moves
 
@@ -75,25 +75,29 @@ just present tutorial-do   # do mode: you make the moves
 just present               # watch mode: the moves are shown
 ```
 
-`just present` opens the first walk, `tutorial`, and `just present tutorial-do` opens the walk `tutorial-do`. It
-runs `just setup` first. `just setup` clones babykev into `repo/`, or your fork of babykev if you have one, and
-fetches the tags of the steps. To clone from another address, run `just setup <address>` before the first
+`just present` opens the first walk, `tutorial`, and `just present tutorial-do` opens the walk `tutorial-do`.
+`just present narrative` opens the first lecture, the steps `step-00` to `step-05b` on the branch `main` of
+babykev. `just present` runs `just setup` first. `just setup` clones babykev into `repo/`, or your fork of
+babykev if you have one, and fetches the tags of the steps. To clone from another address, run `just setup <address>` before the first
 `just present`.
 
 timewalk then puts its replay copy in `worktree/`. The replay copy is a clone of `repo/` on the branch
 `timewalk/replay`, and timewalk moves it from step to step and from move to move. timewalk never writes to
 `repo/`. Git ignores both folders.
 
-`just check` checks the notes against the steps. `just pdf` makes `build/walk.pdf`, the slides.
+`just check` checks the notes and the slides of every walk against its steps and moves. `just pdf` makes
+`build/walk.pdf`, the slides of the tutorial, and `just pdf narrative` makes `build/walk-narrative.pdf`, the
+slides of the first lecture.
 
 ## The folders
 
 ```
 babykev-walk/
-├── toc.toml                      the walks: tutorial and tutorial-do, over the same commits
+├── toc.toml                      the walks: tutorial and tutorial-do, over the same commits, and narrative
 ├── walks/tutorial/notes.md       the notes of every step and move, for timewalk
 ├── walks/tutorial/TUTORIAL-*.md  the tutorial to read on GitHub, in watch mode and in do mode
-├── walks/tutorial/slides/        the slides, and slides.toml, which step shows which
+├── walks/tutorial/slides/        the slides, and slides.toml, which step or move shows which
+├── walks/narrative/              the notes and the slides of the first lecture, on the tags step-*
 ├── site/                         the website, made from notes.md; GitHub publishes it on every push
 ├── justfile                      present, setup, check, pdf, site
 ├── repo/                         ignored: your clone of babykev

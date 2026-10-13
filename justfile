@@ -1,9 +1,9 @@
 # The tutorial through babykev, in timewalk. Run `just` to see the list.
 #
 # This file names the project and the upstream owner here. `just setup` clones the project into repo/, and
-# timewalk puts its replay copy in worktree/. Both folders are in .gitignore. toc.toml lists two walks over the
-# same notes, the tags tut-* of babykev: tutorial (watch mode, the first) and tutorial-do (do mode). Made from the
-# walk skill's template, with `site` added, by the class material of babykev.
+# timewalk puts its replay copy in worktree/. Both folders are in .gitignore. toc.toml lists three walks. tutorial
+# (watch mode, the first) and tutorial-do (do mode) share the notes of the tags tut-* of babykev. narrative is the
+# first lecture, on the tags step-*. Made from the walk skill's template, with `site` added, by the class material.
 
 project := "babykev"
 upstream := "rahuldave"

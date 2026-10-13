@@ -18,7 +18,7 @@
 
 ---
 
-## What goes into a machine-learning project?
+## The parts of a machine-learning project
 
 | | |
 |---|---|
@@ -31,7 +31,7 @@
 | Reproducibility | <u>Versioning</u> |
 | Production | <u>Jobs & Services</u>, <u>CI/CD workflows</u>, Monitoring, Data engineering |
 
-9/26 lessons aspects are model and data. The rest is engineering.
+The table has 26 parts. The rows Data and Model hold nine of them, and the rest are engineering.
 
 ---
 
@@ -43,7 +43,7 @@ Google Cloud, *MLOps: continuous delivery and automation pipelines in machine le
 
 ---
 
-## What goes into writing software?
+## The parts of a software project
 
 | | |
 |---|---|
@@ -57,20 +57,23 @@ Google Cloud, *MLOps: continuous delivery and automation pipelines in machine le
 | Shipping | <u>Containers</u>, packaging for others, releases, deployment |
 | Running | Logging, monitoring, someone on call |
 
-A machine-learning project is a software project with model and data in it.
+A machine-learning project is a software project with a model and data in it.
 
 ---
 
-## Today
+## The steps of the tutorial
 
-- A skeleton project, a justfile, one environment from one lockfile. **uv**, **just**
-- The contract for the model, `api.py`, five sample requests, and the tests. **pydantic**, **pytest**, **pytest-cov**
-- A formatter and a linter **ruff**
-- `just check` with a coverage floor, additional linters for the config files, and a git hook. **pre-commit**, **yamllint**, **validate-pyproject**
-- The code's own documentation, checked and built into a site. Then every function documented. **docments**, **smalldocs**. For humans and agents.
-- The model, `model.py`; a smoke run on the real model; a tiny model for the tests; a type checker. **torch**, **transformers**, **peft**, **hypothesis**, **ty**
-- The mask's rule as property tests, the bug they find, the one-line fix, ty in the gate, two guide pages
-- The dev image and the run image from one Dockerfile, a linter for it, and the first end-to-end test in pytest: the smoke on the real model, kept out of `just test`. The site published. **Docker**, **hadolint**
+| Step | What it adds | Tools |
+|---|---|---|
+| tut-01 | The project, its command and its justfile | **uv**, **just** |
+| tut-02 | The contract of the model, and its unit tests | **pydantic**, **pytest**, **pytest-cov** |
+| tut-03 | Format and lint | **ruff** |
+| tut-04 | `just check`, and a git hook that runs it | **pre-commit**, **yamllint**, **validate-pyproject** |
+| tut-05 | Documentation from the code | **smalldocs** |
+| tut-06 | The model, and a smoke run on the real model | **torch**, **transformers**, **peft**, **ty** |
+| tut-07 | The tests of the model | **hypothesis** |
+| tut-08 | Two images from one lockfile | **Docker**, **hadolint** |
+| tut-09 | The checks on GitHub, and the docs on Pages | **GitHub Actions** |
 
 ---
 
@@ -78,13 +81,11 @@ A machine-learning project is a software project with model and data in it.
 
 A small model that makes decisions, and the project built around it.
 
-- the code is taken from `kev`, a decider model with a special head to make it work like `jev`.
-- We start from kev's first commit: about 830 lines that work, with no tests, no types and no docs
-- We rebuild it in steps, a few files at a time
-- At each step a new tool arrives, we learn about it and run it
-- we incorporate the tool into a uniform interface, in the `Justfile`
-
-There is a second tutorial example which uses docker through and through, which will be released later today.
+- The model comes from kev, by Jared Palmer.
+- We start from the first commit of kev. It has about 830 lines that work, one test that needs a running server, no types and no docs.
+- We build the project again in steps, and bring in the files of kev one at a time.
+- Each step brings a new tool. We learn about the tool, and we run it.
+- Each tool gets a recipe in the justfile, so the project has one interface.
 
 ---
 
@@ -94,7 +95,7 @@ There is a second tutorial example which uses docker through and through, which 
 
 [github.com/dlops-io/cheese-app-ci-cd](https://github.com/dlops-io/cheese-app-ci-cd)
 
-A FastAPI app in Docker, with linters, formatters, tests and pre-commit hooks.
+A FastAPI app with linters, formatters, tests and pre-commit hooks. It uses Docker in every step.
 
 ---
 
@@ -114,7 +115,8 @@ vegetarian: {noul: 0.08}
 intensity:  {score: 2.7}
 ```
 
-Every answer is a probability. No text is generated.
+The state is the text that the questions are about. It is also called the context. The model gives a probability
+for every option, and generates no text.
 
 ---
 
@@ -122,27 +124,27 @@ Every answer is a probability. No text is generated.
 
 ![A request is packed into one sequence, read by a small language model, and scored by a pointer head](pictures/decision-model.svg)
 
-Questions are not allowed to see each other.
+The model reads all the questions in one sequence. A mask keeps each question from seeing the others.
 
 ---
 
-## You install two tools. The project installs the rest
+## You install two tools, and the project installs the rest
 
 | Tool | For |
 |---|---|
 | **uv** | Python itself, every dependency, running the program |
-| **just** | The project's tasks: `just` lists them |
+| **just** | The recipes of the project. `just` lists them |
 
-Everything else (pydantic, pytest, ruff, pre-commit, smalldocs, torch, ty, hadolint, and more) comes from the lockfile, 
-through `just setup`.
+The lockfile names everything else, for example pydantic, pytest, ruff, smalldocs and torch. `just setup` installs
+it.
 
 ---
 
-## Where we start: kev's files, one at a time
+## The files of kev, one at a time
 
-| File in kev's first commit | Lines | What it does | Arrives at |
+| File in the first commit of kev | Lines | What it does | Arrives at |
 |---|---|---|---|
 | `api.py` | 111 | The contract: what a request and an answer look like | tut-02 |
 | `model.py` | 101 | Packing, the mask, the pointer head | tut-06 |
-| `data.py`, `train.py`, `evaluate.py` | 446 | Training records, the loop, accuracy and calibration | class on training |
-| `serve.py` | 170 | Inference | class on ci/cd with github actions |
+| `data.py`, `train.py`, `evaluate.py` | 446 | Training records, the loop, accuracy and calibration | The class on training |
+| `serve.py` | 170 | Inference | The class on CI/CD with GitHub Actions |
