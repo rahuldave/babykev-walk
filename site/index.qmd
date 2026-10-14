@@ -26,6 +26,7 @@ In watch mode, you read each move. The notes explain what it changed, and its co
 
 - [tut-00: Where we start](watch/tut-00.qmd)
 - [tut-01: The project](watch/tut-01.qmd)
+- [tut-02: The contract, and its unit tests](watch/tut-02.qmd)
 
 ## Do
 
@@ -33,3 +34,4 @@ In do mode, you make each move yourself. The notes give every line to type, ever
 
 - [tut-00: Where we start](do/tut-00.qmd)
 - [tut-01: The project](do/tut-01.qmd)
+- [tut-02: The contract, and its unit tests](do/tut-02.qmd)

@@ -53,4 +53,4 @@ just --show test     the recipe itself
 ```
 
 - A recipe gives its extra words to the tool behind it. For example, `just test -k render` gives `-k render` to pytest
-- People, agents, the git hook and CI all run the same recipes
+- People and agents run the same recipes. Later steps give the same recipes to a git hook and to CI

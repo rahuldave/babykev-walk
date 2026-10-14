@@ -36,6 +36,23 @@ Each link opens its section of TUTORIAL-watch.md.
   - [tut-01.4](walks/tutorial/TUTORIAL-watch.md#tut-014-a-justfile-with-the-recipe-setup) A justfile with the recipe setup
   - [tut-01.5](walks/tutorial/TUTORIAL-watch.md#tut-015-the-recipe-help) The recipe help
   - [tut-01.6](walks/tutorial/TUTORIAL-watch.md#tut-016-the-readme-says-how-to-start-and-what-each-file-is) The README says how to start, and what each file is
+- [tut-02](walks/tutorial/TUTORIAL-watch.md#tut-02-the-contract-and-its-unit-tests) **The contract, and its unit tests**
+  - [tut-02.1](walks/tutorial/TUTORIAL-watch.md#tut-021-pydantic-the-first-dependency) Pydantic, the first dependency
+  - [tut-02.2](walks/tutorial/TUTORIAL-watch.md#tut-022-apipy-of-kev-as-he-wrote-it) api.py of kev, as he wrote it
+  - [tut-02.3](walks/tutorial/TUTORIAL-watch.md#tut-023-apipy-loses-the-parts-of-the-server-of-kev) api.py loses the parts of the server of kev
+  - [tut-02.4](walks/tutorial/TUTORIAL-watch.md#tut-024-five-requests-about-cheese-as-sample-data) Five requests about cheese, as sample data
+  - [tut-02.5](walks/tutorial/TUTORIAL-watch.md#tut-025-pytest-in-the-group-test) Pytest, in the group test
+  - [tut-02.6](walks/tutorial/TUTORIAL-watch.md#tut-026-the-recipe-test) The recipe test
+  - [tut-02.7](walks/tutorial/TUTORIAL-watch.md#tut-027-the-tests-of-the-command) The tests of the command
+  - [tut-02.8](walks/tutorial/TUTORIAL-watch.md#tut-028-coverage-on-every-run-of-the-tests) Coverage on every run of the tests
+  - [tut-02.9](walks/tutorial/TUTORIAL-watch.md#tut-029-the-tests-of-the-request) The tests of the request
+  - [tut-02.10](walks/tutorial/TUTORIAL-watch.md#tut-0210-the-tests-of-the-mapping) The tests of the mapping
+  - [tut-02.11](walks/tutorial/TUTORIAL-watch.md#tut-0211-a-test-of-rounding-which-fails) A test of rounding, which fails
+  - [tut-02.12](walks/tutorial/TUTORIAL-watch.md#tut-0212-probabilities-rounded-to-four-decimals) Probabilities rounded to four decimals
+  - [tut-02.13](walks/tutorial/TUTORIAL-watch.md#tut-0213-the-tests-of-confidence-and-one-fails) The tests of confidence, and one fails
+  - [tut-02.14](walks/tutorial/TUTORIAL-watch.md#tut-0214-the-confidence-of-a-score-measures-against-a-guess) The confidence of a score measures against a guess
+  - [tut-02.15](walks/tutorial/TUTORIAL-watch.md#tut-0215-a-test-of-a-scale-with-one-level) A test of a scale with one level
+  - [tut-02.16](walks/tutorial/TUTORIAL-watch.md#tut-0216-the-readme-names-the-contract-the-data-and-the-tests) The README names the contract, the data and the tests
 
 ## Two ways to take it
 
