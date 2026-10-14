@@ -641,8 +641,6 @@ $ git restore src/babykev/model.py
 
 **E. How we tested isolation.** The `perl` line writes step 05's mask line back into `branch_mask`: a plain causal mask, every token sees everything before it. The isolation test needs that mask: with the wrong fix of paragraph B it passes, because question 3 cannot see question 2, so rewriting question 2 changes nothing. `test_a_question_cannot_see_its_sibling`, lines 145 to 157 of `test_model.py`, kind: integration, on the tiny model. It takes the fixtures `model`, `tok` and `record`, from `conftest.py`. `logits_of` packs a request and gives, for each question, one score for each of its options. The test scores the request, rewrites question 2 (`Where from?`, two options in place of three), and scores again. Questions 1 and 3 must get exactly the same scores, `torch.equal`, and question 2 must get a different number of scores. With step 05's mask the line for question 3 fails: before, `tensor([-0.2301, -0.2331, -0.2340])`; after, `tensor([-0.2266, -0.2302, -0.2312])`. Question 3 could look at question 2, so rewriting question 2 moved its scores. The line for question 1 passes: question 1 comes first and cannot look at what follows. The `git restore` line puts the fix back. The same idea for any request is `test_packed_equals_separate_for_any_record`, lines 184 to 194, which hypothesis feeds: one pass over all the questions must give what one pass for each question alone gives. It builds its own tiny model, at line 190, in place of taking the `model` fixture: hypothesis runs the test body many times, and refuses a test that takes a function-scoped fixture. Tried in a scratch copy, a `@given` test with `model` as an argument fails with `FailedHealthCheck: ... uses a function-scoped fixture 'model'`.
 
-> Ask: is this a unit test or an integration test? It runs four of our parts in a row: `encode` packs the request, the model builds the mask, the tiny backbone runs, and the head scores. A unit test is one function alone, so by our table it is integration, with the tiny model standing in for the real one. The mask test of the last slides is the unit test: `branch_mask` alone, asking whether the mask is right. This one asks whether the answers stay put. Teams draw the line differently: some would call this a unit test of the model, so say what runs in it.
-
 $ perl -pi -e 's/^    same = \(s\[None, :\] == s\[:, None\]\) \| \(s\[None, :\] == 0\)$/    same = torch.ones_like(causal) | (s[None, :] == 0)/' src/babykev/model.py
 $ sed -n '145,157p' tests/unit/test_model.py
 $ just test -k a_question_cannot_see_its_sibling
@@ -785,8 +783,6 @@ $ just lint-config
 **2 unit tests, 0 integration tests.** The meme: two window handles that each work when used alone, and block each other when used together. Made popular by Randal Olson in January 2016; the clip's author is unknown. The file in `walks/narrative/slides/pictures/memes/` is the clip from Giphy, cut to 300 pixels wide and 8 frames a second, 2.6 MB; an earlier copy was Giphy's "This content is not available" placeholder.
 
 **H. The test that is not hermetic.** `pyproject.toml` lines 53 to 57: pytest now leaves out every test marked `system` (line 56), and line 57 declares the marker.
-
-> Ask: the mask test of step 05a runs in `just test`. Did we mark it? No. It is an integration test by kind, but it is hermetic, so it has no marker, and it runs at every commit. The marker `system` marks only what is not hermetic: the smoke on the real model, which is a system test.
 
 $ sed -n '53,57p' pyproject.toml
 
