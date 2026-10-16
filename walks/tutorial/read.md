@@ -8698,3 +8698,2242 @@ exit code 0. A call that does not match the types now stops `git commit`.
 </details>
 
 [This change on GitHub](https://github.com/rahuldave/babykev/commit/42f75dc784aa7fdfa6981c1f4defd0c798cc3b08). [The code after it](https://github.com/rahuldave/babykev/tree/42f75dc784aa7fdfa6981c1f4defd0c798cc3b08).
+
+<a id="tut-18"></a>
+
+## 18 The smoke run
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 67 packages`.
+
+`model.py` passes every check, and nothing has run it. A smoke run is the first thing to try. It loads the real model
+on this machine, asks it the questions of the sample data, and prints each answer beside its label. Nothing is trained,
+so the answers are guesses. The run shows that the contract, the packing, the model and the answers fit together.
+
+`smoke.py` is ours, and it comes one function at a time. The command `babykev smoke` and the recipe `just smoke` run
+it, on this machine only.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/42f75dc784aa7fdfa6981c1f4defd0c798cc3b08). [The code after it](https://github.com/rahuldave/babykev/tree/6c2937bcf7bac5b94fcbc0b06269a14d36b8d97f).
+
+<a id="tut-18.1"></a>
+
+### 18.1 smoke.py, which reads the sample
+
+The smoke reads the five labelled requests of `data/cheese/sample.jsonl`. `read_lines` reads one request from each
+line of the file.
+
+A patch to [`src/babykev/smoke.py`](#tut-18.1-src-babykev-smoke.py-76d2ec).
+
+The new file `src/babykev/smoke.py` has 22 lines. The docstring of the module, on lines 1 to 8, says what the smoke
+does. `SAMPLE` is on line 14, and `read_lines` on lines 17 to 22.
+
+```bash
+uv run python -c "from babykev.smoke import read_lines; lines = read_lines(); print(len(lines), list(lines[0]))"
+```
+
+It prints `5 ['state', 'questions']`, five requests, each with a state and its questions.
+
+```bash
+just test
+```
+
+`just test` prints `53 passed`. `smoke.py` has 7 statements at 0%, and the total falls from 43% to 42%, 83 of 199.
+The coverage counts every file of the package, and no test imports `smoke.py`.
+
+#### What changed
+
+- <a id="tut-18.1-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: the docstring, and the function that reads the sample. New, 22 lines. [The file](https://github.com/rahuldave/babykev/blob/ae6dc34784fa8c5146ae336c9c3b60b6dc1e71d9/src/babykev/smoke.py).
+  - look at `def read_lines(`
+
+<details><summary>The diff of <code>src/babykev/smoke.py</code></summary>
+
+```diff
+@@ -0,0 +1,22 @@
++"""A smoke run: everything that exists so far, end to end, on the real model.
++
++It loads the base model with a fresh adapter and an untrained pointer head, asks it the questions
++in the sample data, and prints each answer beside its label. Nothing has been trained yet, so the
++answers are guesses. What the run shows is that the pieces fit: a line of data passes the contract,
++is packed into one sequence, goes through the model on whatever device there is, and comes back as
++answers.
++"""
++
++import json
++from pathlib import Path
++from typing import Any
++
++SAMPLE = Path("data/cheese/sample.jsonl")
++
++
++def read_lines(
++    path: Path = SAMPLE,  # A JSONL file of labelled requests
++) -> list[dict[str, Any]]:  # One labelled request per line of the file
++    """Read labelled requests from a JSONL file."""
++    with path.open(encoding="utf-8") as f:
++        return [json.loads(line) for line in f if line.strip()]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ae6dc34784fa8c5146ae336c9c3b60b6dc1e71d9). [The code after it](https://github.com/rahuldave/babykev/tree/ae6dc34784fa8c5146ae336c9c3b60b6dc1e71d9).
+
+<a id="tut-18.2"></a>
+
+### 18.2 answer
+
+`answer` takes one request through every part of babykev. The contract checks the request, and `to_record` turns it
+into a record. `encode` packs the record into tokens, and `model.probs` gives the probabilities. `to_answers` turns
+them into an answer for each question. `answer` also counts the tokens and times the pass of the model.
+
+A patch to [`src/babykev/smoke.py`](#tut-18.2-src-babykev-smoke.py-76d2ec).
+
+In `src/babykev/smoke.py`, the new imports are on lines 13, 17, 19 and 20, and `answer` is on lines 31 to 41.
+
+`answer` calls four functions of `api.py` and `model.py`, and no test runs it yet. ty reads each call, and compares it
+with the types that those functions declare.
+
+```bash
+just types
+```
+
+`just types` prints `All checks passed!`. Each call gives each function the type of value that it asks for.
+
+#### What changed
+
+- <a id="tut-18.2-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: one request, from the contract to the answers. 19 lines added. [The file](https://github.com/rahuldave/babykev/blob/d106f54b43335d4e565d3fae2ce1105cc5b5507e/src/babykev/smoke.py).
+  - look at `def answer(`
+
+<details><summary>The diff of <code>src/babykev/smoke.py</code></summary>
+
+```diff
+@@ -8,9 +8,15 @@ answers.
+ """
+ 
+ import json
++import time
+ from pathlib import Path
+ from typing import Any
+ 
++from transformers import PreTrainedTokenizerBase
++
++from babykev.api import SystemOneRequest, to_answers, to_record
++from babykev.model import DecisionModel, encode
++
+ SAMPLE = Path("data/cheese/sample.jsonl")
+ 
+ 
+@@ -20,3 +26,16 @@ def read_lines(
+     """Read labelled requests from a JSONL file."""
+     with path.open(encoding="utf-8") as f:
+         return [json.loads(line) for line in f if line.strip()]
++
++
++def answer(
++    model: DecisionModel,  # The model that answers
++    tok: PreTrainedTokenizerBase,  # Its tokenizer
++    line: dict[str, Any],  # One labelled request
++) -> tuple[dict[str, Any], int, float]:  # The answers, the tokens packed, the seconds taken
++    """Answer one request: the contract, then packing, then one forward pass, then answers."""
++    record, meta = to_record(SystemOneRequest.model_validate(line))
++    enc = encode(tok, record)
++    started = time.perf_counter()
++    probs = [p.tolist() for p in model.probs(enc)]
++    return to_answers(probs, meta), len(enc["ids"]), time.perf_counter() - started
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d106f54b43335d4e565d3fae2ce1105cc5b5507e). [The code after it](https://github.com/rahuldave/babykev/tree/d106f54b43335d4e565d3fae2ce1105cc5b5507e).
+
+<a id="tut-18.3"></a>
+
+### 18.3 verdict
+
+A label is the right answer to a question. `verdict` puts the answer of the model beside its label, for each of the
+three types of question. A noul says yes from a probability of 0.5. A choice names its option. A score is judged by
+its most likely level.
+
+A patch to [`src/babykev/smoke.py`](#tut-18.3-src-babykev-smoke.py-76d2ec).
+
+In `src/babykev/smoke.py`, `verdict` is on lines 44 to 61.
+
+```bash
+uv run python -c "from babykev.smoke import verdict; print(verdict({'type': 'noul', 'label': True}, {'type': 'noul', 'noul': 0.78}))"
+```
+
+It prints `('yes (0.78)', 'yes', True)`. The three values are what the model said, what the label says, and whether
+they agree.
+`smoke.py` imports `model.py`, so the note of torch comes after it.
+
+#### What changed
+
+- <a id="tut-18.3-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: one answer beside its label. 20 lines added. [The file](https://github.com/rahuldave/babykev/blob/3d4943832416314723cc909915f6ec83cc395efe/src/babykev/smoke.py).
+  - look at `def verdict(`
+
+<details><summary>The diff of <code>src/babykev/smoke.py</code></summary>
+
+```diff
+@@ -39,3 +39,23 @@ def answer(
+     started = time.perf_counter()
+     probs = [p.tolist() for p in model.probs(enc)]
+     return to_answers(probs, meta), len(enc["ids"]), time.perf_counter() - started
++
++
++def verdict(
++    question: dict[str, Any],  # One question of a labelled request, with its `label`
++    given: dict[str, Any],  # The model's answer to it
++) -> tuple[str, str, bool]:  # What the model said, what the label says, and whether they agree
++    """Put one answer beside its label."""
++    label = question["label"]
++    if given["type"] == "noul":
++        said = given["noul"] >= 0.5
++        return (
++            f"{'yes' if said else 'no'} ({given['noul']:.2f})",
++            "yes" if label else "no",
++            said == label,
++        )
++    if given["type"] == "choice":
++        chosen = given["choice"]
++        return f"{chosen} ({given['probabilities'][chosen]:.2f})", str(label), chosen == label
++    level = max(given["probabilities"], key=lambda i: given["probabilities"][i])
++    return f"level {level} (score {given['score']:.2f})", f"level {label}", int(level) == label
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3d4943832416314723cc909915f6ec83cc395efe). [The code after it](https://github.com/rahuldave/babykev/tree/3d4943832416314723cc909915f6ec83cc395efe).
+
+<a id="tut-18.4"></a>
+
+### 18.4 smoke
+
+`smoke` asks the model every question of the sample, and yields the report a line at a time. The first pass on a
+device is slow, so it runs once before the timing starts. Each request gets a line with its state, its tokens and its
+time. Each question gets a line with `ok` or `--`. The last lines give the count of right answers.
+
+A patch to [`src/babykev/smoke.py`](#tut-18.4-src-babykev-smoke.py-76d2ec).
+
+In `src/babykev/smoke.py`, `Iterator` is on line 14 and `render` on line 20. `smoke` is on lines 65 to 85.
+
+```bash
+just types
+```
+
+`just types` prints `All checks passed!`. `smoke` declares that it returns an `Iterator[str]`, and each `yield` gives
+a string.
+
+#### What changed
+
+- <a id="tut-18.4-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: the report, a line at a time. 25 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/cfe6bab89a64d39a1a60b505b7fbfbc096348b4b/src/babykev/smoke.py).
+  - look at `def smoke(`
+
+<details><summary>The diff of <code>src/babykev/smoke.py</code></summary>
+
+```diff
+@@ -9,12 +9,13 @@ answers.
+ 
+ import json
+ import time
++from collections.abc import Iterator
+ from pathlib import Path
+ from typing import Any
+ 
+ from transformers import PreTrainedTokenizerBase
+ 
+-from babykev.api import SystemOneRequest, to_answers, to_record
++from babykev.api import SystemOneRequest, render, to_answers, to_record
+ from babykev.model import DecisionModel, encode
+ 
+ SAMPLE = Path("data/cheese/sample.jsonl")
+@@ -59,3 +60,26 @@ def verdict(
+         return f"{chosen} ({given['probabilities'][chosen]:.2f})", str(label), chosen == label
+     level = max(given["probabilities"], key=lambda i: given["probabilities"][i])
+     return f"level {level} (score {given['score']:.2f})", f"level {label}", int(level) == label
++
++
++def smoke(
++    model: DecisionModel,  # The model to try
++    tok: PreTrainedTokenizerBase,  # Its tokenizer
++    lines: list[dict[str, Any]],  # Labelled requests to ask it
++) -> Iterator[str]:  # The report, a line at a time
++    """Ask the model every question in `lines` and report each answer beside its label."""
++    answer(model, tok, lines[0])  # the first pass on a device is slow, so it is not timed
++    right, total, seconds = 0, 0, []
++    for line in lines:
++        answers, tokens, took = answer(model, tok, line)
++        seconds.append(took)
++        state = render(line["state"]).splitlines()[0]
++        yield f"\n{state[:70]}   [{tokens} tokens, {took * 1000:.0f} ms]"
++        for qid, question in line["questions"].items():
++            said, label, agree = verdict(question, answers[qid])
++            right, total = right + agree, total + 1
++            mark = "ok" if agree else "--"
++            yield f"  {mark}  {qid:12s} {question['type']:7s} says {said:28s} label: {label}"
++    typical = sorted(seconds)[len(seconds) // 2] * 1000
++    yield f"\n{right} of {total} right, {typical:.0f} ms a request."
++    yield "Nothing is trained yet: these are guesses."
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/cfe6bab89a64d39a1a60b505b7fbfbc096348b4b). [The code after it](https://github.com/rahuldave/babykev/tree/cfe6bab89a64d39a1a60b505b7fbfbc096348b4b).
+
+<a id="tut-18.5"></a>
+
+### 18.5 main loads the real model and runs the smoke
+
+`main` loads the tokenizer and the base model, Qwen2.5-0.5B, from the Hugging Face Hub. It adds an adapter of rank
+16, `LORA_RANK`, and the head, which has never been trained. `torch.manual_seed(0)` makes the random weights of the head
+the same at every run. `main` counts the parameters, and prints the report of `smoke`. It takes the words after
+`babykev smoke`, and answers `help` with the usage.
+
+A patch to [`src/babykev/smoke.py`](#tut-18.5-src-babykev-smoke.py-76d2ec).
+
+In `src/babykev/smoke.py`, `BASE`, `LORA_RANK` and `USAGE` are on lines 24 to 28, and `main` is on lines 95 to 119.
+
+```bash
+uv run python -c "import sys; from babykev.smoke import main; sys.exit(main([]))"
+```
+
+The first time on a machine, transformers downloads the base model into `~/.cache/huggingface`, about 1 GB. On this
+Mac, the run takes about 10 seconds. It prints `babykev smoke: Qwen/Qwen2.5-0.5B on mps`, where `mps` is the GPU of
+Apple. Then it prints `loaded in 3.8 s: 503M parameters, 9.3M of them trainable`.
+
+The report has a line for each of the five requests, with its tokens, 162, 145, 158, 115 and 156, and its time. Under
+each are its three questions. The last lines are `6 of 15 right, 246 ms a request.` and `Nothing is trained yet: these are guesses.`, and the note of
+torch comes at the end.
+
+Some numbers are fixed, and some can vary. The parameters, the tokens and the answers come from the same weights at
+every run, because of the seed. On this Mac, a run on the CPU said `6 of 15 right` too. The seconds to load and the
+milliseconds of each request change from run to run. On another device, a probability can differ in its last digits.
+
+```bash
+just test
+```
+
+`just test` prints `53 passed`. `smoke.py` has 71 statements at 0%, and the total is 32%, 83 of 263.
+
+#### What changed
+
+- <a id="tut-18.5-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: the real model, loaded, and the report printed. 35 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/d4302c1f860c781a3b5946c4c10dec82f6264eca/src/babykev/smoke.py).
+  - look at `def main(`
+
+<details><summary>The diff of <code>src/babykev/smoke.py</code></summary>
+
+```diff
+@@ -8,17 +8,24 @@ answers.
+ """
+ 
+ import json
++import sys
+ import time
+ from collections.abc import Iterator
+ from pathlib import Path
+ from typing import Any
+ 
++import torch
+ from transformers import PreTrainedTokenizerBase
+ 
+ from babykev.api import SystemOneRequest, render, to_answers, to_record
+-from babykev.model import DecisionModel, encode
++from babykev.model import DecisionModel, encode, load_tokenizer, pick_device
+ 
+ SAMPLE = Path("data/cheese/sample.jsonl")
++BASE = "Qwen/Qwen2.5-0.5B"
++LORA_RANK = 16
++USAGE = """\
++usage: babykev smoke    load the base model on this machine; answer the sample requests, untrained
++"""
+ 
+ 
+ def read_lines(
+@@ -83,3 +90,30 @@ def smoke(
+     typical = sorted(seconds)[len(seconds) // 2] * 1000
+     yield f"\n{right} of {total} right, {typical:.0f} ms a request."
+     yield "Nothing is trained yet: these are guesses."
++
++
++def main(
++    words: list[str],  # The words after `babykev smoke`: none to run, `help` for the usage
++) -> int:  # The exit code: 0, or 2 for words that are no command
++    """Load the real model on the best device there is and run the smoke on the sample data."""
++    if words in (["help"], ["--help"], ["-h"]):
++        print(USAGE, end="")
++        return 0
++    if words:
++        print(USAGE, end="", file=sys.stderr)
++        return 2
++    device = pick_device()
++    where = torch.cuda.get_device_name(0) if device == "cuda" else device
++    print(f"babykev smoke: {BASE} on {where}", flush=True)
++    started = time.perf_counter()
++    torch.manual_seed(0)
++    tok = load_tokenizer(BASE)
++    model = DecisionModel(BASE, device, lora=LORA_RANK).eval()
++    everything = sum(p.numel() for p in model.parameters())
++    trainable = sum(p.numel() for p in model.trainable_parameters())
++    loaded = time.perf_counter() - started
++    sizes = f"{everything / 1e6:.0f}M parameters, {trainable / 1e6:.1f}M of them trainable"
++    print(f"loaded in {loaded:.1f} s: {sizes}", flush=True)
++    for text in smoke(model, tok, read_lines()):
++        print(text, flush=True)
++    return 0
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d4302c1f860c781a3b5946c4c10dec82f6264eca). [The code after it](https://github.com/rahuldave/babykev/tree/d4302c1f860c781a3b5946c4c10dec82f6264eca).
+
+<a id="tut-18.6"></a>
+
+### 18.6 The command babykev smoke
+
+`cli.py` refuses every word but `help`. It now runs `smoke.main` for the word `smoke`, with the words after it. The
+help lists the command. `smoke.py` imports torch, which takes about two seconds. So `cli.py` imports `smoke` inside the
+branch of the command, and `babykev help` stays fast.
+
+A patch to [`src/babykev/cli.py`](#tut-18.6-src-babykev-cli.py-a9e184).
+
+In `src/babykev/cli.py`, the commands of `HELP` are on lines 11 and 12, and the branch of `smoke` is on lines 22 to
+25.
+
+```bash
+uv run babykev help
+uv run babykev smoke help
+```
+
+`babykev help` prints the help, with `smoke` under `commands:`. `babykev smoke help` prints the usage,
+`usage: babykev smoke    load the base model on this machine; answer the sample requests, untrained`, and the note of
+torch.
+
+The test of the help compares what the command prints with `HELP` itself, so it holds after the change.
+
+```bash
+sed -n '17,25p' tests/unit/test_cli.py
+just test -k help_is_printed
+```
+
+The test runs `babykev` with each of four words, and checks that it prints `HELP`. `just test -k help_is_printed`
+prints `4 passed, 49 deselected`. Its table of coverage counts only the four tests that ran, so the total is 13%.
+
+#### What changed
+
+- <a id="tut-18.6-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: the command `smoke`, in the help and in `main`. 12 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/4d756e960a5613d7076808da5197fca58c850d55/src/babykev/cli.py).
+  - look at `        raise SystemExit(smoke.main(words[1:]))`
+
+<details><summary>The diff of <code>src/babykev/cli.py</code></summary>
+
+```diff
+@@ -8,14 +8,20 @@ babykev: a small decision model. Context, typed questions, and a probability for
+ usage: babykev COMMAND [FLAGS]
+        babykev help
+ 
+-There are no commands yet.
++commands:
++  smoke   load the base model on this machine and answer the five sample requests, untrained
+ """
+ 
+ 
+ def main() -> None:
+-    """Print the help, or refuse a command that does not exist yet."""
++    """Run the command named by the first word, print the help, or refuse any other word."""
+     words = sys.argv[1:]
+-    if words and words[0] not in ("help", "--help", "-h"):
+-        print(f"babykev: no command named {words[0]!r}. Run `babykev help`.", file=sys.stderr)
+-        raise SystemExit(2)
+-    print(HELP, end="")
++    if not words or words[0] in ("help", "--help", "-h"):
++        print(HELP, end="")
++        return
++    if words[0] == "smoke":
++        from babykev import smoke  # imports torch, so only when it is asked for
++
++        raise SystemExit(smoke.main(words[1:]))
++    print(f"babykev: no command named {words[0]!r}. Run `babykev help`.", file=sys.stderr)
++    raise SystemExit(2)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/4d756e960a5613d7076808da5197fca58c850d55). [The code after it](https://github.com/rahuldave/babykev/tree/4d756e960a5613d7076808da5197fca58c850d55).
+
+<a id="tut-18.7"></a>
+
+### 18.7 The recipe smoke
+
+The recipe `smoke` runs the command. It answers `help` as every recipe does, and gives any other word to `babykev
+smoke`. It is in a group of its own, `model`.
+
+A patch to [`justfile`](#tut-18.7-justfile-424f0b).
+
+In the `justfile`, the recipe `smoke` is on lines 95 to 101. Line 101 runs `uv run {{ program }} smoke "$@"`.
+
+The command behind the recipe comes first.
+
+```bash
+uv run babykev smoke
+just --show smoke
+just smoke
+```
+
+`uv run babykev smoke` prints the same report as the last move, `6 of 15 right`, with other times. `just --show
+smoke` prints the recipe. `just smoke` runs it, and prints the same report again.
+
+```bash
+just help smoke
+```
+
+`just help smoke` prints the line of the recipe. Line 101 names `{{ program }} smoke`, so the recipe `help` also prints
+the usage of the program.
+
+#### What changed
+
+- <a id="tut-18.7-justfile-424f0b"></a>`justfile`: the recipe `smoke`. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/eb2b6002dc55010dea092f3e57481bc12cd1e0ea/justfile).
+  - look at `smoke *args:`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -91,3 +91,11 @@ docs *args:
+     if [ "$*" = help ]; then just help docs; exit 0; fi
+     if [ "$#" -eq 0 ]; then exec uv run smalldocs render docs; fi
+     exec uv run smalldocs api "$@" --dir docs
++
++# Run the smoke on this machine: the real model answers the sample requests, untrained
++[group('model')]
++[no-exit-message]
++smoke *args:
++    #!/usr/bin/env sh
++    if [ "$*" = help ]; then just help smoke; exit 0; fi
++    exec uv run {{ program }} smoke "$@"
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/eb2b6002dc55010dea092f3e57481bc12cd1e0ea). [The code after it](https://github.com/rahuldave/babykev/tree/eb2b6002dc55010dea092f3e57481bc12cd1e0ea).
+
+<a id="tut-18.8"></a>
+
+### 18.8 The front page names the smoke
+
+The front page of the docs lists the modules of the code. `babykev.smoke` is the fourth.
+
+A patch to [`docs/index.qmd`](#tut-18.8-docs-index.qmd-d6d880).
+
+In `docs/index.qmd`, line 15 says `four modules`, and the item of `babykev.smoke` is on lines 22 and 23.
+
+```bash
+just docs
+grep -o 'href="api/smoke.html#[^"]*"' docs/_site/index.html
+```
+
+`just docs` prints the note of torch, then `wrote 5 page(s) to docs/_site`. The fifth page is the reference of
+`smoke.py`. `grep -o` prints the link of `smoke()` into it, `#smoke`.
+
+#### What changed
+
+- <a id="tut-18.8-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the module `babykev.smoke`, in the list. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a52d047c3628b7ae2d980093ef3df5b7780b585f/docs/index.qmd).
+  - look at ``- `babykev.smoke` is the smoke run. `smoke()` asks the model every question of the sample data, and``
+
+<details><summary>The diff of <code>docs/index.qmd</code></summary>
+
+```diff
+@@ -12,13 +12,15 @@ question has one of three types:
+ - a `Choice` asks for one of several named options
+ - a `Score` asks for a level on an ordered scale
+ 
+-The code is in three modules:
++The code is in four modules:
+ 
+ - `babykev.api` is the contract. `to_record` turns a request into the text and the options that the model
+   reads. `to_answers` turns the probabilities of the model into an answer of the type of each question.
+ - `babykev.cli` is the command `babykev`.
+ - `babykev.model` is the model. `encode()` packs a record into one sequence of tokens, and a
+   `DecisionModel` scores every option of every question in one pass.
++- `babykev.smoke` is the smoke run. `smoke()` asks the model every question of the sample data, and
++  reports each answer beside its label.
+ 
+ Each build of the site makes the pages under Reference from the code. A page takes these parts from each
+ function and each class:
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a52d047c3628b7ae2d980093ef3df5b7780b585f). [The code after it](https://github.com/rahuldave/babykev/tree/a52d047c3628b7ae2d980093ef3df5b7780b585f).
+
+<a id="tut-18.9"></a>
+
+### 18.9 The README names the smoke
+
+The README says what `just smoke` does, and what it downloads. The table gets a row for `smoke.py`.
+
+A patch to [`README.md`](#tut-18.9-README.md-8ec9a0).
+
+In `README.md`, the paragraph about `just smoke` is on lines 65 to 67, and the row of `smoke.py` is on line 81.
+
+```bash
+just check
+```
+
+`just check` passes. The tests print `53 passed`, and the total of 32%. `cli.py` is at 83%, because no test runs
+lines 23 to 25, the branch of `smoke`. `just docs check` prints `65 of 65`. The coverage has no floor yet, and the
+tests of the model come next.
+
+#### What changed
+
+- <a id="tut-18.9-README.md-8ec9a0"></a>`README.md`: `just smoke`, and the row of `smoke.py`. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/6c2937bcf7bac5b94fcbc0b06269a14d36b8d97f/README.md).
+  - look at ``| `src/babykev/smoke.py` | The smoke run, which asks the real model the sample requests on this machine |``
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+```diff
+@@ -62,6 +62,10 @@ The model needs four packages, torch, transformers, peft and safetensors. torch
+ from the index of PyTorch that `pyproject.toml` names. On a Mac, the same build runs on the GPU of Apple
+ too. With them, `.venv` takes about 750 MB, and torch is most of it.
+ 
++`just smoke` runs the model on this machine, on the best device that it finds. The first time, it
++downloads the base model from the Hugging Face Hub, about 1 GB. It answers the five sample requests,
++untrained, and prints each answer beside its label.
++
+ Run `just hook` once in each clone. It installs a git hook, which runs `just check` before each commit.
+ `just check` runs every check of the project, and if one fails, git makes no commit. You can run `just check`
+ yourself at any time.
+@@ -74,6 +78,7 @@ yourself at any time.
+ | `src/babykev/api.py` | The contract: the request and its three types of question as pydantic models, the text and options the model reads, and the answers made from its probabilities |
+ | `src/babykev/cli.py` | The command `babykev` |
+ | `src/babykev/model.py` | The model, a language model with a head that points at the options |
++| `src/babykev/smoke.py` | The smoke run, which asks the real model the sample requests on this machine |
+ | `data/cheese/sample.jsonl` | Five requests about cheese, one on each line. Every question has a `label`, the right answer |
+ | `tests/unit/` | The unit tests of the contract and of the command. One test checks every line of the sample data against the contract |
+ | `docs/` | The docs site. `just docs` builds it into `docs/_site`, with the reference made from the code |
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/6c2937bcf7bac5b94fcbc0b06269a14d36b8d97f). [The code after it](https://github.com/rahuldave/babykev/tree/6c2937bcf7bac5b94fcbc0b06269a14d36b8d97f).
+
+<a id="tut-19"></a>
+
+## 19 Fixtures and the tiny model
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 67 packages`.
+
+The tests of the model need a model. The real one is a download of about 1 GB, and a pass takes about 200 ms on a
+GPU. A test of the model checks something exact, such as which token is where, how many probabilities there are, or
+which weights get a gradient. That holds for any weights, trained or random. So the tests get a tiny model, built in memory with random
+weights. A fixture of pytest gives it to each test that asks for it.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/6c2937bcf7bac5b94fcbc0b06269a14d36b8d97f). [The code after it](https://github.com/rahuldave/babykev/tree/5ec98e80e89547dd837bfde958b11e0fd7e4ec63).
+
+<a id="tut-19.1"></a>
+
+### 19.1 tests/tiny.py, with the tiny tokenizer
+
+The tiny tokenizer has one token for each printable character, and the five delimiters as special tokens. Like the
+tokenizer of the base model, it turns the text of a delimiter into the delimiter. `tests/tiny.py` is a helper of the
+tests, and not a test, so pytest does not collect it.
+
+A patch to [`tests/tiny.py`](#tut-19.1-tests-tiny.py-70c1c9).
+
+The new file `tests/tiny.py` has 23 lines, and `tiny_tokenizer` on lines 11 to 23.
+
+```bash
+uv run python -c "from tests.tiny import tiny_tokenizer; t = tiny_tokenizer(); print(len(t), t.tokenize('Roquefort'))"
+```
+
+It prints `106` and nine tokens, one for each letter of `Roquefort`, and the note of torch. The 106 tokens are the 100
+printable characters, the five delimiters and `[UNK]`, the token for any other character. `python -c` runs from the
+root of the project, so Python finds the folder `tests`.
+
+```bash
+just lint
+```
+
+`just lint` finds 2 errors, and ends with exit code 1. Both are `S106`, `Possible hardcoded password assigned to
+argument: "unk_token"`, on lines 19 and 21.
+
+```bash
+uv run ruff rule S106
+```
+
+`ruff rule` says what a rule checks. `S106` looks for a string written in the code, given to a parameter whose name
+sounds like a secret, such as `password` or `token`. The name `unk_token` has `token` in it. `"[UNK]"` is the text of a
+token, and no secret. The next move answers it.
+
+#### What changed
+
+- <a id="tut-19.1-tests-tiny.py-70c1c9"></a>`tests/tiny.py`: the tiny tokenizer. New, 23 lines. [The file](https://github.com/rahuldave/babykev/blob/f37a7b0beb1cd67a4d07369908f12b64548a89ed/tests/tiny.py).
+  - look at `def tiny_tokenizer() -> PreTrainedTokenizerFast:  # A tokenizer with one token per character`
+
+<details><summary>The diff of <code>tests/tiny.py</code></summary>
+
+```diff
+@@ -0,0 +1,23 @@
++"""Stand-ins for the parts of the real model, built in memory, with no download."""
++
++import string
++
++from tokenizers import Tokenizer, models, pre_tokenizers
++from transformers import PreTrainedTokenizerFast
++
++from babykev.model import SPECIAL
++
++
++def tiny_tokenizer() -> PreTrainedTokenizerFast:  # A tokenizer with one token per character
++    """Build a real fast tokenizer in memory, with the five delimiters as its special tokens.
++
++    Like the base model's tokenizer, it turns the text of a special token into that token wherever
++    it appears, which is the behaviour `user_tokens` has to defend against.
++    """
++    chars = sorted(set(string.printable))
++    vocab = {"[UNK]": 0, **{c: i + 1 for i, c in enumerate(chars)}}
++    core = Tokenizer(models.WordLevel(vocab, unk_token="[UNK]"))
++    core.pre_tokenizer = pre_tokenizers.Split("", "isolated")
++    tok = PreTrainedTokenizerFast(tokenizer_object=core, unk_token="[UNK]")
++    tok.add_special_tokens({"additional_special_tokens": SPECIAL})
++    return tok
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/f37a7b0beb1cd67a4d07369908f12b64548a89ed). [The code after it](https://github.com/rahuldave/babykev/tree/f37a7b0beb1cd67a4d07369908f12b64548a89ed).
+
+<a id="tut-19.2"></a>
+
+### 19.2 The tests may pass a literal to unk_token
+
+`S106` reads the name of a parameter, and not what the value is. The tests already may use `assert`, by a line of
+`[tool.ruff.lint.per-file-ignores]`. The same line lets them break `S106`. The package still may not.
+
+A patch to [`pyproject.toml`](#tut-19.2-pyproject.toml-5d07e7).
+
+In `pyproject.toml`, the comment is on lines 89 and 90, and line 91 is `"tests/**" = ["S101", "S106"]`.
+
+```bash
+just lint
+```
+
+`just lint` prints `All checks passed!`.
+
+#### What changed
+
+- <a id="tut-19.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the tests may break `S106`. 3 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/bda24c0a2dad5fbe5332fc4479785035ffcf8233/pyproject.toml).
+  - look at `"tests/**" = ["S101", "S106"]`
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -86,5 +86,6 @@ select = [
+ ]
+ 
+ [tool.ruff.lint.per-file-ignores]
+-# A test is written with assert
+-"tests/**" = ["S101"]
++# A test is written with assert, and may pass a literal to a parameter whose name sounds like a
++# secret, such as unk_token
++"tests/**" = ["S101", "S106"]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/bda24c0a2dad5fbe5332fc4479785035ffcf8233). [The code after it](https://github.com/rahuldave/babykev/tree/bda24c0a2dad5fbe5332fc4479785035ffcf8233).
+
+<a id="tut-19.3"></a>
+
+### 19.3 The tiny backbone
+
+The backbone is the language model under the head. `tiny_backbone` builds the code of Qwen, `Qwen2Model`, with two
+layers of 32 numbers, where the real one has 24 layers of 896. Its weights are random, from a seed, so they are the
+same at every run.
+
+A patch to [`tests/tiny.py`](#tut-19.3-tests-tiny.py-70c1c9).
+
+In `tests/tiny.py`, `tiny_backbone` is on lines 27 to 42.
+
+```bash
+uv run python -c "from tests.tiny import tiny_backbone; print(sum(p.numel() for p in tiny_backbone(106).parameters()))"
+```
+
+It prints `24224`, the parameters of the tiny backbone. The backbone of Qwen2.5-0.5B has 494,032,768.
+
+#### What changed
+
+- <a id="tut-19.3-tests-tiny.py-70c1c9"></a>`tests/tiny.py`: the tiny backbone. 20 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/45415d9b4fa2c15329920a0c4f4893a0dbc2cf99/tests/tiny.py).
+  - look at `def tiny_backbone(`
+
+<details><summary>The diff of <code>tests/tiny.py</code></summary>
+
+```diff
+@@ -2,8 +2,9 @@
+ 
+ import string
+ 
++import torch
+ from tokenizers import Tokenizer, models, pre_tokenizers
+-from transformers import PreTrainedTokenizerFast
++from transformers import PreTrainedTokenizerFast, Qwen2Config, Qwen2Model
+ 
+ from babykev.model import SPECIAL
+ 
+@@ -21,3 +22,21 @@ def tiny_tokenizer() -> PreTrainedTokenizerFast:  # A tokenizer with one token p
+     tok = PreTrainedTokenizerFast(tokenizer_object=core, unk_token="[UNK]")
+     tok.add_special_tokens({"additional_special_tokens": SPECIAL})
+     return tok
++
++
++def tiny_backbone(
++    vocab_size: int,  # How many tokens the tokenizer has
++    seed: int = 0,  # The seed of the random weights
++) -> Qwen2Model:  # A backbone of the base model's architecture, with two small layers
++    """Build a randomly initialised backbone, the same every time for the same seed."""
++    torch.manual_seed(seed)
++    config = Qwen2Config(
++        vocab_size=vocab_size,
++        hidden_size=32,
++        intermediate_size=64,
++        num_hidden_layers=2,
++        num_attention_heads=2,
++        num_key_value_heads=2,
++        max_position_embeddings=2048,
++    )
++    return Qwen2Model(config)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/45415d9b4fa2c15329920a0c4f4893a0dbc2cf99). [The code after it](https://github.com/rahuldave/babykev/tree/45415d9b4fa2c15329920a0c4f4893a0dbc2cf99).
+
+<a id="tut-19.4"></a>
+
+### 19.4 conftest.py, with the fixture tok
+
+A fixture is a function marked `@pytest.fixture`. A test names it as a parameter, and pytest calls the fixture and
+passes in what it returns. `monkeypatch` and `capsys` are fixtures of pytest. pytest reads `tests/conftest.py` before
+any test, and every test file can use the fixtures in it, with no import. The first fixture, `tok`, is the tiny
+tokenizer. `scope="session"` builds it once for the whole run.
+
+A patch to [`tests/conftest.py`](#tut-19.4-tests-conftest.py-626af3).
+
+The new file `tests/conftest.py` imports `tiny_tokenizer` from `tests.tiny` on line 10, and has the fixture `tok` on
+lines 13 to 16.
+
+```bash
+just test
+```
+
+`just test` fails before any test runs, with exit code 4. It prints `ImportError while loading conftest`, and
+`ModuleNotFoundError: No module named 'tests'`. pytest puts the folder of `conftest.py`, `tests`, on the path of
+Python, and not the root of the project. So `tests.tiny` cannot be found. The next move answers it.
+
+#### What changed
+
+- <a id="tut-19.4-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `tok`. New, 16 lines. [The file](https://github.com/rahuldave/babykev/blob/1afb598b7814efa32b2ac5ecaf769525448b377f/tests/conftest.py).
+  - look at `@pytest.fixture(scope="session")`
+
+<details><summary>The diff of <code>tests/conftest.py</code></summary>
+
+```diff
+@@ -0,0 +1,16 @@
++"""The fixtures that every test file can ask for.
++
++What the tests of the model check is exact, and holds for any weights. So the fixtures need no
++trained model, no download and no GPU.
++"""
++
++import pytest
++from transformers import PreTrainedTokenizerFast
++
++from tests.tiny import tiny_tokenizer
++
++
++@pytest.fixture(scope="session")
++def tok() -> PreTrainedTokenizerFast:  # The tiny tokenizer, built once for the whole test run
++    """Provide the tiny tokenizer."""
++    return tiny_tokenizer()
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/1afb598b7814efa32b2ac5ecaf769525448b377f). [The code after it](https://github.com/rahuldave/babykev/tree/1afb598b7814efa32b2ac5ecaf769525448b377f).
+
+<a id="tut-19.5"></a>
+
+### 19.5 pytest can import tests.tiny
+
+The setting `pythonpath` of pytest puts folders on the path of Python. `"."` is the root of the project, where the
+folder `tests` is.
+
+A patch to [`pyproject.toml`](#tut-19.5-pyproject.toml-5d07e7).
+
+In `pyproject.toml`, the comment is on line 57, and line 58 is `pythonpath = ["."]`.
+
+```bash
+just test
+```
+
+`just test` prints `53 passed`. `model.py` goes from 0% to 33%, and the total from 32% to 45%, 121 of 267. No test
+calls the model. `tests/tiny.py` imports `SPECIAL` from `babykev.model`, so Python runs the module. Its imports, its
+names and the line of each `def` and `class` count as covered, 36 of its 109 statements.
+
+```bash
+just test --fixtures
+```
+
+`just test --fixtures` lists every fixture that pytest can see. Those of pytest come first, and the last section is
+`fixtures defined from conftest`. It has `tok [session scope] -- tests/conftest.py:14`, with its docstring.
+
+#### What changed
+
+- <a id="tut-19.5-pyproject.toml-5d07e7"></a>`pyproject.toml`: the root of the project, on the path of pytest. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/0bc09955947f76b06118a4083b4fd66515c15068/pyproject.toml).
+  - look at `pythonpath = ["."]`
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -54,6 +54,8 @@ test = [
+ 
+ [tool.pytest.ini_options]
+ testpaths = ["tests"]
++# A test can import its helpers from the folder tests, for example tests.tiny
++pythonpath = ["."]
+ # Every run measures how much of src/babykev the tests run, and lists the lines they do not
+ addopts = "--cov=babykev --cov-report=term-missing"
+ 
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0bc09955947f76b06118a4083b4fd66515c15068). [The code after it](https://github.com/rahuldave/babykev/tree/0bc09955947f76b06118a4083b4fd66515c15068).
+
+<a id="tut-19.6"></a>
+
+### 19.6 The fixture model
+
+The fixture `model` is a `DecisionModel` on the tiny backbone, on the CPU, with no adapter. It asks for `tok`, because
+the backbone needs to know the number of tokens. A fixture can ask for another fixture. `model` has the default scope,
+so pytest builds it again for each test, and no test can spoil it for the next.
+
+A patch to [`tests/conftest.py`](#tut-19.6-tests-conftest.py-626af3).
+
+In `tests/conftest.py`, the fixture `model` is on lines 20 to 25.
+
+```bash
+just test --fixtures
+```
+
+The last section lists `tok` and `model -- tests/conftest.py:21`. `tok` is now on line 15, one line lower, under the
+new import.
+
+#### What changed
+
+- <a id="tut-19.6-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `model`. 10 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/4f4d6a1c287c64965e692ccc3f6ce83d8e297165/tests/conftest.py).
+  - look at `    return DecisionModel("tiny", "cpu", backbone=tiny_backbone(len(tok))).eval()`
+
+<details><summary>The diff of <code>tests/conftest.py</code></summary>
+
+```diff
+@@ -7,10 +7,19 @@ trained model, no download and no GPU.
+ import pytest
+ from transformers import PreTrainedTokenizerFast
+ 
+-from tests.tiny import tiny_tokenizer
++from babykev.model import DecisionModel
++from tests.tiny import tiny_backbone, tiny_tokenizer
+ 
+ 
+ @pytest.fixture(scope="session")
+ def tok() -> PreTrainedTokenizerFast:  # The tiny tokenizer, built once for the whole test run
+     """Provide the tiny tokenizer."""
+     return tiny_tokenizer()
++
++
++@pytest.fixture
++def model(
++    tok: PreTrainedTokenizerFast,  # The tiny tokenizer
++) -> DecisionModel:  # A decision model on the tiny backbone, with no adapter, ready to answer
++    """Provide a fresh tiny model for each test, on the CPU."""
++    return DecisionModel("tiny", "cpu", backbone=tiny_backbone(len(tok))).eval()
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/4f4d6a1c287c64965e692ccc3f6ce83d8e297165). [The code after it](https://github.com/rahuldave/babykev/tree/4f4d6a1c287c64965e692ccc3f6ce83d8e297165).
+
+<a id="tut-19.7"></a>
+
+### 19.7 The fixture record
+
+The fixture `record` is one record about Roquefort, in the form that `to_record` returns. It has a state, and three
+questions of 2, 3 and 3 options.
+
+A patch to [`tests/conftest.py`](#tut-19.7-tests-conftest.py-626af3).
+
+In `tests/conftest.py`, the fixture `record` is on lines 30 to 40.
+
+```bash
+just test --fixtures
+```
+
+The last section lists the three fixtures, `tok`, `model` and `record`, each with its line in `conftest.py` and its
+docstring.
+
+#### What changed
+
+- <a id="tut-19.7-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `record`. 15 lines added. [The file](https://github.com/rahuldave/babykev/blob/6b750cd8fa121d4801f6e6b4413ada347e5a4f3d/tests/conftest.py).
+  - look at `        "state": "Roquefort. A blue cheese from France, made from sheep's milk.",`
+
+<details><summary>The diff of <code>tests/conftest.py</code></summary>
+
+```diff
+@@ -4,6 +4,8 @@ What the tests of the model check is exact, and holds for any weights. So the fi
+ trained model, no download and no GPU.
+ """
+ 
++from typing import Any
++
+ import pytest
+ from transformers import PreTrainedTokenizerFast
+ 
+@@ -23,3 +25,16 @@ def model(
+ ) -> DecisionModel:  # A decision model on the tiny backbone, with no adapter, ready to answer
+     """Provide a fresh tiny model for each test, on the CPU."""
+     return DecisionModel("tiny", "cpu", backbone=tiny_backbone(len(tok))).eval()
++
++
++@pytest.fixture
++def record() -> dict[str, Any]:  # A record with a state and three questions
++    """Provide one record, as `to_record` would return it."""
++    return {
++        "state": "Roquefort. A blue cheese from France, made from sheep's milk.",
++        "questions": [
++            {"instr": "Is this a blue cheese?", "options": ["no", "yes"], "label": 1},
++            {"instr": "Which milk?", "options": ["cow", "goat", "sheep"], "label": 2},
++            {"instr": "How firm?", "options": ["Soft", "Semi-soft", "Hard"], "label": 1},
++        ],
++    }
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/6b750cd8fa121d4801f6e6b4413ada347e5a4f3d). [The code after it](https://github.com/rahuldave/babykev/tree/6b750cd8fa121d4801f6e6b4413ada347e5a4f3d).
+
+<a id="tut-19.8"></a>
+
+### 19.8 The first test of the model
+
+The first test asks for the three fixtures. It packs the record with the tiny tokenizer, and runs the tiny model and
+the head. Each question gets one probability per option, and they sum to 1. Nothing is trained, so the probabilities
+mean nothing. The test checks what is true of any probabilities.
+
+A patch to [`tests/unit/test_model.py`](#tut-19.8-tests-unit-test_model.py-583145).
+
+The new file `tests/unit/test_model.py` has one test, on lines 11 to 20.
+
+```bash
+sed -n '11,20p' tests/unit/test_model.py
+just test -k probabilities_sum
+```
+
+The test never says "tiny". It names `model`, `tok` and `record`, and pytest passes them in. The code that runs is our
+`DecisionModel`. Only the backbone and the tokenizer under it are small. `[2, 3, 3]` on line 18 is known in advance,
+because the record of the fixture has questions of 2, 3 and 3 options. `just test -k probabilities_sum` prints
+`1 passed, 53 deselected`.
+
+```bash
+just test --fixtures-per-test -k probabilities_sum
+```
+
+`--fixtures-per-test` names the fixtures of each test, and where each is defined. The test gets `model`, `record` and
+`tok`, each with its line in `conftest.py`.
+
+```bash
+just test
+```
+
+`just test` prints `54 passed`. `model.py` goes from 33% to 85%, and the total from 45% to 67%, 178 of 267. One test
+runs the packing, the mask, the backbone and the head.
+
+#### What changed
+
+- <a id="tut-19.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the first test of the model, on the tiny model. New, 20 lines. [The file](https://github.com/rahuldave/babykev/blob/b34baedd8e8ce49475d07b177417b6a1a58456f6/tests/unit/test_model.py).
+  - look at `def test_probabilities_sum_to_one_for_every_question(`
+
+<details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
+
+```diff
+@@ -0,0 +1,20 @@
++"""Tests of the model, on the tiny model."""
++
++from typing import Any
++
++import pytest
++from transformers import PreTrainedTokenizerFast
++
++from babykev.model import DecisionModel, encode
++
++
++def test_probabilities_sum_to_one_for_every_question(
++    model: DecisionModel,  # The tiny model
++    tok: PreTrainedTokenizerFast,  # Its tokenizer
++    record: dict[str, Any],  # A record with three questions
++) -> None:
++    """Each question gets one probability per option, and they sum to 1."""
++    probs = model.probs(encode(tok, record))
++    assert [len(p) for p in probs] == [2, 3, 3]
++    for p in probs:
++        assert p.sum().item() == pytest.approx(1)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b34baedd8e8ce49475d07b177417b6a1a58456f6). [The code after it](https://github.com/rahuldave/babykev/tree/b34baedd8e8ce49475d07b177417b6a1a58456f6).
+
+<a id="tut-19.9"></a>
+
+### 19.9 The README names the fixtures and the tiny model
+
+The table of the README gets a row for each of the two new files. The row of `tests/unit/` names the tests of the
+model.
+
+A patch to [`README.md`](#tut-19.9-README.md-8ec9a0).
+
+In `README.md`, the row of `tests/unit/` is on line 83, and the two new rows are on lines 84 and 85.
+
+```bash
+just check
+```
+
+`just check` passes. The tests print `54 passed`, and the total of 67%. `just docs check` prints `71 of 71`, with the
+helpers and the fixtures in it.
+
+#### What changed
+
+- <a id="tut-19.9-README.md-8ec9a0"></a>`README.md`: the rows of the fixtures and of the tiny model. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/5ec98e80e89547dd837bfde958b11e0fd7e4ec63/README.md).
+  - look at ``| `tests/tiny.py` | A small tokenizer and backbone, built in memory, in place of the real ones |``
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+```diff
+@@ -80,7 +80,9 @@ yourself at any time.
+ | `src/babykev/model.py` | The model, a language model with a head that points at the options |
+ | `src/babykev/smoke.py` | The smoke run, which asks the real model the sample requests on this machine |
+ | `data/cheese/sample.jsonl` | Five requests about cheese, one on each line. Every question has a `label`, the right answer |
+-| `tests/unit/` | The unit tests of the contract and of the command. One test checks every line of the sample data against the contract |
++| `tests/unit/` | The tests of the contract, of the command and of the model. One test checks every line of the sample data against the contract |
++| `tests/conftest.py` | The fixtures that every test can ask for: the tiny tokenizer, a tiny model and a record |
++| `tests/tiny.py` | A small tokenizer and backbone, built in memory, in place of the real ones |
+ | `docs/` | The docs site. `just docs` builds it into `docs/_site`, with the reference made from the code |
+ | `justfile` | Every task of the project, one recipe each. `just help` explains them |
+ | `README.md` | This file |
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/5ec98e80e89547dd837bfde958b11e0fd7e4ec63). [The code after it](https://github.com/rahuldave/babykev/tree/5ec98e80e89547dd837bfde958b11e0fd7e4ec63).
+
+<a id="tut-20"></a>
+
+## 20 Unit tests of the model and the smoke
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 67 packages`.
+
+A unit test runs one function alone. The tests here check the packing, the defence against a forged
+delimiter, the head and the device. Then they check the verdicts of the smoke, and the command `smoke`. Each move adds one test. The
+coverage does not rise with every test. It counts the lines that a test runs, and not what a test checks.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/5ec98e80e89547dd837bfde958b11e0fd7e4ec63). [The code after it](https://github.com/rahuldave/babykev/tree/469bdd44714662d663ee77391d4c21774dea7fd0).
+
+<a id="tut-20.1"></a>
+
+### 20.1 Packing marks every part with its delimiter
+
+The test packs a small record, the state `ab` and one question `x?` with the options `n` and `y`. With one token per
+character, it can write down every token that it expects.
+
+A patch to [`tests/unit/test_model.py`](#tut-20.1-tests-unit-test_model.py-583145).
+
+In `tests/unit/test_model.py`, the new test is on lines 23 to 35.
+
+```bash
+sed -n '23,35p' tests/unit/test_model.py
+just test -k packing_marks
+```
+
+The list on line 31 is the whole sequence. It has the state delimiter and `a`, `b`, then the question delimiter and
+`x`, `?`. Each option is between its two delimiters, and the decide delimiter comes last. Line 32 gives the segment of each token, 0 for the state
+and 1 for the question. `just test -k packing_marks` prints `1 passed`.
+
+With `-k`, the table of coverage counts only the tests that ran. This test alone runs 54% of `model.py`.
+
+```bash
+just test
+```
+
+`just test` prints `55 passed`. The total stays at 67%, and `model.py` at 85%, with the same 16 lines missing. The
+test of the probabilities ran `encode` already, and checked none of its tokens. The coverage counts the lines that
+run, and not what a test checks.
+
+#### What changed
+
+- <a id="tut-20.1-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the tokens of a packed record. 16 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/ffb5cc31c73f6691fc83dea9663f3adc96d6478b/tests/unit/test_model.py).
+  - look at `def test_packing_marks_every_part_with_its_delimiter(`
+
+<details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
+
+```diff
+@@ -5,7 +5,7 @@ from typing import Any
+ import pytest
+ from transformers import PreTrainedTokenizerFast
+ 
+-from babykev.model import DecisionModel, encode
++from babykev.model import DecisionModel, delimiter_ids, encode
+ 
+ 
+ def test_probabilities_sum_to_one_for_every_question(
+@@ -18,3 +18,18 @@ def test_probabilities_sum_to_one_for_every_question(
+     assert [len(p) for p in probs] == [2, 3, 3]
+     for p in probs:
+         assert p.sum().item() == pytest.approx(1)
++
++
++def test_packing_marks_every_part_with_its_delimiter(
++    tok: PreTrainedTokenizerFast,  # The tiny tokenizer
++) -> None:
++    """A packed record is the state, then each question with its options and its decide token."""
++    s, q, o, c, d = delimiter_ids(tok)
++    record = {"state": "ab", "questions": [{"instr": "x?", "options": ["n", "y"], "label": 1}]}
++    enc = encode(tok, record)
++    a, b, x, mark, n, y = (tok.convert_tokens_to_ids(ch) for ch in "abx?ny")
++    assert enc["ids"] == [s, a, b, q, x, mark, o, n, c, o, y, c, d]
++    assert enc["seg"] == [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
++    assert enc["decide_idx"] == [12]
++    assert enc["opt_idx"] == [[8, 11]]
++    assert enc["labels"] == [1]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ffb5cc31c73f6691fc83dea9663f3adc96d6478b). [The code after it](https://github.com/rahuldave/babykev/tree/ffb5cc31c73f6691fc83dea9663f3adc96d6478b).
+
+<a id="tut-20.2"></a>
+
+### 20.2 Positions restart after the state
+
+The positions of each question begin right after the state, so a question looks the same wherever it comes.
+
+A patch to [`tests/unit/test_model.py`](#tut-20.2-tests-unit-test_model.py-583145).
+
+In `tests/unit/test_model.py`, the new test is on lines 38 to 47.
+
+```bash
+just test -k positions_restart
+```
+
+pytest prints `1 passed, 55 deselected`.
+
+#### What changed
+
+- <a id="tut-20.2-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the positions of each question. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/dfa3c1576d70248d70b9ddfba4e4a1e9eac74c3a/tests/unit/test_model.py).
+  - look at `def test_positions_restart_after_the_state(`
+
+<details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
+
+```diff
+@@ -33,3 +33,15 @@ def test_packing_marks_every_part_with_its_delimiter(
+     assert enc["decide_idx"] == [12]
+     assert enc["opt_idx"] == [[8, 11]]
+     assert enc["labels"] == [1]
++
++
++def test_positions_restart_after_the_state(
++    tok: PreTrainedTokenizerFast,  # The tiny tokenizer
++    record: dict[str, Any],  # A record with three questions
++) -> None:
++    """Every question starts at the position right after the state, wherever it comes."""
++    enc = encode(tok, record)
++    state_length = enc["seg"].count(0)
++    for k in (1, 2, 3):
++        positions = [p for p, s in zip(enc["pos"], enc["seg"], strict=True) if s == k]
++        assert positions == list(range(state_length, state_length + len(positions)))
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/dfa3c1576d70248d70b9ddfba4e4a1e9eac74c3a). [The code after it](https://github.com/rahuldave/babykev/tree/dfa3c1576d70248d70b9ddfba4e4a1e9eac74c3a).
+
+<a id="tut-20.3"></a>
+
+### 20.3 A question that does not fit is refused
+
+`encode` refuses a question that does not fit, and names its length. The record of the fixture has a state of 62
+tokens. The test gives a limit of 80 tokens to the state and a question together, and the questions do not fit.
+
+A patch to [`tests/unit/test_model.py`](#tut-20.3-tests-unit-test_model.py-583145).
+
+In `tests/unit/test_model.py`, the new test is on lines 50 to 56.
+
+```bash
+just test -k question_that_does_not_fit
+```
+
+pytest prints `1 passed`. The column Missing of `model.py` lists `129-135`, and not 128. Line 128, the `raise`, has
+run, and it left `encode` before the lines after it.
+
+#### What changed
+
+- <a id="tut-20.3-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a question longer than the limit. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/c2da58fefa044e2742dbb40173131efbc207d852/tests/unit/test_model.py).
+  - look at `def test_a_question_that_does_not_fit_is_refused(`
+
+<details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
+
+```diff
+@@ -45,3 +45,12 @@ def test_positions_restart_after_the_state(
+     for k in (1, 2, 3):
+         positions = [p for p, s in zip(enc["pos"], enc["seg"], strict=True) if s == k]
+         assert positions == list(range(state_length, state_length + len(positions)))
++
++
++def test_a_question_that_does_not_fit_is_refused(
++    tok: PreTrainedTokenizerFast,  # The tiny tokenizer
++    record: dict[str, Any],  # A record with three questions
++) -> None:
++    """A branch longer than the limit raises, and names its length."""
++    with pytest.raises(ValueError, match="branch too long"):
++        encode(tok, record, max_branch=80)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/c2da58fefa044e2742dbb40173131efbc207d852). [The code after it](https://github.com/rahuldave/babykev/tree/c2da58fefa044e2742dbb40173131efbc207d852).
+
+<a id="tut-20.4"></a>
+
+### 20.4 A state that does not fit is refused
+
+`encode` refuses a state that is longer than its limit, and names its length and the limit. The state of the fixture
+is the state delimiter and 61 characters, 62 tokens.
+
+A patch to [`tests/unit/test_model.py`](#tut-20.4-tests-unit-test_model.py-583145).
+
+In `tests/unit/test_model.py`, the new test is on lines 59 to 65.
+
+```bash
+just test -k state_that_does_not_fit
+```
+
+pytest prints `1 passed`. Line 117, the other `raise` of `encode`, has run, and the column Missing of `model.py`
+starts again at 118.
+
+```bash
+just test
+```
+
+`just test` prints `58 passed`. `model.py` is at 87%, with 14 lines missing. Lines 117 and 128 are no longer among
+them.
+
+#### What changed
+
+- <a id="tut-20.4-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a state longer than the limit. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/0e6bbc8f082b7db4c3fc5e6b9266b83bfc6fd74c/tests/unit/test_model.py).
+  - look at `    with pytest.raises(ValueError, match="state too long: 62 tokens, the limit is 50"):`
+
+<details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
+
+```diff
+@@ -54,3 +54,12 @@ def test_a_question_that_does_not_fit_is_refused(
+     """A branch longer than the limit raises, and names its length."""
+     with pytest.raises(ValueError, match="branch too long"):
+         encode(tok, record, max_branch=80)
++
++
++def test_a_state_that_does_not_fit_is_refused(
++    tok: PreTrainedTokenizerFast,  # The tiny tokenizer
++    record: dict[str, Any],  # A record with three questions
++) -> None:
++    """A state longer than the limit raises, and names its length and the limit."""
++    with pytest.raises(ValueError, match="state too long: 62 tokens, the limit is 50"):
++        encode(tok, record, max_state=50)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0e6bbc8f082b7db4c3fc5e6b9266b83bfc6fd74c). [The code after it](https://github.com/rahuldave/babykev/tree/0e6bbc8f082b7db4c3fc5e6b9266b83bfc6fd74c).
+
+<a id="tut-20.5"></a>
+
+### 20.5 A tokenizer alone would let text forge a delimiter
+
+A caller writes the state, the instructions and the options. A tokenizer turns the text `<|fim_suffix|>` into the
+decide token, wherever it is. So text could close an option early, or make a question of its own. This test shows the
+danger, before the next test shows the defence.
+
+A patch to [`tests/unit/test_model.py`](#tut-20.5-tests-unit-test_model.py-583145).
+
+In `tests/unit/test_model.py`, the new test is on lines 68 to 73.
+
+```bash
+sed -n '68,73p' tests/unit/test_model.py
+just test -k tokenizer_alone
+```
+
+The test tokenizes `yes<|fim_suffix|>` with the tokenizer alone, and finds the id of the decide delimiter among the
+tokens. pytest prints `1 passed`. The danger is real.
+
+#### What changed
+
+- <a id="tut-20.5-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the danger, a forged delimiter. 9 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/d700a14d751f3a34d46dff42e2b432cb72f238a6/tests/unit/test_model.py).
+  - look at `def test_a_tokenizer_alone_would_let_text_forge_a_delimiter(`
+
+<details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
+
+```diff
+@@ -5,7 +5,7 @@ from typing import Any
+ import pytest
+ from transformers import PreTrainedTokenizerFast
+ 
+-from babykev.model import DecisionModel, delimiter_ids, encode
++from babykev.model import SPECIAL, DecisionModel, delimiter_ids, encode
+ 
+ 
+ def test_probabilities_sum_to_one_for_every_question(
+@@ -63,3 +63,11 @@ def test_a_state_that_does_not_fit_is_refused(
+     """A state longer than the limit raises, and names its length and the limit."""
+     with pytest.raises(ValueError, match="state too long: 62 tokens, the limit is 50"):
+         encode(tok, record, max_state=50)
++
++
++def test_a_tokenizer_alone_would_let_text_forge_a_delimiter(
++    tok: PreTrainedTokenizerFast,  # The tiny tokenizer
++) -> None:
++    """The danger is real: tokenized directly, the text of a delimiter becomes that delimiter."""
++    decide = delimiter_ids(tok)[4]
++    assert decide in tok(f"yes{SPECIAL[4]}", add_special_tokens=False).input_ids
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d700a14d751f3a34d46dff42e2b432cb72f238a6). [The code after it](https://github.com/rahuldave/babykev/tree/d700a14d751f3a34d46dff42e2b432cb72f238a6).
+
+<a id="tut-20.6"></a>
+
+### 20.6 User text cannot forge a delimiter
+
+`user_tokens` rewrites `<|name|>` to `<¦name¦>` before it tokenizes, so the text of a delimiter is ordinary text. The
+test runs once for each of the five delimiters.
+
+A patch to [`tests/unit/test_model.py`](#tut-20.6-tests-unit-test_model.py-583145).
+
+In `tests/unit/test_model.py`, the new test is on lines 76 to 83.
+
+```bash
+just test -k forge
+```
+
+`-k forge` takes both tests, the danger and the defence. pytest prints `6 passed`, the danger once and the defence
+five times.
+
+```bash
+just test
+```
+
+`just test` prints `64 passed`. `model.py` is still at 87%, with the same 14 lines missing. The test of the
+probabilities had run `user_tokens` already, and checked nothing about it.
+
+#### What changed
+
+- <a id="tut-20.6-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the defence, for each of the five delimiters. 11 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/13bdfd2b6a38fd3d444b6a62414b1978f2e4bc16/tests/unit/test_model.py).
+  - look at `def test_user_text_cannot_forge_a_delimiter(`
+
+<details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
+
+```diff
+@@ -5,7 +5,7 @@ from typing import Any
+ import pytest
+ from transformers import PreTrainedTokenizerFast
+ 
+-from babykev.model import SPECIAL, DecisionModel, delimiter_ids, encode
++from babykev.model import SPECIAL, DecisionModel, delimiter_ids, encode, user_tokens
+ 
+ 
+ def test_probabilities_sum_to_one_for_every_question(
+@@ -71,3 +71,13 @@ def test_a_tokenizer_alone_would_let_text_forge_a_delimiter(
+     """The danger is real: tokenized directly, the text of a delimiter becomes that delimiter."""
+     decide = delimiter_ids(tok)[4]
+     assert decide in tok(f"yes{SPECIAL[4]}", add_special_tokens=False).input_ids
++
++
++@pytest.mark.parametrize("delimiter", SPECIAL)
++def test_user_text_cannot_forge_a_delimiter(
++    tok: PreTrainedTokenizerFast,  # The tiny tokenizer
++    delimiter: str,  # The text of one of the five delimiters
++) -> None:
++    """Through `user_tokens`, the text of a delimiter is only ever ordinary tokens."""
++    ids = user_tokens(tok, f"before {delimiter} after")
++    assert not set(ids) & set(delimiter_ids(tok))
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/13bdfd2b6a38fd3d444b6a62414b1978f2e4bc16). [The code after it](https://github.com/rahuldave/babykev/tree/13bdfd2b6a38fd3d444b6a62414b1978f2e4bc16).
+
+<a id="tut-20.7"></a>
+
+### 20.7 The pointer head gives one logit per option
+
+The head takes the hidden state of a decide token and those of the options, and gives one logit for each option. The
+test builds a head alone, with no model, and gives it five options.
+
+A patch to [`tests/unit/test_model.py`](#tut-20.7-tests-unit-test_model.py-583145).
+
+In `tests/unit/test_model.py`, the new test is on lines 87 to 90.
+
+```bash
+just test -k pointer_head
+```
+
+pytest prints `1 passed`.
+
+#### What changed
+
+- <a id="tut-20.7-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: five options in, five logits out. 8 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/c06434a6985684d40ca44e75ae15ff4c238a2024/tests/unit/test_model.py).
+  - look at `def test_pointer_head_gives_one_logit_per_option() -> None:`
+
+<details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
+
+```diff
+@@ -3,9 +3,10 @@
+ from typing import Any
+ 
+ import pytest
++import torch
+ from transformers import PreTrainedTokenizerFast
+ 
+-from babykev.model import SPECIAL, DecisionModel, delimiter_ids, encode, user_tokens
++from babykev.model import SPECIAL, DecisionModel, PointerHead, delimiter_ids, encode, user_tokens
+ 
+ 
+ def test_probabilities_sum_to_one_for_every_question(
+@@ -81,3 +82,9 @@ def test_user_text_cannot_forge_a_delimiter(
+     """Through `user_tokens`, the text of a delimiter is only ever ordinary tokens."""
+     ids = user_tokens(tok, f"before {delimiter} after")
+     assert not set(ids) & set(delimiter_ids(tok))
++
++
++def test_pointer_head_gives_one_logit_per_option() -> None:
++    """Five options in, five logits out."""
++    head = PointerHead(d=32, dp=8)
++    assert head(torch.randn(32), torch.randn(5, 32)).shape == (5,)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/c06434a6985684d40ca44e75ae15ff4c238a2024). [The code after it](https://github.com/rahuldave/babykev/tree/c06434a6985684d40ca44e75ae15ff4c238a2024).
+
+<a id="tut-20.8"></a>
+
+### 20.8 pick_device takes an override
+
+`pick_device` returns a device that it is given by name, whatever the machine has.
+
+A patch to [`tests/unit/test_model.py`](#tut-20.8-tests-unit-test_model.py-583145).
+
+In `tests/unit/test_model.py`, the import from `babykev.model` is on lines 9 to 17, and the new test is on lines 101 to
+103.
+
+```bash
+just test -k takes_an_override
+```
+
+pytest prints `1 passed`. The column Missing of `model.py` starts at `62-64`, so lines 60 and 61 have run.
+
+#### What changed
+
+- <a id="tut-20.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a device asked for by name. 14 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/5923b39efce4180c86bf0afe36774ebc619afce3/tests/unit/test_model.py).
+  - look at `def test_pick_device_takes_an_override() -> None:`
+
+<details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
+
+```diff
+@@ -6,7 +6,15 @@ import pytest
+ import torch
+ from transformers import PreTrainedTokenizerFast
+ 
+-from babykev.model import SPECIAL, DecisionModel, PointerHead, delimiter_ids, encode, user_tokens
++from babykev.model import (
++    SPECIAL,
++    DecisionModel,
++    PointerHead,
++    delimiter_ids,
++    encode,
++    pick_device,
++    user_tokens,
++)
+ 
+ 
+ def test_probabilities_sum_to_one_for_every_question(
+@@ -88,3 +96,8 @@ def test_pointer_head_gives_one_logit_per_option() -> None:
+     """Five options in, five logits out."""
+     head = PointerHead(d=32, dp=8)
+     assert head(torch.randn(32), torch.randn(5, 32)).shape == (5,)
++
++
++def test_pick_device_takes_an_override() -> None:
++    """A device asked for by name is used, whatever the machine has."""
++    assert pick_device("cpu") == "cpu"
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/5923b39efce4180c86bf0afe36774ebc619afce3). [The code after it](https://github.com/rahuldave/babykev/tree/5923b39efce4180c86bf0afe36774ebc619afce3).
+
+<a id="tut-20.9"></a>
+
+### 20.9 pick_device finds something to run on
+
+With no override, `pick_device` chooses CUDA, then the GPU of Apple, then the CPU.
+
+A patch to [`tests/unit/test_model.py`](#tut-20.9-tests-unit-test_model.py-583145).
+
+In `tests/unit/test_model.py`, the new test is on lines 106 to 108.
+
+```bash
+just test
+```
+
+`just test` prints `67 passed`. `model.py` is at 91%, and the missing lines are `63, 72-75, 204-207, 211-218, 277`.
+Line 63 returns `cuda`, and runs only on a machine with a GPU of NVIDIA. Lines 72 to 75 load the tokenizer from the
+Hub, and lines 204 to 207 load the model. Lines 211 to 218 add the adapter, and line 277 lists the parameters that
+train. The total is 69%.
+
+#### What changed
+
+- <a id="tut-20.9-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a device, whatever the machine. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/fbadafae13fd401f3679b9d954d04f5bc110e2af/tests/unit/test_model.py).
+  - look at `def test_pick_device_finds_something_to_run_on() -> None:`
+
+<details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
+
+```diff
+@@ -101,3 +101,8 @@ def test_pointer_head_gives_one_logit_per_option() -> None:
+ def test_pick_device_takes_an_override() -> None:
+     """A device asked for by name is used, whatever the machine has."""
+     assert pick_device("cpu") == "cpu"
++
++
++def test_pick_device_finds_something_to_run_on() -> None:
++    """With no override, the choice is one of the three kinds of device."""
++    assert pick_device() in {"cuda", "mps", "cpu"}
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/fbadafae13fd401f3679b9d954d04f5bc110e2af). [The code after it](https://github.com/rahuldave/babykev/tree/fbadafae13fd401f3679b9d954d04f5bc110e2af).
+
+<a id="tut-20.10"></a>
+
+### 20.10 A verdict agrees when the answer is the label
+
+The tests of the smoke go in a file of their own. `verdict` needs no model, so its tests are unit tests.
+
+A patch to [`tests/unit/test_smoke.py`](#tut-20.10-tests-unit-test_smoke.py-89db04).
+
+The new file `tests/unit/test_smoke.py` has the test on lines 6 to 10.
+
+```bash
+sed -n '6,10p' tests/unit/test_smoke.py
+just test -k agrees_when
+```
+
+The answer is `goat`, with a probability of 0.8, and the label is `goat`. `verdict` gives `("goat (0.80)", "goat",
+True)`. pytest prints `1 passed`.
+
+```bash
+just test
+```
+
+`just test` prints `68 passed`. `smoke.py` goes from 0% to 34%, and the total from 69% to 78%. The test calls only
+`verdict`. The import of `smoke.py` runs its imports, its names and the line of each `def`.
+
+#### What changed
+
+- <a id="tut-20.10-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: the first test of `verdict`. New, 10 lines. [The file](https://github.com/rahuldave/babykev/blob/59bd94de755792573b666353ebe5e0b6630619f2/tests/unit/test_smoke.py).
+  - look at `def test_verdict_agrees_when_the_answer_is_the_label() -> None:`
+
+<details><summary>The diff of <code>tests/unit/test_smoke.py</code></summary>
+
+```diff
+@@ -0,0 +1,10 @@
++"""Tests of the smoke run, without the real model."""
++
++from babykev.smoke import verdict
++
++
++def test_verdict_agrees_when_the_answer_is_the_label() -> None:
++    """A verdict says what the model said, what the label says, and whether they agree."""
++    question = {"type": "choice", "criteria": {"cow": None, "goat": None}, "label": "goat"}
++    given = {"type": "choice", "choice": "goat", "probabilities": {"cow": 0.2, "goat": 0.8}}
++    assert verdict(question, given) == ("goat (0.80)", "goat", True)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/59bd94de755792573b666353ebe5e0b6630619f2). [The code after it](https://github.com/rahuldave/babykev/tree/59bd94de755792573b666353ebe5e0b6630619f2).
+
+<a id="tut-20.11"></a>
+
+### 20.11 A verdict reads a noul as yes from one half
+
+A probability of yes of 0.5 or more is a yes. The test gives `verdict` exactly 0.5, the edge.
+
+A patch to [`tests/unit/test_smoke.py`](#tut-20.11-tests-unit-test_smoke.py-89db04).
+
+In `tests/unit/test_smoke.py`, the new test is on lines 13 to 16.
+
+```bash
+just test -k noul_answer_as_yes
+```
+
+pytest prints `1 passed`. The label is no, so the verdict is `("yes (0.50)", "no", False)`.
+
+#### What changed
+
+- <a id="tut-20.11-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: a noul at the edge. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/5aeab8cf386854f47ecaefac96e1b76ce3608844/tests/unit/test_smoke.py).
+  - look at `def test_verdict_reads_a_noul_answer_as_yes_from_one_half() -> None:`
+
+<details><summary>The diff of <code>tests/unit/test_smoke.py</code></summary>
+
+```diff
+@@ -8,3 +8,9 @@ def test_verdict_agrees_when_the_answer_is_the_label() -> None:
+     question = {"type": "choice", "criteria": {"cow": None, "goat": None}, "label": "goat"}
+     given = {"type": "choice", "choice": "goat", "probabilities": {"cow": 0.2, "goat": 0.8}}
+     assert verdict(question, given) == ("goat (0.80)", "goat", True)
++
++
++def test_verdict_reads_a_noul_answer_as_yes_from_one_half() -> None:
++    """A probability of yes at or above 0.5 is a yes."""
++    said, label, agree = verdict({"type": "noul", "label": False}, {"type": "noul", "noul": 0.5})
++    assert (said, label, agree) == ("yes (0.50)", "no", False)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/5aeab8cf386854f47ecaefac96e1b76ce3608844). [The code after it](https://github.com/rahuldave/babykev/tree/5aeab8cf386854f47ecaefac96e1b76ce3608844).
+
+<a id="tut-20.12"></a>
+
+### 20.12 A verdict reads a score as its most likely level
+
+A score is judged by the level with the highest probability, and not by the expected level. The expected level is
+1.1. The probabilities are 0.2, 0.5 and 0.3, and level 1 is the most likely.
+
+A patch to [`tests/unit/test_smoke.py`](#tut-20.12-tests-unit-test_smoke.py-89db04).
+
+In `tests/unit/test_smoke.py`, the new test is on lines 19 to 26.
+
+```bash
+just test
+```
+
+`just test` prints `70 passed`. `verdict` is covered, and the missing lines of `smoke.py` are
+`35-36, 45-49, 78-92, 99-119`. They are the body of `read_lines`, of `answer`, of `smoke` and of `main`. The total is
+79%.
+
+#### What changed
+
+- <a id="tut-20.12-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: a score, by its most likely level. 10 lines added. [The file](https://github.com/rahuldave/babykev/blob/d3ce8b49f7106ad16704e70ecec664a0d304c50e/tests/unit/test_smoke.py).
+  - look at `def test_verdict_reads_a_score_answer_as_its_most_likely_level() -> None:`
+
+<details><summary>The diff of <code>tests/unit/test_smoke.py</code></summary>
+
+```diff
+@@ -14,3 +14,13 @@ def test_verdict_reads_a_noul_answer_as_yes_from_one_half() -> None:
+     """A probability of yes at or above 0.5 is a yes."""
+     said, label, agree = verdict({"type": "noul", "label": False}, {"type": "noul", "noul": 0.5})
+     assert (said, label, agree) == ("yes (0.50)", "no", False)
++
++
++def test_verdict_reads_a_score_answer_as_its_most_likely_level() -> None:
++    """A score is judged by the level with the highest probability."""
++    given = {"type": "score", "score": 1.1, "probabilities": {"0": 0.2, "1": 0.5, "2": 0.3}}
++    assert verdict({"type": "score", "label": 1}, given) == (
++        "level 1 (score 1.10)",
++        "level 1",
++        True,
++    )
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d3ce8b49f7106ad16704e70ecec664a0d304c50e). [The code after it](https://github.com/rahuldave/babykev/tree/d3ce8b49f7106ad16704e70ecec664a0d304c50e).
+
+<a id="tut-20.13"></a>
+
+### 20.13 babykev smoke help prints the usage
+
+`main` of `smoke.py` answers `help` before it loads anything. So a test can run `babykev smoke help` with no model.
+It goes in the tests of the command, and uses their helper `run`.
+
+A patch to [`tests/unit/test_cli.py`](#tut-20.13-tests-unit-test_cli.py-44d4a0).
+
+In `tests/unit/test_cli.py`, the docstring on line 1 names `smoke help`, the import is on line 6, and the new test is
+on lines 42 to 50.
+
+```bash
+sed -n '42,50p' tests/unit/test_cli.py
+just test -k smoke_help
+```
+
+`main` of `cli.py` raises `SystemExit` with the code that `smoke.main` returns. The test catches it, and checks the
+code, 0, and the usage. pytest prints `1 passed`.
+
+```bash
+just test
+```
+
+`just test` prints `71 passed`. `cli.py` is back at 100%, and the total is 81%.
+
+#### What changed
+
+- <a id="tut-20.13-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: `babykev smoke help`. 13 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/17ae31e2f3869e017d06f8c247335b42045c4845/tests/unit/test_cli.py).
+  - look at `def test_smoke_help_prints_the_usage(`
+
+<details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
+
+```diff
+@@ -1,8 +1,9 @@
+-"""Unit tests for the `babykev` command: `help` prints the help, any other word is refused."""
++"""Unit tests for the `babykev` command: `help`, `smoke help`, and the words that it refuses."""
+ 
+ import pytest
+ 
+ from babykev.cli import HELP, main
++from babykev.smoke import USAGE
+ 
+ 
+ def run(
+@@ -36,3 +37,14 @@ def test_an_unknown_command_is_refused_with_exit_code_2(
+     err = capsys.readouterr().err
+     assert "no command named 'train'" in err
+     assert "babykev help" in err
++
++
++def test_smoke_help_prints_the_usage(
++    monkeypatch: pytest.MonkeyPatch,  # Sets the command line for the test
++    capsys: pytest.CaptureFixture[str],  # Catches the usage
++) -> None:
++    """`babykev smoke help` prints the usage of the smoke, loads no model, and exits with 0."""
++    with pytest.raises(SystemExit) as exit_info:
++        run(monkeypatch, "smoke", "help")
++    assert exit_info.value.code == 0
++    assert capsys.readouterr().out == USAGE
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/17ae31e2f3869e017d06f8c247335b42045c4845). [The code after it](https://github.com/rahuldave/babykev/tree/17ae31e2f3869e017d06f8c247335b42045c4845).
+
+<a id="tut-20.14"></a>
+
+### 20.14 babykev smoke refuses a word it does not know
+
+A word after `babykev smoke` that is not `help` gets the usage on the error stream, and exit code 2.
+
+A patch to [`tests/unit/test_cli.py`](#tut-20.14-tests-unit-test_cli.py-44d4a0).
+
+In `tests/unit/test_cli.py`, the new test is on lines 53 to 61.
+
+```bash
+just test
+```
+
+`just test` prints `72 passed`, and the total is 82%. The missing lines of `smoke.py` are
+`35-36, 45-49, 78-92, 105-119`. Lines 105 to 119 load the real model. `answer` and the body of `smoke` need a model,
+and no unit test has one.
+
+#### What changed
+
+- <a id="tut-20.14-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: a word that `babykev smoke` refuses. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/479fa4ff6a3168e1d4b0a534b19b9e9907fb53e0/tests/unit/test_cli.py).
+  - look at `def test_smoke_refuses_a_word_it_does_not_know(`
+
+<details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
+
+```diff
+@@ -48,3 +48,14 @@ def test_smoke_help_prints_the_usage(
+         run(monkeypatch, "smoke", "help")
+     assert exit_info.value.code == 0
+     assert capsys.readouterr().out == USAGE
++
++
++def test_smoke_refuses_a_word_it_does_not_know(
++    monkeypatch: pytest.MonkeyPatch,  # Sets the command line for the test
++    capsys: pytest.CaptureFixture[str],  # Catches the usage, on the error stream
++) -> None:
++    """A word after `babykev smoke` that is not help gets the usage and exit code 2."""
++    with pytest.raises(SystemExit) as exit_info:
++        run(monkeypatch, "smoke", "local")
++    assert exit_info.value.code == 2
++    assert capsys.readouterr().err == USAGE
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/479fa4ff6a3168e1d4b0a534b19b9e9907fb53e0). [The code after it](https://github.com/rahuldave/babykev/tree/479fa4ff6a3168e1d4b0a534b19b9e9907fb53e0).
+
+<a id="tut-20.15"></a>
+
+### 20.15 The README names the tests of the smoke
+
+The row of `tests/unit/` names the tests of the smoke too.
+
+A patch to [`README.md`](#tut-20.15-README.md-8ec9a0).
+
+In `README.md`, line 83 is the row of `tests/unit/`.
+
+```bash
+just check
+```
+
+`just check` passes. The tests print `72 passed`, and the total of 82%. `just docs check` prints `85 of 85`.
+
+#### What changed
+
+- <a id="tut-20.15-README.md-8ec9a0"></a>`README.md`: the tests of the smoke, in the row of `tests/unit/`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/469bdd44714662d663ee77391d4c21774dea7fd0/README.md).
+  - look at ``| `tests/unit/` | The tests of the contract, of the command, of the model and of the smoke. One test checks every line of the sample data against the contract |``
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+```diff
+@@ -80,7 +80,7 @@ yourself at any time.
+ | `src/babykev/model.py` | The model, a language model with a head that points at the options |
+ | `src/babykev/smoke.py` | The smoke run, which asks the real model the sample requests on this machine |
+ | `data/cheese/sample.jsonl` | Five requests about cheese, one on each line. Every question has a `label`, the right answer |
+-| `tests/unit/` | The tests of the contract, of the command and of the model. One test checks every line of the sample data against the contract |
++| `tests/unit/` | The tests of the contract, of the command, of the model and of the smoke. One test checks every line of the sample data against the contract |
+ | `tests/conftest.py` | The fixtures that every test can ask for: the tiny tokenizer, a tiny model and a record |
+ | `tests/tiny.py` | A small tokenizer and backbone, built in memory, in place of the real ones |
+ | `docs/` | The docs site. `just docs` builds it into `docs/_site`, with the reference made from the code |
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/469bdd44714662d663ee77391d4c21774dea7fd0). [The code after it](https://github.com/rahuldave/babykev/tree/469bdd44714662d663ee77391d4c21774dea7fd0).
+
+<a id="tut-21"></a>
+
+## 21 Integration tests, and the floor
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 67 packages`.
+
+An integration test runs several of our parts together. On the tiny model, it needs no download, and only our code can
+make it fail, so it is hermetic. The tests here check what trains, a pass over records of different lengths,
+and the whole smoke. Then the coverage is over 90%, and `just check` gets a floor.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/469bdd44714662d663ee77391d4c21774dea7fd0). [The code after it](https://github.com/rahuldave/babykev/tree/7be9407f2747077002f882085c9c043eb35d6c35).
+
+<a id="tut-21.1"></a>
+
+### 21.1 With an adapter, only the adapter and the head train
+
+Training changes the adapter and the head, and the backbone stays as it is. The test makes a tiny model with an
+adapter of rank 4, and takes one backward pass. Then it names every parameter that got a gradient. The fixture
+`model` has no adapter, so the test calls `tiny_backbone` itself.
+
+A patch to [`tests/unit/test_model.py`](#tut-21.1-tests-unit-test_model.py-583145).
+
+In `tests/unit/test_model.py`, the import is on line 18, and the new test is on lines 112 to 130.
+
+```bash
+sed -n '112,130p' tests/unit/test_model.py
+just test -k only_the_adapter
+```
+
+Line 127 checks that every parameter with a gradient is in the adapter, `lora_`, or in the head, `head.`. Lines 128 to
+130 check that `trainable_parameters` lists exactly those. pytest prints `1 passed`.
+
+```bash
+just test --cov-fail-under=90
+```
+
+`--cov-fail-under=90` makes pytest fail when the total is under 90%. It prints `73 passed`, then `FAIL Required test
+coverage of 90% not reached. Total coverage: 83.52%`, and ends with exit code 1. `model.py` is at 94%, and lines 211 to
+218 and 277 have run. The missing lines of `smoke.py` are the same as before.
+
+#### What changed
+
+- <a id="tut-21.1-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: one backward pass with an adapter. 22 lines added. [The file](https://github.com/rahuldave/babykev/blob/e920479c0f4f4bd5335423e25766ddc07b879516/tests/unit/test_model.py).
+  - look at `def test_with_an_adapter_only_the_adapter_and_the_head_train(`
+
+<details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
+
+```diff
+@@ -15,6 +15,7 @@ from babykev.model import (
+     pick_device,
+     user_tokens,
+ )
++from tests.tiny import tiny_backbone
+ 
+ 
+ def test_probabilities_sum_to_one_for_every_question(
+@@ -106,3 +107,24 @@ def test_pick_device_takes_an_override() -> None:
+ def test_pick_device_finds_something_to_run_on() -> None:
+     """With no override, the choice is one of the three kinds of device."""
+     assert pick_device() in {"cuda", "mps", "cpu"}
++
++
++def test_with_an_adapter_only_the_adapter_and_the_head_train(
++    tok: PreTrainedTokenizerFast,  # The tiny tokenizer
++    record: dict[str, Any],  # A record with three questions
++) -> None:
++    """The backbone is frozen: gradients reach the adapter and the pointer head, nothing else."""
++    model = DecisionModel("tiny", "cpu", lora=4, backbone=tiny_backbone(len(tok)))
++    enc = encode(tok, record)
++    labels = torch.tensor(enc["labels"])
++    losses = [
++        torch.nn.functional.cross_entropy(z[None], y[None])
++        for z, y in zip(model(enc), labels, strict=True)
++    ]
++    torch.stack(losses).sum().backward()
++    with_gradient = {name for name, p in model.named_parameters() if p.grad is not None}
++    assert with_gradient
++    assert all("lora_" in name or name.startswith("head.") for name in with_gradient)
++    assert {id(p) for p in model.trainable_parameters()} == {
++        id(p) for name, p in model.named_parameters() if name in with_gradient
++    }
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e920479c0f4f4bd5335423e25766ddc07b879516). [The code after it](https://github.com/rahuldave/babykev/tree/e920479c0f4f4bd5335423e25766ddc07b879516).
+
+<a id="tut-21.2"></a>
+
+### 21.2 Records of different lengths answer in one pass as alone
+
+`forward_batch` reads several records in one pass. They are padded to the length of the longest. The test packs the
+record of the fixture and a shorter record, and runs them in one pass. It compares each with a pass of its own.
+
+A patch to [`tests/unit/test_model.py`](#tut-21.2-tests-unit-test_model.py-583145).
+
+In `tests/unit/test_model.py`, the new test is on lines 133 to 146.
+
+```bash
+just test -k different_lengths
+```
+
+pytest prints `1 passed`. Line 241 builds the mask of each record, with its padding, and every test of the model has
+run it. Only this test runs it with padding to build.
+
+```bash
+just test --cov-fail-under=90
+```
+
+pytest prints `74 passed`, and `Total coverage: 83.52%` again. The test adds no line to the coverage, and the floor
+still fails.
+
+#### What changed
+
+- <a id="tut-21.2-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a padded pass. 16 lines added. [The file](https://github.com/rahuldave/babykev/blob/aca79826fc8596b347c064699744e03d4cdc69f6/tests/unit/test_model.py).
+  - look at `def test_records_of_different_lengths_answer_in_one_pass_as_alone(`
+
+<details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
+
+```diff
+@@ -128,3 +128,19 @@ def test_with_an_adapter_only_the_adapter_and_the_head_train(
+     assert {id(p) for p in model.trainable_parameters()} == {
+         id(p) for name, p in model.named_parameters() if name in with_gradient
+     }
++
++
++def test_records_of_different_lengths_answer_in_one_pass_as_alone(
++    model: DecisionModel,  # The tiny model
++    tok: PreTrainedTokenizerFast,  # Its tokenizer
++    record: dict[str, Any],  # A record with three questions
++) -> None:
++    """Padded to the longest, each record gets the logits that it gets in a pass of its own."""
++    short = {"state": "Brie.", "questions": record["questions"][:1]}
++    encs = [encode(tok, record), encode(tok, short)]
++    with torch.no_grad():
++        together = model.forward_batch(encs)
++        alone = [model(enc) for enc in encs]
++    for batch, single in zip(together, alone, strict=True):
++        for a, b in zip(batch, single, strict=True):
++            assert torch.allclose(a, b, atol=1e-5)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/aca79826fc8596b347c064699744e03d4cdc69f6). [The code after it](https://github.com/rahuldave/babykev/tree/aca79826fc8596b347c064699744e03d4cdc69f6).
+
+<a id="tut-21.3"></a>
+
+### 21.3 The smoke reports on every question, on the tiny model
+
+`smoke` takes a model and a tokenizer. With the tiny ones, the five sample requests go through the contract, the
+packing, the model and the answers, with no download. The answers mean nothing. The report must have a verdict for
+each of the fifteen questions, and the count.
+
+A patch to [`tests/unit/test_smoke.py`](#tut-21.3-tests-unit-test_smoke.py-89db04).
+
+In `tests/unit/test_smoke.py`, the imports are on lines 3 to 6, and the new test is on lines 32 to 42.
+
+```bash
+sed -n '32,42p' tests/unit/test_smoke.py
+just test -k smoke_reports
+```
+
+pytest prints `1 passed`. The name of the test says `smoke`, and it is an integration test, of our function `smoke` on
+the tiny model. A smoke run uses the real model.
+
+```bash
+just test --cov-fail-under=90
+```
+
+pytest prints `75 passed`, then `Required test coverage of 90% reached. Total coverage: 91.76%`. The missing lines
+need the Hub or a GPU of NVIDIA. They are `63, 72-75, 204-207` of `model.py`, and `105-119` of `smoke.py`.
+
+#### What changed
+
+- <a id="tut-21.3-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: the whole smoke, on the tiny model. 17 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/cf86cdcfd5d6ecca2cd4fd799ad5219b51f5ca43/tests/unit/test_smoke.py).
+  - look at `def test_smoke_reports_on_every_question_of_the_sample(`
+
+<details><summary>The diff of <code>tests/unit/test_smoke.py</code></summary>
+
+```diff
+@@ -1,6 +1,9 @@
+ """Tests of the smoke run, without the real model."""
+ 
+-from babykev.smoke import verdict
++from transformers import PreTrainedTokenizerFast
++
++from babykev.model import DecisionModel
++from babykev.smoke import read_lines, smoke, verdict
+ 
+ 
+ def test_verdict_agrees_when_the_answer_is_the_label() -> None:
+@@ -24,3 +27,16 @@ def test_verdict_reads_a_score_answer_as_its_most_likely_level() -> None:
+         "level 1",
+         True,
+     )
++
++
++def test_smoke_reports_on_every_question_of_the_sample(
++    model: DecisionModel,  # The tiny model
++    tok: PreTrainedTokenizerFast,  # Its tokenizer
++) -> None:
++    """Five requests of three questions: fifteen verdicts and a closing count."""
++    lines = read_lines()
++    report = list(smoke(model, tok, lines))
++    verdicts = [text for text in report if text.startswith(("  ok", "  --"))]
++    assert len(verdicts) == sum(len(line["questions"]) for line in lines) == 15
++    right = sum(text.startswith("  ok") for text in verdicts)
++    assert f"\n{right} of 15 right" in report[-2]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/cf86cdcfd5d6ecca2cd4fd799ad5219b51f5ca43). [The code after it](https://github.com/rahuldave/babykev/tree/cf86cdcfd5d6ecca2cd4fd799ad5219b51f5ca43).
+
+<a id="tut-21.4"></a>
+
+### 21.4 The gate has a floor of 90%
+
+`just check` runs the tests with `--cov-fail-under=90`. A change that brings the total under 90% then fails the gate, and the hook refuses it.
+`just test` alone has no floor, so a run of a few tests, with `-k`, does not fail on the total.
+
+A patch to [`justfile`](#tut-21.4-justfile-424f0b).
+
+In the `justfile`, line 82 is `just test -q --cov-fail-under=90`, and the comment on line 72 names the coverage.
+
+```bash
+just --show check
+just check
+```
+
+`just check` prints `Required test coverage of 90% reached. Total coverage: 91.76%` after the tests, and ends with
+exit code 0.
+
+#### What changed
+
+- <a id="tut-21.4-justfile-424f0b"></a>`justfile`: the floor, in the gate. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/37f71350d1b200db594ac4e4eca09d6fd9a96764/justfile).
+  - look at `    just test -q --cov-fail-under=90`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -69,7 +69,7 @@ types *args:
+ test *args:
+     @{{ if args == "help" { "just help test" } else { 'uv run pytest "$@"' } }}
+ 
+-# Run the checks one after another, and stop at the first that fails: the format, the linter, the types, the tests, the docs, the config files
++# Run the checks one after another, and stop at the first that fails: the format, the linter, the types, the tests and their coverage, the docs, the config files
+ [group('quality')]
+ [no-exit-message]
+ check *args:
+@@ -79,7 +79,7 @@ check *args:
+     just fmt --check
+     just lint
+     just types
+-    just test -q
++    just test -q --cov-fail-under=90
+     just docs check
+     just lint-config
+ 
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/37f71350d1b200db594ac4e4eca09d6fd9a96764). [The code after it](https://github.com/rahuldave/babykev/tree/37f71350d1b200db594ac4e4eca09d6fd9a96764).
+
+<a id="tut-21.5"></a>
+
+### 21.5 The README names the floor
+
+The README says that one of the checks of `just check` is the floor.
+
+A patch to [`README.md`](#tut-21.5-README.md-8ec9a0).
+
+In `README.md`, the two lines are 70 and 71.
+
+```bash
+grep -n '90%' README.md
+```
+
+`grep` prints line 71, with the floor.
+
+#### What changed
+
+- <a id="tut-21.5-README.md-8ec9a0"></a>`README.md`: the floor of 90%, in the lines on `just check`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/7be9407f2747077002f882085c9c043eb35d6c35/README.md).
+  - look at ``The tests must run at least 90% of the code. You can run `just check` yourself at any time.``
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+```diff
+@@ -67,8 +67,8 @@ downloads the base model from the Hugging Face Hub, about 1 GB. It answers the f
+ untrained, and prints each answer beside its label.
+ 
+ Run `just hook` once in each clone. It installs a git hook, which runs `just check` before each commit.
+-`just check` runs every check of the project, and if one fails, git makes no commit. You can run `just check`
+-yourself at any time.
++`just check` runs every check of the project, and if one fails, git makes no commit. One check is a floor.
++The tests must run at least 90% of the code. You can run `just check` yourself at any time.
+ 
+ ## What is here
+ 
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7be9407f2747077002f882085c9c043eb35d6c35). [The code after it](https://github.com/rahuldave/babykev/tree/7be9407f2747077002f882085c9c043eb35d6c35).

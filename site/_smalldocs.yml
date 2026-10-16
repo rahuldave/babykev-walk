@@ -347,6 +347,94 @@ website:
                 href: read/tut-17.qmd#tut-17.4
               - text: "17.5 The gate checks the types"
                 href: read/tut-17.qmd#tut-17.5
+          - section: "18 The smoke run"
+            href: read/tut-18.qmd
+            contents:
+              - text: "18.1 smoke.py, which reads the sample"
+                href: read/tut-18.qmd#tut-18.1
+              - text: "18.2 answer"
+                href: read/tut-18.qmd#tut-18.2
+              - text: "18.3 verdict"
+                href: read/tut-18.qmd#tut-18.3
+              - text: "18.4 smoke"
+                href: read/tut-18.qmd#tut-18.4
+              - text: "18.5 main loads the real model and runs the smoke"
+                href: read/tut-18.qmd#tut-18.5
+              - text: "18.6 The command babykev smoke"
+                href: read/tut-18.qmd#tut-18.6
+              - text: "18.7 The recipe smoke"
+                href: read/tut-18.qmd#tut-18.7
+              - text: "18.8 The front page names the smoke"
+                href: read/tut-18.qmd#tut-18.8
+              - text: "18.9 The README names the smoke"
+                href: read/tut-18.qmd#tut-18.9
+          - section: "19 Fixtures and the tiny model"
+            href: read/tut-19.qmd
+            contents:
+              - text: "19.1 tests/tiny.py, with the tiny tokenizer"
+                href: read/tut-19.qmd#tut-19.1
+              - text: "19.2 The tests may pass a literal to unk_token"
+                href: read/tut-19.qmd#tut-19.2
+              - text: "19.3 The tiny backbone"
+                href: read/tut-19.qmd#tut-19.3
+              - text: "19.4 conftest.py, with the fixture tok"
+                href: read/tut-19.qmd#tut-19.4
+              - text: "19.5 pytest can import tests.tiny"
+                href: read/tut-19.qmd#tut-19.5
+              - text: "19.6 The fixture model"
+                href: read/tut-19.qmd#tut-19.6
+              - text: "19.7 The fixture record"
+                href: read/tut-19.qmd#tut-19.7
+              - text: "19.8 The first test of the model"
+                href: read/tut-19.qmd#tut-19.8
+              - text: "19.9 The README names the fixtures and the tiny model"
+                href: read/tut-19.qmd#tut-19.9
+          - section: "20 Unit tests of the model and the smoke"
+            href: read/tut-20.qmd
+            contents:
+              - text: "20.1 Packing marks every part with its delimiter"
+                href: read/tut-20.qmd#tut-20.1
+              - text: "20.2 Positions restart after the state"
+                href: read/tut-20.qmd#tut-20.2
+              - text: "20.3 A question that does not fit is refused"
+                href: read/tut-20.qmd#tut-20.3
+              - text: "20.4 A state that does not fit is refused"
+                href: read/tut-20.qmd#tut-20.4
+              - text: "20.5 A tokenizer alone would let text forge a delimiter"
+                href: read/tut-20.qmd#tut-20.5
+              - text: "20.6 User text cannot forge a delimiter"
+                href: read/tut-20.qmd#tut-20.6
+              - text: "20.7 The pointer head gives one logit per option"
+                href: read/tut-20.qmd#tut-20.7
+              - text: "20.8 pick_device takes an override"
+                href: read/tut-20.qmd#tut-20.8
+              - text: "20.9 pick_device finds something to run on"
+                href: read/tut-20.qmd#tut-20.9
+              - text: "20.10 A verdict agrees when the answer is the label"
+                href: read/tut-20.qmd#tut-20.10
+              - text: "20.11 A verdict reads a noul as yes from one half"
+                href: read/tut-20.qmd#tut-20.11
+              - text: "20.12 A verdict reads a score as its most likely level"
+                href: read/tut-20.qmd#tut-20.12
+              - text: "20.13 babykev smoke help prints the usage"
+                href: read/tut-20.qmd#tut-20.13
+              - text: "20.14 babykev smoke refuses a word it does not know"
+                href: read/tut-20.qmd#tut-20.14
+              - text: "20.15 The README names the tests of the smoke"
+                href: read/tut-20.qmd#tut-20.15
+          - section: "21 Integration tests, and the floor"
+            href: read/tut-21.qmd
+            contents:
+              - text: "21.1 With an adapter, only the adapter and the head train"
+                href: read/tut-21.qmd#tut-21.1
+              - text: "21.2 Records of different lengths answer in one pass as alone"
+                href: read/tut-21.qmd#tut-21.2
+              - text: "21.3 The smoke reports on every question, on the tiny model"
+                href: read/tut-21.qmd#tut-21.3
+              - text: "21.4 The gate has a floor of 90%"
+                href: read/tut-21.qmd#tut-21.4
+              - text: "21.5 The README names the floor"
+                href: read/tut-21.qmd#tut-21.5
       - section: "Build it yourself"
         contents:
           - text: "0 Where we start"
@@ -682,6 +770,94 @@ website:
                 href: build/tut-17.qmd#tut-17.4
               - text: "17.5 The gate checks the types"
                 href: build/tut-17.qmd#tut-17.5
+          - section: "18 The smoke run"
+            href: build/tut-18.qmd
+            contents:
+              - text: "18.1 smoke.py, which reads the sample"
+                href: build/tut-18.qmd#tut-18.1
+              - text: "18.2 answer"
+                href: build/tut-18.qmd#tut-18.2
+              - text: "18.3 verdict"
+                href: build/tut-18.qmd#tut-18.3
+              - text: "18.4 smoke"
+                href: build/tut-18.qmd#tut-18.4
+              - text: "18.5 main loads the real model and runs the smoke"
+                href: build/tut-18.qmd#tut-18.5
+              - text: "18.6 The command babykev smoke"
+                href: build/tut-18.qmd#tut-18.6
+              - text: "18.7 The recipe smoke"
+                href: build/tut-18.qmd#tut-18.7
+              - text: "18.8 The front page names the smoke"
+                href: build/tut-18.qmd#tut-18.8
+              - text: "18.9 The README names the smoke"
+                href: build/tut-18.qmd#tut-18.9
+          - section: "19 Fixtures and the tiny model"
+            href: build/tut-19.qmd
+            contents:
+              - text: "19.1 tests/tiny.py, with the tiny tokenizer"
+                href: build/tut-19.qmd#tut-19.1
+              - text: "19.2 The tests may pass a literal to unk_token"
+                href: build/tut-19.qmd#tut-19.2
+              - text: "19.3 The tiny backbone"
+                href: build/tut-19.qmd#tut-19.3
+              - text: "19.4 conftest.py, with the fixture tok"
+                href: build/tut-19.qmd#tut-19.4
+              - text: "19.5 pytest can import tests.tiny"
+                href: build/tut-19.qmd#tut-19.5
+              - text: "19.6 The fixture model"
+                href: build/tut-19.qmd#tut-19.6
+              - text: "19.7 The fixture record"
+                href: build/tut-19.qmd#tut-19.7
+              - text: "19.8 The first test of the model"
+                href: build/tut-19.qmd#tut-19.8
+              - text: "19.9 The README names the fixtures and the tiny model"
+                href: build/tut-19.qmd#tut-19.9
+          - section: "20 Unit tests of the model and the smoke"
+            href: build/tut-20.qmd
+            contents:
+              - text: "20.1 Packing marks every part with its delimiter"
+                href: build/tut-20.qmd#tut-20.1
+              - text: "20.2 Positions restart after the state"
+                href: build/tut-20.qmd#tut-20.2
+              - text: "20.3 A question that does not fit is refused"
+                href: build/tut-20.qmd#tut-20.3
+              - text: "20.4 A state that does not fit is refused"
+                href: build/tut-20.qmd#tut-20.4
+              - text: "20.5 A tokenizer alone would let text forge a delimiter"
+                href: build/tut-20.qmd#tut-20.5
+              - text: "20.6 User text cannot forge a delimiter"
+                href: build/tut-20.qmd#tut-20.6
+              - text: "20.7 The pointer head gives one logit per option"
+                href: build/tut-20.qmd#tut-20.7
+              - text: "20.8 pick_device takes an override"
+                href: build/tut-20.qmd#tut-20.8
+              - text: "20.9 pick_device finds something to run on"
+                href: build/tut-20.qmd#tut-20.9
+              - text: "20.10 A verdict agrees when the answer is the label"
+                href: build/tut-20.qmd#tut-20.10
+              - text: "20.11 A verdict reads a noul as yes from one half"
+                href: build/tut-20.qmd#tut-20.11
+              - text: "20.12 A verdict reads a score as its most likely level"
+                href: build/tut-20.qmd#tut-20.12
+              - text: "20.13 babykev smoke help prints the usage"
+                href: build/tut-20.qmd#tut-20.13
+              - text: "20.14 babykev smoke refuses a word it does not know"
+                href: build/tut-20.qmd#tut-20.14
+              - text: "20.15 The README names the tests of the smoke"
+                href: build/tut-20.qmd#tut-20.15
+          - section: "21 Integration tests, and the floor"
+            href: build/tut-21.qmd
+            contents:
+              - text: "21.1 With an adapter, only the adapter and the head train"
+                href: build/tut-21.qmd#tut-21.1
+              - text: "21.2 Records of different lengths answer in one pass as alone"
+                href: build/tut-21.qmd#tut-21.2
+              - text: "21.3 The smoke reports on every question, on the tiny model"
+                href: build/tut-21.qmd#tut-21.3
+              - text: "21.4 The gate has a floor of 90%"
+                href: build/tut-21.qmd#tut-21.4
+              - text: "21.5 The README names the floor"
+                href: build/tut-21.qmd#tut-21.5
 
 theme: cosmo
 css: styles.css

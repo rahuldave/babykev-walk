@@ -1,0 +1,752 @@
+---
+title: "18 The smoke run"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Build it yourself.** [Read the tutorial](../read/tut-18.qmd) is the other way to read this part.
+
+If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
+
+```bash
+git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 42f75dc784aa --staged --worktree -- :/
+```
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 67 packages`.
+
+`model.py` passes every check, and nothing has run it. A smoke run is the first thing to try. It loads the real model
+on this machine, asks it the questions of the sample data, and prints each answer beside its label. Nothing is trained,
+so the answers are guesses. The run shows that the contract, the packing, the model and the answers fit together.
+
+`smoke.py` is ours, and it comes one function at a time. The command `babykev smoke` and the recipe `just smoke` run
+it, on this machine only.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/42f75dc784aa7fdfa6981c1f4defd0c798cc3b08). [The code after it](https://github.com/rahuldave/babykev/tree/6c2937bcf7bac5b94fcbc0b06269a14d36b8d97f).
+
+## 18.1 smoke.py, which reads the sample {#tut-18.1}
+
+The smoke reads the five labelled requests of `data/cheese/sample.jsonl`. `read_lines` reads one request from each
+line of the file.
+
+Apply the patch to [`src/babykev/smoke.py`](#tut-18.1-src-babykev-smoke.py-76d2ec), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/ae6dc34784fa8c5146ae336c9c3b60b6dc1e71d9.diff | git apply --include=src/babykev/smoke.py
+```
+
+The patch makes the file. Read the docstring, then `read_lines`.
+
+```bash
+uv run python -c "from babykev.smoke import read_lines; lines = read_lines(); print(len(lines), list(lines[0]))"
+```
+
+It prints `5 ['state', 'questions']`, five requests, each with a state and its questions.
+
+```bash
+just test
+```
+
+`just test` prints `53 passed`. `smoke.py` has 7 statements at 0%, and the total falls from 43% to 42%, 83 of 199.
+The coverage counts every file of the package, and no test imports `smoke.py`.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check ae6dc34784fa
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 42f75dc784aa --staged -- :/ && git restore --source ae6dc34784fa --staged --worktree -- :/
+```
+
+### What changed {#tut-18.1-what-changed-182c57}
+
+- <a id="tut-18.1-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: the docstring, and the function that reads the sample. New, 22 lines. [The file](https://github.com/rahuldave/babykev/blob/ae6dc34784fa8c5146ae336c9c3b60b6dc1e71d9/src/babykev/smoke.py).
+  - look at `def read_lines(`
+
+<details open><summary>The patch to <code>src/babykev/smoke.py</code></summary>
+
+```diff
+@@ -0,0 +1,22 @@
++"""A smoke run: everything that exists so far, end to end, on the real model.
++
++It loads the base model with a fresh adapter and an untrained pointer head, asks it the questions
++in the sample data, and prints each answer beside its label. Nothing has been trained yet, so the
++answers are guesses. What the run shows is that the pieces fit: a line of data passes the contract,
++is packed into one sequence, goes through the model on whatever device there is, and comes back as
++answers.
++"""
++
++import json
++from pathlib import Path
++from typing import Any
++
++SAMPLE = Path("data/cheese/sample.jsonl")
++
++
++def read_lines(
++    path: Path = SAMPLE,  # A JSONL file of labelled requests
++) -> list[dict[str, Any]]:  # One labelled request per line of the file
++    """Read labelled requests from a JSONL file."""
++    with path.open(encoding="utf-8") as f:
++        return [json.loads(line) for line in f if line.strip()]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ae6dc34784fa8c5146ae336c9c3b60b6dc1e71d9). [The code after it](https://github.com/rahuldave/babykev/tree/ae6dc34784fa8c5146ae336c9c3b60b6dc1e71d9).
+
+## 18.2 answer {#tut-18.2}
+
+`answer` takes one request through every part of babykev. The contract checks the request, and `to_record` turns it
+into a record. `encode` packs the record into tokens, and `model.probs` gives the probabilities. `to_answers` turns
+them into an answer for each question. `answer` also counts the tokens and times the pass of the model.
+
+Apply the patch to [`src/babykev/smoke.py`](#tut-18.2-src-babykev-smoke.py-76d2ec), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/d106f54b43335d4e565d3fae2ce1105cc5b5507e.diff | git apply --include=src/babykev/smoke.py
+```
+
+The patch adds the imports that `answer` needs, and `answer` at the end of the file.
+
+`answer` calls four functions of `api.py` and `model.py`, and no test runs it yet. ty reads each call, and compares it
+with the types that those functions declare.
+
+```bash
+just types
+```
+
+`just types` prints `All checks passed!`. Each call gives each function the type of value that it asks for.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check d106f54b4333
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source ae6dc34784fa --staged -- :/ && git restore --source d106f54b4333 --staged --worktree -- :/
+```
+
+### What changed {#tut-18.2-what-changed-182c57}
+
+- <a id="tut-18.2-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: one request, from the contract to the answers. 19 lines added. [The file](https://github.com/rahuldave/babykev/blob/d106f54b43335d4e565d3fae2ce1105cc5b5507e/src/babykev/smoke.py).
+  - look at `def answer(`
+
+<details open><summary>The patch to <code>src/babykev/smoke.py</code></summary>
+
+```diff
+@@ -8,9 +8,15 @@ answers.
+ """
+ 
+ import json
++import time
+ from pathlib import Path
+ from typing import Any
+ 
++from transformers import PreTrainedTokenizerBase
++
++from babykev.api import SystemOneRequest, to_answers, to_record
++from babykev.model import DecisionModel, encode
++
+ SAMPLE = Path("data/cheese/sample.jsonl")
+ 
+ 
+@@ -20,3 +26,16 @@ def read_lines(
+     """Read labelled requests from a JSONL file."""
+     with path.open(encoding="utf-8") as f:
+         return [json.loads(line) for line in f if line.strip()]
++
++
++def answer(
++    model: DecisionModel,  # The model that answers
++    tok: PreTrainedTokenizerBase,  # Its tokenizer
++    line: dict[str, Any],  # One labelled request
++) -> tuple[dict[str, Any], int, float]:  # The answers, the tokens packed, the seconds taken
++    """Answer one request: the contract, then packing, then one forward pass, then answers."""
++    record, meta = to_record(SystemOneRequest.model_validate(line))
++    enc = encode(tok, record)
++    started = time.perf_counter()
++    probs = [p.tolist() for p in model.probs(enc)]
++    return to_answers(probs, meta), len(enc["ids"]), time.perf_counter() - started
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d106f54b43335d4e565d3fae2ce1105cc5b5507e). [The code after it](https://github.com/rahuldave/babykev/tree/d106f54b43335d4e565d3fae2ce1105cc5b5507e).
+
+## 18.3 verdict {#tut-18.3}
+
+A label is the right answer to a question. `verdict` puts the answer of the model beside its label, for each of the
+three types of question. A noul says yes from a probability of 0.5. A choice names its option. A score is judged by
+its most likely level.
+
+Apply the patch to [`src/babykev/smoke.py`](#tut-18.3-src-babykev-smoke.py-76d2ec), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/3d4943832416314723cc909915f6ec83cc395efe.diff | git apply --include=src/babykev/smoke.py
+```
+
+The patch adds `verdict` at the end of the file.
+
+```bash
+uv run python -c "from babykev.smoke import verdict; print(verdict({'type': 'noul', 'label': True}, {'type': 'noul', 'noul': 0.78}))"
+```
+
+It prints `('yes (0.78)', 'yes', True)`. The three values are what the model said, what the label says, and whether
+they agree.
+`smoke.py` imports `model.py`, so the note of torch comes after it.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 3d4943832416
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source d106f54b4333 --staged -- :/ && git restore --source 3d4943832416 --staged --worktree -- :/
+```
+
+### What changed {#tut-18.3-what-changed-182c57}
+
+- <a id="tut-18.3-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: one answer beside its label. 20 lines added. [The file](https://github.com/rahuldave/babykev/blob/3d4943832416314723cc909915f6ec83cc395efe/src/babykev/smoke.py).
+  - look at `def verdict(`
+
+<details open><summary>The patch to <code>src/babykev/smoke.py</code></summary>
+
+```diff
+@@ -39,3 +39,23 @@ def answer(
+     started = time.perf_counter()
+     probs = [p.tolist() for p in model.probs(enc)]
+     return to_answers(probs, meta), len(enc["ids"]), time.perf_counter() - started
++
++
++def verdict(
++    question: dict[str, Any],  # One question of a labelled request, with its `label`
++    given: dict[str, Any],  # The model's answer to it
++) -> tuple[str, str, bool]:  # What the model said, what the label says, and whether they agree
++    """Put one answer beside its label."""
++    label = question["label"]
++    if given["type"] == "noul":
++        said = given["noul"] >= 0.5
++        return (
++            f"{'yes' if said else 'no'} ({given['noul']:.2f})",
++            "yes" if label else "no",
++            said == label,
++        )
++    if given["type"] == "choice":
++        chosen = given["choice"]
++        return f"{chosen} ({given['probabilities'][chosen]:.2f})", str(label), chosen == label
++    level = max(given["probabilities"], key=lambda i: given["probabilities"][i])
++    return f"level {level} (score {given['score']:.2f})", f"level {label}", int(level) == label
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3d4943832416314723cc909915f6ec83cc395efe). [The code after it](https://github.com/rahuldave/babykev/tree/3d4943832416314723cc909915f6ec83cc395efe).
+
+## 18.4 smoke {#tut-18.4}
+
+`smoke` asks the model every question of the sample, and yields the report a line at a time. The first pass on a
+device is slow, so it runs once before the timing starts. Each request gets a line with its state, its tokens and its
+time. Each question gets a line with `ok` or `--`. The last lines give the count of right answers.
+
+Apply the patch to [`src/babykev/smoke.py`](#tut-18.4-src-babykev-smoke.py-76d2ec), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/cfe6bab89a64d39a1a60b505b7fbfbc096348b4b.diff | git apply --include=src/babykev/smoke.py
+```
+
+The patch adds `Iterator` and `render` to the imports, and `smoke` at the end of the file.
+
+```bash
+just types
+```
+
+`just types` prints `All checks passed!`. `smoke` declares that it returns an `Iterator[str]`, and each `yield` gives
+a string.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check cfe6bab89a64
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 3d4943832416 --staged -- :/ && git restore --source cfe6bab89a64 --staged --worktree -- :/
+```
+
+### What changed {#tut-18.4-what-changed-182c57}
+
+- <a id="tut-18.4-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: the report, a line at a time. 25 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/cfe6bab89a64d39a1a60b505b7fbfbc096348b4b/src/babykev/smoke.py).
+  - look at `def smoke(`
+
+<details open><summary>The patch to <code>src/babykev/smoke.py</code></summary>
+
+```diff
+@@ -9,12 +9,13 @@ answers.
+ 
+ import json
+ import time
++from collections.abc import Iterator
+ from pathlib import Path
+ from typing import Any
+ 
+ from transformers import PreTrainedTokenizerBase
+ 
+-from babykev.api import SystemOneRequest, to_answers, to_record
++from babykev.api import SystemOneRequest, render, to_answers, to_record
+ from babykev.model import DecisionModel, encode
+ 
+ SAMPLE = Path("data/cheese/sample.jsonl")
+@@ -59,3 +60,26 @@ def verdict(
+         return f"{chosen} ({given['probabilities'][chosen]:.2f})", str(label), chosen == label
+     level = max(given["probabilities"], key=lambda i: given["probabilities"][i])
+     return f"level {level} (score {given['score']:.2f})", f"level {label}", int(level) == label
++
++
++def smoke(
++    model: DecisionModel,  # The model to try
++    tok: PreTrainedTokenizerBase,  # Its tokenizer
++    lines: list[dict[str, Any]],  # Labelled requests to ask it
++) -> Iterator[str]:  # The report, a line at a time
++    """Ask the model every question in `lines` and report each answer beside its label."""
++    answer(model, tok, lines[0])  # the first pass on a device is slow, so it is not timed
++    right, total, seconds = 0, 0, []
++    for line in lines:
++        answers, tokens, took = answer(model, tok, line)
++        seconds.append(took)
++        state = render(line["state"]).splitlines()[0]
++        yield f"\n{state[:70]}   [{tokens} tokens, {took * 1000:.0f} ms]"
++        for qid, question in line["questions"].items():
++            said, label, agree = verdict(question, answers[qid])
++            right, total = right + agree, total + 1
++            mark = "ok" if agree else "--"
++            yield f"  {mark}  {qid:12s} {question['type']:7s} says {said:28s} label: {label}"
++    typical = sorted(seconds)[len(seconds) // 2] * 1000
++    yield f"\n{right} of {total} right, {typical:.0f} ms a request."
++    yield "Nothing is trained yet: these are guesses."
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/cfe6bab89a64d39a1a60b505b7fbfbc096348b4b). [The code after it](https://github.com/rahuldave/babykev/tree/cfe6bab89a64d39a1a60b505b7fbfbc096348b4b).
+
+## 18.5 main loads the real model and runs the smoke {#tut-18.5}
+
+`main` loads the tokenizer and the base model, Qwen2.5-0.5B, from the Hugging Face Hub. It adds an adapter of rank
+16, `LORA_RANK`, and the head, which has never been trained. `torch.manual_seed(0)` makes the random weights of the head
+the same at every run. `main` counts the parameters, and prints the report of `smoke`. It takes the words after
+`babykev smoke`, and answers `help` with the usage.
+
+Apply the patch to [`src/babykev/smoke.py`](#tut-18.5-src-babykev-smoke.py-76d2ec), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/d4302c1f860c781a3b5946c4c10dec82f6264eca.diff | git apply --include=src/babykev/smoke.py
+```
+
+The patch adds `sys`, `torch`, `load_tokenizer` and `pick_device` to the imports, `BASE`, `LORA_RANK` and `USAGE`
+under `SAMPLE`, and `main` at the end of the file.
+
+```bash
+uv run python -c "import sys; from babykev.smoke import main; sys.exit(main([]))"
+```
+
+The first time on a machine, transformers downloads the base model into `~/.cache/huggingface`, about 1 GB. On this
+Mac, the run takes about 10 seconds. It prints `babykev smoke: Qwen/Qwen2.5-0.5B on mps`, where `mps` is the GPU of
+Apple. Then it prints `loaded in 3.8 s: 503M parameters, 9.3M of them trainable`.
+
+The report has a line for each of the five requests, with its tokens, 162, 145, 158, 115 and 156, and its time. Under
+each are its three questions. The last lines are `6 of 15 right, 246 ms a request.` and `Nothing is trained yet: these are guesses.`, and the note of
+torch comes at the end.
+
+Some numbers are fixed, and some can vary. The parameters, the tokens and the answers come from the same weights at
+every run, because of the seed. On this Mac, a run on the CPU said `6 of 15 right` too. The seconds to load and the
+milliseconds of each request change from run to run. On another device, a probability can differ in its last digits.
+
+```bash
+just test
+```
+
+`just test` prints `53 passed`. `smoke.py` has 71 statements at 0%, and the total is 32%, 83 of 263.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check d4302c1f860c
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source cfe6bab89a64 --staged -- :/ && git restore --source d4302c1f860c --staged --worktree -- :/
+```
+
+### What changed {#tut-18.5-what-changed-182c57}
+
+- <a id="tut-18.5-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: the real model, loaded, and the report printed. 35 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/d4302c1f860c781a3b5946c4c10dec82f6264eca/src/babykev/smoke.py).
+  - look at `def main(`
+
+<details open><summary>The patch to <code>src/babykev/smoke.py</code></summary>
+
+```diff
+@@ -8,17 +8,24 @@ answers.
+ """
+ 
+ import json
++import sys
+ import time
+ from collections.abc import Iterator
+ from pathlib import Path
+ from typing import Any
+ 
++import torch
+ from transformers import PreTrainedTokenizerBase
+ 
+ from babykev.api import SystemOneRequest, render, to_answers, to_record
+-from babykev.model import DecisionModel, encode
++from babykev.model import DecisionModel, encode, load_tokenizer, pick_device
+ 
+ SAMPLE = Path("data/cheese/sample.jsonl")
++BASE = "Qwen/Qwen2.5-0.5B"
++LORA_RANK = 16
++USAGE = """\
++usage: babykev smoke    load the base model on this machine; answer the sample requests, untrained
++"""
+ 
+ 
+ def read_lines(
+@@ -83,3 +90,30 @@ def smoke(
+     typical = sorted(seconds)[len(seconds) // 2] * 1000
+     yield f"\n{right} of {total} right, {typical:.0f} ms a request."
+     yield "Nothing is trained yet: these are guesses."
++
++
++def main(
++    words: list[str],  # The words after `babykev smoke`: none to run, `help` for the usage
++) -> int:  # The exit code: 0, or 2 for words that are no command
++    """Load the real model on the best device there is and run the smoke on the sample data."""
++    if words in (["help"], ["--help"], ["-h"]):
++        print(USAGE, end="")
++        return 0
++    if words:
++        print(USAGE, end="", file=sys.stderr)
++        return 2
++    device = pick_device()
++    where = torch.cuda.get_device_name(0) if device == "cuda" else device
++    print(f"babykev smoke: {BASE} on {where}", flush=True)
++    started = time.perf_counter()
++    torch.manual_seed(0)
++    tok = load_tokenizer(BASE)
++    model = DecisionModel(BASE, device, lora=LORA_RANK).eval()
++    everything = sum(p.numel() for p in model.parameters())
++    trainable = sum(p.numel() for p in model.trainable_parameters())
++    loaded = time.perf_counter() - started
++    sizes = f"{everything / 1e6:.0f}M parameters, {trainable / 1e6:.1f}M of them trainable"
++    print(f"loaded in {loaded:.1f} s: {sizes}", flush=True)
++    for text in smoke(model, tok, read_lines()):
++        print(text, flush=True)
++    return 0
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d4302c1f860c781a3b5946c4c10dec82f6264eca). [The code after it](https://github.com/rahuldave/babykev/tree/d4302c1f860c781a3b5946c4c10dec82f6264eca).
+
+## 18.6 The command babykev smoke {#tut-18.6}
+
+`cli.py` refuses every word but `help`. It now runs `smoke.main` for the word `smoke`, with the words after it. The
+help lists the command. `smoke.py` imports torch, which takes about two seconds. So `cli.py` imports `smoke` inside the
+branch of the command, and `babykev help` stays fast.
+
+Apply the patch to [`src/babykev/cli.py`](#tut-18.6-src-babykev-cli.py-a9e184), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/4d756e960a5613d7076808da5197fca58c850d55.diff | git apply --include=src/babykev/cli.py
+```
+
+The patch replaces `There are no commands yet.` in `HELP` with a list of the commands, and adds the branch of `smoke`
+to `main`.
+
+```bash
+uv run babykev help
+uv run babykev smoke help
+```
+
+`babykev help` prints the help, with `smoke` under `commands:`. `babykev smoke help` prints the usage,
+`usage: babykev smoke    load the base model on this machine; answer the sample requests, untrained`, and the note of
+torch.
+
+The test of the help compares what the command prints with `HELP` itself, so it holds after the change.
+
+```bash
+sed -n '17,25p' tests/unit/test_cli.py
+just test -k help_is_printed
+```
+
+The test runs `babykev` with each of four words, and checks that it prints `HELP`. `just test -k help_is_printed`
+prints `4 passed, 49 deselected`. Its table of coverage counts only the four tests that ran, so the total is 13%.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 4d756e960a56
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source d4302c1f860c --staged -- :/ && git restore --source 4d756e960a56 --staged --worktree -- :/
+```
+
+### What changed {#tut-18.6-what-changed-182c57}
+
+- <a id="tut-18.6-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: the command `smoke`, in the help and in `main`. 12 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/4d756e960a5613d7076808da5197fca58c850d55/src/babykev/cli.py).
+  - look at `        raise SystemExit(smoke.main(words[1:]))`
+
+<details open><summary>The patch to <code>src/babykev/cli.py</code></summary>
+
+```diff
+@@ -8,14 +8,20 @@ babykev: a small decision model. Context, typed questions, and a probability for
+ usage: babykev COMMAND [FLAGS]
+        babykev help
+ 
+-There are no commands yet.
++commands:
++  smoke   load the base model on this machine and answer the five sample requests, untrained
+ """
+ 
+ 
+ def main() -> None:
+-    """Print the help, or refuse a command that does not exist yet."""
++    """Run the command named by the first word, print the help, or refuse any other word."""
+     words = sys.argv[1:]
+-    if words and words[0] not in ("help", "--help", "-h"):
+-        print(f"babykev: no command named {words[0]!r}. Run `babykev help`.", file=sys.stderr)
+-        raise SystemExit(2)
+-    print(HELP, end="")
++    if not words or words[0] in ("help", "--help", "-h"):
++        print(HELP, end="")
++        return
++    if words[0] == "smoke":
++        from babykev import smoke  # imports torch, so only when it is asked for
++
++        raise SystemExit(smoke.main(words[1:]))
++    print(f"babykev: no command named {words[0]!r}. Run `babykev help`.", file=sys.stderr)
++    raise SystemExit(2)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/4d756e960a5613d7076808da5197fca58c850d55). [The code after it](https://github.com/rahuldave/babykev/tree/4d756e960a5613d7076808da5197fca58c850d55).
+
+## 18.7 The recipe smoke {#tut-18.7}
+
+The recipe `smoke` runs the command. It answers `help` as every recipe does, and gives any other word to `babykev
+smoke`. It is in a group of its own, `model`.
+
+Apply the patch to [`justfile`](#tut-18.7-justfile-424f0b), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/eb2b6002dc55010dea092f3e57481bc12cd1e0ea.diff | git apply --include=justfile
+```
+
+The patch adds the recipe `smoke` at the end of the `justfile`.
+
+The command behind the recipe comes first.
+
+```bash
+uv run babykev smoke
+just --show smoke
+just smoke
+```
+
+`uv run babykev smoke` prints the same report as the last move, `6 of 15 right`, with other times. `just --show
+smoke` prints the recipe. `just smoke` runs it, and prints the same report again.
+
+```bash
+just help smoke
+```
+
+`just help smoke` prints the line of the recipe. Line 101 names `{{ program }} smoke`, so the recipe `help` also prints
+the usage of the program.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check eb2b6002dc55
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 4d756e960a56 --staged -- :/ && git restore --source eb2b6002dc55 --staged --worktree -- :/
+```
+
+### What changed {#tut-18.7-what-changed-182c57}
+
+- <a id="tut-18.7-justfile-424f0b"></a>`justfile`: the recipe `smoke`. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/eb2b6002dc55010dea092f3e57481bc12cd1e0ea/justfile).
+  - look at `smoke *args:`
+
+<details open><summary>The patch to <code>justfile</code></summary>
+
+```diff
+@@ -91,3 +91,11 @@ docs *args:
+     if [ "$*" = help ]; then just help docs; exit 0; fi
+     if [ "$#" -eq 0 ]; then exec uv run smalldocs render docs; fi
+     exec uv run smalldocs api "$@" --dir docs
++
++# Run the smoke on this machine: the real model answers the sample requests, untrained
++[group('model')]
++[no-exit-message]
++smoke *args:
++    #!/usr/bin/env sh
++    if [ "$*" = help ]; then just help smoke; exit 0; fi
++    exec uv run {{ program }} smoke "$@"
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/eb2b6002dc55010dea092f3e57481bc12cd1e0ea). [The code after it](https://github.com/rahuldave/babykev/tree/eb2b6002dc55010dea092f3e57481bc12cd1e0ea).
+
+## 18.8 The front page names the smoke {#tut-18.8}
+
+The front page of the docs lists the modules of the code. `babykev.smoke` is the fourth.
+
+Apply the patch to [`docs/index.qmd`](#tut-18.8-docs-index.qmd-d6d880), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/a52d047c3628b7ae2d980093ef3df5b7780b585f.diff | git apply --include=docs/index.qmd
+```
+
+The patch changes `three modules` to `four modules`, and adds an item for `babykev.smoke` at the end of the list.
+
+```bash
+just docs
+grep -o 'href="api/smoke.html#[^"]*"' docs/_site/index.html
+```
+
+`just docs` prints the note of torch, then `wrote 5 page(s) to docs/_site`. The fifth page is the reference of
+`smoke.py`. `grep -o` prints the link of `smoke()` into it, `#smoke`.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check a52d047c3628
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source eb2b6002dc55 --staged -- :/ && git restore --source a52d047c3628 --staged --worktree -- :/
+```
+
+### What changed {#tut-18.8-what-changed-182c57}
+
+- <a id="tut-18.8-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the module `babykev.smoke`, in the list. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a52d047c3628b7ae2d980093ef3df5b7780b585f/docs/index.qmd).
+  - look at ``- `babykev.smoke` is the smoke run. `smoke()` asks the model every question of the sample data, and``
+
+<details open><summary>The patch to <code>docs/index.qmd</code></summary>
+
+```diff
+@@ -12,13 +12,15 @@ question has one of three types:
+ - a `Choice` asks for one of several named options
+ - a `Score` asks for a level on an ordered scale
+ 
+-The code is in three modules:
++The code is in four modules:
+ 
+ - `babykev.api` is the contract. `to_record` turns a request into the text and the options that the model
+   reads. `to_answers` turns the probabilities of the model into an answer of the type of each question.
+ - `babykev.cli` is the command `babykev`.
+ - `babykev.model` is the model. `encode()` packs a record into one sequence of tokens, and a
+   `DecisionModel` scores every option of every question in one pass.
++- `babykev.smoke` is the smoke run. `smoke()` asks the model every question of the sample data, and
++  reports each answer beside its label.
+ 
+ Each build of the site makes the pages under Reference from the code. A page takes these parts from each
+ function and each class:
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a52d047c3628b7ae2d980093ef3df5b7780b585f). [The code after it](https://github.com/rahuldave/babykev/tree/a52d047c3628b7ae2d980093ef3df5b7780b585f).
+
+## 18.9 The README names the smoke {#tut-18.9}
+
+The README says what `just smoke` does, and what it downloads. The table gets a row for `smoke.py`.
+
+Apply the patch to [`README.md`](#tut-18.9-README.md-8ec9a0), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/6c2937bcf7bac5b94fcbc0b06269a14d36b8d97f.diff | git apply --include=README.md
+```
+
+The patch adds a paragraph about `just smoke` above the paragraph about `just hook`, and a row for
+`src/babykev/smoke.py` under the row of `model.py`.
+
+```bash
+just check
+```
+
+`just check` passes. The tests print `53 passed`, and the total of 32%. `cli.py` is at 83%, because no test runs
+lines 23 to 25, the branch of `smoke`. `just docs check` prints `65 of 65`. The coverage has no floor yet, and the
+tests of the model come next.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 6c2937bcf7ba
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source a52d047c3628 --staged -- :/ && git restore --source 6c2937bcf7ba --staged --worktree -- :/
+```
+
+### What changed {#tut-18.9-what-changed-182c57}
+
+- <a id="tut-18.9-README.md-8ec9a0"></a>`README.md`: `just smoke`, and the row of `smoke.py`. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/6c2937bcf7bac5b94fcbc0b06269a14d36b8d97f/README.md).
+  - look at ``| `src/babykev/smoke.py` | The smoke run, which asks the real model the sample requests on this machine |``
+
+<details open><summary>The patch to <code>README.md</code></summary>
+
+```diff
+@@ -62,6 +62,10 @@ The model needs four packages, torch, transformers, peft and safetensors. torch
+ from the index of PyTorch that `pyproject.toml` names. On a Mac, the same build runs on the GPU of Apple
+ too. With them, `.venv` takes about 750 MB, and torch is most of it.
+ 
++`just smoke` runs the model on this machine, on the best device that it finds. The first time, it
++downloads the base model from the Hugging Face Hub, about 1 GB. It answers the five sample requests,
++untrained, and prints each answer beside its label.
++
+ Run `just hook` once in each clone. It installs a git hook, which runs `just check` before each commit.
+ `just check` runs every check of the project, and if one fails, git makes no commit. You can run `just check`
+ yourself at any time.
+@@ -74,6 +78,7 @@ yourself at any time.
+ | `src/babykev/api.py` | The contract: the request and its three types of question as pydantic models, the text and options the model reads, and the answers made from its probabilities |
+ | `src/babykev/cli.py` | The command `babykev` |
+ | `src/babykev/model.py` | The model, a language model with a head that points at the options |
++| `src/babykev/smoke.py` | The smoke run, which asks the real model the sample requests on this machine |
+ | `data/cheese/sample.jsonl` | Five requests about cheese, one on each line. Every question has a `label`, the right answer |
+ | `tests/unit/` | The unit tests of the contract and of the command. One test checks every line of the sample data against the contract |
+ | `docs/` | The docs site. `just docs` builds it into `docs/_site`, with the reference made from the code |
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/6c2937bcf7bac5b94fcbc0b06269a14d36b8d97f). [The code after it](https://github.com/rahuldave/babykev/tree/6c2937bcf7bac5b94fcbc0b06269a14d36b8d97f).

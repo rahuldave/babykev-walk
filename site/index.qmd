@@ -55,6 +55,10 @@ Each change explained, with the code to look at.
 - [15 The packages of the model](read/tut-15.qmd)
 - [16 The model](read/tut-16.qmd)
 - [17 Types](read/tut-17.qmd)
+- [18 The smoke run](read/tut-18.qmd)
+- [19 Fixtures and the tiny model](read/tut-19.qmd)
+- [20 Unit tests of the model and the smoke](read/tut-20.qmd)
+- [21 Integration tests, and the floor](read/tut-21.qmd)
 
 ## Build it yourself
 
@@ -191,6 +195,10 @@ git config alias.check '!f() { i="$(git rev-parse --git-path check-index)" && { 
 - [15 The packages of the model](build/tut-15.qmd)
 - [16 The model](build/tut-16.qmd)
 - [17 Types](build/tut-17.qmd)
+- [18 The smoke run](build/tut-18.qmd)
+- [19 Fixtures and the tiny model](build/tut-19.qmd)
+- [20 Unit tests of the model and the smoke](build/tut-20.qmd)
+- [21 Integration tests, and the floor](build/tut-21.qmd)
 
 ## The other walks
 
