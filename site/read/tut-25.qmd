@@ -1,0 +1,599 @@
+---
+title: "25 Two images"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Read the tutorial.** [Build it yourself](../build/tut-25.qmd) is the other way to read this part.
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 69 packages`.
+
+So far everything ran on this Mac. A student may have Windows or Linux, and a platform that trains a model runs Linux
+on a machine of someone else. An image of Docker is a Linux machine that one file describes, and Docker runs it on any
+of these systems.
+
+The `Dockerfile` of babykev builds two images from `uv.lock`. The run image holds the program and what it needs, and
+starts `babykev`. The dev image holds the whole project and the tools to work on it, and starts a shell. The images
+are built and run on this machine only, and pushed nowhere.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/495a6cd9b395c1479a3b711641a5d25ca2fd9226). [The code after it](https://github.com/rahuldave/babykev/tree/af6c2cea3a9536d2cd34414a5f73102e03bab9c5).
+
+## 25.1 The Dockerfile, with the run image {#tut-25.1}
+
+A `Dockerfile` builds an image in stages, and each `FROM` starts one. The stage `uv` is the image of uv itself. The
+stage `build` installs the environment into `/opt/venv`, with no group of the developers. The packages of `uv.lock`
+come first, and the code after. Docker keeps each instruction of a build in its cache, so a change to the code installs one
+package again, and not torch.
+
+The stage `run` starts from a fresh Python, and takes only the finished environment and the sample data. uv stays in
+the stage `build`.
+
+A patch to [`Dockerfile`](#tut-25.1-Dockerfile-6651dd).
+
+In the new file `Dockerfile`, the stage `uv` is on line 9, and the stage `build` on lines 13 to 25. The stage `run`
+is on lines 28 to 36.
+
+```bash
+docker build --target run --tag babykev-run .
+docker run --rm babykev-run
+```
+
+`--target run` builds the stage `run` and the stages that it needs, and `--tag` names the image. `docker run --rm`
+starts the image and removes the container when it stops. With no word, the image runs `babykev help`, from
+`ENTRYPOINT` and `CMD` on lines 35 and 36, and prints the help.
+
+```bash
+docker image ls babykev-run:latest
+```
+
+The image takes about 1.1 GB, and torch is most of it.
+
+```bash
+docker run --rm -v ~/.cache/huggingface:/hf babykev-run smoke
+```
+
+`-v` mounts the cache of the Hugging Face Hub of this Mac at `/hf`, where `HF_HOME` on line 33 sends the library. So
+the base model is not downloaded again. The smoke says `on cpu`. A container on a Mac runs Linux in a virtual
+machine, and sees no GPU of Apple. It prints `4 of 15 right`, and the fifteen answers are those of `just smoke` on
+`mps`, with the same two decimals. Each request takes about 3 seconds, where it took about 220 ms on `mps`.
+
+### What changed {#tut-25.1-what-changed-182c57}
+
+- <a id="tut-25.1-Dockerfile-6651dd"></a>`Dockerfile`: the stages `uv`, `build` and `run`. New, 36 lines. [The file](https://github.com/rahuldave/babykev/blob/259d20bc81bfa0dda82f78dd4a77392f2d11ac42/Dockerfile).
+  - look at `FROM python:3.13-slim-trixie AS run`
+
+<details><summary>The diff of <code>Dockerfile</code></summary>
+
+```diff
+@@ -0,0 +1,36 @@
++# The images of babykev, built from uv.lock, so that they hold the versions that the lockfile names.
++#
++#   docker build --target run --tag babykev-run .
++#       the program and what it needs, and no tool of the developers. It starts babykev
++#
++# The environment is in /opt/venv, and never in the folder of the project.
++
++# uv, copied from its own image, at the version that wrote the lockfile
++FROM ghcr.io/astral-sh/uv:0.12.13 AS uv
++
++# The environment, with no group of the developers. The packages come first and the code after, so a
++# change to the code installs one package again, and not torch
++FROM python:3.13-slim-trixie AS build
++COPY --from=uv /uv /usr/local/bin/uv
++ENV UV_PROJECT_ENVIRONMENT=/opt/venv \
++    UV_PYTHON_DOWNLOADS=never \
++    UV_COMPILE_BYTECODE=1 \
++    UV_LINK_MODE=copy \
++    UV_NO_CACHE=1
++WORKDIR /app
++COPY pyproject.toml uv.lock .python-version ./
++RUN uv sync --locked --no-default-groups --no-install-project
++COPY README.md LICENSE NOTICE ./
++COPY src ./src
++RUN uv sync --locked --no-default-groups --no-editable
++
++# The run image: Python, the environment, the program and its sample data. It has no uv
++FROM python:3.13-slim-trixie AS run
++COPY --from=build /opt/venv /opt/venv
++WORKDIR /app
++COPY data ./data
++ENV PATH=/opt/venv/bin:$PATH \
++    HF_HOME=/hf \
++    PYTHONUNBUFFERED=1
++ENTRYPOINT ["babykev"]
++CMD ["help"]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/259d20bc81bfa0dda82f78dd4a77392f2d11ac42). [The code after it](https://github.com/rahuldave/babykev/tree/259d20bc81bfa0dda82f78dd4a77392f2d11ac42).
+
+## 25.2 The dev image {#tut-25.2}
+
+The stage `dev` builds the image to work in. It installs git with `apt-get`, and copies uv and uvx. It installs just
+as a wheel from PyPI. Then it installs the whole project with every group, into `/opt/venv`. The folder of this
+machine can then be mounted at `/work`, and the image runs it with its own environment.
+
+A patch to [`Dockerfile`](#tut-25.2-Dockerfile-6651dd).
+
+In `Dockerfile`, the comment names the dev image on lines 5 and 6, and the stage `dev` is on lines 41 to 66. Line 64,
+`COPY . .`, copies the folder of the project.
+
+```bash
+docker build --target dev --tag babykev-dev .
+```
+
+The line `transferring context` gives what Docker read from the folder, about 760 to 830 MB. `COPY . .` copies the whole
+folder, the `.venv` of this Mac too.
+
+```bash
+docker run --rm babykev-dev du -sh /work/.venv /opt/venv
+docker image ls babykev-dev:latest
+```
+
+`du` prints about `800M` for `/work/.venv`, the environment of this Mac, built for macOS, which Linux cannot use.
+`/opt/venv` is the environment of the image, 1.1G. The image takes about 2.1 GB.
+
+### What changed {#tut-25.2-what-changed-182c57}
+
+- <a id="tut-25.2-Dockerfile-6651dd"></a>`Dockerfile`: the stage `dev`. 31 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/ccc3f900ff0c984414b765ae76e6fa3cbeca5acc/Dockerfile).
+  - look at `FROM python:3.13-slim-trixie AS dev`
+
+<details><summary>The diff of <code>Dockerfile</code></summary>
+
+```diff
+@@ -2,8 +2,11 @@
+ #
+ #   docker build --target run --tag babykev-run .
+ #       the program and what it needs, and no tool of the developers. It starts babykev
++#   docker build --target dev --tag babykev-dev .
++#       the whole project, with every group, uv, just and git. It starts a shell
+ #
+-# The environment is in /opt/venv, and never in the folder of the project.
++# The environment is in /opt/venv, and never in the folder of the project. So the dev image can run
++# the folder of this machine, mounted at /work, and never uses its .venv.
+ 
+ # uv, copied from its own image, at the version that wrote the lockfile
+ FROM ghcr.io/astral-sh/uv:0.12.13 AS uv
+@@ -34,3 +37,30 @@ ENV PATH=/opt/venv/bin:$PATH \
+     PYTHONUNBUFFERED=1
+ ENTRYPOINT ["babykev"]
+ CMD ["help"]
++
++# The dev image: the whole project with every group, and the tools to work on it
++FROM python:3.13-slim-trixie AS dev
++ARG JUST=1.50.0
++RUN apt-get update \
++    && apt-get install --yes --no-install-recommends git \
++    && rm -rf /var/lib/apt/lists/*
++COPY --from=uv /uv /uvx /usr/local/bin/
++ENV UV_PROJECT_ENVIRONMENT=/opt/venv \
++    UV_PYTHON_DOWNLOADS=never \
++    UV_COMPILE_BYTECODE=1 \
++    UV_LINK_MODE=copy \
++    UV_NO_CACHE=1 \
++    UV_TOOL_BIN_DIR=/usr/local/bin \
++    PATH=/opt/venv/bin:$PATH \
++    HF_HOME=/hf \
++    PYTHONUNBUFFERED=1
++# just, as a wheel from PyPI. git refuses a repository that another user owns, and a mounted folder
++# can belong to the user of this machine, so every folder is declared safe
++RUN uv tool install "rust-just==${JUST}" \
++    && git config --system --add safe.directory '*'
++WORKDIR /work
++COPY pyproject.toml uv.lock .python-version ./
++RUN uv sync --locked --no-install-project
++COPY . .
++RUN uv sync --locked
++CMD ["bash"]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ccc3f900ff0c984414b765ae76e6fa3cbeca5acc). [The code after it](https://github.com/rahuldave/babykev/tree/ccc3f900ff0c984414b765ae76e6fa3cbeca5acc).
+
+## 25.3 What a build never copies into an image {#tut-25.3}
+
+`.dockerignore` names the files that `docker build` never reads from the folder, as `.gitignore` names the files that
+git never tracks. They are the history of git, the environment and the settings of this machine, and what a run or a
+tool writes.
+
+A patch to [`.dockerignore`](#tut-25.3-.dockerignore-05a721).
+
+The new file `.dockerignore` names `.git` on line 3 and `.venv` on line 4, and twelve more paths.
+
+```bash
+docker build --target dev --tag babykev-dev .
+docker run --rm babykev-dev ls -A /work
+docker image ls babykev-dev:latest
+```
+
+`ls -A` lists the folder in the image, with no `.git` and no `.venv`. The image takes about 1.4 GB.
+
+The dev image can run every check, with this folder mounted at `/work`.
+
+```bash
+docker run --rm -v "$PWD":/work babykev-dev just check
+```
+
+`just check` passes in the image, on Linux. The tests print `82 passed, 1 deselected`, and the total of 91.76%.
+
+### What changed {#tut-25.3-what-changed-182c57}
+
+- <a id="tut-25.3-.dockerignore-05a721"></a>`.dockerignore`: what a build never copies. New, 16 lines. [The file](https://github.com/rahuldave/babykev/blob/b51c80d19c319eee2a6bc42e420ad7cce140a324/.dockerignore).
+  - look at `.venv`
+
+<details><summary>The diff of <code>.dockerignore</code></summary>
+
+```diff
+@@ -0,0 +1,16 @@
++# What docker build never copies into an image: the history of git, the environment and the
++# settings of this machine, and what a run or a tool writes. An image makes its own environment.
++.git
++.venv
++.env
++.env.*
++**/__pycache__
++.ruff_cache
++.pytest_cache
++.hypothesis
++.coverage
++.coverage.*
++docs/_site
++docs/api
++docs/_symbols.json
++.DS_Store
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b51c80d19c319eee2a6bc42e420ad7cce140a324). [The code after it](https://github.com/rahuldave/babykev/tree/b51c80d19c319eee2a6bc42e420ad7cce140a324).
+
+## 25.4 No example of hypothesis has a deadline {#tut-25.4}
+
+hypothesis gives each example of a test 200 ms. In a container, the first example that runs torch can take longer, and
+the test then fails, by chance, with `DeadlineExceeded`. A run of the dev image failed so, once in five runs, and the
+same test passed at the next run. A test that fails by chance cannot be a reason to refuse a `git commit`. The tests of the mask check a
+rule, and not a speed, so a profile of hypothesis turns the deadline off for every test.
+
+A patch to [`tests/conftest.py`](#tut-25.4-tests-conftest.py-626af3).
+
+In `tests/conftest.py`, the import is on line 10, the comment on lines 16 to 18, and the profile on lines 19 and 20.
+
+```bash
+sed -n '16,20p' tests/conftest.py
+docker run --rm -v "$PWD":/work babykev-dev just test -q
+```
+
+pytest reads `conftest.py` before any test, so the profile holds for the whole run. The dev image runs the folder of
+this Mac, so the change needs no new build. The tests print `82 passed, 1 deselected`.
+
+### What changed {#tut-25.4-what-changed-182c57}
+
+- <a id="tut-25.4-tests-conftest.py-626af3"></a>`tests/conftest.py`: no deadline, for every test that hypothesis feeds. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/a400f23875c6d23f3a43b4cbe2c9fece72e5f3c1/tests/conftest.py).
+  - look at `settings.register_profile("babykev", deadline=None)`
+
+<details><summary>The diff of <code>tests/conftest.py</code></summary>
+
+```diff
+@@ -7,11 +7,18 @@ trained model, no download and no GPU.
+ from typing import Any
+ 
+ import pytest
++from hypothesis import settings
+ from transformers import PreTrainedTokenizerFast
+ 
+ from babykev.model import DecisionModel
+ from tests.tiny import tiny_backbone, tiny_tokenizer
+ 
++# hypothesis gives each example of a test 200 ms. The first example that runs torch can take
++# longer on a slow or busy machine, such as a container, and the test then fails by chance. The
++# tests that hypothesis feeds check a rule, and not a speed, so no example has a deadline
++settings.register_profile("babykev", deadline=None)
++settings.load_profile("babykev")
++
+ 
+ @pytest.fixture(scope="session")
+ def tok() -> PreTrainedTokenizerFast:  # The tiny tokenizer, built once for the whole test run
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a400f23875c6d23f3a43b4cbe2c9fece72e5f3c1). [The code after it](https://github.com/rahuldave/babykev/tree/a400f23875c6d23f3a43b4cbe2c9fece72e5f3c1).
+
+## 25.5 The recipe image {#tut-25.5}
+
+The recipe `image` runs the commands of the last moves. It has three words:
+
+- `just image build dev` or `run` builds an image, and gives any other word to `docker build`.
+- `just image shell` runs the dev image, with this folder at `/work`. The words before `--` go to `docker run`, and
+  the words after it are the command to run. With no command, it starts a shell.
+- `just image run` runs the program in the run image.
+
+`shell` and `run` mount the cache of the Hub at `/hf`.
+
+A patch to [`justfile`](#tut-25.5-justfile-424f0b).
+
+In the `justfile`, the recipe `image` is on lines 36 to 67. `build` is on lines 47 to 52, `shell` on lines 53 to 61,
+and `run` on lines 62 to 65.
+
+The commands behind the recipe ran in the last moves.
+
+```bash
+just --show image
+just image build run
+just image run smoke
+just image shell -- just test -q
+```
+
+`just image build run` builds the run image from the cache, in a few seconds. `just image run smoke` prints
+`4 of 15 right` again. `just image shell -- just test -q` prints `82 passed, 1 deselected`. Typed alone, `just image
+shell` starts a shell in the image, where `exit` ends it.
+
+### What changed {#tut-25.5-what-changed-182c57}
+
+- <a id="tut-25.5-justfile-424f0b"></a>`justfile`: the recipe `image`. 33 lines added. [The file](https://github.com/rahuldave/babykev/blob/0f6c78afbcc856682940a1a4276d9f5dad664c17/justfile).
+  - look at `image *args:`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -33,6 +33,39 @@ setup *args:
+ hook *args:
+     @{{ if args == "help" { "just help hook" } else { "uv run pre-commit install" } }}
+ 
++# The two images of the Dockerfile: just image build dev|run, just image shell, just image run smoke
++[group('setup')]
++[no-exit-message]
++image *args:
++    #!/usr/bin/env bash
++    set -e
++    if [ "$*" = help ]; then just help image; exit 0; fi
++    command -v docker > /dev/null || { echo "image: there is no docker on this machine" >&2; exit 2; }
++    # The cache of the Hugging Face Hub on this machine, mounted at /hf, so the model is downloaded once
++    cache="${HF_HOME:-$HOME/.cache/huggingface}"
++    case "$1" in
++        build)
++            case "$2" in dev | run) ;; *) echo "image build: say which image, dev or run" >&2; exit 2 ;; esac
++            kind=$2
++            shift 2
++            exec docker build --target "$kind" --tag "{{ program }}-$kind" "$@" .
++            ;;
++        shell)
++            # The words before -- go to docker, and the words after it are the command to run
++            shift
++            options=()
++            while [ $# -gt 0 ] && [ "$1" != -- ]; do options+=("$1"); shift; done
++            if [ "$1" = -- ]; then shift; fi
++            if [ -t 0 ]; then options+=(-it); fi
++            exec docker run --rm -v "$PWD:/work" -v "$cache:/hf" "${options[@]}" {{ program }}-dev "$@"
++            ;;
++        run)
++            shift
++            exec docker run --rm -v "$cache:/hf" {{ program }}-run "$@"
++            ;;
++        *) echo "image: build dev|run, shell [OPTIONS] [-- COMMAND], or run WORDS" >&2; exit 2 ;;
++    esac
++
+ # Write the Python of the project in one style. Extra words go to ruff: just fmt --check
+ [group('quality')]
+ [no-exit-message]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0f6c78afbcc856682940a1a4276d9f5dad664c17). [The code after it](https://github.com/rahuldave/babykev/tree/0f6c78afbcc856682940a1a4276d9f5dad664c17).
+
+## 25.6 hadolint, in the group lint {#tut-25.6}
+
+hadolint is a linter for a `Dockerfile`. The package `hadolint-bin` holds its program, built for each system.
+
+This change came from running `uv add --group lint hadolint-bin`.
+
+`uv add` prints `Resolved 70 packages`, and installs `hadolint-bin==2.15.1`.
+
+In `pyproject.toml`, the group `lint` has `"hadolint-bin>=2.15.1",` on line 44. `uv.lock` has its exact version.
+
+```bash
+uv run hadolint --version
+```
+
+It prints `Haskell Dockerfile Linter 2.15.1`.
+
+### What changed {#tut-25.6-what-changed-182c57}
+
+- <a id="tut-25.6-pyproject.toml-5d07e7"></a>`pyproject.toml`: hadolint, in the group `lint`. 1 line added. It comes from `uv add --group lint hadolint-bin`. [The file](https://github.com/rahuldave/babykev/blob/01905a0ad5cc25d6e2eac477090fdf97d7cdc047/pyproject.toml).
+  - look at `"hadolint-bin>=2.15.1",`
+- <a id="tut-25.6-uv.lock-8356d8"></a>`uv.lock`: the exact version of hadolint. 13 lines added. It comes from `uv add --group lint hadolint-bin`. [The file](https://github.com/rahuldave/babykev/blob/01905a0ad5cc25d6e2eac477090fdf97d7cdc047/uv.lock).
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -41,6 +41,7 @@ docs = [
+     "smalldocs>=0.1.5",
+ ]
+ lint = [
++    "hadolint-bin>=2.15.1",
+     "pre-commit>=4.7.0",
+     "ruff>=0.17.1",
+     "ty>=0.0.88",
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/01905a0ad5cc25d6e2eac477090fdf97d7cdc047). [The code after it](https://github.com/rahuldave/babykev/tree/01905a0ad5cc25d6e2eac477090fdf97d7cdc047).
+
+## 25.7 lint-config runs hadolint {#tut-25.7}
+
+`just lint-config` checks the config files, and the `Dockerfile` is one of them. The command behind the new line comes
+first.
+
+A patch to [`justfile`](#tut-25.7-justfile-424f0b).
+
+In the `justfile`, the comment on line 81 names the `Dockerfile`, and line 92 is `uv run hadolint Dockerfile`.
+
+```bash
+uv run hadolint Dockerfile
+just lint-config
+```
+
+hadolint prints `Dockerfile:44 DL3008 warning: Pin versions in apt get install.`, and ends with exit code 1.
+`just lint-config` stops on the same line. Line 44 is the `apt-get install` of the dev image, which names no version
+of git. This finding is real, and nothing was broken to make it.
+
+### What changed {#tut-25.7-what-changed-182c57}
+
+- <a id="tut-25.7-justfile-424f0b"></a>`justfile`: hadolint, in `lint-config`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/99abb877c0ecba346d4d7edb4fba1d01d02c369d/justfile).
+  - look at `    uv run hadolint Dockerfile`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -78,7 +78,7 @@ fmt *args:
+ lint *args:
+     @{{ if args == "help" { "just help lint" } else { 'uv run ruff check "$@"' } }}
+ 
+-# Check the config files: pyproject.toml, the lockfile, this justfile, and every YAML file
++# Check the config files: pyproject.toml, the lockfile, this justfile, every YAML file, and the Dockerfile
+ [group('quality')]
+ [no-exit-message]
+ lint-config *args:
+@@ -89,6 +89,7 @@ lint-config *args:
+     uv lock --check
+     just --fmt --check --unstable
+     uv run yamllint --strict .
++    uv run hadolint Dockerfile
+ 
+ # Check the types, by reading the code and not running it. Extra words go to ty: just types src
+ [group('quality')]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/99abb877c0ecba346d4d7edb4fba1d01d02c369d). [The code after it](https://github.com/rahuldave/babykev/tree/99abb877c0ecba346d4d7edb4fba1d01d02c369d).
+
+## 25.8 DL3008, declined with its reason {#tut-25.8}
+
+DL3008 asks for the version of each package of Debian. Debian replaces a package at each fix of its security, and
+the old version leaves the archive. So a pinned version stops building within weeks. The tag of the base image,
+`python:3.13-slim-trixie`, fixes the release of Debian.
+
+A comment says so, and a line tells hadolint to ignore DL3008 on the next instruction.
+
+A patch to [`Dockerfile`](#tut-25.8-Dockerfile-6651dd).
+
+In `Dockerfile`, the reason is on lines 44 to 46, and `# hadolint ignore=DL3008` on line 47.
+
+```bash
+just lint-config
+```
+
+`just lint-config` passes. hadolint prints nothing.
+
+### What changed {#tut-25.8-what-changed-182c57}
+
+- <a id="tut-25.8-Dockerfile-6651dd"></a>`Dockerfile`: the reason, and the line for hadolint. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/d80c69075dcb31143414fb6b0a6dc99852ff0c4c/Dockerfile).
+  - look at `# hadolint ignore=DL3008`
+
+<details><summary>The diff of <code>Dockerfile</code></summary>
+
+```diff
+@@ -41,6 +41,10 @@ CMD ["help"]
+ # The dev image: the whole project with every group, and the tools to work on it
+ FROM python:3.13-slim-trixie AS dev
+ ARG JUST=1.50.0
++# hadolint asks for the version of each package of Debian (DL3008). Debian replaces a package at
++# each fix of its security, and the old version leaves the archive. So a pinned version stops
++# building within weeks. The tag of the base image is the pin
++# hadolint ignore=DL3008
+ RUN apt-get update \
+     && apt-get install --yes --no-install-recommends git \
+     && rm -rf /var/lib/apt/lists/*
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d80c69075dcb31143414fb6b0a6dc99852ff0c4c). [The code after it](https://github.com/rahuldave/babykev/tree/d80c69075dcb31143414fb6b0a6dc99852ff0c4c).
+
+## 25.9 The README names the two images {#tut-25.9}
+
+The README gets a section on the images, with a table and the commands of the recipe. The table of the files gets a
+row for the `Dockerfile` and `.dockerignore`.
+
+A patch to [`README.md`](#tut-25.9-README.md-8ec9a0).
+
+In `README.md`, the section is on lines 77 to 99, and the row on line 118.
+
+The README says that every check passes in the dev image with no network. `--network none` gives the container no
+network at all.
+
+```bash
+just image shell --network none -- just check
+```
+
+It fails before any check runs. uv cannot download `hadolint-bin==2.15.1`, with `dns error`. The dev image was built
+before hadolint came into `uv.lock`, and `UV_LOCKED` makes uv install the packages of the lockfile first. An image
+holds the packages of the lockfile at the time of its build.
+
+```bash
+just image build dev
+just image shell --network none -- just check
+```
+
+`just check` passes in the new image, with no network. Every check of the gate is hermetic.
+
+### What changed {#tut-25.9-what-changed-182c57}
+
+- <a id="tut-25.9-README.md-8ec9a0"></a>`README.md`: the section on the images, and the row of the `Dockerfile`. 24 lines added. [The file](https://github.com/rahuldave/babykev/blob/af6c2cea3a9536d2cd34414a5f73102e03bab9c5/README.md).
+  - look at `## The images`
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+````diff
+@@ -74,6 +74,29 @@ Run `just hook` once in each clone. It installs a git hook, which runs `just che
+ `just check` runs every check of the project, and if one fails, git makes no commit. One check is a floor.
+ The tests must run at least 90% of the code. You can run `just check` yourself at any time.
+ 
++## The images
++
++The `Dockerfile` builds two images from `uv.lock`, for any machine with Docker. Docker runs Linux, so
++an image runs the same on a Mac, on Linux and on Windows.
++
++| Image | Holds | Starts |
++|---|---|---|
++| dev | the whole project with every group, uv, just and git | a shell |
++| run | the program and the packages that it needs, with no tool of the developers | `babykev` |
++
++```
++just image build dev                          # docker build --target dev, named babykev-dev
++just image shell                              # a shell in the dev image, with this folder at /work
++just image shell --network none -- just check # every check, in the dev image, with no network
++just image build run
++just image run smoke                          # the smoke in the run image, on the CPU
++```
++
++The environment of an image is in `/opt/venv`, so the image never uses the `.venv` of a mounted folder.
++Both images mount the cache of the Hugging Face Hub of this machine at `/hf`, so the base model is
++downloaded once. An image holds the packages of the lockfile at the time of its build, so build it again
++after a change to `uv.lock`.
++
+ ## What is here
+ 
+ | Path | What it is |
+@@ -92,6 +115,7 @@ The tests must run at least 90% of the code. You can run `just check` yourself a
+ | `justfile` | Every task of the project, one recipe each. `just help` explains them |
+ | `README.md` | This file |
+ | `LICENSE`, `NOTICE` | The licence, and the credit to kev |
++| `Dockerfile`, `.dockerignore` | The two images, dev and run, and what a build never copies into them |
+ | `.python-version` | The version of Python that the project uses |
+ | `.gitignore` | The files that git does not track, for example `.venv` |
+ | `.pre-commit-config.yaml` | The hooks that git runs before each commit, once `just hook` installs them. The last runs `just check` |
+````
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/af6c2cea3a9536d2cd34414a5f73102e03bab9c5). [The code after it](https://github.com/rahuldave/babykev/tree/af6c2cea3a9536d2cd34414a5f73102e03bab9c5).

@@ -10937,3 +10937,2160 @@ grep -n '90%' README.md
 </details>
 
 [This change on GitHub](https://github.com/rahuldave/babykev/commit/7be9407f2747077002f882085c9c043eb35d6c35). [The code after it](https://github.com/rahuldave/babykev/tree/7be9407f2747077002f882085c9c043eb35d6c35).
+
+<a id="tut-22"></a>
+
+## 22 The mask, found and fixed
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 67 packages`.
+
+The mask of `model.py` decides which token may attend to which. A token of a question may see the state and the
+tokens of its own question before it, and never a token of another question. Every check has passed since `model.py`
+came in, and the coverage of `branch_mask` is 100%. But no test has looked at what the mask allows.
+
+The tests here look, and they find that a question sees the questions before it. The code runs, its types are
+right, and its lines are covered. It does the wrong thing for its task.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/7be9407f2747077002f882085c9c043eb35d6c35). [The code after it](https://github.com/rahuldave/babykev/tree/c81f75cdfb68558cb40ab45c4c8995476630f844).
+
+<a id="tut-22.1"></a>
+
+### 22.1 The picture of the mask of a small request
+
+The first test draws the mask of one small request by hand. The request has a state of two tokens and two questions
+of two tokens each, so its segments are `[0, 0, 1, 1, 2, 2]`. Row i of the picture is token i, and column j is token
+j. `#` means that token i may attend to token j, and `.` means that it may not.
+
+A patch to [`tests/unit/test_mask.py`](#tut-22.1-tests-unit-test_mask.py-aeb55a).
+
+The new file `tests/unit/test_mask.py` has `allowed` on lines 8 to 12, and the test on lines 15 to 26.
+
+```bash
+sed -n '15,26p' tests/unit/test_mask.py
+just test -k small_request -vv
+```
+
+`allowed` reads the mask back as yes or no. `branch_mask` gives 0 where a token may attend, and a very negative
+number where it may not. Rows 5 and 6 of the picture are the tokens of question 2. They see the state, columns 1 and
+2, and their own question, columns 5 and 6, and not question 1, columns 3 and 4.
+
+The test fails. `-vv` makes pytest print both lists whole. Rows 5 and 6 of the mask are `#####.` and `######`, where
+the picture has `##..#.` and `##..##`. Question 2 sees question 1.
+
+#### What changed
+
+- <a id="tut-22.1-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the picture of a small request. New, 26 lines. [The file](https://github.com/rahuldave/babykev/blob/512d3c63be602fa415a3bfa9252b7bb8bc6645ae/tests/unit/test_mask.py).
+  - look at `def test_mask_of_a_small_request() -> None:`
+
+<details><summary>The diff of <code>tests/unit/test_mask.py</code></summary>
+
+```diff
+@@ -0,0 +1,26 @@
++"""Tests of the mask: which token of a packed record may attend to which."""
++
++import torch
++
++from babykev.model import branch_mask
++
++
++def allowed(
++    seg: list[int],  # The segment of each token: 0 for the state, k for question k
++) -> torch.Tensor:  # Shape [n, n]: True where token i may attend to token j
++    """Read the mask back as yes or no."""
++    return branch_mask(seg, "cpu")[0, 0] == 0
++
++
++def test_mask_of_a_small_request() -> None:
++    """A state of two tokens, and two questions of two tokens: the picture, drawn by hand."""
++    picture = [
++        "#.....",
++        "##....",
++        "###...",
++        "####..",
++        "##..#.",
++        "##..##",
++    ]
++    rows = ["".join("#" if ok else "." for ok in row) for row in allowed([0, 0, 1, 1, 2, 2])]
++    assert rows == picture
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/512d3c63be602fa415a3bfa9252b7bb8bc6645ae). [The code after it](https://github.com/rahuldave/babykev/tree/512d3c63be602fa415a3bfa9252b7bb8bc6645ae).
+
+<a id="tut-22.2"></a>
+
+### 22.2 hypothesis, in the group test
+
+A picture checks one size of request. The mask must hold for every size, and nobody can draw them all. hypothesis is
+a library for tests. A test states a rule, and hypothesis draws many inputs and runs the test on each.
+
+This change came from running `uv add --group test hypothesis`.
+
+`uv add` prints `Resolved 69 packages`, and installs `hypothesis==6.170.0` and `sortedcontainers==2.4.0`, which
+hypothesis needs.
+
+In `pyproject.toml`, the group `test` has `"hypothesis>=6.170.0",` on line 51. `uv.lock` has the exact versions.
+
+```bash
+uv run python -c "import hypothesis; print(hypothesis.__version__)"
+```
+
+It prints `6.170.0`, or a newer version.
+
+#### What changed
+
+- <a id="tut-22.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: hypothesis, in the group `test`. 1 line added. It comes from `uv add --group test hypothesis`. [The file](https://github.com/rahuldave/babykev/blob/c4276310b96963fe285e2929dd8a36b7241e3baf/pyproject.toml).
+  - look at `"hypothesis>=6.170.0",`
+- <a id="tut-22.2-uv.lock-8356d8"></a>`uv.lock`: the exact versions of hypothesis and sortedcontainers. 80 lines added. It comes from `uv add --group test hypothesis`. [The file](https://github.com/rahuldave/babykev/blob/c4276310b96963fe285e2929dd8a36b7241e3baf/uv.lock).
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -48,6 +48,7 @@ lint = [
+     "yamllint>=1.38.0",
+ ]
+ test = [
++    "hypothesis>=6.170.0",
+     "pytest>=9.1.1",
+     "pytest-cov>=7.1.0",
+ ]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/c4276310b96963fe285e2929dd8a36b7241e3baf). [The code after it](https://github.com/rahuldave/babykev/tree/c4276310b96963fe285e2929dd8a36b7241e3baf).
+
+<a id="tut-22.3"></a>
+
+### 22.3 No question sees another, for any shape of request
+
+The shape of a request is the length of its state and of each question. A strategy of hypothesis says what an input
+may be. `shapes` draws a state of 1 to 6 tokens, then up to 4 questions of 1 to 5 tokens each. `segments` lays out a
+shape as `encode` does. The test states the rule that no token of a question attends to a token of another question.
+`@given(shapes)` runs it on up to 100 shapes.
+
+A patch to [`tests/unit/test_mask.py`](#tut-22.3-tests-unit-test_mask.py-aeb55a).
+
+In `tests/unit/test_mask.py`, `shapes` is on line 10, `segments` on lines 13 to 18, and the new test on lines 42 to
+49.
+
+```bash
+sed -n '42,49p' tests/unit/test_mask.py
+just test -k no_question_sees_another
+```
+
+`siblings`, on line 48, is true for two tokens of two different questions. The assert on line 49 says that no pair
+is both allowed and siblings.
+
+The test fails. When a shape breaks the rule, hypothesis tries smaller shapes, and reports the smallest that still
+breaks it. It reports `shape=(1, [1, 1])`, a state of one token and two questions of one token. `allowed([0, 1, 2])`
+has `True` in row 3, column 2. So the token of question 2 sees the token of question 1.
+
+Under the shape, hypothesis lists lines of torch that only the failing examples ran, and they say nothing about the
+mask. hypothesis keeps the failing shape in the folder `.hypothesis`, and tries it first at the next run. The
+`.gitignore` of GitHub names the folder already.
+
+#### What changed
+
+- <a id="tut-22.3-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the shapes, and the first rule. 23 lines added. [The file](https://github.com/rahuldave/babykev/blob/76391b33ac277ee8d7138543b20f01da225ba2cc/tests/unit/test_mask.py).
+  - look at `def test_no_question_sees_another_question(`
+
+<details><summary>The diff of <code>tests/unit/test_mask.py</code></summary>
+
+```diff
+@@ -1,9 +1,22 @@
+ """Tests of the mask: which token of a packed record may attend to which."""
+ 
+ import torch
++from hypothesis import given
++from hypothesis import strategies as st
+ 
+ from babykev.model import branch_mask
+ 
++# A request of any shape: a state of 1 to 6 tokens, then up to 4 questions of 1 to 5 tokens each
++shapes = st.tuples(st.integers(1, 6), st.lists(st.integers(1, 5), max_size=4))
++
++
++def segments(
++    state: int,  # How many tokens the state has
++    questions: list[int],  # How many tokens each question has
++) -> list[int]:  # The segment of each token: 0 for the state, k for question k
++    """Lay out a request as `encode` does: the state, then each question in turn."""
++    return [0] * state + [k for k, n in enumerate(questions, start=1) for _ in range(n)]
++
+ 
+ def allowed(
+     seg: list[int],  # The segment of each token: 0 for the state, k for question k
+@@ -24,3 +37,13 @@ def test_mask_of_a_small_request() -> None:
+     ]
+     rows = ["".join("#" if ok else "." for ok in row) for row in allowed([0, 0, 1, 1, 2, 2])]
+     assert rows == picture
++
++
++@given(shapes)
++def test_no_question_sees_another_question(
++    shape: tuple[int, list[int]],  # The lengths of a state and of its questions
++) -> None:
++    """A token of one question never attends to a token of another question."""
++    seg = torch.tensor(segments(*shape))
++    siblings = (seg[:, None] != seg[None, :]) & (seg[:, None] > 0) & (seg[None, :] > 0)
++    assert not (allowed(seg.tolist()) & siblings).any()
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/76391b33ac277ee8d7138543b20f01da225ba2cc). [The code after it](https://github.com/rahuldave/babykev/tree/76391b33ac277ee8d7138543b20f01da225ba2cc).
+
+<a id="tut-22.4"></a>
+
+### 22.4 No token sees a later token, for any shape of request
+
+The second rule is the causal part of the mask. Nothing above the diagonal is allowed, so a token never attends to a
+token after it.
+
+A patch to [`tests/unit/test_mask.py`](#tut-22.4-tests-unit-test_mask.py-aeb55a).
+
+In `tests/unit/test_mask.py`, the new test is on lines 52 to 57.
+
+```bash
+just test -k later_token
+```
+
+pytest prints `1 passed`. The causal part of the mask was never wrong. Only the part about the questions is.
+
+#### What changed
+
+- <a id="tut-22.4-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the causal rule. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/1b5b940ca4c0ff99cd693ff4d7a6d0ae14f55d5b/tests/unit/test_mask.py).
+  - look at `def test_no_token_sees_a_later_token(`
+
+<details><summary>The diff of <code>tests/unit/test_mask.py</code></summary>
+
+```diff
+@@ -47,3 +47,11 @@ def test_no_question_sees_another_question(
+     seg = torch.tensor(segments(*shape))
+     siblings = (seg[:, None] != seg[None, :]) & (seg[:, None] > 0) & (seg[None, :] > 0)
+     assert not (allowed(seg.tolist()) & siblings).any()
++
++
++@given(shapes)
++def test_no_token_sees_a_later_token(
++    shape: tuple[int, list[int]],  # The lengths of a state and of its questions
++) -> None:
++    """Nothing above the diagonal is allowed: a token never attends to a token after it."""
++    assert not torch.triu(allowed(segments(*shape)), diagonal=1).any()
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/1b5b940ca4c0ff99cd693ff4d7a6d0ae14f55d5b). [The code after it](https://github.com/rahuldave/babykev/tree/1b5b940ca4c0ff99cd693ff4d7a6d0ae14f55d5b).
+
+<a id="tut-22.5"></a>
+
+### 22.5 What the mask allows is exactly the rule
+
+The last rule says the whole of it, in plain Python. Token i may attend to token j when j is not after i, and j is
+in the state or in the question of i. The test builds that table for every pair of tokens, and compares it with the
+mask.
+
+A patch to [`tests/unit/test_mask.py`](#tut-22.5-tests-unit-test_mask.py-aeb55a).
+
+In `tests/unit/test_mask.py`, the new test is on lines 60 to 70.
+
+```bash
+sed -n '60,70p' tests/unit/test_mask.py
+just test -k exactly_the_rule
+```
+
+The test fails, and hypothesis shrinks the shape to `(1, [1, 1])` again. The three tests of the rules check the mask
+alone, so they are unit tests.
+
+#### What changed
+
+- <a id="tut-22.5-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the whole rule. 13 lines added. [The file](https://github.com/rahuldave/babykev/blob/e2397970f5017e67db3bb61ffd648d1cec6f8522/tests/unit/test_mask.py).
+  - look at `def test_what_is_allowed_is_exactly_the_rule(`
+
+<details><summary>The diff of <code>tests/unit/test_mask.py</code></summary>
+
+```diff
+@@ -55,3 +55,16 @@ def test_no_token_sees_a_later_token(
+ ) -> None:
+     """Nothing above the diagonal is allowed: a token never attends to a token after it."""
+     assert not torch.triu(allowed(segments(*shape)), diagonal=1).any()
++
++
++@given(shapes)
++def test_what_is_allowed_is_exactly_the_rule(
++    shape: tuple[int, list[int]],  # The lengths of a state and of its questions
++) -> None:
++    """Token i sees token j when j is not after i, and j is in the state or in i's question."""
++    seg = segments(*shape)
++    rule = [
++        [j <= i and (seg[j] == 0 or seg[j] == seg[i]) for j in range(len(seg))]
++        for i in range(len(seg))
++    ]
++    assert allowed(seg).tolist() == rule
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e2397970f5017e67db3bb61ffd648d1cec6f8522). [The code after it](https://github.com/rahuldave/babykev/tree/e2397970f5017e67db3bb61ffd648d1cec6f8522).
+
+<a id="tut-22.6"></a>
+
+### 22.6 A question cannot see its sibling
+
+The rules check the mask alone. The next three tests check what the mask is for, on the tiny model. Each question
+must get the answer that it would get if it were the only question. The first test rewrites question 2 of the record,
+and the answers to questions 1 and 3 must not move, to the last bit.
+
+A patch to [`tests/unit/test_model.py`](#tut-22.6-tests-unit-test_model.py-583145).
+
+In `tests/unit/test_model.py`, the new test is on lines 149 to 160.
+
+```bash
+sed -n '149,160p' tests/unit/test_model.py
+just test -k sibling
+```
+
+The test fails on line 160, question 3. Its probabilities were `[0.3341, 0.3331, 0.3328]`, and are
+`[0.3343, 0.3330, 0.3327]` after question 2 changed. Question 3 sees question 2. Line 159, question 1, passes, because
+question 1 comes first and sees only the state. The tiny model is untrained, so the probabilities are close to equal.
+`torch.equal` asks for the same numbers, and any change is a failure.
+
+#### What changed
+
+- <a id="tut-22.6-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: rewrite question 2, and questions 1 and 3 keep their answers. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/098423d0db55e49d095c19021052c8c841289198/tests/unit/test_model.py).
+  - look at `def test_a_question_cannot_see_its_sibling(`
+
+<details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
+
+```diff
+@@ -144,3 +144,17 @@ def test_records_of_different_lengths_answer_in_one_pass_as_alone(
+     for batch, single in zip(together, alone, strict=True):
+         for a, b in zip(batch, single, strict=True):
+             assert torch.allclose(a, b, atol=1e-5)
++
++
++def test_a_question_cannot_see_its_sibling(
++    model: DecisionModel,  # The tiny model
++    tok: PreTrainedTokenizerFast,  # Its tokenizer
++    record: dict[str, Any],  # A record with three questions
++) -> None:
++    """Rewriting question 2 leaves the answers to questions 1 and 3 exactly as they were."""
++    before = model.probs(encode(tok, record))
++    changed = {**record, "questions": list(record["questions"])}
++    changed["questions"][1] = {"instr": "Where from?", "options": ["Spain", "Italy"], "label": 0}
++    after = model.probs(encode(tok, changed))
++    assert torch.equal(before[0], after[0])
++    assert torch.equal(before[2], after[2])
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/098423d0db55e49d095c19021052c8c841289198). [The code after it](https://github.com/rahuldave/babykev/tree/098423d0db55e49d095c19021052c8c841289198).
+
+<a id="tut-22.7"></a>
+
+### 22.7 Packed questions answer as they would alone
+
+The second test of isolation packs the three questions of the record in one pass. Then it asks each question in a
+record of its own, with the same state. The answers must be the same, to within `1e-6`.
+
+A patch to [`tests/unit/test_model.py`](#tut-22.7-tests-unit-test_model.py-583145).
+
+In `tests/unit/test_model.py`, the new test is on lines 163 to 172.
+
+```bash
+just test -k packed_questions
+```
+
+The test fails on question 2. Packed, it gets `[0.3321, 0.3346, 0.3333]`, and alone it gets
+`[0.3317, 0.3351, 0.3332]`. Question 1 passed the loop before it, for the reason of the last test.
+
+#### What changed
+
+- <a id="tut-22.7-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: three questions in one pass, and each alone. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/6157863e8297a7a6ad004df66f3425d09ee9c3cd/tests/unit/test_model.py).
+  - look at `def test_packed_questions_answer_as_they_would_alone(`
+
+<details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
+
+```diff
+@@ -158,3 +158,15 @@ def test_a_question_cannot_see_its_sibling(
+     after = model.probs(encode(tok, changed))
+     assert torch.equal(before[0], after[0])
+     assert torch.equal(before[2], after[2])
++
++
++def test_packed_questions_answer_as_they_would_alone(
++    model: DecisionModel,  # The tiny model
++    tok: PreTrainedTokenizerFast,  # Its tokenizer
++    record: dict[str, Any],  # A record with three questions
++) -> None:
++    """One pass over three questions gives what three passes, of one question each, give."""
++    packed = model.probs(encode(tok, record))
++    for together, question in zip(packed, record["questions"], strict=True):
++        alone = model.probs(encode(tok, {"state": record["state"], "questions": [question]}))[0]
++        assert torch.allclose(together, alone, atol=1e-6)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/6157863e8297a7a6ad004df66f3425d09ee9c3cd). [The code after it](https://github.com/rahuldave/babykev/tree/6157863e8297a7a6ad004df66f3425d09ee9c3cd).
+
+<a id="tut-22.8"></a>
+
+### 22.8 The order of questions does not matter
+
+The positions of every question restart after the state. So a question must get the same answer first or last. The
+third test of isolation asks the questions in the reverse order.
+
+A patch to [`tests/unit/test_model.py`](#tut-22.8-tests-unit-test_model.py-583145).
+
+In `tests/unit/test_model.py`, the new test is on lines 175 to 184.
+
+```bash
+just test -k questions_does_not_matter
+```
+
+The test fails on question 1. In the reverse order it comes last, and sees the two other questions. Its
+probabilities go from `[0.5016, 0.4984]` to `[0.5007, 0.4993]`. `-k order_of_questions` would also choose a test of
+`test_api.py`, so the command names the end of the test.
+
+#### What changed
+
+- <a id="tut-22.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the questions in the reverse order. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/ccf90b5467d36f291f716f46a530380b00353664/tests/unit/test_model.py).
+  - look at `def test_the_order_of_questions_does_not_matter(`
+
+<details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
+
+```diff
+@@ -170,3 +170,15 @@ def test_packed_questions_answer_as_they_would_alone(
+     for together, question in zip(packed, record["questions"], strict=True):
+         alone = model.probs(encode(tok, {"state": record["state"], "questions": [question]}))[0]
+         assert torch.allclose(together, alone, atol=1e-6)
++
++
++def test_the_order_of_questions_does_not_matter(
++    model: DecisionModel,  # The tiny model
++    tok: PreTrainedTokenizerFast,  # Its tokenizer
++    record: dict[str, Any],  # A record with three questions
++) -> None:
++    """Positions restart after the state, so a question gets the same answer first or last."""
++    forward = model.probs(encode(tok, record))
++    backward = model.probs(encode(tok, {**record, "questions": record["questions"][::-1]}))
++    for a, b in zip(forward, backward[::-1], strict=True):
++        assert torch.allclose(a, b, atol=1e-6)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ccf90b5467d36f291f716f46a530380b00353664). [The code after it](https://github.com/rahuldave/babykev/tree/ccf90b5467d36f291f716f46a530380b00353664).
+
+<a id="tut-22.9"></a>
+
+### 22.9 A fix for the picture, wrong on purpose
+
+The mistake of this move is on purpose. The picture failed on rows 5 and 6, where question 2 sees question 1. A quick
+fix blocks only the question just before a question. A token sees its own question, the state, and any question two
+or more before it. The fix makes the picture right.
+
+A patch to [`src/babykev/model.py`](#tut-22.9-src-babykev-model.py-a86a0b).
+
+In `src/babykev/model.py`, line 159 now ends with `| (s[None, :] < s[:, None] - 1)`. A token may see a question
+whose number is less than its own minus one.
+
+```bash
+just test
+```
+
+The picture passes, and so does the test of the siblings. 4 tests fail, 78 pass. The two rules that failed before
+fail again, and hypothesis shrinks each to `shape=(1, [1, 1, 1])`, three questions of one token. The token of
+question 3 sees the token of question 1. The stored shape `(1, [1, 1])` passes now, so hypothesis looks for a new one.
+The test of the packed questions and the test of the order fail too, on a question that sees a question two before
+it.
+
+The picture has two questions, so it cannot tell. The test of the siblings rewrites question 2, which question 3 no
+longer sees. A rule for every shape found the size with three questions.
+
+#### What changed
+
+- <a id="tut-22.9-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: a mask that blocks only the question just before, on purpose. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/abd6e56722cf3c5745241b045a848547d2213e77/src/babykev/model.py).
+  - look at `    same = (s[None, :] == s[:, None]) | (s[None, :] == 0) | (s[None, :] < s[:, None] - 1)`
+
+<details><summary>The diff of <code>src/babykev/model.py</code></summary>
+
+```diff
+@@ -156,7 +156,7 @@ def branch_mask(
+     s = torch.tensor(seg, device=device)
+     n = len(seg)
+     causal = torch.tril(torch.ones(n, n, dtype=torch.bool, device=device))
+-    same = torch.ones_like(causal) | (s[None, :] == 0)
++    same = (s[None, :] == s[:, None]) | (s[None, :] == 0) | (s[None, :] < s[:, None] - 1)
+     allow = causal & same
+     blocked = torch.finfo(dtype).min
+     return torch.zeros(n, n, dtype=dtype, device=device).masked_fill(~allow, blocked)[None, None]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/abd6e56722cf3c5745241b045a848547d2213e77). [The code after it](https://github.com/rahuldave/babykev/tree/abd6e56722cf3c5745241b045a848547d2213e77).
+
+<a id="tut-22.10"></a>
+
+### 22.10 A token sees the state and its own question
+
+The line of the mask becomes kev's line. A token may attend to a token of the state, `s[None, :] == 0`, or to a token
+of its own question, `s[None, :] == s[:, None]`. `causal`, on line 158, keeps out every token after it, and line 160
+joins the two. The docstring of `branch_mask`, lines 150 to 154, has stated this rule from the start.
+
+A patch to [`src/babykev/model.py`](#tut-22.10-src-babykev-model.py-a86a0b).
+
+In `src/babykev/model.py`, line 159 is `same = (s[None, :] == s[:, None]) | (s[None, :] == 0)`.
+
+```bash
+just test
+```
+
+`just test` prints `82 passed`, and the total of 92%, as before the tests of the mask. A test of what the mask allows adds no line
+to the coverage. `branch_mask` was covered all along.
+
+The smoke runs the real model on the sample again, with the right mask.
+
+```bash
+just smoke
+```
+
+The smoke prints `4 of 15 right`, where it printed `6 of 15 right` with the old mask. The first question of each
+request keeps its answer, with the same two decimals. It comes first, so it saw only the state with either mask.
+
+Nine of the ten other answers changed. With the old mask, questions 2 and 3 read the questions before them. Now each
+reads only the state and itself. The model is untrained, so both counts are guesses, and a right answer in either is
+chance.
+
+#### What changed
+
+- <a id="tut-22.10-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the state, or the same question. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/78256c6c1ae27f65f1d61afca6c73a47372ed314/src/babykev/model.py).
+  - look at `    same = (s[None, :] == s[:, None]) | (s[None, :] == 0)`
+
+<details><summary>The diff of <code>src/babykev/model.py</code></summary>
+
+```diff
+@@ -156,7 +156,7 @@ def branch_mask(
+     s = torch.tensor(seg, device=device)
+     n = len(seg)
+     causal = torch.tril(torch.ones(n, n, dtype=torch.bool, device=device))
+-    same = (s[None, :] == s[:, None]) | (s[None, :] == 0) | (s[None, :] < s[:, None] - 1)
++    same = (s[None, :] == s[:, None]) | (s[None, :] == 0)
+     allow = causal & same
+     blocked = torch.finfo(dtype).min
+     return torch.zeros(n, n, dtype=dtype, device=device).masked_fill(~allow, blocked)[None, None]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/78256c6c1ae27f65f1d61afca6c73a47372ed314). [The code after it](https://github.com/rahuldave/babykev/tree/78256c6c1ae27f65f1d61afca6c73a47372ed314).
+
+<a id="tut-22.11"></a>
+
+### 22.11 The README names the tests of the mask
+
+The row of the README for `tests/unit/` names the tests of the mask, and hypothesis.
+
+A patch to [`README.md`](#tut-22.11-README.md-8ec9a0).
+
+In `README.md`, the row of `tests/unit/` is on line 83.
+
+```bash
+just check
+```
+
+`just check` passes. The tests print `82 passed` and `Total coverage: 91.76%`. `just docs check` prints `97 of 97`,
+with the six functions of `test_mask.py`.
+
+#### What changed
+
+- <a id="tut-22.11-README.md-8ec9a0"></a>`README.md`: the tests of the mask, in the row of `tests/unit/`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/c81f75cdfb68558cb40ab45c4c8995476630f844/README.md).
+  - look at `hypothesis tries the rules of the mask on many shapes of request |`
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+```diff
+@@ -80,7 +80,7 @@ The tests must run at least 90% of the code. You can run `just check` yourself a
+ | `src/babykev/model.py` | The model, a language model with a head that points at the options |
+ | `src/babykev/smoke.py` | The smoke run, which asks the real model the sample requests on this machine |
+ | `data/cheese/sample.jsonl` | Five requests about cheese, one on each line. Every question has a `label`, the right answer |
+-| `tests/unit/` | The tests of the contract, of the command, of the model and of the smoke. One test checks every line of the sample data against the contract |
++| `tests/unit/` | The tests of the contract, of the command, of the model, of its mask and of the smoke. One test checks every line of the sample data against the contract. hypothesis tries the rules of the mask on many shapes of request |
+ | `tests/conftest.py` | The fixtures that every test can ask for: the tiny tokenizer, a tiny model and a record |
+ | `tests/tiny.py` | A small tokenizer and backbone, built in memory, in place of the real ones |
+ | `docs/` | The docs site. `just docs` builds it into `docs/_site`, with the reference made from the code |
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/c81f75cdfb68558cb40ab45c4c8995476630f844). [The code after it](https://github.com/rahuldave/babykev/tree/c81f75cdfb68558cb40ab45c4c8995476630f844).
+
+<a id="tut-23"></a>
+
+## 23 The system test
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 69 packages`.
+
+Every test so far needs nothing but our code. The tiny model is built in memory, so no download, no network and no
+device can make a test fail. Such a test is hermetic, and the hook can run it before each `git commit`. The smoke on the
+real model is a test too, of the whole program with its real parts. It needs the Hub or its cache, and it is the
+system test of the table of the kinds of tests. Here it becomes a test, an experiment shows that it is not
+hermetic, and keeps it out of `just test` and the gate.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/c81f75cdfb68558cb40ab45c4c8995476630f844). [The code after it](https://github.com/rahuldave/babykev/tree/89de4845180ac0ad80a2fa810d8d0cb58366c720).
+
+<a id="tut-23.1"></a>
+
+### 23.1 The smoke on the real model, as a test
+
+The test runs `main` of `smoke.py`, as `babykev smoke` does. It checks what holds on any device, which is the exit
+code 0, fifteen verdicts, and the count of the right ones. It does not check the count itself, because an untrained model
+guesses.
+
+A patch to [`tests/system/test_real_model.py`](#tut-23.1-tests-system-test_real_model.py-df0b9d).
+
+The new file `tests/system/test_real_model.py` has the docstring on lines 1 to 7, and the test on lines 14 to 24.
+
+```bash
+sed -n '14,24p' tests/system/test_real_model.py
+just test
+```
+
+`capsys`, on line 15, is the fixture of pytest that catches what the test prints. `just test` prints `83 passed`. The
+test loads the real model, so the run takes a few seconds more. `smoke.py` goes to 100%, and the total to 99%. Only
+lines 63 and 74 of `model.py` are left, the branch of CUDA and the check of a tokenizer.
+
+A test that needs the network fails without it. `HF_HUB_OFFLINE=1` tells the library of the Hub to make no request,
+and `HF_HOME` points its cache at an empty folder. The two together are a machine with no network and no download.
+
+```bash
+HF_HUB_OFFLINE=1 HF_HOME="$(mktemp -d)" just test -k real_model
+```
+
+The test fails, with `OSError: We couldn't connect to 'https://huggingface.co' to load the files, and couldn't find
+them in the cached files.` Nothing in our code changed. So the test is not hermetic.
+
+```bash
+HF_HUB_OFFLINE=1 just test -k real_model
+```
+
+With the cache of this machine and still no network, the test passes. It passes because the model is in the cache,
+and not because it is hermetic.
+
+#### What changed
+
+- <a id="tut-23.1-tests-system-test_real_model.py-df0b9d"></a>`tests/system/test_real_model.py`: the smoke on the real model, as a test. New, 24 lines. [The file](https://github.com/rahuldave/babykev/blob/72839bbef1b869ae388f5d32807bfef47b0461d9/tests/system/test_real_model.py).
+  - look at `def test_the_real_model_answers_every_sample_question(`
+
+<details><summary>The diff of <code>tests/system/test_real_model.py</code></summary>
+
+```diff
+@@ -0,0 +1,24 @@
++"""The smoke on the real model, the one test here that is not hermetic.
++
++The tests under `tests/unit/` need nothing but our code: the tiny model is built in memory. This
++test loads Qwen2.5-0.5B from the Hugging Face Hub, about 1 GB the first time and from the cache
++after that, onto the best device of the machine. The network, the download and the device can
++each make it fail.
++"""
++
++import pytest
++
++from babykev.smoke import main
++
++
++def test_the_real_model_answers_every_sample_question(
++    capsys: pytest.CaptureFixture[str],  # What the smoke prints
++) -> None:
++    """Five requests of three questions: fifteen verdicts, the count of those right, exit 0."""
++    assert main([]) == 0
++    printed = capsys.readouterr().out.splitlines()
++    assert printed[0].startswith("babykev smoke: Qwen/Qwen2.5-0.5B on ")
++    verdicts = [line for line in printed if line.startswith(("  ok", "  --"))]
++    assert len(verdicts) == 15
++    right = sum(line.startswith("  ok") for line in verdicts)
++    assert f"{right} of 15 right" in "\n".join(printed)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/72839bbef1b869ae388f5d32807bfef47b0461d9). [The code after it](https://github.com/rahuldave/babykev/tree/72839bbef1b869ae388f5d32807bfef47b0461d9).
+
+<a id="tut-23.2"></a>
+
+### 23.2 The test of the real model is marked system
+
+A marker is a name that a test carries. `pytestmark` puts a marker on every test of a file. This file gets the marker
+`system`.
+
+A patch to [`tests/system/test_real_model.py`](#tut-23.2-tests-system-test_real_model.py-df0b9d).
+
+In `tests/system/test_real_model.py`, the comment is on line 13, and `pytestmark` on line 14.
+
+```bash
+just test -k real_model
+```
+
+pytest prints `1 passed`, and a warning, `PytestUnknownMarkWarning: Unknown pytest.mark.system - is this a typo?`.
+pytest knows only the markers that it is told about. A marker with a typo in its name would choose no test, with no
+error.
+
+#### What changed
+
+- <a id="tut-23.2-tests-system-test_real_model.py-df0b9d"></a>`tests/system/test_real_model.py`: the marker `system`. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/82d933e1f5cfef31c717f1e416352977b5246a20/tests/system/test_real_model.py).
+  - look at `pytestmark = pytest.mark.system`
+
+<details><summary>The diff of <code>tests/system/test_real_model.py</code></summary>
+
+```diff
+@@ -10,6 +10,9 @@ import pytest
+ 
+ from babykev.smoke import main
+ 
++# Every test of this file needs the network, the real weights and a device
++pytestmark = pytest.mark.system
++
+ 
+ def test_the_real_model_answers_every_sample_question(
+     capsys: pytest.CaptureFixture[str],  # What the smoke prints
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/82d933e1f5cfef31c717f1e416352977b5246a20). [The code after it](https://github.com/rahuldave/babykev/tree/82d933e1f5cfef31c717f1e416352977b5246a20).
+
+<a id="tut-23.3"></a>
+
+### 23.3 pytest knows the marker system
+
+`markers` in `pyproject.toml` declares each marker, with what it means.
+
+A patch to [`pyproject.toml`](#tut-23.3-pyproject.toml-5d07e7).
+
+In `pyproject.toml`, the comment is on line 62, and `markers` on line 63.
+
+```bash
+just test -k real_model
+just test --markers
+```
+
+The test passes with no warning. `just test --markers` lists every marker, and the first line is
+`@pytest.mark.system: needs the network, the real model or a device`.
+
+#### What changed
+
+- <a id="tut-23.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: the marker `system`, declared. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/97d8afa31ab7738dc6481dde0fc01d70f88334bb/pyproject.toml).
+  - look at `markers = ["system: needs the network, the real model or a device"]`
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -59,6 +59,8 @@ testpaths = ["tests"]
+ pythonpath = ["."]
+ # Every run measures how much of src/babykev the tests run, and lists the lines they do not
+ addopts = "--cov=babykev --cov-report=term-missing"
++# A marker is a name that a test can carry, and -m chooses the tests by it
++markers = ["system: needs the network, the real model or a device"]
+ 
+ [tool.ruff]
+ # The formatter and the linter share this setting. ruff's own default is 88, and this project uses 100
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/97d8afa31ab7738dc6481dde0fc01d70f88334bb). [The code after it](https://github.com/rahuldave/babykev/tree/97d8afa31ab7738dc6481dde0fc01d70f88334bb).
+
+<a id="tut-23.4"></a>
+
+### 23.4 just test leaves out the tests marked system
+
+`-m` chooses the tests by their markers. `-m 'not system'` in `addopts` leaves out every test marked `system` from
+every run. A `-m` on the command line comes after `addopts`, and wins.
+
+A patch to [`pyproject.toml`](#tut-23.4-pyproject.toml-5d07e7).
+
+In `pyproject.toml`, the comment is on lines 60 and 61, and line 62 is
+`addopts = "--cov=babykev --cov-report=term-missing -m 'not system'"`.
+
+```bash
+just test
+just test -m system
+```
+
+`just test` prints `82 passed, 1 deselected`, and the total of 92%, as before the test of the real model. `just check` runs
+the same tests, so the gate and the hook never need the network. `just test -m system` runs the one test, and prints
+`1 passed, 82 deselected`.
+
+#### What changed
+
+- <a id="tut-23.4-pyproject.toml-5d07e7"></a>`pyproject.toml`: the tests marked `system` stay out of every run that does not ask for them. 3 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/faeb349ca2ff1ff1b76da839a3283f33720e7bca/pyproject.toml).
+  - look at `addopts = "--cov=babykev --cov-report=term-missing -m 'not system'"`
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -57,8 +57,9 @@ test = [
+ testpaths = ["tests"]
+ # A test can import its helpers from the folder tests, for example tests.tiny
+ pythonpath = ["."]
+-# Every run measures how much of src/babykev the tests run, and lists the lines they do not
+-addopts = "--cov=babykev --cov-report=term-missing"
++# Every run measures how much of src/babykev the tests run, and lists the lines they do not. A run
++# leaves out the tests marked system, unless it asks for them: just test -m system
++addopts = "--cov=babykev --cov-report=term-missing -m 'not system'"
+ # A marker is a name that a test can carry, and -m chooses the tests by it
+ markers = ["system: needs the network, the real model or a device"]
+ 
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/faeb349ca2ff1ff1b76da839a3283f33720e7bca). [The code after it](https://github.com/rahuldave/babykev/tree/faeb349ca2ff1ff1b76da839a3283f33720e7bca).
+
+<a id="tut-23.5"></a>
+
+### 23.5 The README names the test of the real model
+
+The README says what `just test` runs, and how to run the test of the real model. The table gets a row for
+`tests/system/`.
+
+A patch to [`README.md`](#tut-23.5-README.md-8ec9a0).
+
+In `README.md`, the new paragraph is on lines 69 to 71, and the row of `tests/system/` on line 88.
+
+```bash
+just check
+```
+
+`just check` passes. The tests print `82 passed, 1 deselected`, and `Total coverage: 91.76%`. `just docs check` prints
+`98 of 98`, with the test of the real model.
+
+#### What changed
+
+- <a id="tut-23.5-README.md-8ec9a0"></a>`README.md`: `just test -m system`, and the row of `tests/system/`. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/89de4845180ac0ad80a2fa810d8d0cb58366c720/README.md).
+  - look at ``| `tests/system/` | The test of the real model, marked `system`. `just test -m system` runs it |``
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+```diff
+@@ -66,6 +66,10 @@ too. With them, `.venv` takes about 750 MB, and torch is most of it.
+ downloads the base model from the Hugging Face Hub, about 1 GB. It answers the five sample requests,
+ untrained, and prints each answer beside its label.
+ 
++`just test` runs every test that needs nothing but our code. The test in `tests/system/` loads the
++real model, as the smoke does, so it needs the Hub or its cache. It has the marker `system`, and only
++`just test -m system` runs it.
++
+ Run `just hook` once in each clone. It installs a git hook, which runs `just check` before each commit.
+ `just check` runs every check of the project, and if one fails, git makes no commit. One check is a floor.
+ The tests must run at least 90% of the code. You can run `just check` yourself at any time.
+@@ -81,6 +85,7 @@ The tests must run at least 90% of the code. You can run `just check` yourself a
+ | `src/babykev/smoke.py` | The smoke run, which asks the real model the sample requests on this machine |
+ | `data/cheese/sample.jsonl` | Five requests about cheese, one on each line. Every question has a `label`, the right answer |
+ | `tests/unit/` | The tests of the contract, of the command, of the model, of its mask and of the smoke. One test checks every line of the sample data against the contract. hypothesis tries the rules of the mask on many shapes of request |
++| `tests/system/` | The test of the real model, marked `system`. `just test -m system` runs it |
+ | `tests/conftest.py` | The fixtures that every test can ask for: the tiny tokenizer, a tiny model and a record |
+ | `tests/tiny.py` | A small tokenizer and backbone, built in memory, in place of the real ones |
+ | `docs/` | The docs site. `just docs` builds it into `docs/_site`, with the reference made from the code |
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/89de4845180ac0ad80a2fa810d8d0cb58366c720). [The code after it](https://github.com/rahuldave/babykev/tree/89de4845180ac0ad80a2fa810d8d0cb58366c720).
+
+<a id="tut-24"></a>
+
+## 24 The model, explained
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 69 packages`.
+
+The reference pages of the site give the signature and the docstring of each function of `model.py`. They do not say
+why the model is built as it is. Two pages of a guide say it, in prose. The first gives the four ideas of the model,
+and the second draws the mask as a grid. smalldocs runs no code, so a page holds its grids as text.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/89de4845180ac0ad80a2fa810d8d0cb58366c720). [The code after it](https://github.com/rahuldave/babykev/tree/495a6cd9b395c1479a3b711641a5d25ca2fd9226).
+
+<a id="tut-24.1"></a>
+
+### 24.1 A page of the guide on the model
+
+The page explains packing, the mask, the positions that restart, and pointing, and then what trains. A name in
+backticks, such as `encode()`, links to its entry in the reference, as on the front page.
+
+A patch to [`docs/guide/model.qmd`](#tut-24.1-docs-guide-model.qmd-3d8904).
+
+The new file `docs/guide/model.qmd` has five parts. Packing starts on line 9, the mask on line 33, the positions on
+line 43, pointing on line 48, and what trains on line 57.
+
+```bash
+just docs
+grep -o 'href="../api/model.html#[^"]*"' docs/_site/guide/model.html
+```
+
+`just docs` prints `wrote 6 page(s) to docs/_site`. The sixth page is `docs/_site/guide/model.html`. `grep -o` prints
+the eight links of the page into the reference of `model.py`, `encode` twice. The sidebar does not list the page yet.
+
+#### What changed
+
+- <a id="tut-24.1-docs-guide-model.qmd-3d8904"></a>`docs/guide/model.qmd`: the four ideas of the model. New, 61 lines. [The file](https://github.com/rahuldave/babykev/blob/b047680d9ecce794ea5ec14efd40d9f27e33f86d/docs/guide/model.qmd).
+  - look at `## Packing`
+
+<details><summary>The diff of <code>docs/guide/model.qmd</code></summary>
+
+```diff
+@@ -0,0 +1,61 @@
++---
++title: The model
++---
++
++babykev is a language model with a head that points at an option, and it writes no text. Four ideas make it
++work, and each is a part of `model.py`. The reference pages give the signatures, and this page gives the
++reasons.
++
++## Packing
++
++A request is one state and several questions. `encode()` writes all of it into one sequence of tokens, in this
++order:
++
++- a delimiter, then the state
++- for each question, a delimiter and the instruction
++- each option of the question, between an opening and a closing delimiter
++- a decide delimiter at the end of each question
++
++The five delimiters are in `SPECIAL`. They are special tokens that the base model already has and rarely uses.
++So no new token is added, and the adapter learns what each one means here.
++
++Text from a caller goes through `user_tokens` first. It rewrites the text of a delimiter, such as
++`<|box_end|>`, to `<¦box_end¦>`, which the tokenizer reads as ordinary text. Without it, a state that holds
++the text of the closing delimiter could close an option early.
++
++`encode()` returns an `Encoded`. Its parts are these:
++
++- the ids of the tokens
++- the segment of each token, 0 for the state and k for question k
++- the position of each token
++- the places of the decide token and of the option tokens of each question
++
++## The mask
++
++The questions share the state, and nothing else. `branch_mask` builds the attention mask that makes this true.
++Token i may attend to token j when j is not after i, and j is in the state or in the question of i. The mask
++is added to the scores of the attention. So a blocked pair gets the most negative number that the type can
++hold, and its weight after the softmax is 0.
++
++With this mask, three questions in one request get the answers that they get in three requests of one
++question each. The tests check it.
++
++## Positions restart
++
++The positions of every question start right after the state. So a question looks the same to the model, in
++any place in the request. The tests check that the order of the questions changes no answer.
++
++## Pointing
++
++`PointerHead` has two small projections. At the decide token of a question, it projects the hidden state. At
++the closing token of each option, it projects the hidden state too. The scaled dot product of the two is the
++score of the option. One pass gives every question its scores.
++
++`DecisionModel` keeps the transformer of the base model, and drops its head over the vocabulary. It adds a
++LoRA adapter when it is asked to, and then the head. So the model cannot write text.
++
++## What trains
++
++With an adapter, the backbone does not change. The gradients reach the matrices of the adapter and the
++pointer head, and nothing else. `DecisionModel.trainable_parameters()` lists exactly those. The smoke run
++prints their number, 9.3M of 503M.
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b047680d9ecce794ea5ec14efd40d9f27e33f86d). [The code after it](https://github.com/rahuldave/babykev/tree/b047680d9ecce794ea5ec14efd40d9f27e33f86d).
+
+<a id="tut-24.2"></a>
+
+### 24.2 A page of the guide on the mask
+
+The page draws the mask of the small request of `test_mask.py`, then the grid of a plain causal mask for the same
+request. The first grid is the picture of the test, so `just test` keeps it true.
+
+A patch to [`docs/guide/mask.qmd`](#tut-24.2-docs-guide-mask.qmd-5cd81a).
+
+The new file `docs/guide/mask.qmd` has the grid of the mask on lines 13 to 21. The grid of a plain causal mask is on
+lines 33 to 41.
+
+```bash
+just docs
+```
+
+`just docs` prints `wrote 7 page(s) to docs/_site`.
+
+#### What changed
+
+- <a id="tut-24.2-docs-guide-mask.qmd-5cd81a"></a>`docs/guide/mask.qmd`: the mask, as a grid. New, 52 lines. [The file](https://github.com/rahuldave/babykev/blob/3d72060d0be1a8576d43945a249cb1e593b78a16/docs/guide/mask.qmd).
+  - look at `## A plain causal mask`
+
+<details><summary>The diff of <code>docs/guide/mask.qmd</code></summary>
+
+````diff
+@@ -0,0 +1,52 @@
++---
++title: The mask
++---
++
++The mask says which token of a packed request may attend to which. This page draws it as a grid. A row is a
++token, and a column is a token that it might attend to. `#` is allowed, and `.` is blocked.
++
++## A small request
++
++The request has a state of two tokens and two questions of two tokens each. The segments are
++`[0, 0, 1, 1, 2, 2]`.
++
++```
++     s s 1 1 2 2
++s    # . . . . .
++s    # # . . . .
++1    # # # . . .
++1    # # # # . .
++2    # # . . # .
++2    # # . . # #
++```
++
++Every token sees the state and the tokens of its own question that come before it. Rows 5 and 6, the tokens of
++question 2, do not see columns 3 and 4, the tokens of question 1.
++
++The picture is the test `test_mask_of_a_small_request`, in `tests/unit/test_mask.py`. So `just test` checks
++that the grid on the page is the grid that `branch_mask` builds.
++
++## A plain causal mask
++
++A plain causal mask lets each token see every token before it. For the same request, it gives this grid.
++
++```
++     s s 1 1 2 2
++s    # . . . . .
++s    # # . . . .
++1    # # # . . .
++1    # # # # . .
++2    # # # # # .
++2    # # # # # #
++```
++
++Rows 5 and 6 differ. Question 2 sees question 1, so the answer to question 2 depends on question 1.
++
++## The rule, for any request
++
++One picture checks one size. The tests in `test_mask.py` state the rule, and hypothesis tries many sizes of
++request:
++
++- no token sees a token after it
++- no token of a question sees a token of another question
++- the mask allows exactly what the rule allows
+````
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3d72060d0be1a8576d43945a249cb1e593b78a16). [The code after it](https://github.com/rahuldave/babykev/tree/3d72060d0be1a8576d43945a249cb1e593b78a16).
+
+<a id="tut-24.3"></a>
+
+### 24.3 The guide in the sidebar
+
+The sidebar of the site gets a section, Guide, between the front page and the reference. It names the two pages one
+by one, so that the model comes before the mask. A pattern such as `guide/*` would list them in the order of their
+names.
+
+A patch to [`docs/_smalldocs.yml`](#tut-24.3-docs-_smalldocs.yml-4b0b48).
+
+In `docs/_smalldocs.yml`, the section `Guide` is on lines 11 to 14.
+
+```bash
+just docs
+grep -o 'href="guide/[^"]*"' docs/_site/index.html
+```
+
+`just docs` prints `wrote 7 page(s) to docs/_site`. `grep -o` prints the two links of the sidebar of the front page,
+`guide/model.html` and then `guide/mask.html`.
+
+#### What changed
+
+- <a id="tut-24.3-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the section `Guide`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/50b2b3c88126db60e6cc8d9cc47a5ae6892cfa54/docs/_smalldocs.yml).
+  - look at `      - section: Guide`
+
+<details><summary>The diff of <code>docs/_smalldocs.yml</code></summary>
+
+```diff
+@@ -8,6 +8,10 @@ website:
+   sidebar:
+     contents:
+       - index.qmd
++      - section: Guide
++        contents:  # named one by one, so that the model comes before its mask
++          - guide/model.qmd
++          - guide/mask.qmd
+       - section: Reference
+         contents: api/*  # the reference pages, which each build makes from the code
+ 
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/50b2b3c88126db60e6cc8d9cc47a5ae6892cfa54). [The code after it](https://github.com/rahuldave/babykev/tree/50b2b3c88126db60e6cc8d9cc47a5ae6892cfa54).
+
+<a id="tut-24.4"></a>
+
+### 24.4 The front page names the guide
+
+A paragraph of the front page links to the two pages.
+
+A patch to [`docs/index.qmd`](#tut-24.4-docs-index.qmd-d6d880).
+
+In `docs/index.qmd`, the new paragraph is on lines 25 and 26.
+
+```bash
+just docs
+grep -o 'href="guide/[^"]*"' docs/_site/index.html
+```
+
+`grep -o` prints four links to the guide. The first two are in the sidebar, and the last two are in the new
+paragraph.
+
+#### What changed
+
+- <a id="tut-24.4-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the links to the guide. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/e5434a2ff54beb0e7262d3ff40abb569de422dc9/docs/index.qmd).
+  - look at ``The pages under Guide explain the model. [The model](guide/model.qmd) gives the four ideas of `model.py`, and``
+
+<details><summary>The diff of <code>docs/index.qmd</code></summary>
+
+```diff
+@@ -22,6 +22,9 @@ The code is in four modules:
+ - `babykev.smoke` is the smoke run. `smoke()` asks the model every question of the sample data, and
+   reports each answer beside its label.
+ 
++The pages under Guide explain the model. [The model](guide/model.qmd) gives the four ideas of `model.py`, and
++[the mask](guide/mask.qmd) draws the mask as a grid.
++
+ Each build of the site makes the pages under Reference from the code. A page takes these parts from each
+ function and each class:
+ 
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e5434a2ff54beb0e7262d3ff40abb569de422dc9). [The code after it](https://github.com/rahuldave/babykev/tree/e5434a2ff54beb0e7262d3ff40abb569de422dc9).
+
+<a id="tut-24.5"></a>
+
+### 24.5 The README names the guide
+
+The row of `docs/` in the table of the README names the two pages.
+
+A patch to [`README.md`](#tut-24.5-README.md-8ec9a0).
+
+In `README.md`, the row of `docs/` is on line 91.
+
+```bash
+just check
+```
+
+`just check` passes. The tests print `82 passed, 1 deselected`, and `Total coverage: 91.76%`. `just docs check` prints
+`98 of 98`. It checks the docments of the code, and does not read the pages of the guide.
+
+#### What changed
+
+- <a id="tut-24.5-README.md-8ec9a0"></a>`README.md`: the guide, in the row of `docs/`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/495a6cd9b395c1479a3b711641a5d25ca2fd9226/README.md).
+  - look at ``The two pages of `docs/guide/` explain the model and its mask |``
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+```diff
+@@ -88,7 +88,7 @@ The tests must run at least 90% of the code. You can run `just check` yourself a
+ | `tests/system/` | The test of the real model, marked `system`. `just test -m system` runs it |
+ | `tests/conftest.py` | The fixtures that every test can ask for: the tiny tokenizer, a tiny model and a record |
+ | `tests/tiny.py` | A small tokenizer and backbone, built in memory, in place of the real ones |
+-| `docs/` | The docs site. `just docs` builds it into `docs/_site`, with the reference made from the code |
++| `docs/` | The docs site. `just docs` builds it into `docs/_site`, with the reference made from the code. The two pages of `docs/guide/` explain the model and its mask |
+ | `justfile` | Every task of the project, one recipe each. `just help` explains them |
+ | `README.md` | This file |
+ | `LICENSE`, `NOTICE` | The licence, and the credit to kev |
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/495a6cd9b395c1479a3b711641a5d25ca2fd9226). [The code after it](https://github.com/rahuldave/babykev/tree/495a6cd9b395c1479a3b711641a5d25ca2fd9226).
+
+<a id="tut-25"></a>
+
+## 25 Two images
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 69 packages`.
+
+So far everything ran on this Mac. A student may have Windows or Linux, and a platform that trains a model runs Linux
+on a machine of someone else. An image of Docker is a Linux machine that one file describes, and Docker runs it on any
+of these systems.
+
+The `Dockerfile` of babykev builds two images from `uv.lock`. The run image holds the program and what it needs, and
+starts `babykev`. The dev image holds the whole project and the tools to work on it, and starts a shell. The images
+are built and run on this machine only, and pushed nowhere.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/495a6cd9b395c1479a3b711641a5d25ca2fd9226). [The code after it](https://github.com/rahuldave/babykev/tree/af6c2cea3a9536d2cd34414a5f73102e03bab9c5).
+
+<a id="tut-25.1"></a>
+
+### 25.1 The Dockerfile, with the run image
+
+A `Dockerfile` builds an image in stages, and each `FROM` starts one. The stage `uv` is the image of uv itself. The
+stage `build` installs the environment into `/opt/venv`, with no group of the developers. The packages of `uv.lock`
+come first, and the code after. Docker keeps each instruction of a build in its cache, so a change to the code installs one
+package again, and not torch.
+
+The stage `run` starts from a fresh Python, and takes only the finished environment and the sample data. uv stays in
+the stage `build`.
+
+A patch to [`Dockerfile`](#tut-25.1-Dockerfile-6651dd).
+
+In the new file `Dockerfile`, the stage `uv` is on line 9, and the stage `build` on lines 13 to 25. The stage `run`
+is on lines 28 to 36.
+
+```bash
+docker build --target run --tag babykev-run .
+docker run --rm babykev-run
+```
+
+`--target run` builds the stage `run` and the stages that it needs, and `--tag` names the image. `docker run --rm`
+starts the image and removes the container when it stops. With no word, the image runs `babykev help`, from
+`ENTRYPOINT` and `CMD` on lines 35 and 36, and prints the help.
+
+```bash
+docker image ls babykev-run:latest
+```
+
+The image takes about 1.1 GB, and torch is most of it.
+
+```bash
+docker run --rm -v ~/.cache/huggingface:/hf babykev-run smoke
+```
+
+`-v` mounts the cache of the Hugging Face Hub of this Mac at `/hf`, where `HF_HOME` on line 33 sends the library. So
+the base model is not downloaded again. The smoke says `on cpu`. A container on a Mac runs Linux in a virtual
+machine, and sees no GPU of Apple. It prints `4 of 15 right`, and the fifteen answers are those of `just smoke` on
+`mps`, with the same two decimals. Each request takes about 3 seconds, where it took about 220 ms on `mps`.
+
+#### What changed
+
+- <a id="tut-25.1-Dockerfile-6651dd"></a>`Dockerfile`: the stages `uv`, `build` and `run`. New, 36 lines. [The file](https://github.com/rahuldave/babykev/blob/259d20bc81bfa0dda82f78dd4a77392f2d11ac42/Dockerfile).
+  - look at `FROM python:3.13-slim-trixie AS run`
+
+<details><summary>The diff of <code>Dockerfile</code></summary>
+
+```diff
+@@ -0,0 +1,36 @@
++# The images of babykev, built from uv.lock, so that they hold the versions that the lockfile names.
++#
++#   docker build --target run --tag babykev-run .
++#       the program and what it needs, and no tool of the developers. It starts babykev
++#
++# The environment is in /opt/venv, and never in the folder of the project.
++
++# uv, copied from its own image, at the version that wrote the lockfile
++FROM ghcr.io/astral-sh/uv:0.12.13 AS uv
++
++# The environment, with no group of the developers. The packages come first and the code after, so a
++# change to the code installs one package again, and not torch
++FROM python:3.13-slim-trixie AS build
++COPY --from=uv /uv /usr/local/bin/uv
++ENV UV_PROJECT_ENVIRONMENT=/opt/venv \
++    UV_PYTHON_DOWNLOADS=never \
++    UV_COMPILE_BYTECODE=1 \
++    UV_LINK_MODE=copy \
++    UV_NO_CACHE=1
++WORKDIR /app
++COPY pyproject.toml uv.lock .python-version ./
++RUN uv sync --locked --no-default-groups --no-install-project
++COPY README.md LICENSE NOTICE ./
++COPY src ./src
++RUN uv sync --locked --no-default-groups --no-editable
++
++# The run image: Python, the environment, the program and its sample data. It has no uv
++FROM python:3.13-slim-trixie AS run
++COPY --from=build /opt/venv /opt/venv
++WORKDIR /app
++COPY data ./data
++ENV PATH=/opt/venv/bin:$PATH \
++    HF_HOME=/hf \
++    PYTHONUNBUFFERED=1
++ENTRYPOINT ["babykev"]
++CMD ["help"]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/259d20bc81bfa0dda82f78dd4a77392f2d11ac42). [The code after it](https://github.com/rahuldave/babykev/tree/259d20bc81bfa0dda82f78dd4a77392f2d11ac42).
+
+<a id="tut-25.2"></a>
+
+### 25.2 The dev image
+
+The stage `dev` builds the image to work in. It installs git with `apt-get`, and copies uv and uvx. It installs just
+as a wheel from PyPI. Then it installs the whole project with every group, into `/opt/venv`. The folder of this
+machine can then be mounted at `/work`, and the image runs it with its own environment.
+
+A patch to [`Dockerfile`](#tut-25.2-Dockerfile-6651dd).
+
+In `Dockerfile`, the comment names the dev image on lines 5 and 6, and the stage `dev` is on lines 41 to 66. Line 64,
+`COPY . .`, copies the folder of the project.
+
+```bash
+docker build --target dev --tag babykev-dev .
+```
+
+The line `transferring context` gives what Docker read from the folder, about 760 to 830 MB. `COPY . .` copies the whole
+folder, the `.venv` of this Mac too.
+
+```bash
+docker run --rm babykev-dev du -sh /work/.venv /opt/venv
+docker image ls babykev-dev:latest
+```
+
+`du` prints about `800M` for `/work/.venv`, the environment of this Mac, built for macOS, which Linux cannot use.
+`/opt/venv` is the environment of the image, 1.1G. The image takes about 2.1 GB.
+
+#### What changed
+
+- <a id="tut-25.2-Dockerfile-6651dd"></a>`Dockerfile`: the stage `dev`. 31 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/ccc3f900ff0c984414b765ae76e6fa3cbeca5acc/Dockerfile).
+  - look at `FROM python:3.13-slim-trixie AS dev`
+
+<details><summary>The diff of <code>Dockerfile</code></summary>
+
+```diff
+@@ -2,8 +2,11 @@
+ #
+ #   docker build --target run --tag babykev-run .
+ #       the program and what it needs, and no tool of the developers. It starts babykev
++#   docker build --target dev --tag babykev-dev .
++#       the whole project, with every group, uv, just and git. It starts a shell
+ #
+-# The environment is in /opt/venv, and never in the folder of the project.
++# The environment is in /opt/venv, and never in the folder of the project. So the dev image can run
++# the folder of this machine, mounted at /work, and never uses its .venv.
+ 
+ # uv, copied from its own image, at the version that wrote the lockfile
+ FROM ghcr.io/astral-sh/uv:0.12.13 AS uv
+@@ -34,3 +37,30 @@ ENV PATH=/opt/venv/bin:$PATH \
+     PYTHONUNBUFFERED=1
+ ENTRYPOINT ["babykev"]
+ CMD ["help"]
++
++# The dev image: the whole project with every group, and the tools to work on it
++FROM python:3.13-slim-trixie AS dev
++ARG JUST=1.50.0
++RUN apt-get update \
++    && apt-get install --yes --no-install-recommends git \
++    && rm -rf /var/lib/apt/lists/*
++COPY --from=uv /uv /uvx /usr/local/bin/
++ENV UV_PROJECT_ENVIRONMENT=/opt/venv \
++    UV_PYTHON_DOWNLOADS=never \
++    UV_COMPILE_BYTECODE=1 \
++    UV_LINK_MODE=copy \
++    UV_NO_CACHE=1 \
++    UV_TOOL_BIN_DIR=/usr/local/bin \
++    PATH=/opt/venv/bin:$PATH \
++    HF_HOME=/hf \
++    PYTHONUNBUFFERED=1
++# just, as a wheel from PyPI. git refuses a repository that another user owns, and a mounted folder
++# can belong to the user of this machine, so every folder is declared safe
++RUN uv tool install "rust-just==${JUST}" \
++    && git config --system --add safe.directory '*'
++WORKDIR /work
++COPY pyproject.toml uv.lock .python-version ./
++RUN uv sync --locked --no-install-project
++COPY . .
++RUN uv sync --locked
++CMD ["bash"]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ccc3f900ff0c984414b765ae76e6fa3cbeca5acc). [The code after it](https://github.com/rahuldave/babykev/tree/ccc3f900ff0c984414b765ae76e6fa3cbeca5acc).
+
+<a id="tut-25.3"></a>
+
+### 25.3 What a build never copies into an image
+
+`.dockerignore` names the files that `docker build` never reads from the folder, as `.gitignore` names the files that
+git never tracks. They are the history of git, the environment and the settings of this machine, and what a run or a
+tool writes.
+
+A patch to [`.dockerignore`](#tut-25.3-.dockerignore-05a721).
+
+The new file `.dockerignore` names `.git` on line 3 and `.venv` on line 4, and twelve more paths.
+
+```bash
+docker build --target dev --tag babykev-dev .
+docker run --rm babykev-dev ls -A /work
+docker image ls babykev-dev:latest
+```
+
+`ls -A` lists the folder in the image, with no `.git` and no `.venv`. The image takes about 1.4 GB.
+
+The dev image can run every check, with this folder mounted at `/work`.
+
+```bash
+docker run --rm -v "$PWD":/work babykev-dev just check
+```
+
+`just check` passes in the image, on Linux. The tests print `82 passed, 1 deselected`, and the total of 91.76%.
+
+#### What changed
+
+- <a id="tut-25.3-.dockerignore-05a721"></a>`.dockerignore`: what a build never copies. New, 16 lines. [The file](https://github.com/rahuldave/babykev/blob/b51c80d19c319eee2a6bc42e420ad7cce140a324/.dockerignore).
+  - look at `.venv`
+
+<details><summary>The diff of <code>.dockerignore</code></summary>
+
+```diff
+@@ -0,0 +1,16 @@
++# What docker build never copies into an image: the history of git, the environment and the
++# settings of this machine, and what a run or a tool writes. An image makes its own environment.
++.git
++.venv
++.env
++.env.*
++**/__pycache__
++.ruff_cache
++.pytest_cache
++.hypothesis
++.coverage
++.coverage.*
++docs/_site
++docs/api
++docs/_symbols.json
++.DS_Store
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b51c80d19c319eee2a6bc42e420ad7cce140a324). [The code after it](https://github.com/rahuldave/babykev/tree/b51c80d19c319eee2a6bc42e420ad7cce140a324).
+
+<a id="tut-25.4"></a>
+
+### 25.4 No example of hypothesis has a deadline
+
+hypothesis gives each example of a test 200 ms. In a container, the first example that runs torch can take longer, and
+the test then fails, by chance, with `DeadlineExceeded`. A run of the dev image failed so, once in five runs, and the
+same test passed at the next run. A test that fails by chance cannot be a reason to refuse a `git commit`. The tests of the mask check a
+rule, and not a speed, so a profile of hypothesis turns the deadline off for every test.
+
+A patch to [`tests/conftest.py`](#tut-25.4-tests-conftest.py-626af3).
+
+In `tests/conftest.py`, the import is on line 10, the comment on lines 16 to 18, and the profile on lines 19 and 20.
+
+```bash
+sed -n '16,20p' tests/conftest.py
+docker run --rm -v "$PWD":/work babykev-dev just test -q
+```
+
+pytest reads `conftest.py` before any test, so the profile holds for the whole run. The dev image runs the folder of
+this Mac, so the change needs no new build. The tests print `82 passed, 1 deselected`.
+
+#### What changed
+
+- <a id="tut-25.4-tests-conftest.py-626af3"></a>`tests/conftest.py`: no deadline, for every test that hypothesis feeds. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/a400f23875c6d23f3a43b4cbe2c9fece72e5f3c1/tests/conftest.py).
+  - look at `settings.register_profile("babykev", deadline=None)`
+
+<details><summary>The diff of <code>tests/conftest.py</code></summary>
+
+```diff
+@@ -7,11 +7,18 @@ trained model, no download and no GPU.
+ from typing import Any
+ 
+ import pytest
++from hypothesis import settings
+ from transformers import PreTrainedTokenizerFast
+ 
+ from babykev.model import DecisionModel
+ from tests.tiny import tiny_backbone, tiny_tokenizer
+ 
++# hypothesis gives each example of a test 200 ms. The first example that runs torch can take
++# longer on a slow or busy machine, such as a container, and the test then fails by chance. The
++# tests that hypothesis feeds check a rule, and not a speed, so no example has a deadline
++settings.register_profile("babykev", deadline=None)
++settings.load_profile("babykev")
++
+ 
+ @pytest.fixture(scope="session")
+ def tok() -> PreTrainedTokenizerFast:  # The tiny tokenizer, built once for the whole test run
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a400f23875c6d23f3a43b4cbe2c9fece72e5f3c1). [The code after it](https://github.com/rahuldave/babykev/tree/a400f23875c6d23f3a43b4cbe2c9fece72e5f3c1).
+
+<a id="tut-25.5"></a>
+
+### 25.5 The recipe image
+
+The recipe `image` runs the commands of the last moves. It has three words:
+
+- `just image build dev` or `run` builds an image, and gives any other word to `docker build`.
+- `just image shell` runs the dev image, with this folder at `/work`. The words before `--` go to `docker run`, and
+  the words after it are the command to run. With no command, it starts a shell.
+- `just image run` runs the program in the run image.
+
+`shell` and `run` mount the cache of the Hub at `/hf`.
+
+A patch to [`justfile`](#tut-25.5-justfile-424f0b).
+
+In the `justfile`, the recipe `image` is on lines 36 to 67. `build` is on lines 47 to 52, `shell` on lines 53 to 61,
+and `run` on lines 62 to 65.
+
+The commands behind the recipe ran in the last moves.
+
+```bash
+just --show image
+just image build run
+just image run smoke
+just image shell -- just test -q
+```
+
+`just image build run` builds the run image from the cache, in a few seconds. `just image run smoke` prints
+`4 of 15 right` again. `just image shell -- just test -q` prints `82 passed, 1 deselected`. Typed alone, `just image
+shell` starts a shell in the image, where `exit` ends it.
+
+#### What changed
+
+- <a id="tut-25.5-justfile-424f0b"></a>`justfile`: the recipe `image`. 33 lines added. [The file](https://github.com/rahuldave/babykev/blob/0f6c78afbcc856682940a1a4276d9f5dad664c17/justfile).
+  - look at `image *args:`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -33,6 +33,39 @@ setup *args:
+ hook *args:
+     @{{ if args == "help" { "just help hook" } else { "uv run pre-commit install" } }}
+ 
++# The two images of the Dockerfile: just image build dev|run, just image shell, just image run smoke
++[group('setup')]
++[no-exit-message]
++image *args:
++    #!/usr/bin/env bash
++    set -e
++    if [ "$*" = help ]; then just help image; exit 0; fi
++    command -v docker > /dev/null || { echo "image: there is no docker on this machine" >&2; exit 2; }
++    # The cache of the Hugging Face Hub on this machine, mounted at /hf, so the model is downloaded once
++    cache="${HF_HOME:-$HOME/.cache/huggingface}"
++    case "$1" in
++        build)
++            case "$2" in dev | run) ;; *) echo "image build: say which image, dev or run" >&2; exit 2 ;; esac
++            kind=$2
++            shift 2
++            exec docker build --target "$kind" --tag "{{ program }}-$kind" "$@" .
++            ;;
++        shell)
++            # The words before -- go to docker, and the words after it are the command to run
++            shift
++            options=()
++            while [ $# -gt 0 ] && [ "$1" != -- ]; do options+=("$1"); shift; done
++            if [ "$1" = -- ]; then shift; fi
++            if [ -t 0 ]; then options+=(-it); fi
++            exec docker run --rm -v "$PWD:/work" -v "$cache:/hf" "${options[@]}" {{ program }}-dev "$@"
++            ;;
++        run)
++            shift
++            exec docker run --rm -v "$cache:/hf" {{ program }}-run "$@"
++            ;;
++        *) echo "image: build dev|run, shell [OPTIONS] [-- COMMAND], or run WORDS" >&2; exit 2 ;;
++    esac
++
+ # Write the Python of the project in one style. Extra words go to ruff: just fmt --check
+ [group('quality')]
+ [no-exit-message]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0f6c78afbcc856682940a1a4276d9f5dad664c17). [The code after it](https://github.com/rahuldave/babykev/tree/0f6c78afbcc856682940a1a4276d9f5dad664c17).
+
+<a id="tut-25.6"></a>
+
+### 25.6 hadolint, in the group lint
+
+hadolint is a linter for a `Dockerfile`. The package `hadolint-bin` holds its program, built for each system.
+
+This change came from running `uv add --group lint hadolint-bin`.
+
+`uv add` prints `Resolved 70 packages`, and installs `hadolint-bin==2.15.1`.
+
+In `pyproject.toml`, the group `lint` has `"hadolint-bin>=2.15.1",` on line 44. `uv.lock` has its exact version.
+
+```bash
+uv run hadolint --version
+```
+
+It prints `Haskell Dockerfile Linter 2.15.1`.
+
+#### What changed
+
+- <a id="tut-25.6-pyproject.toml-5d07e7"></a>`pyproject.toml`: hadolint, in the group `lint`. 1 line added. It comes from `uv add --group lint hadolint-bin`. [The file](https://github.com/rahuldave/babykev/blob/01905a0ad5cc25d6e2eac477090fdf97d7cdc047/pyproject.toml).
+  - look at `"hadolint-bin>=2.15.1",`
+- <a id="tut-25.6-uv.lock-8356d8"></a>`uv.lock`: the exact version of hadolint. 13 lines added. It comes from `uv add --group lint hadolint-bin`. [The file](https://github.com/rahuldave/babykev/blob/01905a0ad5cc25d6e2eac477090fdf97d7cdc047/uv.lock).
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -41,6 +41,7 @@ docs = [
+     "smalldocs>=0.1.5",
+ ]
+ lint = [
++    "hadolint-bin>=2.15.1",
+     "pre-commit>=4.7.0",
+     "ruff>=0.17.1",
+     "ty>=0.0.88",
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/01905a0ad5cc25d6e2eac477090fdf97d7cdc047). [The code after it](https://github.com/rahuldave/babykev/tree/01905a0ad5cc25d6e2eac477090fdf97d7cdc047).
+
+<a id="tut-25.7"></a>
+
+### 25.7 lint-config runs hadolint
+
+`just lint-config` checks the config files, and the `Dockerfile` is one of them. The command behind the new line comes
+first.
+
+A patch to [`justfile`](#tut-25.7-justfile-424f0b).
+
+In the `justfile`, the comment on line 81 names the `Dockerfile`, and line 92 is `uv run hadolint Dockerfile`.
+
+```bash
+uv run hadolint Dockerfile
+just lint-config
+```
+
+hadolint prints `Dockerfile:44 DL3008 warning: Pin versions in apt get install.`, and ends with exit code 1.
+`just lint-config` stops on the same line. Line 44 is the `apt-get install` of the dev image, which names no version
+of git. This finding is real, and nothing was broken to make it.
+
+#### What changed
+
+- <a id="tut-25.7-justfile-424f0b"></a>`justfile`: hadolint, in `lint-config`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/99abb877c0ecba346d4d7edb4fba1d01d02c369d/justfile).
+  - look at `    uv run hadolint Dockerfile`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -78,7 +78,7 @@ fmt *args:
+ lint *args:
+     @{{ if args == "help" { "just help lint" } else { 'uv run ruff check "$@"' } }}
+ 
+-# Check the config files: pyproject.toml, the lockfile, this justfile, and every YAML file
++# Check the config files: pyproject.toml, the lockfile, this justfile, every YAML file, and the Dockerfile
+ [group('quality')]
+ [no-exit-message]
+ lint-config *args:
+@@ -89,6 +89,7 @@ lint-config *args:
+     uv lock --check
+     just --fmt --check --unstable
+     uv run yamllint --strict .
++    uv run hadolint Dockerfile
+ 
+ # Check the types, by reading the code and not running it. Extra words go to ty: just types src
+ [group('quality')]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/99abb877c0ecba346d4d7edb4fba1d01d02c369d). [The code after it](https://github.com/rahuldave/babykev/tree/99abb877c0ecba346d4d7edb4fba1d01d02c369d).
+
+<a id="tut-25.8"></a>
+
+### 25.8 DL3008, declined with its reason
+
+DL3008 asks for the version of each package of Debian. Debian replaces a package at each fix of its security, and
+the old version leaves the archive. So a pinned version stops building within weeks. The tag of the base image,
+`python:3.13-slim-trixie`, fixes the release of Debian.
+
+A comment says so, and a line tells hadolint to ignore DL3008 on the next instruction.
+
+A patch to [`Dockerfile`](#tut-25.8-Dockerfile-6651dd).
+
+In `Dockerfile`, the reason is on lines 44 to 46, and `# hadolint ignore=DL3008` on line 47.
+
+```bash
+just lint-config
+```
+
+`just lint-config` passes. hadolint prints nothing.
+
+#### What changed
+
+- <a id="tut-25.8-Dockerfile-6651dd"></a>`Dockerfile`: the reason, and the line for hadolint. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/d80c69075dcb31143414fb6b0a6dc99852ff0c4c/Dockerfile).
+  - look at `# hadolint ignore=DL3008`
+
+<details><summary>The diff of <code>Dockerfile</code></summary>
+
+```diff
+@@ -41,6 +41,10 @@ CMD ["help"]
+ # The dev image: the whole project with every group, and the tools to work on it
+ FROM python:3.13-slim-trixie AS dev
+ ARG JUST=1.50.0
++# hadolint asks for the version of each package of Debian (DL3008). Debian replaces a package at
++# each fix of its security, and the old version leaves the archive. So a pinned version stops
++# building within weeks. The tag of the base image is the pin
++# hadolint ignore=DL3008
+ RUN apt-get update \
+     && apt-get install --yes --no-install-recommends git \
+     && rm -rf /var/lib/apt/lists/*
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d80c69075dcb31143414fb6b0a6dc99852ff0c4c). [The code after it](https://github.com/rahuldave/babykev/tree/d80c69075dcb31143414fb6b0a6dc99852ff0c4c).
+
+<a id="tut-25.9"></a>
+
+### 25.9 The README names the two images
+
+The README gets a section on the images, with a table and the commands of the recipe. The table of the files gets a
+row for the `Dockerfile` and `.dockerignore`.
+
+A patch to [`README.md`](#tut-25.9-README.md-8ec9a0).
+
+In `README.md`, the section is on lines 77 to 99, and the row on line 118.
+
+The README says that every check passes in the dev image with no network. `--network none` gives the container no
+network at all.
+
+```bash
+just image shell --network none -- just check
+```
+
+It fails before any check runs. uv cannot download `hadolint-bin==2.15.1`, with `dns error`. The dev image was built
+before hadolint came into `uv.lock`, and `UV_LOCKED` makes uv install the packages of the lockfile first. An image
+holds the packages of the lockfile at the time of its build.
+
+```bash
+just image build dev
+just image shell --network none -- just check
+```
+
+`just check` passes in the new image, with no network. Every check of the gate is hermetic.
+
+#### What changed
+
+- <a id="tut-25.9-README.md-8ec9a0"></a>`README.md`: the section on the images, and the row of the `Dockerfile`. 24 lines added. [The file](https://github.com/rahuldave/babykev/blob/af6c2cea3a9536d2cd34414a5f73102e03bab9c5/README.md).
+  - look at `## The images`
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+````diff
+@@ -74,6 +74,29 @@ Run `just hook` once in each clone. It installs a git hook, which runs `just che
+ `just check` runs every check of the project, and if one fails, git makes no commit. One check is a floor.
+ The tests must run at least 90% of the code. You can run `just check` yourself at any time.
+ 
++## The images
++
++The `Dockerfile` builds two images from `uv.lock`, for any machine with Docker. Docker runs Linux, so
++an image runs the same on a Mac, on Linux and on Windows.
++
++| Image | Holds | Starts |
++|---|---|---|
++| dev | the whole project with every group, uv, just and git | a shell |
++| run | the program and the packages that it needs, with no tool of the developers | `babykev` |
++
++```
++just image build dev                          # docker build --target dev, named babykev-dev
++just image shell                              # a shell in the dev image, with this folder at /work
++just image shell --network none -- just check # every check, in the dev image, with no network
++just image build run
++just image run smoke                          # the smoke in the run image, on the CPU
++```
++
++The environment of an image is in `/opt/venv`, so the image never uses the `.venv` of a mounted folder.
++Both images mount the cache of the Hugging Face Hub of this machine at `/hf`, so the base model is
++downloaded once. An image holds the packages of the lockfile at the time of its build, so build it again
++after a change to `uv.lock`.
++
+ ## What is here
+ 
+ | Path | What it is |
+@@ -92,6 +115,7 @@ The tests must run at least 90% of the code. You can run `just check` yourself a
+ | `justfile` | Every task of the project, one recipe each. `just help` explains them |
+ | `README.md` | This file |
+ | `LICENSE`, `NOTICE` | The licence, and the credit to kev |
++| `Dockerfile`, `.dockerignore` | The two images, dev and run, and what a build never copies into them |
+ | `.python-version` | The version of Python that the project uses |
+ | `.gitignore` | The files that git does not track, for example `.venv` |
+ | `.pre-commit-config.yaml` | The hooks that git runs before each commit, once `just hook` installs them. The last runs `just check` |
+````
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/af6c2cea3a9536d2cd34414a5f73102e03bab9c5). [The code after it](https://github.com/rahuldave/babykev/tree/af6c2cea3a9536d2cd34414a5f73102e03bab9c5).
+
+<a id="tut-26"></a>
+
+## 26 GitHub
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 70 packages`.
+
+The hook runs the gate before each `git commit`, on the machine where it runs. In a clone without the hook, git records
+changes that never met the gate. Also, the docs site exists only on the machine that builds it.
+
+GitHub runs workflows on its own machines. A workflow is a file of YAML in `.github/workflows/`, and its key `on` names
+the events that start it. The first workflow runs the gate after every push, and the second builds the docs site and
+publishes it on GitHub Pages. Nothing is pushed here. GitHub runs the workflows when the branch reaches it.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/af6c2cea3a9536d2cd34414a5f73102e03bab9c5). [The code after it](https://github.com/rahuldave/babykev/tree/dc4f71e920910eb8cdd5e2292b29175a619d4513).
+
+<a id="tut-26.1"></a>
+
+### 26.1 GitHub runs the gate after every push
+
+The workflow `check.yaml` has one job. It takes the code, installs uv and just, and runs `just setup` and `just
+check`, as a student does. It runs after a push to any branch and on every pull request. `branches: ["**"]` leaves
+out a push of a tag.
+
+A patch to [`.github/workflows/check.yaml`](#tut-26.1-.github-workflows-check.yaml-6ceb50).
+
+The new file `.github/workflows/check.yaml` has `on` on lines 5 to 8, and what the job `check` runs on lines 16
+to 21.
+
+```bash
+just lint-config
+```
+
+yamllint reads every YAML file, and the new file too. It prints `5:1 warning truthy value should be one of [false,
+true] (truthy)`. `just lint-config` ends with exit code 2, because `--strict` makes a warning fail. YAML 1.1 reads the
+word `on` as true. GitHub reads it as the name `on`, and every workflow has it. The next move answers it.
+
+#### What changed
+
+- <a id="tut-26.1-.github-workflows-check.yaml-6ceb50"></a>`.github/workflows/check.yaml`: `just check`, after every push. New, 21 lines. [The file](https://github.com/rahuldave/babykev/blob/d4f1262a71537275cc810c1eb1b889aadd7ab7a9/.github/workflows/check.yaml).
+  - look at `      - run: just check`
+
+<details><summary>The diff of <code>.github/workflows/check.yaml</code></summary>
+
+```diff
+@@ -0,0 +1,21 @@
++# The gate, on GitHub: just check, after every push to a branch and on every pull request. The hook
++# runs the same recipe before each commit, on the machine that makes it.
++name: Check
++
++on:
++  push:
++    branches: ["**"]  # every branch, and no tag
++  pull_request:
++
++permissions:
++  contents: read  # the job reads the code, and changes nothing on GitHub
++
++jobs:
++  check:
++    runs-on: ubuntu-latest
++    steps:
++      - uses: actions/checkout@v7
++      - uses: astral-sh/setup-uv@v10.2.0
++      - uses: extractions/setup-just@v4
++      - run: just setup
++      - run: just check
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d4f1262a71537275cc810c1eb1b889aadd7ab7a9). [The code after it](https://github.com/rahuldave/babykev/tree/d4f1262a71537275cc810c1eb1b889aadd7ab7a9).
+
+<a id="tut-26.2"></a>
+
+### 26.2 yamllint lets a key be a word such as on
+
+The rule `truthy` of yamllint has the option `check-keys`. With `false`, the rule checks the values and not the keys.
+A value of `on` or `yes` is still a warning.
+
+A patch to [`.yamllint`](#tut-26.2-.yamllint-dfe50a).
+
+In `.yamllint`, line 7 is `truthy: {check-keys: false}`, with its reason.
+
+```bash
+just lint-config
+```
+
+`just lint-config` passes.
+
+#### What changed
+
+- <a id="tut-26.2-.yamllint-dfe50a"></a>`.yamllint`: the rule `truthy` checks no key. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/98be578dac5963c892f6f8636d1ce6e0863dd197/.yamllint).
+  - look at `  truthy: {check-keys: false}  # a key may be a word such as on, which YAML 1.1 reads as true`
+
+<details><summary>The diff of <code>.yamllint</code></summary>
+
+```diff
+@@ -4,3 +4,4 @@ ignore-from-file: .gitignore  # the files that git ignores, such as everything i
+ rules:
+   document-start: disable  # a file need not start with a line of three dashes
+   line-length: {max: 100}  # as long as a line of the Python code
++  truthy: {check-keys: false}  # a key may be a word such as on, which YAML 1.1 reads as true
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/98be578dac5963c892f6f8636d1ce6e0863dd197). [The code after it](https://github.com/rahuldave/babykev/tree/98be578dac5963c892f6f8636d1ce6e0863dd197).
+
+<a id="tut-26.3"></a>
+
+### 26.3 actionlint, in the group lint
+
+yamllint checks that a workflow is good YAML, and knows nothing of GitHub. actionlint is a linter for the workflows of
+GitHub. It checks the events, the jobs, the actions and their inputs. The package `actionlint-py` holds its program,
+built for each system.
+
+This change came from running `uv add --group lint actionlint-py`.
+
+`uv add` prints `Resolved 71 packages`, and installs `actionlint-py==1.7.12.25`.
+
+In `pyproject.toml`, the group `lint` has `"actionlint-py>=1.7.12.25",` on line 44. `uv.lock` has its exact version.
+
+```bash
+uv run actionlint --version
+```
+
+The first line is `1.7.12`.
+
+#### What changed
+
+- <a id="tut-26.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: actionlint, in the group `lint`. 1 line added. It comes from `uv add --group lint actionlint-py`. [The file](https://github.com/rahuldave/babykev/blob/6a28f045ffed4a4ad611c763893eabf70cb6754f/pyproject.toml).
+  - look at `"actionlint-py>=1.7.12.25",`
+- <a id="tut-26.3-uv.lock-8356d8"></a>`uv.lock`: the exact version of actionlint. 8 lines added. It comes from `uv add --group lint actionlint-py`. [The file](https://github.com/rahuldave/babykev/blob/6a28f045ffed4a4ad611c763893eabf70cb6754f/uv.lock).
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -41,6 +41,7 @@ docs = [
+     "smalldocs>=0.1.5",
+ ]
+ lint = [
++    "actionlint-py>=1.7.12.25",
+     "hadolint-bin>=2.15.1",
+     "pre-commit>=4.7.0",
+     "ruff>=0.17.1",
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/6a28f045ffed4a4ad611c763893eabf70cb6754f). [The code after it](https://github.com/rahuldave/babykev/tree/6a28f045ffed4a4ad611c763893eabf70cb6754f).
+
+<a id="tut-26.4"></a>
+
+### 26.4 lint-config runs actionlint
+
+actionlint finds the workflows of the project itself, in `.github/workflows/`. The command behind the new line comes
+first.
+
+A patch to [`justfile`](#tut-26.4-justfile-424f0b).
+
+In the `justfile`, the comment on line 81 names the workflows, and line 93 is `uv run actionlint`.
+
+```bash
+uv run actionlint
+just lint-config
+```
+
+actionlint prints nothing, and ends with exit code 0. It finds no problem in `check.yaml`. `just lint-config` passes.
+
+#### What changed
+
+- <a id="tut-26.4-justfile-424f0b"></a>`justfile`: actionlint, in `lint-config`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/4b3403e07065d6c6676104d0420758fa8ed55a34/justfile).
+  - look at `    uv run actionlint`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -78,7 +78,7 @@ fmt *args:
+ lint *args:
+     @{{ if args == "help" { "just help lint" } else { 'uv run ruff check "$@"' } }}
+ 
+-# Check the config files: pyproject.toml, the lockfile, this justfile, every YAML file, and the Dockerfile
++# Check the config files: pyproject.toml, the lockfile, this justfile, every YAML file, the Dockerfile and the workflows
+ [group('quality')]
+ [no-exit-message]
+ lint-config *args:
+@@ -90,6 +90,7 @@ lint-config *args:
+     just --fmt --check --unstable
+     uv run yamllint --strict .
+     uv run hadolint Dockerfile
++    uv run actionlint
+ 
+ # Check the types, by reading the code and not running it. Extra words go to ty: just types src
+ [group('quality')]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/4b3403e07065d6c6676104d0420758fa8ed55a34). [The code after it](https://github.com/rahuldave/babykev/tree/4b3403e07065d6c6676104d0420758fa8ed55a34).
+
+<a id="tut-26.5"></a>
+
+### 26.5 GitHub Pages publishes the docs
+
+The workflow `docs.yaml` has two jobs. The job `build` installs the package and the group `docs`, and no other group.
+It runs `smalldocs render docs`, the command behind `just docs`, and gives the folder `docs/_site` to Pages. The job
+`deploy` publishes it. The workflow runs after a push to `main`, and a person can also run it from the tab Actions.
+
+A patch to [`.github/workflows/docs.yaml`](#tut-26.5-.github-workflows-docs.yaml-ce7835).
+
+In the new file `.github/workflows/docs.yaml`, `on` is on lines 6 to 9, and `permissions` on lines 11 to 14. Line 26
+renders the site with the group `docs` alone.
+
+```bash
+uv run actionlint
+uv run --isolated --locked --no-default-groups --group docs smalldocs render docs
+```
+
+actionlint prints nothing. `--no-default-groups --group docs` installs the package and the group `docs`, as the job
+does. `--isolated` runs the command in a temporary environment, and leaves `.venv` as it is. It prints `wrote 7
+page(s) to docs/_site`.
+
+The workflows run only where two settings on GitHub allow them. A fork runs no workflow until its owner turns the
+workflows on, on the tab **Actions**. Pages publishes from a workflow when **Settings**, then **Pages**, has the source
+**GitHub Actions**. The README says so in the next move.
+
+#### What changed
+
+- <a id="tut-26.5-.github-workflows-docs.yaml-ce7835"></a>`.github/workflows/docs.yaml`: the docs site, built with the group `docs` alone, then published. New, 40 lines. [The file](https://github.com/rahuldave/babykev/blob/3bd36db7a253d468090eedd463442ba9e3a14a02/.github/workflows/docs.yaml).
+  - look at `      - run: uv run --locked --no-default-groups --group docs smalldocs render docs`
+
+<details><summary>The diff of <code>.github/workflows/docs.yaml</code></summary>
+
+```diff
+@@ -0,0 +1,40 @@
++# The docs site, on GitHub Pages. After every push to main, smalldocs builds the site, and GitHub
++# Pages publishes it at https://OWNER.github.io/babykev/, with the name of the owner of the
++# repository. The job installs the package and the group docs, and no other group.
++name: Docs
++
++on:
++  push:
++    branches: [main]
++  workflow_dispatch:  # a person can also run it from the tab Actions
++
++permissions:
++  contents: read
++  pages: write     # to publish the site
++  id-token: write  # to show Pages that this workflow publishes it
++
++concurrency:
++  group: pages
++  cancel-in-progress: true  # a newer push replaces a publish that has not finished
++
++jobs:
++  build:
++    runs-on: ubuntu-latest
++    steps:
++      - uses: actions/checkout@v7
++      - uses: astral-sh/setup-uv@v10.2.0
++      - run: uv run --locked --no-default-groups --group docs smalldocs render docs
++      - uses: actions/configure-pages@v6
++      - uses: actions/upload-pages-artifact@v5
++        with:
++          path: docs/_site
++
++  deploy:
++    needs: build
++    runs-on: ubuntu-latest
++    environment:
++      name: github-pages
++      url: ${{ steps.deployment.outputs.page_url }}
++    steps:
++      - id: deployment
++        uses: actions/deploy-pages@v5
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3bd36db7a253d468090eedd463442ba9e3a14a02). [The code after it](https://github.com/rahuldave/babykev/tree/3bd36db7a253d468090eedd463442ba9e3a14a02).
+
+<a id="tut-26.6"></a>
+
+### 26.6 The README names the workflows
+
+The README gets a section on GitHub, with the two settings that a fork needs. The table gets a row for
+`.github/workflows/`.
+
+A patch to [`README.md`](#tut-26.6-README.md-8ec9a0).
+
+In `README.md`, the section is on lines 100 to 112, and the row on line 135.
+
+```bash
+just check
+```
+
+`just check` passes. The tests print `82 passed, 1 deselected`, and `Total coverage: 91.76%`. The last lines of
+`lint-config` print nothing, because yamllint, hadolint and actionlint find nothing.
+
+#### What changed
+
+- <a id="tut-26.6-README.md-8ec9a0"></a>`README.md`: the section on GitHub, and the row of the workflows. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/dc4f71e920910eb8cdd5e2292b29175a619d4513/README.md).
+  - look at `## On GitHub`
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+```diff
+@@ -97,6 +97,19 @@ Both images mount the cache of the Hugging Face Hub of this machine at `/hf`, so
+ downloaded once. An image holds the packages of the lockfile at the time of its build, so build it again
+ after a change to `uv.lock`.
+ 
++## On GitHub
++
++Two workflows in `.github/workflows/` run on the machines of GitHub. `check.yaml` runs `just check`
++after every push to a branch and on every pull request. `docs.yaml` builds the docs site after every
++push to `main`, and GitHub Pages publishes it.
++
++A fork runs no workflow until its owner allows it. Make these two settings on the website of GitHub:
++
++1. Open the tab **Actions** of the fork, and turn the workflows on.
++2. Open **Settings**, then **Pages**. Under **Source**, choose **GitHub Actions**.
++
++The site is then at `https://OWNER.github.io/babykev/`, with the name of the account in place of OWNER.
++
+ ## What is here
+ 
+ | Path | What it is |
+@@ -119,6 +132,7 @@ after a change to `uv.lock`.
+ | `.python-version` | The version of Python that the project uses |
+ | `.gitignore` | The files that git does not track, for example `.venv` |
+ | `.pre-commit-config.yaml` | The hooks that git runs before each commit, once `just hook` installs them. The last runs `just check` |
++| `.github/workflows/` | The two workflows of GitHub: the gate after every push, and the docs site on GitHub Pages |
+ | `.yamllint` | The settings of yamllint, which `just lint-config` runs on every YAML file |
+ 
+ ## How the history is organised
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/dc4f71e920910eb8cdd5e2292b29175a619d4513). [The code after it](https://github.com/rahuldave/babykev/tree/dc4f71e920910eb8cdd5e2292b29175a619d4513).

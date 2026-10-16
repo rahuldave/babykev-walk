@@ -435,6 +435,93 @@ website:
                 href: read/tut-21.qmd#tut-21.4
               - text: "21.5 The README names the floor"
                 href: read/tut-21.qmd#tut-21.5
+          - section: "22 The mask, found and fixed"
+            href: read/tut-22.qmd
+            contents:
+              - text: "22.1 The picture of the mask of a small request"
+                href: read/tut-22.qmd#tut-22.1
+              - text: "22.2 hypothesis, in the group test"
+                href: read/tut-22.qmd#tut-22.2
+              - text: "22.3 No question sees another, for any shape of request"
+                href: read/tut-22.qmd#tut-22.3
+              - text: "22.4 No token sees a later token, for any shape of request"
+                href: read/tut-22.qmd#tut-22.4
+              - text: "22.5 What the mask allows is exactly the rule"
+                href: read/tut-22.qmd#tut-22.5
+              - text: "22.6 A question cannot see its sibling"
+                href: read/tut-22.qmd#tut-22.6
+              - text: "22.7 Packed questions answer as they would alone"
+                href: read/tut-22.qmd#tut-22.7
+              - text: "22.8 The order of questions does not matter"
+                href: read/tut-22.qmd#tut-22.8
+              - text: "22.9 A fix for the picture, wrong on purpose"
+                href: read/tut-22.qmd#tut-22.9
+              - text: "22.10 A token sees the state and its own question"
+                href: read/tut-22.qmd#tut-22.10
+              - text: "22.11 The README names the tests of the mask"
+                href: read/tut-22.qmd#tut-22.11
+          - section: "23 The system test"
+            href: read/tut-23.qmd
+            contents:
+              - text: "23.1 The smoke on the real model, as a test"
+                href: read/tut-23.qmd#tut-23.1
+              - text: "23.2 The test of the real model is marked system"
+                href: read/tut-23.qmd#tut-23.2
+              - text: "23.3 pytest knows the marker system"
+                href: read/tut-23.qmd#tut-23.3
+              - text: "23.4 just test leaves out the tests marked system"
+                href: read/tut-23.qmd#tut-23.4
+              - text: "23.5 The README names the test of the real model"
+                href: read/tut-23.qmd#tut-23.5
+          - section: "24 The model, explained"
+            href: read/tut-24.qmd
+            contents:
+              - text: "24.1 A page of the guide on the model"
+                href: read/tut-24.qmd#tut-24.1
+              - text: "24.2 A page of the guide on the mask"
+                href: read/tut-24.qmd#tut-24.2
+              - text: "24.3 The guide in the sidebar"
+                href: read/tut-24.qmd#tut-24.3
+              - text: "24.4 The front page names the guide"
+                href: read/tut-24.qmd#tut-24.4
+              - text: "24.5 The README names the guide"
+                href: read/tut-24.qmd#tut-24.5
+          - section: "25 Two images"
+            href: read/tut-25.qmd
+            contents:
+              - text: "25.1 The Dockerfile, with the run image"
+                href: read/tut-25.qmd#tut-25.1
+              - text: "25.2 The dev image"
+                href: read/tut-25.qmd#tut-25.2
+              - text: "25.3 What a build never copies into an image"
+                href: read/tut-25.qmd#tut-25.3
+              - text: "25.4 No example of hypothesis has a deadline"
+                href: read/tut-25.qmd#tut-25.4
+              - text: "25.5 The recipe image"
+                href: read/tut-25.qmd#tut-25.5
+              - text: "25.6 hadolint, in the group lint"
+                href: read/tut-25.qmd#tut-25.6
+              - text: "25.7 lint-config runs hadolint"
+                href: read/tut-25.qmd#tut-25.7
+              - text: "25.8 DL3008, declined with its reason"
+                href: read/tut-25.qmd#tut-25.8
+              - text: "25.9 The README names the two images"
+                href: read/tut-25.qmd#tut-25.9
+          - section: "26 GitHub"
+            href: read/tut-26.qmd
+            contents:
+              - text: "26.1 GitHub runs the gate after every push"
+                href: read/tut-26.qmd#tut-26.1
+              - text: "26.2 yamllint lets a key be a word such as on"
+                href: read/tut-26.qmd#tut-26.2
+              - text: "26.3 actionlint, in the group lint"
+                href: read/tut-26.qmd#tut-26.3
+              - text: "26.4 lint-config runs actionlint"
+                href: read/tut-26.qmd#tut-26.4
+              - text: "26.5 GitHub Pages publishes the docs"
+                href: read/tut-26.qmd#tut-26.5
+              - text: "26.6 The README names the workflows"
+                href: read/tut-26.qmd#tut-26.6
       - section: "Build it yourself"
         contents:
           - text: "0 Where we start"
@@ -858,6 +945,93 @@ website:
                 href: build/tut-21.qmd#tut-21.4
               - text: "21.5 The README names the floor"
                 href: build/tut-21.qmd#tut-21.5
+          - section: "22 The mask, found and fixed"
+            href: build/tut-22.qmd
+            contents:
+              - text: "22.1 The picture of the mask of a small request"
+                href: build/tut-22.qmd#tut-22.1
+              - text: "22.2 hypothesis, in the group test"
+                href: build/tut-22.qmd#tut-22.2
+              - text: "22.3 No question sees another, for any shape of request"
+                href: build/tut-22.qmd#tut-22.3
+              - text: "22.4 No token sees a later token, for any shape of request"
+                href: build/tut-22.qmd#tut-22.4
+              - text: "22.5 What the mask allows is exactly the rule"
+                href: build/tut-22.qmd#tut-22.5
+              - text: "22.6 A question cannot see its sibling"
+                href: build/tut-22.qmd#tut-22.6
+              - text: "22.7 Packed questions answer as they would alone"
+                href: build/tut-22.qmd#tut-22.7
+              - text: "22.8 The order of questions does not matter"
+                href: build/tut-22.qmd#tut-22.8
+              - text: "22.9 A fix for the picture, wrong on purpose"
+                href: build/tut-22.qmd#tut-22.9
+              - text: "22.10 A token sees the state and its own question"
+                href: build/tut-22.qmd#tut-22.10
+              - text: "22.11 The README names the tests of the mask"
+                href: build/tut-22.qmd#tut-22.11
+          - section: "23 The system test"
+            href: build/tut-23.qmd
+            contents:
+              - text: "23.1 The smoke on the real model, as a test"
+                href: build/tut-23.qmd#tut-23.1
+              - text: "23.2 The test of the real model is marked system"
+                href: build/tut-23.qmd#tut-23.2
+              - text: "23.3 pytest knows the marker system"
+                href: build/tut-23.qmd#tut-23.3
+              - text: "23.4 just test leaves out the tests marked system"
+                href: build/tut-23.qmd#tut-23.4
+              - text: "23.5 The README names the test of the real model"
+                href: build/tut-23.qmd#tut-23.5
+          - section: "24 The model, explained"
+            href: build/tut-24.qmd
+            contents:
+              - text: "24.1 A page of the guide on the model"
+                href: build/tut-24.qmd#tut-24.1
+              - text: "24.2 A page of the guide on the mask"
+                href: build/tut-24.qmd#tut-24.2
+              - text: "24.3 The guide in the sidebar"
+                href: build/tut-24.qmd#tut-24.3
+              - text: "24.4 The front page names the guide"
+                href: build/tut-24.qmd#tut-24.4
+              - text: "24.5 The README names the guide"
+                href: build/tut-24.qmd#tut-24.5
+          - section: "25 Two images"
+            href: build/tut-25.qmd
+            contents:
+              - text: "25.1 The Dockerfile, with the run image"
+                href: build/tut-25.qmd#tut-25.1
+              - text: "25.2 The dev image"
+                href: build/tut-25.qmd#tut-25.2
+              - text: "25.3 What a build never copies into an image"
+                href: build/tut-25.qmd#tut-25.3
+              - text: "25.4 No example of hypothesis has a deadline"
+                href: build/tut-25.qmd#tut-25.4
+              - text: "25.5 The recipe image"
+                href: build/tut-25.qmd#tut-25.5
+              - text: "25.6 hadolint, in the group lint"
+                href: build/tut-25.qmd#tut-25.6
+              - text: "25.7 lint-config runs hadolint"
+                href: build/tut-25.qmd#tut-25.7
+              - text: "25.8 DL3008, declined with its reason"
+                href: build/tut-25.qmd#tut-25.8
+              - text: "25.9 The README names the two images"
+                href: build/tut-25.qmd#tut-25.9
+          - section: "26 GitHub"
+            href: build/tut-26.qmd
+            contents:
+              - text: "26.1 GitHub runs the gate after every push"
+                href: build/tut-26.qmd#tut-26.1
+              - text: "26.2 yamllint lets a key be a word such as on"
+                href: build/tut-26.qmd#tut-26.2
+              - text: "26.3 actionlint, in the group lint"
+                href: build/tut-26.qmd#tut-26.3
+              - text: "26.4 lint-config runs actionlint"
+                href: build/tut-26.qmd#tut-26.4
+              - text: "26.5 GitHub Pages publishes the docs"
+                href: build/tut-26.qmd#tut-26.5
+              - text: "26.6 The README names the workflows"
+                href: build/tut-26.qmd#tut-26.6
 
 theme: cosmo
 css: styles.css

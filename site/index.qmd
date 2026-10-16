@@ -59,6 +59,11 @@ Each change explained, with the code to look at.
 - [19 Fixtures and the tiny model](read/tut-19.qmd)
 - [20 Unit tests of the model and the smoke](read/tut-20.qmd)
 - [21 Integration tests, and the floor](read/tut-21.qmd)
+- [22 The mask, found and fixed](read/tut-22.qmd)
+- [23 The system test](read/tut-23.qmd)
+- [24 The model, explained](read/tut-24.qmd)
+- [25 Two images](read/tut-25.qmd)
+- [26 GitHub](read/tut-26.qmd)
 
 ## Build it yourself
 
@@ -199,6 +204,11 @@ git config alias.check '!f() { i="$(git rev-parse --git-path check-index)" && { 
 - [19 Fixtures and the tiny model](build/tut-19.qmd)
 - [20 Unit tests of the model and the smoke](build/tut-20.qmd)
 - [21 Integration tests, and the floor](build/tut-21.qmd)
+- [22 The mask, found and fixed](build/tut-22.qmd)
+- [23 The system test](build/tut-23.qmd)
+- [24 The model, explained](build/tut-24.qmd)
+- [25 Two images](build/tut-25.qmd)
+- [26 GitHub](build/tut-26.qmd)
 
 ## The other walks
 

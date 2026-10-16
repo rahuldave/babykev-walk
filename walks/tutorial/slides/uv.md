@@ -24,19 +24,20 @@
 
 ```toml
 [project]
-dependencies = ["pydantic", "torch", "transformers", "peft", "safetensors"]
+dependencies = ["peft", "pydantic", "safetensors", "torch", "transformers"]
+
+[tool.uv]
+default-groups = "all"
 
 [dependency-groups]          # for working on the project, never shipped
-test = ["pytest", "pytest-cov", "hypothesis"]
-lint = ["ruff", "ty", "pre-commit", "yamllint", "validate-pyproject", "hadolint-bin"]
 docs = ["smalldocs"]
-dev  = [{include-group = "test"}, {include-group = "lint"}, {include-group = "docs"}]
+lint = ["actionlint-py", "hadolint-bin", "pre-commit", "ruff", "ty", "validate-pyproject", "yamllint"]
+test = ["hypothesis", "pytest", "pytest-cov"]
 ```
 
-`uv sync` gives a developer everything. `uv sync --no-dev` leaves out the groups, and installs only what the program needs to run. Later in the class, the program goes into a Docker
-image. An image is a file that holds the program, Python and every package the program needs, so another computer
-can run it. The image installs its packages with
-`uv sync --no-dev`.
+- `uv sync` gives a developer every group, because of `default-groups = "all"`
+- `--no-default-groups` leaves the groups out. The run image installs only what the program needs with it
+- `--no-default-groups --group docs` installs the package and one group. The workflow of the docs does that
 
 ---
 
