@@ -910,7 +910,7 @@ The patch changes one line of `pyproject.toml`, the line `description`.
 grep -n description pyproject.toml
 ```
 
-`grep` prints line 4, the new description.
+`grep` prints the new description, with its line number.
 
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
@@ -984,13 +984,14 @@ path.write_text(tomlkit.dumps(doc), encoding='utf-8')
 PY
 ```
 
-The patch adds the lines `license` and `license-files` after the line `readme = "README.md"`.
+The patch adds the lines `license` and `license-files` to the table `[project]`.
 
 ```bash
 grep -n license pyproject.toml
 ```
 
-`grep` prints lines 6 and 7.
+`grep` prints the two lines, with their numbers. The Build it yourself page sets them with a command, which can put
+them at the end of `[project]`, so the numbers can differ.
 
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
@@ -1062,7 +1063,7 @@ path.write_text(tomlkit.dumps(doc), encoding='utf-8')
 PY
 ```
 
-The patch adds the line `authors` after the line `license-files`.
+The patch adds the line `authors` to the table `[project]`.
 
 ```bash
 uv lock --check

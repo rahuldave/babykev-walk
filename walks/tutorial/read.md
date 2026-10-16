@@ -733,7 +733,7 @@ In `pyproject.toml`, the line `description` now says what babykev is.
 grep -n description pyproject.toml
 ```
 
-`grep` prints line 4, the new description.
+`grep` prints the new description, with its line number.
 
 #### What changed
 
@@ -773,7 +773,8 @@ In `pyproject.toml`, `license` and `license-files` now stand under `readme`.
 grep -n license pyproject.toml
 ```
 
-`grep` prints lines 6 and 7.
+`grep` prints the two lines, with their numbers. The Build it yourself page sets them with a command, which can put
+them at the end of `[project]`, so the numbers can differ.
 
 #### What changed
 

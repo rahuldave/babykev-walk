@@ -138,7 +138,7 @@ In `pyproject.toml`, the line `description` now says what babykev is.
 
 $ grep -n description pyproject.toml
 
-`grep` prints line 4, the new description.
+`grep` prints the new description, with its line number.
 
 files:
 - diff `pyproject.toml`: the description.
@@ -152,7 +152,7 @@ A package says under which licence others may use it. babykev's licence is kev's
 patch$ pyproject.toml
 
 ::: do
-The patch adds the lines `license` and `license-files` after the line `readme = "README.md"`.
+The patch adds the lines `license` and `license-files` to the table `[project]`.
 :::
 
 ::: watch
@@ -161,7 +161,8 @@ In `pyproject.toml`, `license` and `license-files` now stand under `readme`.
 
 $ grep -n license pyproject.toml
 
-`grep` prints lines 6 and 7.
+`grep` prints the two lines, with their numbers. The Build it yourself page sets them with a command, which can put
+them at the end of `[project]`, so the numbers can differ.
 
 files:
 - diff `pyproject.toml`: the licence, and the files a package carries.
@@ -174,7 +175,7 @@ A package names who wrote it. `authors` names Rahul Dave.
 patch$ pyproject.toml
 
 ::: do
-The patch adds the line `authors` after the line `license-files`.
+The patch adds the line `authors` to the table `[project]`.
 :::
 
 ::: watch
