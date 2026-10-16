@@ -1,0 +1,118 @@
+---
+title: "1.13 to 1.14 The README says how to begin"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Read the tutorial.** [Build it yourself](../build/tut-01.13-to-tut-01.14.qmd) is the other way to read this part.
+
+```bash
+just setup
+```
+
+The whole tutorial makes babykev a Python project before the README grows. uv is the tool that installs Python and
+the packages that babykev needs. `uv init` makes `pyproject.toml`, the file that describes the project, and the folder
+of the code, `src/babykev/`. `uv lock` writes `uv.lock`, the lockfile, which lists the exact version of each package.
+`pyproject.toml` gets a description, a licence and an author.
+
+`src/babykev/cli.py` gives the command `babykev` a help text, which says what babykev is and how to use it.
+`uv run babykev help` prints it. A `justfile` names the tasks of the project, as recipes. `just setup` installs the project,
+and `just help VERB` explains a recipe.
+
+The description and the help are documentation too, for a person who installs babykev or runs it. The README now says
+how to begin, and what each file is.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/9218f21a784277593cf6930e10389b04e41bf9d0). [The code after it](https://github.com/rahuldave/babykev/tree/7ad3a06605fadc9f34b5e2d8180145a3e53389a9).
+
+## 1.13 The README says how to start {#tut-01.13}
+
+A reader of the README cannot yet tell how to start. A section, "Start", says to run `just setup` first, and names
+`just`, `just help VERB` and the help of the program.
+
+A patch to [`README.md`](#tut-01.13-README.md-8ec9a0).
+
+In `README.md`, "Start" says to run `just setup` first, and then names `just`, `just help VERB` and
+`uv run babykev help`.
+
+```bash
+grep -n '^## ' README.md
+```
+
+`grep` prints the headings of the README, with "Start" among them.
+
+### What changed {#tut-01.13-what-changed-182c57}
+
+- <a id="tut-01.13-README.md-8ec9a0"></a>`README.md`: how to start. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/0d2e163cca5d3eeb9fc8f7223fddd8d7da735fde/README.md).
+  - look at ``Run `just setup` first. It installs Python and every dependency into `.venv`, exactly as `uv.lock` says.``
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+```diff
+@@ -51,6 +51,12 @@ Install two tools on your machine, uv and just. The project installs everything
+ | [uv](https://docs.astral.sh/uv/) | Python itself, the dependencies, and running the program |
+ | [just](https://just.systems/) | The tasks of the project. `just` lists them |
+ 
++## Start
++
++Run `just setup` first. It installs Python and every dependency into `.venv`, exactly as `uv.lock` says.
++Then `just` lists the tasks, `just help VERB` explains one, and `uv run babykev help` is the help of the
++program itself.
++
+ ## How the history is organised
+ 
+ The project is built in steps, on the branch `tutorial`. Each step has a tag, `tut-00`, `tut-01` and so
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0d2e163cca5d3eeb9fc8f7223fddd8d7da735fde). [The code after it](https://github.com/rahuldave/babykev/tree/0d2e163cca5d3eeb9fc8f7223fddd8d7da735fde).
+
+## 1.14 The README says what each file is {#tut-01.14}
+
+A reader still cannot tell what each file of the project is. A section, "What is here", has a table, with a row for
+each file.
+
+A patch to [`README.md`](#tut-01.14-README.md-8ec9a0).
+
+In `README.md`, "What is here" is a table of the files of the project, from `pyproject.toml` to `.gitignore`.
+
+```bash
+just setup
+uv run babykev help
+```
+
+Both commands of "Start" work. `just setup` prints `Resolved 1 package` and `Checked 1 package`, and
+`uv run babykev help` prints the help.
+
+### What changed {#tut-01.14-what-changed-182c57}
+
+- <a id="tut-01.14-README.md-8ec9a0"></a>`README.md`: a table of the files. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/7ad3a06605fadc9f34b5e2d8180145a3e53389a9/README.md).
+  - look at ``| `justfile` | Every task of the project, one recipe each. `just help` explains them |``
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+```diff
+@@ -57,6 +57,18 @@ Run `just setup` first. It installs Python and every dependency into `.venv`, ex
+ Then `just` lists the tasks, `just help VERB` explains one, and `uv run babykev help` is the help of the
+ program itself.
+ 
++## What is here
++
++| Path | What it is |
++|---|---|
++| `pyproject.toml`, `uv.lock` | The project: its name, its Python, its dependencies, and the exact versions to install |
++| `src/babykev/` | The code. `cli.py` is the command `babykev` |
++| `justfile` | Every task of the project, one recipe each. `just help` explains them |
++| `README.md` | This file |
++| `LICENSE`, `NOTICE` | The licence, and the credit to kev |
++| `.python-version` | The version of Python that the project uses |
++| `.gitignore` | The files that git does not track, for example `.venv` |
++
+ ## How the history is organised
+ 
+ The project is built in steps, on the branch `tutorial`. Each step has a tag, `tut-00`, `tut-01` and so
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7ad3a06605fadc9f34b5e2d8180145a3e53389a9). [The code after it](https://github.com/rahuldave/babykev/tree/7ad3a06605fadc9f34b5e2d8180145a3e53389a9).

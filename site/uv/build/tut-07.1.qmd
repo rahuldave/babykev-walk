@@ -1,0 +1,93 @@
+---
+title: "7.1 A second group, for the checks"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Build it yourself.** [Read the tutorial](../read/tut-07.1.qmd) is the other way to read this part.
+
+This part does not start where the part before it ends, because the walk skips some changes. This command puts the files that this part starts from in place of yours. Run it, and then go on:
+
+```bash
+git restore --source 96502df0a92f --staged -- :/ && git restore --source 910716f0cec7 --staged --worktree -- :/
+```
+
+If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
+
+```bash
+git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 910716f0cec7 --staged --worktree -- :/
+```
+
+```bash
+just setup
+```
+
+The whole tutorial then brings in the contract, `api.py`, which says what a request and an answer are. Then come its
+tests, the code that turns the probabilities of the model into answers, and the fixes of two bugs in it. ruff
+formats the code and checks it, and a user of babykev does not need it. So ruff starts a second group, `lint`.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/910716f0cec79c3f31afb34cf3a2593f0cd51315). [The code after it](https://github.com/rahuldave/babykev/tree/5085d2a6ae47a58d6259dfa06679bb2a9be692e1).
+
+## 7.1 Ruff, in the group lint {#tut-07.1}
+
+Nothing formats the code yet. ruff is a formatter and a linter in one program. The formatter changes how the code
+looks, and never what it does. The linter comes in the next part of the tutorial. ruff is for working on babykev,
+and a user of the package does not need it. So it goes in a second dependency group, `lint`, next to the group
+`test`.
+
+```bash
+uv add --group lint ruff
+```
+
+`uv add` prints `Resolved 15 packages`, and installs `ruff==0.17.1`. ruff is one program, and needs no other
+package.
+
+If a newer ruff is out, `uv add` writes its version as the lower bound. That line then differs from the one here,
+and so does `uv.lock`. Only the versions differ.
+
+```bash
+uv run ruff --version
+uv run ruff format --check
+```
+
+`uv run ruff --version` prints `ruff 0.17.1`. `ruff format --check` changes nothing. It prints what it would
+change in each file, and ends with `3 files would be reformatted, 3 files already formatted`, and exit code 1. The
+three files are `src/babykev/api.py`, `src/babykev/cli.py` and `tests/unit/test_api.py`. By default, ruff lets a
+line run to 88 characters. Line 19 of `cli.py` has 94 characters, so ruff would split it.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 5085d2a6ae47
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 910716f0cec7 --staged -- :/ && git restore --source 5085d2a6ae47 --staged --worktree -- :/
+```
+
+### What changed {#tut-07.1-what-changed-182c57}
+
+- <a id="tut-07.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the group `lint`, with ruff. 3 lines added. It comes from `uv add --group lint ruff`. [The file](https://github.com/rahuldave/babykev/blob/5085d2a6ae47a58d6259dfa06679bb2a9be692e1/pyproject.toml).
+  - look at `"ruff>=0.17.1",`
+- <a id="tut-07.1-uv.lock-8356d8"></a>`uv.lock`: ruff, at its exact version. 29 lines added. It comes from `uv add --group lint ruff`. [The file](https://github.com/rahuldave/babykev/blob/5085d2a6ae47a58d6259dfa06679bb2a9be692e1/uv.lock).
+
+<details><summary>The diff that <code>uv add --group lint ruff</code> makes in <code>pyproject.toml</code></summary>
+
+```diff
+@@ -23,6 +23,9 @@ build-backend = "uv_build"
+ default-groups = "all"
+ 
+ [dependency-groups]
++lint = [
++    "ruff>=0.17.1",
++]
+ test = [
+     "pytest>=9.1.1",
+     "pytest-cov>=7.1.0",
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/5085d2a6ae47a58d6259dfa06679bb2a9be692e1). [The code after it](https://github.com/rahuldave/babykev/tree/5085d2a6ae47a58d6259dfa06679bb2a9be692e1).

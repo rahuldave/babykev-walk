@@ -1,0 +1,89 @@
+---
+title: "3.1 The first dependency, pydantic"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Build it yourself.** [Read the tutorial](../read/tut-03.1.qmd) is the other way to read this part.
+
+This part does not start where the part before it ends, because the walk skips some changes. This command puts the files that this part starts from in place of yours. Run it, and then go on:
+
+```bash
+git restore --source b0840709e371 --staged -- :/ && git restore --source 4640589d80e4 --staged --worktree -- :/
+```
+
+If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
+
+```bash
+git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 4640589d80e4 --staged --worktree -- :/
+```
+
+```bash
+just setup
+```
+
+The whole tutorial then adds five tests of the command. pytest-cov, which measures which
+lines the tests run, joins pytest in the group `test`. babykev itself needs pydantic to run, so it goes into the
+dependencies of the project, and into no group.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/4640589d80e4f224a4b2c1fd9567e952f564f102). [The code after it](https://github.com/rahuldave/babykev/tree/96502df0a92f6f7090d6f624cda901a271dac9a7).
+
+## 3.1 Pydantic, the first dependency {#tut-03.1}
+
+The contract is written with pydantic, and babykev does not have it yet. pydantic checks that data has the shape that
+a class describes. `uv add` writes the package into `dependencies`, because a package of babykev needs it to run.
+
+```bash
+uv add pydantic
+```
+
+`uv add pydantic` prints `Resolved 14 packages`, and lists what it installed. It installed pydantic and the four
+packages that pydantic needs, `annotated-types`, `pydantic-core`, `typing-extensions` and `typing-inspection`.
+
+If a newer pydantic is out, `uv add` writes its version as the lower bound. Only the versions differ from the ones
+here.
+
+```bash
+uv tree --depth 1
+```
+
+`uv tree` prints the dependencies as a tree. `--depth 1` keeps the packages that babykev names itself. It prints
+`pydantic v2.14.1`, and the group `test` with pytest and pytest-cov.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 96502df0a92f
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 4640589d80e4 --staged -- :/ && git restore --source 96502df0a92f --staged --worktree -- :/
+```
+
+### What changed {#tut-03.1-what-changed-182c57}
+
+- <a id="tut-03.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the first dependency. `>=2.14.1` is the version that `uv add` found, as the lowest version to accept. 3 lines added, 1 removed. It comes from `uv add pydantic`. [The file](https://github.com/rahuldave/babykev/blob/96502df0a92f6f7090d6f624cda901a271dac9a7/pyproject.toml).
+  - look at `"pydantic>=2.14.1",`
+- <a id="tut-03.1-uv.lock-8356d8"></a>`uv.lock`: pydantic and the four packages it needs, each with its exact version. 136 lines added. It comes from `uv add pydantic`. [The file](https://github.com/rahuldave/babykev/blob/96502df0a92f6f7090d6f624cda901a271dac9a7/uv.lock).
+
+<details><summary>The diff that <code>uv add pydantic</code> makes in <code>pyproject.toml</code></summary>
+
+```diff
+@@ -7,7 +7,9 @@ license = "Apache-2.0"
+ license-files = ["LICENSE", "NOTICE"]
+ authors = [{ name = "Rahul Dave" }]
+ requires-python = ">=3.13"
+-dependencies = []
++dependencies = [
++    "pydantic>=2.14.1",
++]
+ 
+ [project.scripts]
+ babykev = "babykev.cli:main"
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/96502df0a92f6f7090d6f624cda901a271dac9a7). [The code after it](https://github.com/rahuldave/babykev/tree/96502df0a92f6f7090d6f624cda901a271dac9a7).

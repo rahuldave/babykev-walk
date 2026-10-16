@@ -9,7 +9,7 @@ title: "17 Types"
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
 
 ```bash
-git rm -rq --cached --ignore-unmatch -- :/ && git restore --source f41d9c4b5914 --staged --worktree -- :/
+git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 056fe2ced73f --staged --worktree -- :/
 ```
 
 ```bash
@@ -23,7 +23,7 @@ reading the types, and the linter asks only that they be there. A type checker r
 call and each value with the types that the code and its libraries declare. ty is a type checker. It finds two
 places in `model.py`, and both have one cause, in torch.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/f41d9c4b591493c35d77e92d7d12d63260c69231). [The code after it](https://github.com/rahuldave/babykev/tree/42f75dc784aa7fdfa6981c1f4defd0c798cc3b08).
+[The code before this part](https://github.com/rahuldave/babykev/tree/056fe2ced73ff8568dfc329555795524c2465eb1). [The code after it](https://github.com/rahuldave/babykev/tree/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9).
 
 ## 17.1 ty, in the group lint {#tut-17.1}
 
@@ -44,20 +44,20 @@ It prints `ty 0.0.88`, or a newer version. A newer ty can find more, or less, th
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 50011dc045ad
+git check aaa8fe6d7d1d
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source f41d9c4b5914 --staged -- :/ && git restore --source 50011dc045ad --staged --worktree -- :/
+git restore --source 056fe2ced73f --staged -- :/ && git restore --source aaa8fe6d7d1d --staged --worktree -- :/
 ```
 
 ### What changed {#tut-17.1-what-changed-182c57}
 
-- <a id="tut-17.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: ty, in the group `lint`. 1 line added. It comes from `uv add --group lint ty`. [The file](https://github.com/rahuldave/babykev/blob/50011dc045ad666fe0c04f1f3eab9f531ea13cee/pyproject.toml).
+- <a id="tut-17.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: ty, in the group `lint`. 1 line added. It comes from `uv add --group lint ty`. [The file](https://github.com/rahuldave/babykev/blob/aaa8fe6d7d1dfbca863fe23dc0d660dd10d36c2b/pyproject.toml).
   - look at `"ty>=0.0.88",`
-- <a id="tut-17.1-uv.lock-8356d8"></a>`uv.lock`: the exact version of ty. 27 lines added. It comes from `uv add --group lint ty`. [The file](https://github.com/rahuldave/babykev/blob/50011dc045ad666fe0c04f1f3eab9f531ea13cee/uv.lock).
+- <a id="tut-17.1-uv.lock-8356d8"></a>`uv.lock`: the exact version of ty. 27 lines added. It comes from `uv add --group lint ty`. [The file](https://github.com/rahuldave/babykev/blob/aaa8fe6d7d1dfbca863fe23dc0d660dd10d36c2b/uv.lock).
 
 <details><summary>The diff that <code>uv add --group lint ty</code> makes in <code>pyproject.toml</code></summary>
 
@@ -74,7 +74,7 @@ git restore --source f41d9c4b5914 --staged -- :/ && git restore --source 50011dc
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/50011dc045ad666fe0c04f1f3eab9f531ea13cee). [The code after it](https://github.com/rahuldave/babykev/tree/50011dc045ad666fe0c04f1f3eab9f531ea13cee).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/aaa8fe6d7d1dfbca863fe23dc0d660dd10d36c2b). [The code after it](https://github.com/rahuldave/babykev/tree/aaa8fe6d7d1dfbca863fe23dc0d660dd10d36c2b).
 
 ## 17.2 The recipe types {#tut-17.2}
 
@@ -83,7 +83,7 @@ git restore --source f41d9c4b5914 --staged -- :/ && git restore --source 50011dc
 Apply the patch to [`justfile`](#tut-17.2-justfile-424f0b), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/b60eb5b2b67b3c8e94b5574d767be3905437e8f0.diff | git apply --include=justfile
+curl -fsSL https://github.com/rahuldave/babykev/commit/7866ef7f88d528e2e7ee04d55c68e56ce461cff1.diff | git apply --include=justfile
 ```
 
 The patch adds the recipe `types` in the group `quality`, between `lint-config` and `test`.
@@ -119,18 +119,18 @@ into an attribute. Its example has a `value: int` in a base class and a `value: 
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check b60eb5b2b67b
+git check 7866ef7f88d5
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 50011dc045ad --staged -- :/ && git restore --source b60eb5b2b67b --staged --worktree -- :/
+git restore --source aaa8fe6d7d1d --staged -- :/ && git restore --source 7866ef7f88d5 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-17.2-what-changed-182c57}
 
-- <a id="tut-17.2-justfile-424f0b"></a>`justfile`: the recipe `types`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/b60eb5b2b67b3c8e94b5574d767be3905437e8f0/justfile).
+- <a id="tut-17.2-justfile-424f0b"></a>`justfile`: the recipe `types`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/7866ef7f88d528e2e7ee04d55c68e56ce461cff1/justfile).
   - look at `types *args:`
 
 <details open><summary>The patch to <code>justfile</code></summary>
@@ -153,7 +153,7 @@ git restore --source 50011dc045ad --staged -- :/ && git restore --source b60eb5b
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/b60eb5b2b67b3c8e94b5574d767be3905437e8f0). [The code after it](https://github.com/rahuldave/babykev/tree/b60eb5b2b67b3c8e94b5574d767be3905437e8f0).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7866ef7f88d528e2e7ee04d55c68e56ce461cff1). [The code after it](https://github.com/rahuldave/babykev/tree/7866ef7f88d528e2e7ee04d55c68e56ce461cff1).
 
 ## 17.3 PointerHead.forward, past ty {#tut-17.3}
 
@@ -177,7 +177,7 @@ line. Each other rule still checks the line. A comment above the method says why
 Apply the patch to [`src/babykev/model.py`](#tut-17.3-src-babykev-model.py-a86a0b), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/8b279381e0752d78b86fe87f7334656163a12a93.diff | git apply --include=src/babykev/model.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/d5312a3ec2ed265ca4dbf5c7dd2492c686024696.diff | git apply --include=src/babykev/model.py
 ```
 
 In `src/babykev/model.py`, the patch adds the comment at the end of the line `def forward(` of `PointerHead`, and two
@@ -196,18 +196,18 @@ or of the return type.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 8b279381e075
+git check d5312a3ec2ed
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source b60eb5b2b67b --staged -- :/ && git restore --source 8b279381e075 --staged --worktree -- :/
+git restore --source 7866ef7f88d5 --staged -- :/ && git restore --source d5312a3ec2ed --staged --worktree -- :/
 ```
 
 ### What changed {#tut-17.3-what-changed-182c57}
 
-- <a id="tut-17.3-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the rule off on the `forward` of `PointerHead`, with the reason. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/8b279381e0752d78b86fe87f7334656163a12a93/src/babykev/model.py).
+- <a id="tut-17.3-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the rule off on the `forward` of `PointerHead`, with the reason. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/d5312a3ec2ed265ca4dbf5c7dd2492c686024696/src/babykev/model.py).
   - look at `    # tensors accepts fewer calls, so ty refuses it. torch only calls forward, and never sets it`
 
 <details open><summary>The patch to <code>src/babykev/model.py</code></summary>
@@ -228,7 +228,7 @@ git restore --source b60eb5b2b67b --staged -- :/ && git restore --source 8b27938
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/8b279381e0752d78b86fe87f7334656163a12a93). [The code after it](https://github.com/rahuldave/babykev/tree/8b279381e0752d78b86fe87f7334656163a12a93).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d5312a3ec2ed265ca4dbf5c7dd2492c686024696). [The code after it](https://github.com/rahuldave/babykev/tree/d5312a3ec2ed265ca4dbf5c7dd2492c686024696).
 
 ## 17.4 DecisionModel.forward, past ty {#tut-17.4}
 
@@ -238,7 +238,7 @@ the first.
 Apply the patch to [`src/babykev/model.py`](#tut-17.4-src-babykev-model.py-a86a0b), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/655fda2b4bddefc75b11b224d69769cd11f3eba3.diff | git apply --include=src/babykev/model.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/f14349138824af0b107742451814b1234e72b34a.diff | git apply --include=src/babykev/model.py
 ```
 
 In `src/babykev/model.py`, the patch adds the comment at the end of the line `def forward(` of `DecisionModel`, and
@@ -253,18 +253,18 @@ just types
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 655fda2b4bdd
+git check f14349138824
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 8b279381e075 --staged -- :/ && git restore --source 655fda2b4bdd --staged --worktree -- :/
+git restore --source d5312a3ec2ed --staged -- :/ && git restore --source f14349138824 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-17.4-what-changed-182c57}
 
-- <a id="tut-17.4-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the rule off on the `forward` of `DecisionModel`, with the reason. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/655fda2b4bddefc75b11b224d69769cd11f3eba3/src/babykev/model.py).
+- <a id="tut-17.4-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the rule off on the `forward` of `DecisionModel`, with the reason. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/f14349138824af0b107742451814b1234e72b34a/src/babykev/model.py).
   - look at `    # As in PointerHead, nn.Module declares forward as an attribute, and torch never sets it`
 
 <details open><summary>The patch to <code>src/babykev/model.py</code></summary>
@@ -284,7 +284,7 @@ git restore --source 8b279381e075 --staged -- :/ && git restore --source 655fda2
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/655fda2b4bddefc75b11b224d69769cd11f3eba3). [The code after it](https://github.com/rahuldave/babykev/tree/655fda2b4bddefc75b11b224d69769cd11f3eba3).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/f14349138824af0b107742451814b1234e72b34a). [The code after it](https://github.com/rahuldave/babykev/tree/f14349138824af0b107742451814b1234e72b34a).
 
 ## 17.5 The gate checks the types {#tut-17.5}
 
@@ -294,7 +294,7 @@ through the hook. It goes after the linter, and before the tests.
 Apply the patch to [`justfile`](#tut-17.5-justfile-424f0b), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/42f75dc784aa7fdfa6981c1f4defd0c798cc3b08.diff | git apply --include=justfile
+curl -fsSL https://github.com/rahuldave/babykev/commit/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9.diff | git apply --include=justfile
 ```
 
 In the recipe `check`, the patch adds `just types` under `just lint`, and names the types in the comment above the
@@ -312,18 +312,18 @@ exit code 0. A call that does not match the types now stops `git commit`.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 42f75dc784aa
+git check d4dd1c8d3d3c
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 655fda2b4bdd --staged -- :/ && git restore --source 42f75dc784aa --staged --worktree -- :/
+git restore --source f14349138824 --staged -- :/ && git restore --source d4dd1c8d3d3c --staged --worktree -- :/
 ```
 
 ### What changed {#tut-17.5-what-changed-182c57}
 
-- <a id="tut-17.5-justfile-424f0b"></a>`justfile`: ty, in the gate. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/42f75dc784aa7fdfa6981c1f4defd0c798cc3b08/justfile).
+- <a id="tut-17.5-justfile-424f0b"></a>`justfile`: ty, in the gate. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9/justfile).
   - look at `    just types`
 
 <details open><summary>The patch to <code>justfile</code></summary>
@@ -350,4 +350,4 @@ git restore --source 655fda2b4bdd --staged -- :/ && git restore --source 42f75dc
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/42f75dc784aa7fdfa6981c1f4defd0c798cc3b08). [The code after it](https://github.com/rahuldave/babykev/tree/42f75dc784aa7fdfa6981c1f4defd0c798cc3b08).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9). [The code after it](https://github.com/rahuldave/babykev/tree/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9).

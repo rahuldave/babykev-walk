@@ -1,0 +1,350 @@
+---
+title: "5.1 to 5.7 From a request to text for the model"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Read the tutorial.** [Build it yourself](../build/tut-05.1-to-tut-05.7.qmd) is the other way to read this part.
+
+```bash
+just setup
+```
+
+The model reads text, and picks between options. So each question becomes a list of options. A noul becomes `no` and
+`yes`. A choice becomes one option for each name in its `criteria`, and a score becomes one option for each of its
+levels. `api.py` already does this, because the whole file came in one move, in the section on the contract in
+pydantic. The moves of this section add the tests that show it.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/1fef13ae49e24d280d05c250289c41d5636feff7). [The code after it](https://github.com/rahuldave/babykev/tree/8368a8202dab8159f95043310e2bf22a24c1e474).
+
+## 5.1 render turns JSON into text {#tut-05.1}
+
+The model reads text, and the state of a request is JSON. `render` writes JSON as text. One test gives `render` nine
+values, from `None` to a list of objects, and checks the text of each.
+
+A patch to [`tests/unit/test_api.py`](#tut-05.1-tests-unit-test_api.py-58d97c).
+
+At the end of `tests/unit/test_api.py`, the parametrized test lists nine pairs, each a value and its text.
+
+```bash
+just test -k render
+```
+
+pytest prints `9 passed`, one for each value.
+
+### What changed {#tut-05.1-what-changed-182c57}
+
+- <a id="tut-05.1-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: nine values, and their text. 26 lines added. [The file](https://github.com/rahuldave/babykev/blob/9f861048b50c3705e7e1195ccbd90a7b01e60180/tests/unit/test_api.py).
+  - look at `def test_render_flattens_json_into_text(value, text):`
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -12,6 +12,7 @@ from babykev.api import (
+     Noul,
+     Score,
+     SystemOneRequest,
++    render,
+     to_record,
+ )
+ 
+@@ -111,3 +112,28 @@ def test_score_with_one_level_is_rejected():
+     """A scale needs at least two levels."""
+     with pytest.raises(ValidationError):
+         Score(type="score", instructions="How firm?", criteria=["Soft"])
++
++
++# Rendering
++
++
++@pytest.mark.parametrize(
++    ("value", "text"),
++    [
++        (None, ""),
++        ("Brie", "Brie"),
++        (3, "3"),
++        (2.5, "2.5"),
++        (True, "True"),
++        (["creamy", "soft"], "- creamy\n- soft"),
++        ({"cheese": "Brie", "age": 4}, "cheese: Brie\nage: 4"),
++        (
++            {"cheese": "Brie", "notes": {"texture": ["creamy", "soft"]}},
++            "cheese: Brie\nnotes:\n  texture:\n    - creamy\n    - soft",
++        ),
++        ([{"role": "customer", "content": "hello"}], "- role: customer\n  content: hello"),
++    ],
++)
++def test_render_flattens_json_into_text(value, text):
++    """Strings, numbers, lists and objects all become the text the model reads."""
++    assert render(value) == text
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9f861048b50c3705e7e1195ccbd90a7b01e60180). [The code after it](https://github.com/rahuldave/babykev/tree/9f861048b50c3705e7e1195ccbd90a7b01e60180).
+
+## 5.2 An option has a description only when it has one {#tut-05.2}
+
+An option is its name, followed by its description when it has one. `option_text` writes it. The test gives it no
+description, an empty one, and a real one.
+
+A patch to [`tests/unit/test_api.py`](#tut-05.2-tests-unit-test_api.py-58d97c).
+
+At the end of `tests/unit/test_api.py`, the test gives `option_text` three cases.
+
+```bash
+just test -k option_text
+```
+
+pytest prints `3 passed`.
+
+### What changed {#tut-05.2-what-changed-182c57}
+
+- <a id="tut-05.2-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: three cases of an option. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/e6270727deb4467393c6c7b73cfaf0908392387f/tests/unit/test_api.py).
+  - look at `def test_option_text_adds_a_description_only_when_there_is_one(name, description, text):`
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -12,6 +12,7 @@ from babykev.api import (
+     Noul,
+     Score,
+     SystemOneRequest,
++    option_text,
+     render,
+     to_record,
+ )
+@@ -137,3 +138,16 @@ def test_score_with_one_level_is_rejected():
+ def test_render_flattens_json_into_text(value, text):
+     """Strings, numbers, lists and objects all become the text the model reads."""
+     assert render(value) == text
++
++
++@pytest.mark.parametrize(
++    ("name", "description", "text"),
++    [
++        ("cow", None, "cow"),
++        ("cow", "", "cow"),
++        ("mixed", "More than one kind of milk", "mixed: More than one kind of milk"),
++    ],
++)
++def test_option_text_adds_a_description_only_when_there_is_one(name, description, text):
++    """An option is its name, followed by its description when it has one."""
++    assert option_text(name, description) == text
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e6270727deb4467393c6c7b73cfaf0908392387f). [The code after it](https://github.com/rahuldave/babykev/tree/e6270727deb4467393c6c7b73cfaf0908392387f).
+
+## 5.3 A record keeps the state and the order of questions {#tut-05.3}
+
+`to_record` turns a request into a record, the text and options that the model reads, and the metadata that maps
+them back. The test checks that the state is rendered once, and that the questions keep their order.
+
+A patch to [`tests/unit/test_api.py`](#tut-05.3-tests-unit-test_api.py-58d97c).
+
+At the end of `tests/unit/test_api.py`, the test reads `record["state"]` and the order of the questions.
+
+```bash
+just test -k keeps_the_state
+```
+
+pytest prints `1 passed`.
+
+### What changed {#tut-05.3-what-changed-182c57}
+
+- <a id="tut-05.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the state, and the order. 15 lines added. [The file](https://github.com/rahuldave/babykev/blob/3d272bd2edaf22b970b8888429dd23940ffd3f17/tests/unit/test_api.py).
+  - look at `assert [m["id"] for m in meta] == ["blue", "milk", "firmness"]`
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -151,3 +151,18 @@ def test_render_flattens_json_into_text(value, text):
+ def test_option_text_adds_a_description_only_when_there_is_one(name, description, text):
+     """An option is its name, followed by its description when it has one."""
+     assert option_text(name, description) == text
++
++
++# From a request to a record
++
++
++def test_record_keeps_the_state_and_the_order_of_questions():
++    """The state is rendered once and the questions stay in request order."""
++    record, meta = to_record(cheese_request())
++    assert record["state"] == "cheese: Roquefort\norigin: France"
++    assert [m["id"] for m in meta] == ["blue", "milk", "firmness"]
++    assert [q["instr"] for q in record["questions"]] == [
++        "Is this a blue cheese?",
++        "Which milk?",
++        "How firm?",
++    ]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3d272bd2edaf22b970b8888429dd23940ffd3f17). [The code after it](https://github.com/rahuldave/babykev/tree/3d272bd2edaf22b970b8888429dd23940ffd3f17).
+
+## 5.4 A noul becomes no, then yes {#tut-05.4}
+
+A noul has two options, `no` first and `yes` second. The code counts the options from 0, so `yes` is option 1. The
+answer to a noul is the probability of option 1.
+
+A patch to [`tests/unit/test_api.py`](#tut-05.4-tests-unit-test_api.py-58d97c).
+
+At the end of `tests/unit/test_api.py`, the test checks the options `["no", "yes"]`.
+
+```bash
+just test -k no_then_yes
+```
+
+pytest prints `1 passed`.
+
+### What changed {#tut-05.4-what-changed-182c57}
+
+- <a id="tut-05.4-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the two options of a noul. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/7dee26abd961a5a85d897f82332ae46e556e2f80/tests/unit/test_api.py).
+  - look at `assert record["questions"][0]["options"] == ["no", "yes"]`
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -166,3 +166,10 @@ def test_record_keeps_the_state_and_the_order_of_questions():
+         "Which milk?",
+         "How firm?",
+     ]
++
++
++def test_noul_becomes_no_then_yes():
++    """Option 0 is no and option 1 is yes, so the answer is the probability of option 1."""
++    record, meta = to_record(cheese_request())
++    assert record["questions"][0]["options"] == ["no", "yes"]
++    assert meta[0] == {"id": "blue", "type": "noul"}
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7dee26abd961a5a85d897f82332ae46e556e2f80). [The code after it](https://github.com/rahuldave/babykev/tree/7dee26abd961a5a85d897f82332ae46e556e2f80).
+
+## 5.5 The criteria of a noul describe no and yes {#tut-05.5}
+
+A noul can say what yes and no mean, under `true` and `false`. They become the descriptions of the two options.
+
+A patch to [`tests/unit/test_api.py`](#tut-05.5-tests-unit-test_api.py-58d97c).
+
+At the end of `tests/unit/test_api.py`, the test expects `"no: It has none"` and `"yes: It has blue veins"`.
+
+```bash
+just test -k describe_no
+```
+
+pytest prints `1 passed`.
+
+### What changed {#tut-05.5-what-changed-182c57}
+
+- <a id="tut-05.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the descriptions of no and yes. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/f9b390d64cc717326b28f9c7a6adbb88de59363f/tests/unit/test_api.py).
+  - look at `def test_noul_criteria_describe_no_and_yes():`
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -173,3 +173,12 @@ def test_noul_becomes_no_then_yes():
+     record, meta = to_record(cheese_request())
+     assert record["questions"][0]["options"] == ["no", "yes"]
+     assert meta[0] == {"id": "blue", "type": "noul"}
++
++
++def test_noul_criteria_describe_no_and_yes():
++    """The criteria under `false` and `true` become the descriptions of no and yes."""
++    criteria = {"true": "It has blue veins", "false": "It has none"}
++    question = {"type": "noul", "instructions": "Is it blue?", "criteria": criteria}
++    request = SystemOneRequest.model_validate({"state": "Brie", "questions": {"blue": question}})
++    record, _ = to_record(request)
++    assert record["questions"][0]["options"] == ["no: It has none", "yes: It has blue veins"]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/f9b390d64cc717326b28f9c7a6adbb88de59363f). [The code after it](https://github.com/rahuldave/babykev/tree/f9b390d64cc717326b28f9c7a6adbb88de59363f).
+
+## 5.6 A choice becomes one option per criterion {#tut-05.6}
+
+A choice has one option for each criterion, in order, and the metadata keeps their names.
+
+A patch to [`tests/unit/test_api.py`](#tut-05.6-tests-unit-test_api.py-58d97c).
+
+At the end of `tests/unit/test_api.py`, the test expects four options, the last with its description.
+
+```bash
+just test -k one_option_per_criterion
+```
+
+pytest prints `1 passed`.
+
+### What changed {#tut-05.6-what-changed-182c57}
+
+- <a id="tut-05.6-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the options of a choice. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/0930c8de69e9710470eb60380b99cae5c3e82558/tests/unit/test_api.py).
+  - look at `def test_choice_becomes_one_option_per_criterion_in_order():`
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -182,3 +182,15 @@ def test_noul_criteria_describe_no_and_yes():
+     request = SystemOneRequest.model_validate({"state": "Brie", "questions": {"blue": question}})
+     record, _ = to_record(request)
+     assert record["questions"][0]["options"] == ["no: It has none", "yes: It has blue veins"]
++
++
++def test_choice_becomes_one_option_per_criterion_in_order():
++    """Options keep the order of the criteria, and the metadata remembers their names."""
++    record, meta = to_record(cheese_request())
++    assert record["questions"][1]["options"] == [
++        "cow",
++        "goat",
++        "sheep",
++        "mixed: More than one kind of milk",
++    ]
++    assert meta[1] == {"id": "milk", "type": "choice", "keys": ["cow", "goat", "sheep", "mixed"]}
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0930c8de69e9710470eb60380b99cae5c3e82558). [The code after it](https://github.com/rahuldave/babykev/tree/0930c8de69e9710470eb60380b99cae5c3e82558).
+
+## 5.7 A score becomes one option per level {#tut-05.7}
+
+A score has one option for each level, in order. Its legend maps the number of each level to its name.
+
+A patch to [`tests/unit/test_api.py`](#tut-05.7-tests-unit-test_api.py-58d97c).
+
+At the end of `tests/unit/test_api.py`, the test checks the options and the legend of `firmness`.
+
+```bash
+just test -k one_option_per_level
+```
+
+pytest prints `1 passed`.
+
+### What changed {#tut-05.7-what-changed-182c57}
+
+- <a id="tut-05.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the levels, and the legend. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/8368a8202dab8159f95043310e2bf22a24c1e474/tests/unit/test_api.py).
+  - look at `def test_score_becomes_one_option_per_level_with_a_legend():`
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -194,3 +194,10 @@ def test_choice_becomes_one_option_per_criterion_in_order():
+         "mixed: More than one kind of milk",
+     ]
+     assert meta[1] == {"id": "milk", "type": "choice", "keys": ["cow", "goat", "sheep", "mixed"]}
++
++
++def test_score_becomes_one_option_per_level_with_a_legend():
++    """Options are the levels in order, and the legend maps each index to its level."""
++    record, meta = to_record(cheese_request())
++    assert record["questions"][2]["options"] == FIRMNESS
++    assert meta[2]["legend"] == {"0": "Soft", "1": "Semi-soft", "2": "Semi-hard", "3": "Hard"}
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/8368a8202dab8159f95043310e2bf22a24c1e474). [The code after it](https://github.com/rahuldave/babykev/tree/8368a8202dab8159f95043310e2bf22a24c1e474).

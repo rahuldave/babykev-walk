@@ -7340,20 +7340,64 @@ just setup
 
 The reference exists only as Markdown that `just docs module` prints in a terminal. A reader wants a site, with a
 front page that says what babykev is, and a page of reference for each module. smalldocs builds that site from the
-same docstrings and docments. The build writes its files into `docs/`, and git must not track them. Then the site gets
-its settings and its front page, and the README names it.
+same docstrings and docments. Git first learns to ignore the files that a build writes into `docs/`. Then the recipe
+`docs` builds the site, the site gets its settings and its front page, and the README names it.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/005b87bdfa2e70c6ceca52dc07197c69702f00be). [The code after it](https://github.com/rahuldave/babykev/tree/86c948e639d637a674b3d073de74e3f2c0a6cd6a).
+[The code before this part](https://github.com/rahuldave/babykev/tree/005b87bdfa2e70c6ceca52dc07197c69702f00be). [The code after it](https://github.com/rahuldave/babykev/tree/e1efb48492d7223fd0442906d2e55a83e0db481e).
 
 <a id="tut-14.1"></a>
 
-### 14.1 Just docs, alone, builds the site
+### 14.1 Git ignores what a build of the docs makes
+
+smalldocs builds the site, and the build writes three things into `docs/`. `docs/_site/` is the site, as HTML.
+`docs/api/` holds the reference pages, as Markdown, and `docs/_symbols.json` holds the names that a link can point
+to. A build makes all three again from the code, so they do not belong in git. `.gitignore` names the files that git
+does not track, and three lines at its end name these, before the first build. A `/` at the start of a line means
+the root of the repository, so `/docs/api/` is only that folder.
+
+A patch to [`.gitignore`](#tut-14.1-.gitignore-a5cc29).
+
+At the end of `.gitignore`, the comment is on line 222, and `/docs/_site/`, `/docs/api/` and `/docs/_symbols.json` on
+lines 223 to 225.
+
+```bash
+tail -n 4 .gitignore
+```
+
+`tail -n 4 .gitignore` prints the comment and the three lines.
+
+#### What changed
+
+- <a id="tut-14.1-.gitignore-a5cc29"></a>`.gitignore`: the files that a build of the docs makes. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/3593f61e4e221b04f00f360fe96e6dc4243b02dd/.gitignore).
+  - look at `/docs/_site/`
+
+<details><summary>The diff of <code>.gitignore</code></summary>
+
+```diff
+@@ -218,3 +218,8 @@ __marimo__/
+ 
+ # Streamlit
+ .streamlit/secrets.toml
++
++# smalldocs: the docs site, and the reference pages that each build makes from the code
++/docs/_site/
++/docs/api/
++/docs/_symbols.json
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3593f61e4e221b04f00f360fe96e6dc4243b02dd). [The code after it](https://github.com/rahuldave/babykev/tree/3593f61e4e221b04f00f360fe96e6dc4243b02dd).
+
+<a id="tut-14.2"></a>
+
+### 14.2 Just docs, alone, builds the site
 
 `smalldocs render docs` builds the site from the folder `docs`. It writes the reference pages from the code, then
 the HTML of every page into `docs/_site`. With no words, the recipe `docs` now runs it. With words, it runs
 `smalldocs api` as before. So the body of the recipe is a script of `sh`.
 
-A patch to [`justfile`](#tut-14.1-justfile-424f0b).
+A patch to [`justfile`](#tut-14.2-justfile-424f0b).
 
 In the `justfile`, the recipe `docs` starts at line 79, with its comment. Line 85,
 `if [ "$#" -eq 0 ]; then exec uv run smalldocs render docs; fi`, is the case with no words.
@@ -7362,21 +7406,19 @@ In the `justfile`, the recipe `docs` starts at line 79, with its comment. Line 8
 uv run smalldocs render docs
 just --show docs
 just docs
-git status --short
+git status --short --ignored docs
 ```
 
 `smalldocs render docs` prints `wrote 2 page(s) to docs/_site`. The two pages are the reference of `api.py` and of
 `cli.py`, because `docs/` has no page of its own yet. `just --show docs` prints the recipe, and `just docs` prints the
 same line as the command.
 
-`git status --short` lists three new paths, each marked `??`, untracked. `docs/_site/` is the site, and
-`docs/_symbols.json` holds the names that a link can point to. `docs/api/` holds the reference pages, as Markdown. A
-build makes all three again from the code, so they do not belong in git. In do mode, `git status` also lists the
-change of the `justfile`.
+`git status --short --ignored docs` lists the three paths that the build made, each marked `!!`, ignored. The lines
+of `.gitignore` from the move before keep them out of git.
 
 #### What changed
 
-- <a id="tut-14.1-justfile-424f0b"></a>`justfile`: with no words, `docs` builds the site. 5 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/0d29e34880ff2402546ddd88ded0908f70dd9034/justfile).
+- <a id="tut-14.2-justfile-424f0b"></a>`justfile`: with no words, `docs` builds the site. 5 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/64de40516df5aa215bfac1c0198e898ac0960061/justfile).
   - look at `    if [ "$#" -eq 0 ]; then exec uv run smalldocs render docs; fi`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -7400,50 +7442,7 @@ change of the `justfile`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/0d29e34880ff2402546ddd88ded0908f70dd9034). [The code after it](https://github.com/rahuldave/babykev/tree/0d29e34880ff2402546ddd88ded0908f70dd9034).
-
-<a id="tut-14.2"></a>
-
-### 14.2 Git ignores what a build of the docs makes
-
-`.gitignore` names the files that git does not track. Three lines at its end name what a build of the docs makes.
-A `/` at the start of a line means the root of the repository, so `/docs/api/` is only that folder.
-
-A patch to [`.gitignore`](#tut-14.2-.gitignore-a5cc29).
-
-At the end of `.gitignore`, the comment is on line 222, and `/docs/_site/`, `/docs/api/` and `/docs/_symbols.json` on
-lines 223 to 225.
-
-```bash
-just docs
-git status --short --ignored docs
-```
-
-`just docs` prints `wrote 2 page(s) to docs/_site`. `git status --short --ignored docs` lists the three paths with
-`!!`, ignored, in place of `??`.
-
-#### What changed
-
-- <a id="tut-14.2-.gitignore-a5cc29"></a>`.gitignore`: the files that a build of the docs makes. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/1a53d8993513be1df47d87105dd97e22c24688c1/.gitignore).
-  - look at `/docs/_site/`
-
-<details><summary>The diff of <code>.gitignore</code></summary>
-
-```diff
-@@ -218,3 +218,8 @@ __marimo__/
- 
- # Streamlit
- .streamlit/secrets.toml
-+
-+# smalldocs: the docs site, and the reference pages that each build makes from the code
-+/docs/_site/
-+/docs/api/
-+/docs/_symbols.json
-```
-
-</details>
-
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/1a53d8993513be1df47d87105dd97e22c24688c1). [The code after it](https://github.com/rahuldave/babykev/tree/1a53d8993513be1df47d87105dd97e22c24688c1).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/64de40516df5aa215bfac1c0198e898ac0960061). [The code after it](https://github.com/rahuldave/babykev/tree/64de40516df5aa215bfac1c0198e898ac0960061).
 
 <a id="tut-14.3"></a>
 
@@ -7470,7 +7469,7 @@ reference of `api.py` opens in the browser, with the sidebar on the left.
 
 #### What changed
 
-- <a id="tut-14.3-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the settings of the site, above the reference. 17 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/1d3b2adb4fe455efe72807095bfb2e0b41dd0234/docs/_smalldocs.yml).
+- <a id="tut-14.3-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the settings of the site, above the reference. 17 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/aee2a9faf7fe05e5d8780c8cf42e82c3d4145330/docs/_smalldocs.yml).
   - look at `        contents: api/*  # the reference pages, which each build makes from the code`
 
 <details><summary>The diff of <code>docs/_smalldocs.yml</code></summary>
@@ -7502,7 +7501,7 @@ reference of `api.py` opens in the browser, with the sidebar on the left.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/1d3b2adb4fe455efe72807095bfb2e0b41dd0234). [The code after it](https://github.com/rahuldave/babykev/tree/1d3b2adb4fe455efe72807095bfb2e0b41dd0234).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/aee2a9faf7fe05e5d8780c8cf42e82c3d4145330). [The code after it](https://github.com/rahuldave/babykev/tree/aee2a9faf7fe05e5d8780c8cf42e82c3d4145330).
 
 <a id="tut-14.4"></a>
 
@@ -7529,7 +7528,7 @@ the reference of `api.py`, seven of them. `SystemOneRequest`, `Noul`, `Choice` a
 
 #### What changed
 
-- <a id="tut-14.4-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the front page, written by hand. New, 29 lines. [The file](https://github.com/rahuldave/babykev/blob/3874b02bfd14425bd62a22053b6d8c077d05eb9b/docs/index.qmd).
+- <a id="tut-14.4-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the front page, written by hand. New, 29 lines. [The file](https://github.com/rahuldave/babykev/blob/e849099979801bc865c5a466d2b098b5ac9aa2e6/docs/index.qmd).
   - look at ``A name in backticks, such as `to_answers`, links to its entry.``
 
 <details><summary>The diff of <code>docs/index.qmd</code></summary>
@@ -7569,7 +7568,7 @@ the reference of `api.py`, seven of them. `SystemOneRequest`, `Noul`, `Choice` a
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/3874b02bfd14425bd62a22053b6d8c077d05eb9b). [The code after it](https://github.com/rahuldave/babykev/tree/3874b02bfd14425bd62a22053b6d8c077d05eb9b).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e849099979801bc865c5a466d2b098b5ac9aa2e6). [The code after it](https://github.com/rahuldave/babykev/tree/e849099979801bc865c5a466d2b098b5ac9aa2e6).
 
 <a id="tut-14.5"></a>
 
@@ -7590,7 +7589,7 @@ grep -n 'docs/' README.md
 
 #### What changed
 
-- <a id="tut-14.5-README.md-8ec9a0"></a>`README.md`: a row for `docs/`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/86c948e639d637a674b3d073de74e3f2c0a6cd6a/README.md).
+- <a id="tut-14.5-README.md-8ec9a0"></a>`README.md`: a row for `docs/`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/e1efb48492d7223fd0442906d2e55a83e0db481e/README.md).
   - look at ``| `docs/` | The docs site. `just docs` builds it into `docs/_site`, with the reference made from the code |``
 
 <details><summary>The diff of <code>README.md</code></summary>
@@ -7608,7 +7607,7 @@ grep -n 'docs/' README.md
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/86c948e639d637a674b3d073de74e3f2c0a6cd6a). [The code after it](https://github.com/rahuldave/babykev/tree/86c948e639d637a674b3d073de74e3f2c0a6cd6a).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e1efb48492d7223fd0442906d2e55a83e0db481e). [The code after it](https://github.com/rahuldave/babykev/tree/e1efb48492d7223fd0442906d2e55a83e0db481e).
 
 <a id="tut-15"></a>
 
@@ -7626,7 +7625,7 @@ torch computes with tensors, on the CPU or on a GPU. transformers loads a base m
 from the Hugging Face Hub. peft adds a LoRA adapter to the base model. safetensors is the format of the weights on the
 Hub. Each package comes in by its own `uv add`, and torch comes first, from an index of its own.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/86c948e639d637a674b3d073de74e3f2c0a6cd6a). [The code after it](https://github.com/rahuldave/babykev/tree/c8e050183058bbee970a1d8ed702de0e3e7f773b).
+[The code before this part](https://github.com/rahuldave/babykev/tree/e1efb48492d7223fd0442906d2e55a83e0db481e). [The code after it](https://github.com/rahuldave/babykev/tree/c7037ec460963acd41edf1f63a6a03d2e52e5bae).
 
 <a id="tut-15.1"></a>
 
@@ -7653,7 +7652,7 @@ lockfile does not change.
 
 #### What changed
 
-- <a id="tut-15.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the index of PyTorch. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/6d8e76834355d207a1e1696053bb27ab84008708/pyproject.toml).
+- <a id="tut-15.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the index of PyTorch. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/b44da7cc2f35c24f23c9f056eb9ec6681a3111e0/pyproject.toml).
   - look at `url = "https://download.pytorch.org/whl/cpu"`
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
@@ -7677,7 +7676,7 @@ lockfile does not change.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/6d8e76834355d207a1e1696053bb27ab84008708). [The code after it](https://github.com/rahuldave/babykev/tree/6d8e76834355d207a1e1696053bb27ab84008708).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b44da7cc2f35c24f23c9f056eb9ec6681a3111e0). [The code after it](https://github.com/rahuldave/babykev/tree/b44da7cc2f35c24f23c9f056eb9ec6681a3111e0).
 
 <a id="tut-15.2"></a>
 
@@ -7707,7 +7706,7 @@ exit code 1. `pyproject.toml` names torch, and `uv.lock` does not have it. `just
 
 #### What changed
 
-- <a id="tut-15.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: torch, in the dependencies, and its source. 4 lines added. It comes from `uv add torch --index pytorch-cpu --frozen`. [The file](https://github.com/rahuldave/babykev/blob/21fdb6aae553fde949a2a8509de5274bd6aacab4/pyproject.toml).
+- <a id="tut-15.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: torch, in the dependencies, and its source. 4 lines added. It comes from `uv add torch --index pytorch-cpu --frozen`. [The file](https://github.com/rahuldave/babykev/blob/a263314ef270d756122972876e80270ed4cde130/pyproject.toml).
   - look at `torch = { index = "pytorch-cpu" }`
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
@@ -7735,7 +7734,7 @@ exit code 1. `pyproject.toml` names torch, and `uv.lock` does not have it. `just
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/21fdb6aae553fde949a2a8509de5274bd6aacab4). [The code after it](https://github.com/rahuldave/babykev/tree/21fdb6aae553fde949a2a8509de5274bd6aacab4).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a263314ef270d756122972876e80270ed4cde130). [The code after it](https://github.com/rahuldave/babykev/tree/a263314ef270d756122972876e80270ed4cde130).
 
 <a id="tut-15.3"></a>
 
@@ -7775,9 +7774,9 @@ too.
 
 #### What changed
 
-- <a id="tut-15.3-uv.lock-8356d8"></a>`uv.lock`: torch, from the index of PyTorch, and the seven packages that it needs, from PyPI. 230 lines added, 1 removed. It comes from `uv lock`. [The file](https://github.com/rahuldave/babykev/blob/1625437d490f284722fd4c9ff4a1a322eb108799/uv.lock).
+- <a id="tut-15.3-uv.lock-8356d8"></a>`uv.lock`: torch, from the index of PyTorch, and the seven packages that it needs, from PyPI. 230 lines added, 1 removed. It comes from `uv lock`. [The file](https://github.com/rahuldave/babykev/blob/92e81476ed9ccd19ab2da210dfacb5886dac1712/uv.lock).
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/1625437d490f284722fd4c9ff4a1a322eb108799). [The code after it](https://github.com/rahuldave/babykev/tree/1625437d490f284722fd4c9ff4a1a322eb108799).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/92e81476ed9ccd19ab2da210dfacb5886dac1712). [The code after it](https://github.com/rahuldave/babykev/tree/92e81476ed9ccd19ab2da210dfacb5886dac1712).
 
 <a id="tut-15.4"></a>
 
@@ -7801,9 +7800,9 @@ It prints `5.20.0`, and no warning. numpy came with transformers, so torch no lo
 
 #### What changed
 
-- <a id="tut-15.4-pyproject.toml-5d07e7"></a>`pyproject.toml`: transformers, in the dependencies. 1 line added. It comes from `uv add transformers`. [The file](https://github.com/rahuldave/babykev/blob/2c8c0d5c94539e3ff01c9be202f282557beee4be/pyproject.toml).
+- <a id="tut-15.4-pyproject.toml-5d07e7"></a>`pyproject.toml`: transformers, in the dependencies. 1 line added. It comes from `uv add transformers`. [The file](https://github.com/rahuldave/babykev/blob/92f659c4e74206cfb776c114d474c2be2501be81/pyproject.toml).
   - look at `"transformers>=5.20.0",`
-- <a id="tut-15.4-uv.lock-8356d8"></a>`uv.lock`: the exact version of transformers, and of the packages that it needs. 419 lines added. It comes from `uv add transformers`. [The file](https://github.com/rahuldave/babykev/blob/2c8c0d5c94539e3ff01c9be202f282557beee4be/uv.lock).
+- <a id="tut-15.4-uv.lock-8356d8"></a>`uv.lock`: the exact version of transformers, and of the packages that it needs. 419 lines added. It comes from `uv add transformers`. [The file](https://github.com/rahuldave/babykev/blob/92f659c4e74206cfb776c114d474c2be2501be81/uv.lock).
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -7820,7 +7819,7 @@ It prints `5.20.0`, and no warning. numpy came with transformers, so torch no lo
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/2c8c0d5c94539e3ff01c9be202f282557beee4be). [The code after it](https://github.com/rahuldave/babykev/tree/2c8c0d5c94539e3ff01c9be202f282557beee4be).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/92f659c4e74206cfb776c114d474c2be2501be81). [The code after it](https://github.com/rahuldave/babykev/tree/92f659c4e74206cfb776c114d474c2be2501be81).
 
 <a id="tut-15.5"></a>
 
@@ -7849,9 +7848,9 @@ first, from its index.
 
 #### What changed
 
-- <a id="tut-15.5-pyproject.toml-5d07e7"></a>`pyproject.toml`: peft, in the dependencies. 1 line added. It comes from `uv add peft`. [The file](https://github.com/rahuldave/babykev/blob/f28d37b6e7bf188fc0311f1a2caffeb2cb2adbd5/pyproject.toml).
+- <a id="tut-15.5-pyproject.toml-5d07e7"></a>`pyproject.toml`: peft, in the dependencies. 1 line added. It comes from `uv add peft`. [The file](https://github.com/rahuldave/babykev/blob/4b43f5a9f99a891891ac42cb03e3927957e9116c/pyproject.toml).
   - look at `"peft>=0.21.2",`
-- <a id="tut-15.5-uv.lock-8356d8"></a>`uv.lock`: the exact version of peft, and of the packages that it needs. 71 lines added. It comes from `uv add peft`. [The file](https://github.com/rahuldave/babykev/blob/f28d37b6e7bf188fc0311f1a2caffeb2cb2adbd5/uv.lock).
+- <a id="tut-15.5-uv.lock-8356d8"></a>`uv.lock`: the exact version of peft, and of the packages that it needs. 71 lines added. It comes from `uv add peft`. [The file](https://github.com/rahuldave/babykev/blob/4b43f5a9f99a891891ac42cb03e3927957e9116c/uv.lock).
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -7868,7 +7867,7 @@ first, from its index.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/f28d37b6e7bf188fc0311f1a2caffeb2cb2adbd5). [The code after it](https://github.com/rahuldave/babykev/tree/f28d37b6e7bf188fc0311f1a2caffeb2cb2adbd5).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/4b43f5a9f99a891891ac42cb03e3927957e9116c). [The code after it](https://github.com/rahuldave/babykev/tree/4b43f5a9f99a891891ac42cb03e3927957e9116c).
 
 <a id="tut-15.6"></a>
 
@@ -7895,9 +7894,9 @@ no `babykev`.
 
 #### What changed
 
-- <a id="tut-15.6-pyproject.toml-5d07e7"></a>`pyproject.toml`: safetensors, in the dependencies. 1 line added. It comes from `uv add safetensors`. [The file](https://github.com/rahuldave/babykev/blob/99f4bd13e1e7a8b99a503b30a0ecc0c2db5bfab7/pyproject.toml).
+- <a id="tut-15.6-pyproject.toml-5d07e7"></a>`pyproject.toml`: safetensors, in the dependencies. 1 line added. It comes from `uv add safetensors`. [The file](https://github.com/rahuldave/babykev/blob/8176ced7157929f551e3722149016dbc31d42601/pyproject.toml).
   - look at `"safetensors>=0.8.0",`
-- <a id="tut-15.6-uv.lock-8356d8"></a>`uv.lock`: safetensors, as a dependency of babykev. 2 lines added. It comes from `uv add safetensors`. [The file](https://github.com/rahuldave/babykev/blob/99f4bd13e1e7a8b99a503b30a0ecc0c2db5bfab7/uv.lock).
+- <a id="tut-15.6-uv.lock-8356d8"></a>`uv.lock`: safetensors, as a dependency of babykev. 2 lines added. It comes from `uv add safetensors`. [The file](https://github.com/rahuldave/babykev/blob/8176ced7157929f551e3722149016dbc31d42601/uv.lock).
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -7914,7 +7913,7 @@ no `babykev`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/99f4bd13e1e7a8b99a503b30a0ecc0c2db5bfab7). [The code after it](https://github.com/rahuldave/babykev/tree/99f4bd13e1e7a8b99a503b30a0ecc0c2db5bfab7).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/8176ced7157929f551e3722149016dbc31d42601). [The code after it](https://github.com/rahuldave/babykev/tree/8176ced7157929f551e3722149016dbc31d42601).
 
 <a id="tut-15.7"></a>
 
@@ -7937,7 +7936,7 @@ du -sh .venv .venv/lib/python3.13/site-packages/torch
 
 #### What changed
 
-- <a id="tut-15.7-README.md-8ec9a0"></a>`README.md`: a paragraph on the packages of the model. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/c8e050183058bbee970a1d8ed702de0e3e7f773b/README.md).
+- <a id="tut-15.7-README.md-8ec9a0"></a>`README.md`: a paragraph on the packages of the model. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/c7037ec460963acd41edf1f63a6a03d2e52e5bae/README.md).
   - look at `The model needs four packages, torch, transformers, peft and safetensors. torch is the build for the CPU,`
 
 <details><summary>The diff of <code>README.md</code></summary>
@@ -7958,7 +7957,7 @@ du -sh .venv .venv/lib/python3.13/site-packages/torch
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/c8e050183058bbee970a1d8ed702de0e3e7f773b). [The code after it](https://github.com/rahuldave/babykev/tree/c8e050183058bbee970a1d8ed702de0e3e7f773b).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/c7037ec460963acd41edf1f63a6a03d2e52e5bae). [The code after it](https://github.com/rahuldave/babykev/tree/c7037ec460963acd41edf1f63a6a03d2e52e5bae).
 
 <a id="tut-16"></a>
 
@@ -7974,7 +7973,7 @@ babykev has a contract and no model. `model.py` is the model. It comes in whole,
 read it before anything else. It meets the gate as it is. No test calls it yet, and the coverage shows it. Then the
 front page of the docs and the README name it.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/c8e050183058bbee970a1d8ed702de0e3e7f773b). [The code after it](https://github.com/rahuldave/babykev/tree/f41d9c4b591493c35d77e92d7d12d63260c69231).
+[The code before this part](https://github.com/rahuldave/babykev/tree/c7037ec460963acd41edf1f63a6a03d2e52e5bae). [The code after it](https://github.com/rahuldave/babykev/tree/056fe2ced73ff8568dfc329555795524c2465eb1).
 
 <a id="tut-16.1"></a>
 
@@ -8046,7 +8045,7 @@ tests of the model come later, and bring the coverage back.
 
 #### What changed
 
-- <a id="tut-16.1-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the model. It packs a request into tokens, masks it, and points at the options. New, 274 lines. [The file](https://github.com/rahuldave/babykev/blob/fb1d51c46acf2d492da205b572fa797e70029c6e/src/babykev/model.py).
+- <a id="tut-16.1-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the model. It packs a request into tokens, masks it, and points at the options. New, 274 lines. [The file](https://github.com/rahuldave/babykev/blob/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93/src/babykev/model.py).
   - look at `class DecisionModel(nn.Module):`
 
 <details><summary>The diff of <code>src/babykev/model.py</code></summary>
@@ -8331,7 +8330,7 @@ tests of the model come later, and bring the coverage back.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/fb1d51c46acf2d492da205b572fa797e70029c6e). [The code after it](https://github.com/rahuldave/babykev/tree/fb1d51c46acf2d492da205b572fa797e70029c6e).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93). [The code after it](https://github.com/rahuldave/babykev/tree/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93).
 
 <a id="tut-16.2"></a>
 
@@ -8356,7 +8355,7 @@ grep -o 'href="api/model.html#[^"]*"' docs/_site/index.html
 
 #### What changed
 
-- <a id="tut-16.2-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the module `babykev.model`, in the list. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/7b809006ff87efaee3d63dccfe6533a2e0888c0d/docs/index.qmd).
+- <a id="tut-16.2-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the module `babykev.model`, in the list. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/bc2df6d99386f11f4e193e0b530fa87128a3acd7/docs/index.qmd).
   - look at ``- `babykev.model` is the model. `encode()` packs a record into one sequence of tokens, and a``
 
 <details><summary>The diff of <code>docs/index.qmd</code></summary>
@@ -8381,7 +8380,7 @@ grep -o 'href="api/model.html#[^"]*"' docs/_site/index.html
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/7b809006ff87efaee3d63dccfe6533a2e0888c0d). [The code after it](https://github.com/rahuldave/babykev/tree/7b809006ff87efaee3d63dccfe6533a2e0888c0d).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/bc2df6d99386f11f4e193e0b530fa87128a3acd7). [The code after it](https://github.com/rahuldave/babykev/tree/bc2df6d99386f11f4e193e0b530fa87128a3acd7).
 
 <a id="tut-16.3"></a>
 
@@ -8401,7 +8400,7 @@ grep -n 'model.py' README.md
 
 #### What changed
 
-- <a id="tut-16.3-README.md-8ec9a0"></a>`README.md`: a row for `src/babykev/model.py`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/f41d9c4b591493c35d77e92d7d12d63260c69231/README.md).
+- <a id="tut-16.3-README.md-8ec9a0"></a>`README.md`: a row for `src/babykev/model.py`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/056fe2ced73ff8568dfc329555795524c2465eb1/README.md).
   - look at ``| `src/babykev/model.py` | The model, a language model with a head that points at the options |``
 
 <details><summary>The diff of <code>README.md</code></summary>
@@ -8419,7 +8418,7 @@ grep -n 'model.py' README.md
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/f41d9c4b591493c35d77e92d7d12d63260c69231). [The code after it](https://github.com/rahuldave/babykev/tree/f41d9c4b591493c35d77e92d7d12d63260c69231).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/056fe2ced73ff8568dfc329555795524c2465eb1). [The code after it](https://github.com/rahuldave/babykev/tree/056fe2ced73ff8568dfc329555795524c2465eb1).
 
 <a id="tut-17"></a>
 
@@ -8436,7 +8435,7 @@ reading the types, and the linter asks only that they be there. A type checker r
 call and each value with the types that the code and its libraries declare. ty is a type checker. It finds two
 places in `model.py`, and both have one cause, in torch.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/f41d9c4b591493c35d77e92d7d12d63260c69231). [The code after it](https://github.com/rahuldave/babykev/tree/42f75dc784aa7fdfa6981c1f4defd0c798cc3b08).
+[The code before this part](https://github.com/rahuldave/babykev/tree/056fe2ced73ff8568dfc329555795524c2465eb1). [The code after it](https://github.com/rahuldave/babykev/tree/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9).
 
 <a id="tut-17.1"></a>
 
@@ -8458,9 +8457,9 @@ It prints `ty 0.0.88`, or a newer version. A newer ty can find more, or less, th
 
 #### What changed
 
-- <a id="tut-17.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: ty, in the group `lint`. 1 line added. It comes from `uv add --group lint ty`. [The file](https://github.com/rahuldave/babykev/blob/50011dc045ad666fe0c04f1f3eab9f531ea13cee/pyproject.toml).
+- <a id="tut-17.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: ty, in the group `lint`. 1 line added. It comes from `uv add --group lint ty`. [The file](https://github.com/rahuldave/babykev/blob/aaa8fe6d7d1dfbca863fe23dc0d660dd10d36c2b/pyproject.toml).
   - look at `"ty>=0.0.88",`
-- <a id="tut-17.1-uv.lock-8356d8"></a>`uv.lock`: the exact version of ty. 27 lines added. It comes from `uv add --group lint ty`. [The file](https://github.com/rahuldave/babykev/blob/50011dc045ad666fe0c04f1f3eab9f531ea13cee/uv.lock).
+- <a id="tut-17.1-uv.lock-8356d8"></a>`uv.lock`: the exact version of ty. 27 lines added. It comes from `uv add --group lint ty`. [The file](https://github.com/rahuldave/babykev/blob/aaa8fe6d7d1dfbca863fe23dc0d660dd10d36c2b/uv.lock).
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -8477,7 +8476,7 @@ It prints `ty 0.0.88`, or a newer version. A newer ty can find more, or less, th
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/50011dc045ad666fe0c04f1f3eab9f531ea13cee). [The code after it](https://github.com/rahuldave/babykev/tree/50011dc045ad666fe0c04f1f3eab9f531ea13cee).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/aaa8fe6d7d1dfbca863fe23dc0d660dd10d36c2b). [The code after it](https://github.com/rahuldave/babykev/tree/aaa8fe6d7d1dfbca863fe23dc0d660dd10d36c2b).
 
 <a id="tut-17.2"></a>
 
@@ -8519,7 +8518,7 @@ into an attribute. Its example has a `value: int` in a base class and a `value: 
 
 #### What changed
 
-- <a id="tut-17.2-justfile-424f0b"></a>`justfile`: the recipe `types`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/b60eb5b2b67b3c8e94b5574d767be3905437e8f0/justfile).
+- <a id="tut-17.2-justfile-424f0b"></a>`justfile`: the recipe `types`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/7866ef7f88d528e2e7ee04d55c68e56ce461cff1/justfile).
   - look at `types *args:`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -8542,7 +8541,7 @@ into an attribute. Its example has a `value: int` in a base class and a `value: 
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/b60eb5b2b67b3c8e94b5574d767be3905437e8f0). [The code after it](https://github.com/rahuldave/babykev/tree/b60eb5b2b67b3c8e94b5574d767be3905437e8f0).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7866ef7f88d528e2e7ee04d55c68e56ce461cff1). [The code after it](https://github.com/rahuldave/babykev/tree/7866ef7f88d528e2e7ee04d55c68e56ce461cff1).
 
 <a id="tut-17.3"></a>
 
@@ -8582,7 +8581,7 @@ or of the return type.
 
 #### What changed
 
-- <a id="tut-17.3-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the rule off on the `forward` of `PointerHead`, with the reason. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/8b279381e0752d78b86fe87f7334656163a12a93/src/babykev/model.py).
+- <a id="tut-17.3-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the rule off on the `forward` of `PointerHead`, with the reason. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/d5312a3ec2ed265ca4dbf5c7dd2492c686024696/src/babykev/model.py).
   - look at `    # tensors accepts fewer calls, so ty refuses it. torch only calls forward, and never sets it`
 
 <details><summary>The diff of <code>src/babykev/model.py</code></summary>
@@ -8603,7 +8602,7 @@ or of the return type.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/8b279381e0752d78b86fe87f7334656163a12a93). [The code after it](https://github.com/rahuldave/babykev/tree/8b279381e0752d78b86fe87f7334656163a12a93).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d5312a3ec2ed265ca4dbf5c7dd2492c686024696). [The code after it](https://github.com/rahuldave/babykev/tree/d5312a3ec2ed265ca4dbf5c7dd2492c686024696).
 
 <a id="tut-17.4"></a>
 
@@ -8625,7 +8624,7 @@ just types
 
 #### What changed
 
-- <a id="tut-17.4-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the rule off on the `forward` of `DecisionModel`, with the reason. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/655fda2b4bddefc75b11b224d69769cd11f3eba3/src/babykev/model.py).
+- <a id="tut-17.4-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the rule off on the `forward` of `DecisionModel`, with the reason. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/f14349138824af0b107742451814b1234e72b34a/src/babykev/model.py).
   - look at `    # As in PointerHead, nn.Module declares forward as an attribute, and torch never sets it`
 
 <details><summary>The diff of <code>src/babykev/model.py</code></summary>
@@ -8645,7 +8644,7 @@ just types
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/655fda2b4bddefc75b11b224d69769cd11f3eba3). [The code after it](https://github.com/rahuldave/babykev/tree/655fda2b4bddefc75b11b224d69769cd11f3eba3).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/f14349138824af0b107742451814b1234e72b34a). [The code after it](https://github.com/rahuldave/babykev/tree/f14349138824af0b107742451814b1234e72b34a).
 
 <a id="tut-17.5"></a>
 
@@ -8670,7 +8669,7 @@ exit code 0. A call that does not match the types now stops `git commit`.
 
 #### What changed
 
-- <a id="tut-17.5-justfile-424f0b"></a>`justfile`: ty, in the gate. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/42f75dc784aa7fdfa6981c1f4defd0c798cc3b08/justfile).
+- <a id="tut-17.5-justfile-424f0b"></a>`justfile`: ty, in the gate. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9/justfile).
   - look at `    just types`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -8697,7 +8696,7 @@ exit code 0. A call that does not match the types now stops `git commit`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/42f75dc784aa7fdfa6981c1f4defd0c798cc3b08). [The code after it](https://github.com/rahuldave/babykev/tree/42f75dc784aa7fdfa6981c1f4defd0c798cc3b08).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9). [The code after it](https://github.com/rahuldave/babykev/tree/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9).
 
 <a id="tut-18"></a>
 
@@ -8716,7 +8715,7 @@ so the answers are guesses. The run shows that the contract, the packing, the mo
 `smoke.py` is ours, and it comes one function at a time. The command `babykev smoke` and the recipe `just smoke` run
 it, on this machine only.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/42f75dc784aa7fdfa6981c1f4defd0c798cc3b08). [The code after it](https://github.com/rahuldave/babykev/tree/6c2937bcf7bac5b94fcbc0b06269a14d36b8d97f).
+[The code before this part](https://github.com/rahuldave/babykev/tree/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9). [The code after it](https://github.com/rahuldave/babykev/tree/3edcb80f6814f9e0afe70942db6fce959799d9c5).
 
 <a id="tut-18.1"></a>
 
@@ -8745,7 +8744,7 @@ The coverage counts every file of the package, and no test imports `smoke.py`.
 
 #### What changed
 
-- <a id="tut-18.1-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: the docstring, and the function that reads the sample. New, 22 lines. [The file](https://github.com/rahuldave/babykev/blob/ae6dc34784fa8c5146ae336c9c3b60b6dc1e71d9/src/babykev/smoke.py).
+- <a id="tut-18.1-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: the docstring, and the function that reads the sample. New, 22 lines. [The file](https://github.com/rahuldave/babykev/blob/5ec6d4a73df947af8d705956fffa07c9787017de/src/babykev/smoke.py).
   - look at `def read_lines(`
 
 <details><summary>The diff of <code>src/babykev/smoke.py</code></summary>
@@ -8778,7 +8777,7 @@ The coverage counts every file of the package, and no test imports `smoke.py`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/ae6dc34784fa8c5146ae336c9c3b60b6dc1e71d9). [The code after it](https://github.com/rahuldave/babykev/tree/ae6dc34784fa8c5146ae336c9c3b60b6dc1e71d9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/5ec6d4a73df947af8d705956fffa07c9787017de). [The code after it](https://github.com/rahuldave/babykev/tree/5ec6d4a73df947af8d705956fffa07c9787017de).
 
 <a id="tut-18.2"></a>
 
@@ -8803,7 +8802,7 @@ just types
 
 #### What changed
 
-- <a id="tut-18.2-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: one request, from the contract to the answers. 19 lines added. [The file](https://github.com/rahuldave/babykev/blob/d106f54b43335d4e565d3fae2ce1105cc5b5507e/src/babykev/smoke.py).
+- <a id="tut-18.2-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: one request, from the contract to the answers. 19 lines added. [The file](https://github.com/rahuldave/babykev/blob/0de1e2d0a2362ebd41d21b9146eae2961fb2366e/src/babykev/smoke.py).
   - look at `def answer(`
 
 <details><summary>The diff of <code>src/babykev/smoke.py</code></summary>
@@ -8846,7 +8845,7 @@ just types
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/d106f54b43335d4e565d3fae2ce1105cc5b5507e). [The code after it](https://github.com/rahuldave/babykev/tree/d106f54b43335d4e565d3fae2ce1105cc5b5507e).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0de1e2d0a2362ebd41d21b9146eae2961fb2366e). [The code after it](https://github.com/rahuldave/babykev/tree/0de1e2d0a2362ebd41d21b9146eae2961fb2366e).
 
 <a id="tut-18.3"></a>
 
@@ -8870,7 +8869,7 @@ they agree.
 
 #### What changed
 
-- <a id="tut-18.3-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: one answer beside its label. 20 lines added. [The file](https://github.com/rahuldave/babykev/blob/3d4943832416314723cc909915f6ec83cc395efe/src/babykev/smoke.py).
+- <a id="tut-18.3-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: one answer beside its label. 20 lines added. [The file](https://github.com/rahuldave/babykev/blob/bd333d90c32a516a97a443fa986f40932f691bad/src/babykev/smoke.py).
   - look at `def verdict(`
 
 <details><summary>The diff of <code>src/babykev/smoke.py</code></summary>
@@ -8904,7 +8903,7 @@ they agree.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/3d4943832416314723cc909915f6ec83cc395efe). [The code after it](https://github.com/rahuldave/babykev/tree/3d4943832416314723cc909915f6ec83cc395efe).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/bd333d90c32a516a97a443fa986f40932f691bad). [The code after it](https://github.com/rahuldave/babykev/tree/bd333d90c32a516a97a443fa986f40932f691bad).
 
 <a id="tut-18.4"></a>
 
@@ -8927,7 +8926,7 @@ a string.
 
 #### What changed
 
-- <a id="tut-18.4-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: the report, a line at a time. 25 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/cfe6bab89a64d39a1a60b505b7fbfbc096348b4b/src/babykev/smoke.py).
+- <a id="tut-18.4-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: the report, a line at a time. 25 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/8490a58a1510d717ce32b48fa0def8498ceb51f9/src/babykev/smoke.py).
   - look at `def smoke(`
 
 <details><summary>The diff of <code>src/babykev/smoke.py</code></summary>
@@ -8979,7 +8978,7 @@ a string.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/cfe6bab89a64d39a1a60b505b7fbfbc096348b4b). [The code after it](https://github.com/rahuldave/babykev/tree/cfe6bab89a64d39a1a60b505b7fbfbc096348b4b).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/8490a58a1510d717ce32b48fa0def8498ceb51f9). [The code after it](https://github.com/rahuldave/babykev/tree/8490a58a1510d717ce32b48fa0def8498ceb51f9).
 
 <a id="tut-18.5"></a>
 
@@ -9018,7 +9017,7 @@ just test
 
 #### What changed
 
-- <a id="tut-18.5-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: the real model, loaded, and the report printed. 35 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/d4302c1f860c781a3b5946c4c10dec82f6264eca/src/babykev/smoke.py).
+- <a id="tut-18.5-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: the real model, loaded, and the report printed. 35 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/f1bfe993389643bda7f40c6f3b511827a3c9a9a0/src/babykev/smoke.py).
   - look at `def main(`
 
 <details><summary>The diff of <code>src/babykev/smoke.py</code></summary>
@@ -9085,7 +9084,7 @@ just test
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/d4302c1f860c781a3b5946c4c10dec82f6264eca). [The code after it](https://github.com/rahuldave/babykev/tree/d4302c1f860c781a3b5946c4c10dec82f6264eca).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/f1bfe993389643bda7f40c6f3b511827a3c9a9a0). [The code after it](https://github.com/rahuldave/babykev/tree/f1bfe993389643bda7f40c6f3b511827a3c9a9a0).
 
 <a id="tut-18.6"></a>
 
@@ -9121,7 +9120,7 @@ prints `4 passed, 49 deselected`. Its table of coverage counts only the four tes
 
 #### What changed
 
-- <a id="tut-18.6-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: the command `smoke`, in the help and in `main`. 12 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/4d756e960a5613d7076808da5197fca58c850d55/src/babykev/cli.py).
+- <a id="tut-18.6-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: the command `smoke`, in the help and in `main`. 12 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/117a59e9838e0fa2e28ad29d02d5aeba3a8622f9/src/babykev/cli.py).
   - look at `        raise SystemExit(smoke.main(words[1:]))`
 
 <details><summary>The diff of <code>src/babykev/cli.py</code></summary>
@@ -9158,7 +9157,7 @@ prints `4 passed, 49 deselected`. Its table of coverage counts only the four tes
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/4d756e960a5613d7076808da5197fca58c850d55). [The code after it](https://github.com/rahuldave/babykev/tree/4d756e960a5613d7076808da5197fca58c850d55).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/117a59e9838e0fa2e28ad29d02d5aeba3a8622f9). [The code after it](https://github.com/rahuldave/babykev/tree/117a59e9838e0fa2e28ad29d02d5aeba3a8622f9).
 
 <a id="tut-18.7"></a>
 
@@ -9191,7 +9190,7 @@ the usage of the program.
 
 #### What changed
 
-- <a id="tut-18.7-justfile-424f0b"></a>`justfile`: the recipe `smoke`. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/eb2b6002dc55010dea092f3e57481bc12cd1e0ea/justfile).
+- <a id="tut-18.7-justfile-424f0b"></a>`justfile`: the recipe `smoke`. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/55844b2320b632b40dd3f34f0a6b5bb962551005/justfile).
   - look at `smoke *args:`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -9213,7 +9212,7 @@ the usage of the program.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/eb2b6002dc55010dea092f3e57481bc12cd1e0ea). [The code after it](https://github.com/rahuldave/babykev/tree/eb2b6002dc55010dea092f3e57481bc12cd1e0ea).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/55844b2320b632b40dd3f34f0a6b5bb962551005). [The code after it](https://github.com/rahuldave/babykev/tree/55844b2320b632b40dd3f34f0a6b5bb962551005).
 
 <a id="tut-18.8"></a>
 
@@ -9235,7 +9234,7 @@ grep -o 'href="api/smoke.html#[^"]*"' docs/_site/index.html
 
 #### What changed
 
-- <a id="tut-18.8-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the module `babykev.smoke`, in the list. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a52d047c3628b7ae2d980093ef3df5b7780b585f/docs/index.qmd).
+- <a id="tut-18.8-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the module `babykev.smoke`, in the list. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/aedd5e6659581b7aa6f424e06ccfa12f6a07fff1/docs/index.qmd).
   - look at ``- `babykev.smoke` is the smoke run. `smoke()` asks the model every question of the sample data, and``
 
 <details><summary>The diff of <code>docs/index.qmd</code></summary>
@@ -9262,7 +9261,7 @@ grep -o 'href="api/smoke.html#[^"]*"' docs/_site/index.html
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/a52d047c3628b7ae2d980093ef3df5b7780b585f). [The code after it](https://github.com/rahuldave/babykev/tree/a52d047c3628b7ae2d980093ef3df5b7780b585f).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/aedd5e6659581b7aa6f424e06ccfa12f6a07fff1). [The code after it](https://github.com/rahuldave/babykev/tree/aedd5e6659581b7aa6f424e06ccfa12f6a07fff1).
 
 <a id="tut-18.9"></a>
 
@@ -9284,7 +9283,7 @@ tests of the model come next.
 
 #### What changed
 
-- <a id="tut-18.9-README.md-8ec9a0"></a>`README.md`: `just smoke`, and the row of `smoke.py`. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/6c2937bcf7bac5b94fcbc0b06269a14d36b8d97f/README.md).
+- <a id="tut-18.9-README.md-8ec9a0"></a>`README.md`: `just smoke`, and the row of `smoke.py`. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/3edcb80f6814f9e0afe70942db6fce959799d9c5/README.md).
   - look at ``| `src/babykev/smoke.py` | The smoke run, which asks the real model the sample requests on this machine |``
 
 <details><summary>The diff of <code>README.md</code></summary>
@@ -9313,7 +9312,7 @@ tests of the model come next.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/6c2937bcf7bac5b94fcbc0b06269a14d36b8d97f). [The code after it](https://github.com/rahuldave/babykev/tree/6c2937bcf7bac5b94fcbc0b06269a14d36b8d97f).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3edcb80f6814f9e0afe70942db6fce959799d9c5). [The code after it](https://github.com/rahuldave/babykev/tree/3edcb80f6814f9e0afe70942db6fce959799d9c5).
 
 <a id="tut-19"></a>
 
@@ -9330,7 +9329,7 @@ GPU. A test of the model checks something exact, such as which token is where, h
 which weights get a gradient. That holds for any weights, trained or random. So the tests get a tiny model, built in memory with random
 weights. A fixture of pytest gives it to each test that asks for it.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/6c2937bcf7bac5b94fcbc0b06269a14d36b8d97f). [The code after it](https://github.com/rahuldave/babykev/tree/5ec98e80e89547dd837bfde958b11e0fd7e4ec63).
+[The code before this part](https://github.com/rahuldave/babykev/tree/3edcb80f6814f9e0afe70942db6fce959799d9c5). [The code after it](https://github.com/rahuldave/babykev/tree/88b3a9e08db851ce891ecfcfcf26d18892beea90).
 
 <a id="tut-19.1"></a>
 
@@ -9369,7 +9368,7 @@ token, and no secret. The next move answers it.
 
 #### What changed
 
-- <a id="tut-19.1-tests-tiny.py-70c1c9"></a>`tests/tiny.py`: the tiny tokenizer. New, 23 lines. [The file](https://github.com/rahuldave/babykev/blob/f37a7b0beb1cd67a4d07369908f12b64548a89ed/tests/tiny.py).
+- <a id="tut-19.1-tests-tiny.py-70c1c9"></a>`tests/tiny.py`: the tiny tokenizer. New, 23 lines. [The file](https://github.com/rahuldave/babykev/blob/b57593b2f1c324a6349f0f5b58a75754f7f261dc/tests/tiny.py).
   - look at `def tiny_tokenizer() -> PreTrainedTokenizerFast:  # A tokenizer with one token per character`
 
 <details><summary>The diff of <code>tests/tiny.py</code></summary>
@@ -9403,7 +9402,7 @@ token, and no secret. The next move answers it.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/f37a7b0beb1cd67a4d07369908f12b64548a89ed). [The code after it](https://github.com/rahuldave/babykev/tree/f37a7b0beb1cd67a4d07369908f12b64548a89ed).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b57593b2f1c324a6349f0f5b58a75754f7f261dc). [The code after it](https://github.com/rahuldave/babykev/tree/b57593b2f1c324a6349f0f5b58a75754f7f261dc).
 
 <a id="tut-19.2"></a>
 
@@ -9424,7 +9423,7 @@ just lint
 
 #### What changed
 
-- <a id="tut-19.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the tests may break `S106`. 3 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/bda24c0a2dad5fbe5332fc4479785035ffcf8233/pyproject.toml).
+- <a id="tut-19.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the tests may break `S106`. 3 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/2daaf5f257514e391edb5ad5183c2d2288965de3/pyproject.toml).
   - look at `"tests/**" = ["S101", "S106"]`
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
@@ -9443,7 +9442,7 @@ just lint
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/bda24c0a2dad5fbe5332fc4479785035ffcf8233). [The code after it](https://github.com/rahuldave/babykev/tree/bda24c0a2dad5fbe5332fc4479785035ffcf8233).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/2daaf5f257514e391edb5ad5183c2d2288965de3). [The code after it](https://github.com/rahuldave/babykev/tree/2daaf5f257514e391edb5ad5183c2d2288965de3).
 
 <a id="tut-19.3"></a>
 
@@ -9465,7 +9464,7 @@ It prints `24224`, the parameters of the tiny backbone. The backbone of Qwen2.5-
 
 #### What changed
 
-- <a id="tut-19.3-tests-tiny.py-70c1c9"></a>`tests/tiny.py`: the tiny backbone. 20 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/45415d9b4fa2c15329920a0c4f4893a0dbc2cf99/tests/tiny.py).
+- <a id="tut-19.3-tests-tiny.py-70c1c9"></a>`tests/tiny.py`: the tiny backbone. 20 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a6e3905ee0316fdd0b2e0d3baab9f4a65d0588b5/tests/tiny.py).
   - look at `def tiny_backbone(`
 
 <details><summary>The diff of <code>tests/tiny.py</code></summary>
@@ -9508,7 +9507,7 @@ It prints `24224`, the parameters of the tiny backbone. The backbone of Qwen2.5-
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/45415d9b4fa2c15329920a0c4f4893a0dbc2cf99). [The code after it](https://github.com/rahuldave/babykev/tree/45415d9b4fa2c15329920a0c4f4893a0dbc2cf99).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a6e3905ee0316fdd0b2e0d3baab9f4a65d0588b5). [The code after it](https://github.com/rahuldave/babykev/tree/a6e3905ee0316fdd0b2e0d3baab9f4a65d0588b5).
 
 <a id="tut-19.4"></a>
 
@@ -9534,7 +9533,7 @@ Python, and not the root of the project. So `tests.tiny` cannot be found. The ne
 
 #### What changed
 
-- <a id="tut-19.4-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `tok`. New, 16 lines. [The file](https://github.com/rahuldave/babykev/blob/1afb598b7814efa32b2ac5ecaf769525448b377f/tests/conftest.py).
+- <a id="tut-19.4-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `tok`. New, 16 lines. [The file](https://github.com/rahuldave/babykev/blob/14585bbd144a55ac28ff0473f3d3f2c23c03d314/tests/conftest.py).
   - look at `@pytest.fixture(scope="session")`
 
 <details><summary>The diff of <code>tests/conftest.py</code></summary>
@@ -9561,7 +9560,7 @@ Python, and not the root of the project. So `tests.tiny` cannot be found. The ne
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/1afb598b7814efa32b2ac5ecaf769525448b377f). [The code after it](https://github.com/rahuldave/babykev/tree/1afb598b7814efa32b2ac5ecaf769525448b377f).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/14585bbd144a55ac28ff0473f3d3f2c23c03d314). [The code after it](https://github.com/rahuldave/babykev/tree/14585bbd144a55ac28ff0473f3d3f2c23c03d314).
 
 <a id="tut-19.5"></a>
 
@@ -9591,7 +9590,7 @@ just test --fixtures
 
 #### What changed
 
-- <a id="tut-19.5-pyproject.toml-5d07e7"></a>`pyproject.toml`: the root of the project, on the path of pytest. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/0bc09955947f76b06118a4083b4fd66515c15068/pyproject.toml).
+- <a id="tut-19.5-pyproject.toml-5d07e7"></a>`pyproject.toml`: the root of the project, on the path of pytest. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/b458ae1df2239c8645f7a4eb35832fd2dddc1114/pyproject.toml).
   - look at `pythonpath = ["."]`
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
@@ -9610,7 +9609,7 @@ just test --fixtures
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/0bc09955947f76b06118a4083b4fd66515c15068). [The code after it](https://github.com/rahuldave/babykev/tree/0bc09955947f76b06118a4083b4fd66515c15068).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b458ae1df2239c8645f7a4eb35832fd2dddc1114). [The code after it](https://github.com/rahuldave/babykev/tree/b458ae1df2239c8645f7a4eb35832fd2dddc1114).
 
 <a id="tut-19.6"></a>
 
@@ -9633,7 +9632,7 @@ new import.
 
 #### What changed
 
-- <a id="tut-19.6-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `model`. 10 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/4f4d6a1c287c64965e692ccc3f6ce83d8e297165/tests/conftest.py).
+- <a id="tut-19.6-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `model`. 10 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/0806a218722ba7438f265928d3cfbc0b5f0e723e/tests/conftest.py).
   - look at `    return DecisionModel("tiny", "cpu", backbone=tiny_backbone(len(tok))).eval()`
 
 <details><summary>The diff of <code>tests/conftest.py</code></summary>
@@ -9664,7 +9663,7 @@ new import.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/4f4d6a1c287c64965e692ccc3f6ce83d8e297165). [The code after it](https://github.com/rahuldave/babykev/tree/4f4d6a1c287c64965e692ccc3f6ce83d8e297165).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0806a218722ba7438f265928d3cfbc0b5f0e723e). [The code after it](https://github.com/rahuldave/babykev/tree/0806a218722ba7438f265928d3cfbc0b5f0e723e).
 
 <a id="tut-19.7"></a>
 
@@ -9686,7 +9685,7 @@ docstring.
 
 #### What changed
 
-- <a id="tut-19.7-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `record`. 15 lines added. [The file](https://github.com/rahuldave/babykev/blob/6b750cd8fa121d4801f6e6b4413ada347e5a4f3d/tests/conftest.py).
+- <a id="tut-19.7-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `record`. 15 lines added. [The file](https://github.com/rahuldave/babykev/blob/b4bf2491e8505697eaa015738f93178c6bd7f3fc/tests/conftest.py).
   - look at `        "state": "Roquefort. A blue cheese from France, made from sheep's milk.",`
 
 <details><summary>The diff of <code>tests/conftest.py</code></summary>
@@ -9722,7 +9721,7 @@ docstring.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/6b750cd8fa121d4801f6e6b4413ada347e5a4f3d). [The code after it](https://github.com/rahuldave/babykev/tree/6b750cd8fa121d4801f6e6b4413ada347e5a4f3d).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b4bf2491e8505697eaa015738f93178c6bd7f3fc). [The code after it](https://github.com/rahuldave/babykev/tree/b4bf2491e8505697eaa015738f93178c6bd7f3fc).
 
 <a id="tut-19.8"></a>
 
@@ -9762,7 +9761,7 @@ runs the packing, the mask, the backbone and the head.
 
 #### What changed
 
-- <a id="tut-19.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the first test of the model, on the tiny model. New, 20 lines. [The file](https://github.com/rahuldave/babykev/blob/b34baedd8e8ce49475d07b177417b6a1a58456f6/tests/unit/test_model.py).
+- <a id="tut-19.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the first test of the model, on the tiny model. New, 20 lines. [The file](https://github.com/rahuldave/babykev/blob/321a8df2c597e0c46d06c9b36c711f0fe270900a/tests/unit/test_model.py).
   - look at `def test_probabilities_sum_to_one_for_every_question(`
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
@@ -9793,7 +9792,7 @@ runs the packing, the mask, the backbone and the head.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/b34baedd8e8ce49475d07b177417b6a1a58456f6). [The code after it](https://github.com/rahuldave/babykev/tree/b34baedd8e8ce49475d07b177417b6a1a58456f6).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/321a8df2c597e0c46d06c9b36c711f0fe270900a). [The code after it](https://github.com/rahuldave/babykev/tree/321a8df2c597e0c46d06c9b36c711f0fe270900a).
 
 <a id="tut-19.9"></a>
 
@@ -9815,7 +9814,7 @@ helpers and the fixtures in it.
 
 #### What changed
 
-- <a id="tut-19.9-README.md-8ec9a0"></a>`README.md`: the rows of the fixtures and of the tiny model. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/5ec98e80e89547dd837bfde958b11e0fd7e4ec63/README.md).
+- <a id="tut-19.9-README.md-8ec9a0"></a>`README.md`: the rows of the fixtures and of the tiny model. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/88b3a9e08db851ce891ecfcfcf26d18892beea90/README.md).
   - look at ``| `tests/tiny.py` | A small tokenizer and backbone, built in memory, in place of the real ones |``
 
 <details><summary>The diff of <code>README.md</code></summary>
@@ -9836,7 +9835,7 @@ helpers and the fixtures in it.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/5ec98e80e89547dd837bfde958b11e0fd7e4ec63). [The code after it](https://github.com/rahuldave/babykev/tree/5ec98e80e89547dd837bfde958b11e0fd7e4ec63).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/88b3a9e08db851ce891ecfcfcf26d18892beea90). [The code after it](https://github.com/rahuldave/babykev/tree/88b3a9e08db851ce891ecfcfcf26d18892beea90).
 
 <a id="tut-20"></a>
 
@@ -9852,7 +9851,7 @@ A unit test runs one function alone. The tests here check the packing, the defen
 delimiter, the head and the device. Then they check the verdicts of the smoke, and the command `smoke`. Each move adds one test. The
 coverage does not rise with every test. It counts the lines that a test runs, and not what a test checks.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/5ec98e80e89547dd837bfde958b11e0fd7e4ec63). [The code after it](https://github.com/rahuldave/babykev/tree/469bdd44714662d663ee77391d4c21774dea7fd0).
+[The code before this part](https://github.com/rahuldave/babykev/tree/88b3a9e08db851ce891ecfcfcf26d18892beea90). [The code after it](https://github.com/rahuldave/babykev/tree/ebfa2a8cee251782b3709a379c35af77c80c6170).
 
 <a id="tut-20.1"></a>
 
@@ -9886,7 +9885,7 @@ run, and not what a test checks.
 
 #### What changed
 
-- <a id="tut-20.1-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the tokens of a packed record. 16 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/ffb5cc31c73f6691fc83dea9663f3adc96d6478b/tests/unit/test_model.py).
+- <a id="tut-20.1-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the tokens of a packed record. 16 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/6d2401817f1bc2d56de4f3021cfceaa80d5b80f9/tests/unit/test_model.py).
   - look at `def test_packing_marks_every_part_with_its_delimiter(`
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
@@ -9924,7 +9923,7 @@ run, and not what a test checks.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/ffb5cc31c73f6691fc83dea9663f3adc96d6478b). [The code after it](https://github.com/rahuldave/babykev/tree/ffb5cc31c73f6691fc83dea9663f3adc96d6478b).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/6d2401817f1bc2d56de4f3021cfceaa80d5b80f9). [The code after it](https://github.com/rahuldave/babykev/tree/6d2401817f1bc2d56de4f3021cfceaa80d5b80f9).
 
 <a id="tut-20.2"></a>
 
@@ -9944,7 +9943,7 @@ pytest prints `1 passed, 55 deselected`.
 
 #### What changed
 
-- <a id="tut-20.2-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the positions of each question. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/dfa3c1576d70248d70b9ddfba4e4a1e9eac74c3a/tests/unit/test_model.py).
+- <a id="tut-20.2-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the positions of each question. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/e947449de17438d3aa5ee006bfc98db3944d4457/tests/unit/test_model.py).
   - look at `def test_positions_restart_after_the_state(`
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
@@ -9970,7 +9969,7 @@ pytest prints `1 passed, 55 deselected`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/dfa3c1576d70248d70b9ddfba4e4a1e9eac74c3a). [The code after it](https://github.com/rahuldave/babykev/tree/dfa3c1576d70248d70b9ddfba4e4a1e9eac74c3a).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e947449de17438d3aa5ee006bfc98db3944d4457). [The code after it](https://github.com/rahuldave/babykev/tree/e947449de17438d3aa5ee006bfc98db3944d4457).
 
 <a id="tut-20.3"></a>
 
@@ -9992,7 +9991,7 @@ run, and it left `encode` before the lines after it.
 
 #### What changed
 
-- <a id="tut-20.3-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a question longer than the limit. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/c2da58fefa044e2742dbb40173131efbc207d852/tests/unit/test_model.py).
+- <a id="tut-20.3-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a question longer than the limit. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/ff097836c2f1b752bb4347f8e5ae59aeca648a05/tests/unit/test_model.py).
   - look at `def test_a_question_that_does_not_fit_is_refused(`
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
@@ -10015,7 +10014,7 @@ run, and it left `encode` before the lines after it.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/c2da58fefa044e2742dbb40173131efbc207d852). [The code after it](https://github.com/rahuldave/babykev/tree/c2da58fefa044e2742dbb40173131efbc207d852).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ff097836c2f1b752bb4347f8e5ae59aeca648a05). [The code after it](https://github.com/rahuldave/babykev/tree/ff097836c2f1b752bb4347f8e5ae59aeca648a05).
 
 <a id="tut-20.4"></a>
 
@@ -10044,7 +10043,7 @@ them.
 
 #### What changed
 
-- <a id="tut-20.4-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a state longer than the limit. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/0e6bbc8f082b7db4c3fc5e6b9266b83bfc6fd74c/tests/unit/test_model.py).
+- <a id="tut-20.4-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a state longer than the limit. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/e3b3ab01357c19f3325d481c80e67ad1f13c1522/tests/unit/test_model.py).
   - look at `    with pytest.raises(ValueError, match="state too long: 62 tokens, the limit is 50"):`
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
@@ -10067,7 +10066,7 @@ them.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/0e6bbc8f082b7db4c3fc5e6b9266b83bfc6fd74c). [The code after it](https://github.com/rahuldave/babykev/tree/0e6bbc8f082b7db4c3fc5e6b9266b83bfc6fd74c).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e3b3ab01357c19f3325d481c80e67ad1f13c1522). [The code after it](https://github.com/rahuldave/babykev/tree/e3b3ab01357c19f3325d481c80e67ad1f13c1522).
 
 <a id="tut-20.5"></a>
 
@@ -10091,7 +10090,7 @@ tokens. pytest prints `1 passed`. The danger is real.
 
 #### What changed
 
-- <a id="tut-20.5-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the danger, a forged delimiter. 9 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/d700a14d751f3a34d46dff42e2b432cb72f238a6/tests/unit/test_model.py).
+- <a id="tut-20.5-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the danger, a forged delimiter. 9 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/1782e1e6803efd49be04e682f3453e39c1c2fc23/tests/unit/test_model.py).
   - look at `def test_a_tokenizer_alone_would_let_text_forge_a_delimiter(`
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
@@ -10122,7 +10121,7 @@ tokens. pytest prints `1 passed`. The danger is real.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/d700a14d751f3a34d46dff42e2b432cb72f238a6). [The code after it](https://github.com/rahuldave/babykev/tree/d700a14d751f3a34d46dff42e2b432cb72f238a6).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/1782e1e6803efd49be04e682f3453e39c1c2fc23). [The code after it](https://github.com/rahuldave/babykev/tree/1782e1e6803efd49be04e682f3453e39c1c2fc23).
 
 <a id="tut-20.6"></a>
 
@@ -10151,7 +10150,7 @@ probabilities had run `user_tokens` already, and checked nothing about it.
 
 #### What changed
 
-- <a id="tut-20.6-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the defence, for each of the five delimiters. 11 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/13bdfd2b6a38fd3d444b6a62414b1978f2e4bc16/tests/unit/test_model.py).
+- <a id="tut-20.6-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the defence, for each of the five delimiters. 11 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/e30ea2eb52ae23815152f60b09d07d9d0dd1fd3a/tests/unit/test_model.py).
   - look at `def test_user_text_cannot_forge_a_delimiter(`
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
@@ -10184,7 +10183,7 @@ probabilities had run `user_tokens` already, and checked nothing about it.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/13bdfd2b6a38fd3d444b6a62414b1978f2e4bc16). [The code after it](https://github.com/rahuldave/babykev/tree/13bdfd2b6a38fd3d444b6a62414b1978f2e4bc16).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e30ea2eb52ae23815152f60b09d07d9d0dd1fd3a). [The code after it](https://github.com/rahuldave/babykev/tree/e30ea2eb52ae23815152f60b09d07d9d0dd1fd3a).
 
 <a id="tut-20.7"></a>
 
@@ -10205,7 +10204,7 @@ pytest prints `1 passed`.
 
 #### What changed
 
-- <a id="tut-20.7-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: five options in, five logits out. 8 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/c06434a6985684d40ca44e75ae15ff4c238a2024/tests/unit/test_model.py).
+- <a id="tut-20.7-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: five options in, five logits out. 8 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/455b6a8ae64dae7e79fea6dd6b8434d11eb8f542/tests/unit/test_model.py).
   - look at `def test_pointer_head_gives_one_logit_per_option() -> None:`
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
@@ -10237,7 +10236,7 @@ pytest prints `1 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/c06434a6985684d40ca44e75ae15ff4c238a2024). [The code after it](https://github.com/rahuldave/babykev/tree/c06434a6985684d40ca44e75ae15ff4c238a2024).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/455b6a8ae64dae7e79fea6dd6b8434d11eb8f542). [The code after it](https://github.com/rahuldave/babykev/tree/455b6a8ae64dae7e79fea6dd6b8434d11eb8f542).
 
 <a id="tut-20.8"></a>
 
@@ -10258,7 +10257,7 @@ pytest prints `1 passed`. The column Missing of `model.py` starts at `62-64`, so
 
 #### What changed
 
-- <a id="tut-20.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a device asked for by name. 14 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/5923b39efce4180c86bf0afe36774ebc619afce3/tests/unit/test_model.py).
+- <a id="tut-20.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a device asked for by name. 14 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/4e6dafdd492c6ca8c6ebe4935f7065e8434064da/tests/unit/test_model.py).
   - look at `def test_pick_device_takes_an_override() -> None:`
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
@@ -10294,7 +10293,7 @@ pytest prints `1 passed`. The column Missing of `model.py` starts at `62-64`, so
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/5923b39efce4180c86bf0afe36774ebc619afce3). [The code after it](https://github.com/rahuldave/babykev/tree/5923b39efce4180c86bf0afe36774ebc619afce3).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/4e6dafdd492c6ca8c6ebe4935f7065e8434064da). [The code after it](https://github.com/rahuldave/babykev/tree/4e6dafdd492c6ca8c6ebe4935f7065e8434064da).
 
 <a id="tut-20.9"></a>
 
@@ -10317,7 +10316,7 @@ train. The total is 69%.
 
 #### What changed
 
-- <a id="tut-20.9-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a device, whatever the machine. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/fbadafae13fd401f3679b9d954d04f5bc110e2af/tests/unit/test_model.py).
+- <a id="tut-20.9-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a device, whatever the machine. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/fe15072f571cb54b810bf22b511cce5cc81920fa/tests/unit/test_model.py).
   - look at `def test_pick_device_finds_something_to_run_on() -> None:`
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
@@ -10336,7 +10335,7 @@ train. The total is 69%.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/fbadafae13fd401f3679b9d954d04f5bc110e2af). [The code after it](https://github.com/rahuldave/babykev/tree/fbadafae13fd401f3679b9d954d04f5bc110e2af).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/fe15072f571cb54b810bf22b511cce5cc81920fa). [The code after it](https://github.com/rahuldave/babykev/tree/fe15072f571cb54b810bf22b511cce5cc81920fa).
 
 <a id="tut-20.10"></a>
 
@@ -10365,7 +10364,7 @@ just test
 
 #### What changed
 
-- <a id="tut-20.10-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: the first test of `verdict`. New, 10 lines. [The file](https://github.com/rahuldave/babykev/blob/59bd94de755792573b666353ebe5e0b6630619f2/tests/unit/test_smoke.py).
+- <a id="tut-20.10-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: the first test of `verdict`. New, 10 lines. [The file](https://github.com/rahuldave/babykev/blob/46f7e9637f1653265e237ae9676f543af062afc5/tests/unit/test_smoke.py).
   - look at `def test_verdict_agrees_when_the_answer_is_the_label() -> None:`
 
 <details><summary>The diff of <code>tests/unit/test_smoke.py</code></summary>
@@ -10386,7 +10385,7 @@ just test
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/59bd94de755792573b666353ebe5e0b6630619f2). [The code after it](https://github.com/rahuldave/babykev/tree/59bd94de755792573b666353ebe5e0b6630619f2).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/46f7e9637f1653265e237ae9676f543af062afc5). [The code after it](https://github.com/rahuldave/babykev/tree/46f7e9637f1653265e237ae9676f543af062afc5).
 
 <a id="tut-20.11"></a>
 
@@ -10406,7 +10405,7 @@ pytest prints `1 passed`. The label is no, so the verdict is `("yes (0.50)", "no
 
 #### What changed
 
-- <a id="tut-20.11-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: a noul at the edge. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/5aeab8cf386854f47ecaefac96e1b76ce3608844/tests/unit/test_smoke.py).
+- <a id="tut-20.11-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: a noul at the edge. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/ec3c03dc7b395c22a898f0c25e754daaa9ce1afa/tests/unit/test_smoke.py).
   - look at `def test_verdict_reads_a_noul_answer_as_yes_from_one_half() -> None:`
 
 <details><summary>The diff of <code>tests/unit/test_smoke.py</code></summary>
@@ -10426,7 +10425,7 @@ pytest prints `1 passed`. The label is no, so the verdict is `("yes (0.50)", "no
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/5aeab8cf386854f47ecaefac96e1b76ce3608844). [The code after it](https://github.com/rahuldave/babykev/tree/5aeab8cf386854f47ecaefac96e1b76ce3608844).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ec3c03dc7b395c22a898f0c25e754daaa9ce1afa). [The code after it](https://github.com/rahuldave/babykev/tree/ec3c03dc7b395c22a898f0c25e754daaa9ce1afa).
 
 <a id="tut-20.12"></a>
 
@@ -10449,7 +10448,7 @@ just test
 
 #### What changed
 
-- <a id="tut-20.12-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: a score, by its most likely level. 10 lines added. [The file](https://github.com/rahuldave/babykev/blob/d3ce8b49f7106ad16704e70ecec664a0d304c50e/tests/unit/test_smoke.py).
+- <a id="tut-20.12-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: a score, by its most likely level. 10 lines added. [The file](https://github.com/rahuldave/babykev/blob/adb57ffc75cd347933a0bebec13312802817faee/tests/unit/test_smoke.py).
   - look at `def test_verdict_reads_a_score_answer_as_its_most_likely_level() -> None:`
 
 <details><summary>The diff of <code>tests/unit/test_smoke.py</code></summary>
@@ -10473,7 +10472,7 @@ just test
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/d3ce8b49f7106ad16704e70ecec664a0d304c50e). [The code after it](https://github.com/rahuldave/babykev/tree/d3ce8b49f7106ad16704e70ecec664a0d304c50e).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/adb57ffc75cd347933a0bebec13312802817faee). [The code after it](https://github.com/rahuldave/babykev/tree/adb57ffc75cd347933a0bebec13312802817faee).
 
 <a id="tut-20.13"></a>
 
@@ -10503,7 +10502,7 @@ just test
 
 #### What changed
 
-- <a id="tut-20.13-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: `babykev smoke help`. 13 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/17ae31e2f3869e017d06f8c247335b42045c4845/tests/unit/test_cli.py).
+- <a id="tut-20.13-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: `babykev smoke help`. 13 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/4322906929f4c1b22be716cd4a341d80b8e75e25/tests/unit/test_cli.py).
   - look at `def test_smoke_help_prints_the_usage(`
 
 <details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
@@ -10539,7 +10538,7 @@ just test
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/17ae31e2f3869e017d06f8c247335b42045c4845). [The code after it](https://github.com/rahuldave/babykev/tree/17ae31e2f3869e017d06f8c247335b42045c4845).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/4322906929f4c1b22be716cd4a341d80b8e75e25). [The code after it](https://github.com/rahuldave/babykev/tree/4322906929f4c1b22be716cd4a341d80b8e75e25).
 
 <a id="tut-20.14"></a>
 
@@ -10561,7 +10560,7 @@ and no unit test has one.
 
 #### What changed
 
-- <a id="tut-20.14-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: a word that `babykev smoke` refuses. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/479fa4ff6a3168e1d4b0a534b19b9e9907fb53e0/tests/unit/test_cli.py).
+- <a id="tut-20.14-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: a word that `babykev smoke` refuses. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/13ba53784ecd145301a1413d56e43938365bbf99/tests/unit/test_cli.py).
   - look at `def test_smoke_refuses_a_word_it_does_not_know(`
 
 <details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
@@ -10586,7 +10585,7 @@ and no unit test has one.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/479fa4ff6a3168e1d4b0a534b19b9e9907fb53e0). [The code after it](https://github.com/rahuldave/babykev/tree/479fa4ff6a3168e1d4b0a534b19b9e9907fb53e0).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/13ba53784ecd145301a1413d56e43938365bbf99). [The code after it](https://github.com/rahuldave/babykev/tree/13ba53784ecd145301a1413d56e43938365bbf99).
 
 <a id="tut-20.15"></a>
 
@@ -10606,7 +10605,7 @@ just check
 
 #### What changed
 
-- <a id="tut-20.15-README.md-8ec9a0"></a>`README.md`: the tests of the smoke, in the row of `tests/unit/`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/469bdd44714662d663ee77391d4c21774dea7fd0/README.md).
+- <a id="tut-20.15-README.md-8ec9a0"></a>`README.md`: the tests of the smoke, in the row of `tests/unit/`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/ebfa2a8cee251782b3709a379c35af77c80c6170/README.md).
   - look at ``| `tests/unit/` | The tests of the contract, of the command, of the model and of the smoke. One test checks every line of the sample data against the contract |``
 
 <details><summary>The diff of <code>README.md</code></summary>
@@ -10625,7 +10624,7 @@ just check
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/469bdd44714662d663ee77391d4c21774dea7fd0). [The code after it](https://github.com/rahuldave/babykev/tree/469bdd44714662d663ee77391d4c21774dea7fd0).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ebfa2a8cee251782b3709a379c35af77c80c6170). [The code after it](https://github.com/rahuldave/babykev/tree/ebfa2a8cee251782b3709a379c35af77c80c6170).
 
 <a id="tut-21"></a>
 
@@ -10641,7 +10640,7 @@ An integration test runs several of our parts together. On the tiny model, it ne
 make it fail, so it is hermetic. The tests here check what trains, a pass over records of different lengths,
 and the whole smoke. Then the coverage is over 90%, and `just check` gets a floor.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/469bdd44714662d663ee77391d4c21774dea7fd0). [The code after it](https://github.com/rahuldave/babykev/tree/7be9407f2747077002f882085c9c043eb35d6c35).
+[The code before this part](https://github.com/rahuldave/babykev/tree/ebfa2a8cee251782b3709a379c35af77c80c6170). [The code after it](https://github.com/rahuldave/babykev/tree/922d6ba2495756622ad215301da7c48f2ec33fa9).
 
 <a id="tut-21.1"></a>
 
@@ -10673,7 +10672,7 @@ coverage of 90% not reached. Total coverage: 83.52%`, and ends with exit code 1.
 
 #### What changed
 
-- <a id="tut-21.1-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: one backward pass with an adapter. 22 lines added. [The file](https://github.com/rahuldave/babykev/blob/e920479c0f4f4bd5335423e25766ddc07b879516/tests/unit/test_model.py).
+- <a id="tut-21.1-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: one backward pass with an adapter. 22 lines added. [The file](https://github.com/rahuldave/babykev/blob/0be44c1de17b8acb4e18a964a782584eb26fee97/tests/unit/test_model.py).
   - look at `def test_with_an_adapter_only_the_adapter_and_the_head_train(`
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
@@ -10716,7 +10715,7 @@ coverage of 90% not reached. Total coverage: 83.52%`, and ends with exit code 1.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e920479c0f4f4bd5335423e25766ddc07b879516). [The code after it](https://github.com/rahuldave/babykev/tree/e920479c0f4f4bd5335423e25766ddc07b879516).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0be44c1de17b8acb4e18a964a782584eb26fee97). [The code after it](https://github.com/rahuldave/babykev/tree/0be44c1de17b8acb4e18a964a782584eb26fee97).
 
 <a id="tut-21.2"></a>
 
@@ -10745,7 +10744,7 @@ still fails.
 
 #### What changed
 
-- <a id="tut-21.2-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a padded pass. 16 lines added. [The file](https://github.com/rahuldave/babykev/blob/aca79826fc8596b347c064699744e03d4cdc69f6/tests/unit/test_model.py).
+- <a id="tut-21.2-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a padded pass. 16 lines added. [The file](https://github.com/rahuldave/babykev/blob/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac/tests/unit/test_model.py).
   - look at `def test_records_of_different_lengths_answer_in_one_pass_as_alone(`
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
@@ -10775,7 +10774,7 @@ still fails.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/aca79826fc8596b347c064699744e03d4cdc69f6). [The code after it](https://github.com/rahuldave/babykev/tree/aca79826fc8596b347c064699744e03d4cdc69f6).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac). [The code after it](https://github.com/rahuldave/babykev/tree/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac).
 
 <a id="tut-21.3"></a>
 
@@ -10806,7 +10805,7 @@ need the Hub or a GPU of NVIDIA. They are `63, 72-75, 204-207` of `model.py`, an
 
 #### What changed
 
-- <a id="tut-21.3-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: the whole smoke, on the tiny model. 17 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/cf86cdcfd5d6ecca2cd4fd799ad5219b51f5ca43/tests/unit/test_smoke.py).
+- <a id="tut-21.3-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: the whole smoke, on the tiny model. 17 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/08acf0a3770d58ab7fc3ac85eebf5cf9ed0bad0e/tests/unit/test_smoke.py).
   - look at `def test_smoke_reports_on_every_question_of_the_sample(`
 
 <details><summary>The diff of <code>tests/unit/test_smoke.py</code></summary>
@@ -10844,7 +10843,7 @@ need the Hub or a GPU of NVIDIA. They are `63, 72-75, 204-207` of `model.py`, an
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/cf86cdcfd5d6ecca2cd4fd799ad5219b51f5ca43). [The code after it](https://github.com/rahuldave/babykev/tree/cf86cdcfd5d6ecca2cd4fd799ad5219b51f5ca43).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/08acf0a3770d58ab7fc3ac85eebf5cf9ed0bad0e). [The code after it](https://github.com/rahuldave/babykev/tree/08acf0a3770d58ab7fc3ac85eebf5cf9ed0bad0e).
 
 <a id="tut-21.4"></a>
 
@@ -10867,7 +10866,7 @@ exit code 0.
 
 #### What changed
 
-- <a id="tut-21.4-justfile-424f0b"></a>`justfile`: the floor, in the gate. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/37f71350d1b200db594ac4e4eca09d6fd9a96764/justfile).
+- <a id="tut-21.4-justfile-424f0b"></a>`justfile`: the floor, in the gate. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/57604134d9590c16b1c4db0b1d1a11509a65345b/justfile).
   - look at `    just test -q --cov-fail-under=90`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -10895,7 +10894,7 @@ exit code 0.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/37f71350d1b200db594ac4e4eca09d6fd9a96764). [The code after it](https://github.com/rahuldave/babykev/tree/37f71350d1b200db594ac4e4eca09d6fd9a96764).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/57604134d9590c16b1c4db0b1d1a11509a65345b). [The code after it](https://github.com/rahuldave/babykev/tree/57604134d9590c16b1c4db0b1d1a11509a65345b).
 
 <a id="tut-21.5"></a>
 
@@ -10915,7 +10914,7 @@ grep -n '90%' README.md
 
 #### What changed
 
-- <a id="tut-21.5-README.md-8ec9a0"></a>`README.md`: the floor of 90%, in the lines on `just check`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/7be9407f2747077002f882085c9c043eb35d6c35/README.md).
+- <a id="tut-21.5-README.md-8ec9a0"></a>`README.md`: the floor of 90%, in the lines on `just check`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/922d6ba2495756622ad215301da7c48f2ec33fa9/README.md).
   - look at ``The tests must run at least 90% of the code. You can run `just check` yourself at any time.``
 
 <details><summary>The diff of <code>README.md</code></summary>
@@ -10936,7 +10935,7 @@ grep -n '90%' README.md
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/7be9407f2747077002f882085c9c043eb35d6c35). [The code after it](https://github.com/rahuldave/babykev/tree/7be9407f2747077002f882085c9c043eb35d6c35).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/922d6ba2495756622ad215301da7c48f2ec33fa9). [The code after it](https://github.com/rahuldave/babykev/tree/922d6ba2495756622ad215301da7c48f2ec33fa9).
 
 <a id="tut-22"></a>
 
@@ -10955,7 +10954,7 @@ came in, and the coverage of `branch_mask` is 100%. But no test has looked at wh
 The tests here look, and they find that a question sees the questions before it. The code runs, its types are
 right, and its lines are covered. It does the wrong thing for its task.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/7be9407f2747077002f882085c9c043eb35d6c35). [The code after it](https://github.com/rahuldave/babykev/tree/c81f75cdfb68558cb40ab45c4c8995476630f844).
+[The code before this part](https://github.com/rahuldave/babykev/tree/922d6ba2495756622ad215301da7c48f2ec33fa9). [The code after it](https://github.com/rahuldave/babykev/tree/9bfadf5448a5951580b313a781b277f343aa6e30).
 
 <a id="tut-22.1"></a>
 
@@ -10983,7 +10982,7 @@ the picture has `##..#.` and `##..##`. Question 2 sees question 1.
 
 #### What changed
 
-- <a id="tut-22.1-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the picture of a small request. New, 26 lines. [The file](https://github.com/rahuldave/babykev/blob/512d3c63be602fa415a3bfa9252b7bb8bc6645ae/tests/unit/test_mask.py).
+- <a id="tut-22.1-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the picture of a small request. New, 26 lines. [The file](https://github.com/rahuldave/babykev/blob/e7db07241985b2cc80908d108e4229cfb512646b/tests/unit/test_mask.py).
   - look at `def test_mask_of_a_small_request() -> None:`
 
 <details><summary>The diff of <code>tests/unit/test_mask.py</code></summary>
@@ -11020,7 +11019,7 @@ the picture has `##..#.` and `##..##`. Question 2 sees question 1.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/512d3c63be602fa415a3bfa9252b7bb8bc6645ae). [The code after it](https://github.com/rahuldave/babykev/tree/512d3c63be602fa415a3bfa9252b7bb8bc6645ae).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e7db07241985b2cc80908d108e4229cfb512646b). [The code after it](https://github.com/rahuldave/babykev/tree/e7db07241985b2cc80908d108e4229cfb512646b).
 
 <a id="tut-22.2"></a>
 
@@ -11044,9 +11043,9 @@ It prints `6.170.0`, or a newer version.
 
 #### What changed
 
-- <a id="tut-22.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: hypothesis, in the group `test`. 1 line added. It comes from `uv add --group test hypothesis`. [The file](https://github.com/rahuldave/babykev/blob/c4276310b96963fe285e2929dd8a36b7241e3baf/pyproject.toml).
+- <a id="tut-22.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: hypothesis, in the group `test`. 1 line added. It comes from `uv add --group test hypothesis`. [The file](https://github.com/rahuldave/babykev/blob/aa4f870deb9ec19ee18484e187f5d850399fa554/pyproject.toml).
   - look at `"hypothesis>=6.170.0",`
-- <a id="tut-22.2-uv.lock-8356d8"></a>`uv.lock`: the exact versions of hypothesis and sortedcontainers. 80 lines added. It comes from `uv add --group test hypothesis`. [The file](https://github.com/rahuldave/babykev/blob/c4276310b96963fe285e2929dd8a36b7241e3baf/uv.lock).
+- <a id="tut-22.2-uv.lock-8356d8"></a>`uv.lock`: the exact versions of hypothesis and sortedcontainers. 80 lines added. It comes from `uv add --group test hypothesis`. [The file](https://github.com/rahuldave/babykev/blob/aa4f870deb9ec19ee18484e187f5d850399fa554/uv.lock).
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -11063,7 +11062,7 @@ It prints `6.170.0`, or a newer version.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/c4276310b96963fe285e2929dd8a36b7241e3baf). [The code after it](https://github.com/rahuldave/babykev/tree/c4276310b96963fe285e2929dd8a36b7241e3baf).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/aa4f870deb9ec19ee18484e187f5d850399fa554). [The code after it](https://github.com/rahuldave/babykev/tree/aa4f870deb9ec19ee18484e187f5d850399fa554).
 
 <a id="tut-22.3"></a>
 
@@ -11097,7 +11096,7 @@ mask. hypothesis keeps the failing shape in the folder `.hypothesis`, and tries 
 
 #### What changed
 
-- <a id="tut-22.3-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the shapes, and the first rule. 23 lines added. [The file](https://github.com/rahuldave/babykev/blob/76391b33ac277ee8d7138543b20f01da225ba2cc/tests/unit/test_mask.py).
+- <a id="tut-22.3-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the shapes, and the first rule. 23 lines added. [The file](https://github.com/rahuldave/babykev/blob/857445da99027d423543017a9face7f2cd41ea19/tests/unit/test_mask.py).
   - look at `def test_no_question_sees_another_question(`
 
 <details><summary>The diff of <code>tests/unit/test_mask.py</code></summary>
@@ -11144,7 +11143,7 @@ mask. hypothesis keeps the failing shape in the folder `.hypothesis`, and tries 
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/76391b33ac277ee8d7138543b20f01da225ba2cc). [The code after it](https://github.com/rahuldave/babykev/tree/76391b33ac277ee8d7138543b20f01da225ba2cc).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/857445da99027d423543017a9face7f2cd41ea19). [The code after it](https://github.com/rahuldave/babykev/tree/857445da99027d423543017a9face7f2cd41ea19).
 
 <a id="tut-22.4"></a>
 
@@ -11165,7 +11164,7 @@ pytest prints `1 passed`. The causal part of the mask was never wrong. Only the 
 
 #### What changed
 
-- <a id="tut-22.4-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the causal rule. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/1b5b940ca4c0ff99cd693ff4d7a6d0ae14f55d5b/tests/unit/test_mask.py).
+- <a id="tut-22.4-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the causal rule. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/55034fc9085b7ba3a5ac86f3cd40b955a698b642/tests/unit/test_mask.py).
   - look at `def test_no_token_sees_a_later_token(`
 
 <details><summary>The diff of <code>tests/unit/test_mask.py</code></summary>
@@ -11187,7 +11186,7 @@ pytest prints `1 passed`. The causal part of the mask was never wrong. Only the 
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/1b5b940ca4c0ff99cd693ff4d7a6d0ae14f55d5b). [The code after it](https://github.com/rahuldave/babykev/tree/1b5b940ca4c0ff99cd693ff4d7a6d0ae14f55d5b).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/55034fc9085b7ba3a5ac86f3cd40b955a698b642). [The code after it](https://github.com/rahuldave/babykev/tree/55034fc9085b7ba3a5ac86f3cd40b955a698b642).
 
 <a id="tut-22.5"></a>
 
@@ -11211,7 +11210,7 @@ alone, so they are unit tests.
 
 #### What changed
 
-- <a id="tut-22.5-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the whole rule. 13 lines added. [The file](https://github.com/rahuldave/babykev/blob/e2397970f5017e67db3bb61ffd648d1cec6f8522/tests/unit/test_mask.py).
+- <a id="tut-22.5-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the whole rule. 13 lines added. [The file](https://github.com/rahuldave/babykev/blob/41b4f5f236a25a9e8438ba2a00682b5125868a50/tests/unit/test_mask.py).
   - look at `def test_what_is_allowed_is_exactly_the_rule(`
 
 <details><summary>The diff of <code>tests/unit/test_mask.py</code></summary>
@@ -11238,7 +11237,7 @@ alone, so they are unit tests.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e2397970f5017e67db3bb61ffd648d1cec6f8522). [The code after it](https://github.com/rahuldave/babykev/tree/e2397970f5017e67db3bb61ffd648d1cec6f8522).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/41b4f5f236a25a9e8438ba2a00682b5125868a50). [The code after it](https://github.com/rahuldave/babykev/tree/41b4f5f236a25a9e8438ba2a00682b5125868a50).
 
 <a id="tut-22.6"></a>
 
@@ -11264,7 +11263,7 @@ question 1 comes first and sees only the state. The tiny model is untrained, so 
 
 #### What changed
 
-- <a id="tut-22.6-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: rewrite question 2, and questions 1 and 3 keep their answers. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/098423d0db55e49d095c19021052c8c841289198/tests/unit/test_model.py).
+- <a id="tut-22.6-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: rewrite question 2, and questions 1 and 3 keep their answers. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/12e9fb18c4c86cbd1291da858fd6ad39af01929b/tests/unit/test_model.py).
   - look at `def test_a_question_cannot_see_its_sibling(`
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
@@ -11292,7 +11291,7 @@ question 1 comes first and sees only the state. The tiny model is untrained, so 
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/098423d0db55e49d095c19021052c8c841289198). [The code after it](https://github.com/rahuldave/babykev/tree/098423d0db55e49d095c19021052c8c841289198).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/12e9fb18c4c86cbd1291da858fd6ad39af01929b). [The code after it](https://github.com/rahuldave/babykev/tree/12e9fb18c4c86cbd1291da858fd6ad39af01929b).
 
 <a id="tut-22.7"></a>
 
@@ -11314,7 +11313,7 @@ The test fails on question 2. Packed, it gets `[0.3321, 0.3346, 0.3333]`, and al
 
 #### What changed
 
-- <a id="tut-22.7-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: three questions in one pass, and each alone. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/6157863e8297a7a6ad004df66f3425d09ee9c3cd/tests/unit/test_model.py).
+- <a id="tut-22.7-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: three questions in one pass, and each alone. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/d3e4a6a067cd7f481a1bd327af08cb2358429e9c/tests/unit/test_model.py).
   - look at `def test_packed_questions_answer_as_they_would_alone(`
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
@@ -11340,7 +11339,7 @@ The test fails on question 2. Packed, it gets `[0.3321, 0.3346, 0.3333]`, and al
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/6157863e8297a7a6ad004df66f3425d09ee9c3cd). [The code after it](https://github.com/rahuldave/babykev/tree/6157863e8297a7a6ad004df66f3425d09ee9c3cd).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d3e4a6a067cd7f481a1bd327af08cb2358429e9c). [The code after it](https://github.com/rahuldave/babykev/tree/d3e4a6a067cd7f481a1bd327af08cb2358429e9c).
 
 <a id="tut-22.8"></a>
 
@@ -11363,7 +11362,7 @@ probabilities go from `[0.5016, 0.4984]` to `[0.5007, 0.4993]`. `-k order_of_que
 
 #### What changed
 
-- <a id="tut-22.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the questions in the reverse order. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/ccf90b5467d36f291f716f46a530380b00353664/tests/unit/test_model.py).
+- <a id="tut-22.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the questions in the reverse order. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/c3e2706e2b1fbc58bda631e173e26145256bc47e/tests/unit/test_model.py).
   - look at `def test_the_order_of_questions_does_not_matter(`
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
@@ -11389,7 +11388,7 @@ probabilities go from `[0.5016, 0.4984]` to `[0.5007, 0.4993]`. `-k order_of_que
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/ccf90b5467d36f291f716f46a530380b00353664). [The code after it](https://github.com/rahuldave/babykev/tree/ccf90b5467d36f291f716f46a530380b00353664).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/c3e2706e2b1fbc58bda631e173e26145256bc47e). [The code after it](https://github.com/rahuldave/babykev/tree/c3e2706e2b1fbc58bda631e173e26145256bc47e).
 
 <a id="tut-22.9"></a>
 
@@ -11419,7 +11418,7 @@ longer sees. A rule for every shape found the size with three questions.
 
 #### What changed
 
-- <a id="tut-22.9-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: a mask that blocks only the question just before, on purpose. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/abd6e56722cf3c5745241b045a848547d2213e77/src/babykev/model.py).
+- <a id="tut-22.9-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: a mask that blocks only the question just before, on purpose. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/18bdfee89d950245956448ab8377cfc8b90e8595/src/babykev/model.py).
   - look at `    same = (s[None, :] == s[:, None]) | (s[None, :] == 0) | (s[None, :] < s[:, None] - 1)`
 
 <details><summary>The diff of <code>src/babykev/model.py</code></summary>
@@ -11438,7 +11437,7 @@ longer sees. A rule for every shape found the size with three questions.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/abd6e56722cf3c5745241b045a848547d2213e77). [The code after it](https://github.com/rahuldave/babykev/tree/abd6e56722cf3c5745241b045a848547d2213e77).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/18bdfee89d950245956448ab8377cfc8b90e8595). [The code after it](https://github.com/rahuldave/babykev/tree/18bdfee89d950245956448ab8377cfc8b90e8595).
 
 <a id="tut-22.10"></a>
 
@@ -11474,7 +11473,7 @@ chance.
 
 #### What changed
 
-- <a id="tut-22.10-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the state, or the same question. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/78256c6c1ae27f65f1d61afca6c73a47372ed314/src/babykev/model.py).
+- <a id="tut-22.10-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the state, or the same question. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/5f63fb463f94ae6c82a647db8a4b86d4a3d6caa1/src/babykev/model.py).
   - look at `    same = (s[None, :] == s[:, None]) | (s[None, :] == 0)`
 
 <details><summary>The diff of <code>src/babykev/model.py</code></summary>
@@ -11493,7 +11492,7 @@ chance.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/78256c6c1ae27f65f1d61afca6c73a47372ed314). [The code after it](https://github.com/rahuldave/babykev/tree/78256c6c1ae27f65f1d61afca6c73a47372ed314).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/5f63fb463f94ae6c82a647db8a4b86d4a3d6caa1). [The code after it](https://github.com/rahuldave/babykev/tree/5f63fb463f94ae6c82a647db8a4b86d4a3d6caa1).
 
 <a id="tut-22.11"></a>
 
@@ -11514,7 +11513,7 @@ with the six functions of `test_mask.py`.
 
 #### What changed
 
-- <a id="tut-22.11-README.md-8ec9a0"></a>`README.md`: the tests of the mask, in the row of `tests/unit/`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/c81f75cdfb68558cb40ab45c4c8995476630f844/README.md).
+- <a id="tut-22.11-README.md-8ec9a0"></a>`README.md`: the tests of the mask, in the row of `tests/unit/`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/9bfadf5448a5951580b313a781b277f343aa6e30/README.md).
   - look at `hypothesis tries the rules of the mask on many shapes of request |`
 
 <details><summary>The diff of <code>README.md</code></summary>
@@ -11533,7 +11532,7 @@ with the six functions of `test_mask.py`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/c81f75cdfb68558cb40ab45c4c8995476630f844). [The code after it](https://github.com/rahuldave/babykev/tree/c81f75cdfb68558cb40ab45c4c8995476630f844).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9bfadf5448a5951580b313a781b277f343aa6e30). [The code after it](https://github.com/rahuldave/babykev/tree/9bfadf5448a5951580b313a781b277f343aa6e30).
 
 <a id="tut-23"></a>
 
@@ -11551,7 +11550,7 @@ real model is a test too, of the whole program with its real parts. It needs the
 system test of the table of the kinds of tests. Here it becomes a test, an experiment shows that it is not
 hermetic, and keeps it out of `just test` and the gate.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/c81f75cdfb68558cb40ab45c4c8995476630f844). [The code after it](https://github.com/rahuldave/babykev/tree/89de4845180ac0ad80a2fa810d8d0cb58366c720).
+[The code before this part](https://github.com/rahuldave/babykev/tree/9bfadf5448a5951580b313a781b277f343aa6e30). [The code after it](https://github.com/rahuldave/babykev/tree/d9df8f2a02ed7a7780325aebf281d6107317f9d9).
 
 <a id="tut-23.1"></a>
 
@@ -11593,7 +11592,7 @@ and not because it is hermetic.
 
 #### What changed
 
-- <a id="tut-23.1-tests-system-test_real_model.py-df0b9d"></a>`tests/system/test_real_model.py`: the smoke on the real model, as a test. New, 24 lines. [The file](https://github.com/rahuldave/babykev/blob/72839bbef1b869ae388f5d32807bfef47b0461d9/tests/system/test_real_model.py).
+- <a id="tut-23.1-tests-system-test_real_model.py-df0b9d"></a>`tests/system/test_real_model.py`: the smoke on the real model, as a test. New, 24 lines. [The file](https://github.com/rahuldave/babykev/blob/e8d250399661741adb430b0ab9020fb869279074/tests/system/test_real_model.py).
   - look at `def test_the_real_model_answers_every_sample_question(`
 
 <details><summary>The diff of <code>tests/system/test_real_model.py</code></summary>
@@ -11628,7 +11627,7 @@ and not because it is hermetic.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/72839bbef1b869ae388f5d32807bfef47b0461d9). [The code after it](https://github.com/rahuldave/babykev/tree/72839bbef1b869ae388f5d32807bfef47b0461d9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e8d250399661741adb430b0ab9020fb869279074). [The code after it](https://github.com/rahuldave/babykev/tree/e8d250399661741adb430b0ab9020fb869279074).
 
 <a id="tut-23.2"></a>
 
@@ -11651,7 +11650,7 @@ error.
 
 #### What changed
 
-- <a id="tut-23.2-tests-system-test_real_model.py-df0b9d"></a>`tests/system/test_real_model.py`: the marker `system`. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/82d933e1f5cfef31c717f1e416352977b5246a20/tests/system/test_real_model.py).
+- <a id="tut-23.2-tests-system-test_real_model.py-df0b9d"></a>`tests/system/test_real_model.py`: the marker `system`. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/14e3ab70450cd154b85d49f1b9a694de35a18557/tests/system/test_real_model.py).
   - look at `pytestmark = pytest.mark.system`
 
 <details><summary>The diff of <code>tests/system/test_real_model.py</code></summary>
@@ -11671,7 +11670,7 @@ error.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/82d933e1f5cfef31c717f1e416352977b5246a20). [The code after it](https://github.com/rahuldave/babykev/tree/82d933e1f5cfef31c717f1e416352977b5246a20).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/14e3ab70450cd154b85d49f1b9a694de35a18557). [The code after it](https://github.com/rahuldave/babykev/tree/14e3ab70450cd154b85d49f1b9a694de35a18557).
 
 <a id="tut-23.3"></a>
 
@@ -11693,7 +11692,7 @@ The test passes with no warning. `just test --markers` lists every marker, and t
 
 #### What changed
 
-- <a id="tut-23.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: the marker `system`, declared. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/97d8afa31ab7738dc6481dde0fc01d70f88334bb/pyproject.toml).
+- <a id="tut-23.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: the marker `system`, declared. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/e194931f1402c90fe5d4d59d5ac3e5c5846b8ac1/pyproject.toml).
   - look at `markers = ["system: needs the network, the real model or a device"]`
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
@@ -11712,7 +11711,7 @@ The test passes with no warning. `just test --markers` lists every marker, and t
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/97d8afa31ab7738dc6481dde0fc01d70f88334bb). [The code after it](https://github.com/rahuldave/babykev/tree/97d8afa31ab7738dc6481dde0fc01d70f88334bb).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e194931f1402c90fe5d4d59d5ac3e5c5846b8ac1). [The code after it](https://github.com/rahuldave/babykev/tree/e194931f1402c90fe5d4d59d5ac3e5c5846b8ac1).
 
 <a id="tut-23.4"></a>
 
@@ -11737,7 +11736,7 @@ the same tests, so the gate and the hook never need the network. `just test -m s
 
 #### What changed
 
-- <a id="tut-23.4-pyproject.toml-5d07e7"></a>`pyproject.toml`: the tests marked `system` stay out of every run that does not ask for them. 3 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/faeb349ca2ff1ff1b76da839a3283f33720e7bca/pyproject.toml).
+- <a id="tut-23.4-pyproject.toml-5d07e7"></a>`pyproject.toml`: the tests marked `system` stay out of every run that does not ask for them. 3 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/12e34ad11cf268f667238c3362902c25b462225c/pyproject.toml).
   - look at `addopts = "--cov=babykev --cov-report=term-missing -m 'not system'"`
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
@@ -11759,7 +11758,7 @@ the same tests, so the gate and the hook never need the network. `just test -m s
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/faeb349ca2ff1ff1b76da839a3283f33720e7bca). [The code after it](https://github.com/rahuldave/babykev/tree/faeb349ca2ff1ff1b76da839a3283f33720e7bca).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/12e34ad11cf268f667238c3362902c25b462225c). [The code after it](https://github.com/rahuldave/babykev/tree/12e34ad11cf268f667238c3362902c25b462225c).
 
 <a id="tut-23.5"></a>
 
@@ -11781,7 +11780,7 @@ just check
 
 #### What changed
 
-- <a id="tut-23.5-README.md-8ec9a0"></a>`README.md`: `just test -m system`, and the row of `tests/system/`. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/89de4845180ac0ad80a2fa810d8d0cb58366c720/README.md).
+- <a id="tut-23.5-README.md-8ec9a0"></a>`README.md`: `just test -m system`, and the row of `tests/system/`. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/d9df8f2a02ed7a7780325aebf281d6107317f9d9/README.md).
   - look at ``| `tests/system/` | The test of the real model, marked `system`. `just test -m system` runs it |``
 
 <details><summary>The diff of <code>README.md</code></summary>
@@ -11810,7 +11809,7 @@ just check
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/89de4845180ac0ad80a2fa810d8d0cb58366c720). [The code after it](https://github.com/rahuldave/babykev/tree/89de4845180ac0ad80a2fa810d8d0cb58366c720).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d9df8f2a02ed7a7780325aebf281d6107317f9d9). [The code after it](https://github.com/rahuldave/babykev/tree/d9df8f2a02ed7a7780325aebf281d6107317f9d9).
 
 <a id="tut-24"></a>
 
@@ -11826,7 +11825,7 @@ The reference pages of the site give the signature and the docstring of each fun
 why the model is built as it is. Two pages of a guide say it, in prose. The first gives the four ideas of the model,
 and the second draws the mask as a grid. smalldocs runs no code, so a page holds its grids as text.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/89de4845180ac0ad80a2fa810d8d0cb58366c720). [The code after it](https://github.com/rahuldave/babykev/tree/495a6cd9b395c1479a3b711641a5d25ca2fd9226).
+[The code before this part](https://github.com/rahuldave/babykev/tree/d9df8f2a02ed7a7780325aebf281d6107317f9d9). [The code after it](https://github.com/rahuldave/babykev/tree/41d24729682119b9bbb828187c5e9684a2921308).
 
 <a id="tut-24.1"></a>
 
@@ -11850,7 +11849,7 @@ the eight links of the page into the reference of `model.py`, `encode` twice. Th
 
 #### What changed
 
-- <a id="tut-24.1-docs-guide-model.qmd-3d8904"></a>`docs/guide/model.qmd`: the four ideas of the model. New, 61 lines. [The file](https://github.com/rahuldave/babykev/blob/b047680d9ecce794ea5ec14efd40d9f27e33f86d/docs/guide/model.qmd).
+- <a id="tut-24.1-docs-guide-model.qmd-3d8904"></a>`docs/guide/model.qmd`: the four ideas of the model. New, 61 lines. [The file](https://github.com/rahuldave/babykev/blob/b23fa492cea947fd91a783a6ef8c19ee1d4f38eb/docs/guide/model.qmd).
   - look at `## Packing`
 
 <details><summary>The diff of <code>docs/guide/model.qmd</code></summary>
@@ -11922,7 +11921,7 @@ the eight links of the page into the reference of `model.py`, `encode` twice. Th
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/b047680d9ecce794ea5ec14efd40d9f27e33f86d). [The code after it](https://github.com/rahuldave/babykev/tree/b047680d9ecce794ea5ec14efd40d9f27e33f86d).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b23fa492cea947fd91a783a6ef8c19ee1d4f38eb). [The code after it](https://github.com/rahuldave/babykev/tree/b23fa492cea947fd91a783a6ef8c19ee1d4f38eb).
 
 <a id="tut-24.2"></a>
 
@@ -11944,7 +11943,7 @@ just docs
 
 #### What changed
 
-- <a id="tut-24.2-docs-guide-mask.qmd-5cd81a"></a>`docs/guide/mask.qmd`: the mask, as a grid. New, 52 lines. [The file](https://github.com/rahuldave/babykev/blob/3d72060d0be1a8576d43945a249cb1e593b78a16/docs/guide/mask.qmd).
+- <a id="tut-24.2-docs-guide-mask.qmd-5cd81a"></a>`docs/guide/mask.qmd`: the mask, as a grid. New, 52 lines. [The file](https://github.com/rahuldave/babykev/blob/872a008d4a67bfd58f67b5db28198f4293cc34f5/docs/guide/mask.qmd).
   - look at `## A plain causal mask`
 
 <details><summary>The diff of <code>docs/guide/mask.qmd</code></summary>
@@ -12007,7 +12006,7 @@ just docs
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/3d72060d0be1a8576d43945a249cb1e593b78a16). [The code after it](https://github.com/rahuldave/babykev/tree/3d72060d0be1a8576d43945a249cb1e593b78a16).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/872a008d4a67bfd58f67b5db28198f4293cc34f5). [The code after it](https://github.com/rahuldave/babykev/tree/872a008d4a67bfd58f67b5db28198f4293cc34f5).
 
 <a id="tut-24.3"></a>
 
@@ -12031,7 +12030,7 @@ grep -o 'href="guide/[^"]*"' docs/_site/index.html
 
 #### What changed
 
-- <a id="tut-24.3-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the section `Guide`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/50b2b3c88126db60e6cc8d9cc47a5ae6892cfa54/docs/_smalldocs.yml).
+- <a id="tut-24.3-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the section `Guide`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/f19e99afaa9f11778658710d44ef1785dbc40ed0/docs/_smalldocs.yml).
   - look at `      - section: Guide`
 
 <details><summary>The diff of <code>docs/_smalldocs.yml</code></summary>
@@ -12052,7 +12051,7 @@ grep -o 'href="guide/[^"]*"' docs/_site/index.html
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/50b2b3c88126db60e6cc8d9cc47a5ae6892cfa54). [The code after it](https://github.com/rahuldave/babykev/tree/50b2b3c88126db60e6cc8d9cc47a5ae6892cfa54).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/f19e99afaa9f11778658710d44ef1785dbc40ed0). [The code after it](https://github.com/rahuldave/babykev/tree/f19e99afaa9f11778658710d44ef1785dbc40ed0).
 
 <a id="tut-24.4"></a>
 
@@ -12074,7 +12073,7 @@ paragraph.
 
 #### What changed
 
-- <a id="tut-24.4-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the links to the guide. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/e5434a2ff54beb0e7262d3ff40abb569de422dc9/docs/index.qmd).
+- <a id="tut-24.4-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the links to the guide. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/62f48f0b9de6c97825153cd50a7f131a5c07b0c7/docs/index.qmd).
   - look at ``The pages under Guide explain the model. [The model](guide/model.qmd) gives the four ideas of `model.py`, and``
 
 <details><summary>The diff of <code>docs/index.qmd</code></summary>
@@ -12094,7 +12093,7 @@ paragraph.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e5434a2ff54beb0e7262d3ff40abb569de422dc9). [The code after it](https://github.com/rahuldave/babykev/tree/e5434a2ff54beb0e7262d3ff40abb569de422dc9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/62f48f0b9de6c97825153cd50a7f131a5c07b0c7). [The code after it](https://github.com/rahuldave/babykev/tree/62f48f0b9de6c97825153cd50a7f131a5c07b0c7).
 
 <a id="tut-24.5"></a>
 
@@ -12115,7 +12114,7 @@ just check
 
 #### What changed
 
-- <a id="tut-24.5-README.md-8ec9a0"></a>`README.md`: the guide, in the row of `docs/`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/495a6cd9b395c1479a3b711641a5d25ca2fd9226/README.md).
+- <a id="tut-24.5-README.md-8ec9a0"></a>`README.md`: the guide, in the row of `docs/`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/41d24729682119b9bbb828187c5e9684a2921308/README.md).
   - look at ``The two pages of `docs/guide/` explain the model and its mask |``
 
 <details><summary>The diff of <code>README.md</code></summary>
@@ -12134,7 +12133,7 @@ just check
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/495a6cd9b395c1479a3b711641a5d25ca2fd9226). [The code after it](https://github.com/rahuldave/babykev/tree/495a6cd9b395c1479a3b711641a5d25ca2fd9226).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/41d24729682119b9bbb828187c5e9684a2921308). [The code after it](https://github.com/rahuldave/babykev/tree/41d24729682119b9bbb828187c5e9684a2921308).
 
 <a id="tut-25"></a>
 
@@ -12154,7 +12153,7 @@ The `Dockerfile` of babykev builds two images from `uv.lock`. The run image hold
 starts `babykev`. The dev image holds the whole project and the tools to work on it, and starts a shell. The images
 are built and run on this machine only, and pushed nowhere.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/495a6cd9b395c1479a3b711641a5d25ca2fd9226). [The code after it](https://github.com/rahuldave/babykev/tree/af6c2cea3a9536d2cd34414a5f73102e03bab9c5).
+[The code before this part](https://github.com/rahuldave/babykev/tree/41d24729682119b9bbb828187c5e9684a2921308). [The code after it](https://github.com/rahuldave/babykev/tree/6c85dd08f3cd441259b3749ac38cceaf7f2392e0).
 
 <a id="tut-25.1"></a>
 
@@ -12199,7 +12198,7 @@ machine, and sees no GPU of Apple. It prints `4 of 15 right`, and the fifteen an
 
 #### What changed
 
-- <a id="tut-25.1-Dockerfile-6651dd"></a>`Dockerfile`: the stages `uv`, `build` and `run`. New, 36 lines. [The file](https://github.com/rahuldave/babykev/blob/259d20bc81bfa0dda82f78dd4a77392f2d11ac42/Dockerfile).
+- <a id="tut-25.1-Dockerfile-6651dd"></a>`Dockerfile`: the stages `uv`, `build` and `run`. New, 36 lines. [The file](https://github.com/rahuldave/babykev/blob/570bb2134f032a64a34d14852c82fa1a199f69f6/Dockerfile).
   - look at `FROM python:3.13-slim-trixie AS run`
 
 <details><summary>The diff of <code>Dockerfile</code></summary>
@@ -12246,7 +12245,7 @@ machine, and sees no GPU of Apple. It prints `4 of 15 right`, and the fifteen an
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/259d20bc81bfa0dda82f78dd4a77392f2d11ac42). [The code after it](https://github.com/rahuldave/babykev/tree/259d20bc81bfa0dda82f78dd4a77392f2d11ac42).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/570bb2134f032a64a34d14852c82fa1a199f69f6). [The code after it](https://github.com/rahuldave/babykev/tree/570bb2134f032a64a34d14852c82fa1a199f69f6).
 
 <a id="tut-25.2"></a>
 
@@ -12278,7 +12277,7 @@ docker image ls babykev-dev:latest
 
 #### What changed
 
-- <a id="tut-25.2-Dockerfile-6651dd"></a>`Dockerfile`: the stage `dev`. 31 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/ccc3f900ff0c984414b765ae76e6fa3cbeca5acc/Dockerfile).
+- <a id="tut-25.2-Dockerfile-6651dd"></a>`Dockerfile`: the stage `dev`. 31 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/40012bdfeb76ad96615227e9772d387ee5e48495/Dockerfile).
   - look at `FROM python:3.13-slim-trixie AS dev`
 
 <details><summary>The diff of <code>Dockerfile</code></summary>
@@ -12332,7 +12331,7 @@ docker image ls babykev-dev:latest
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/ccc3f900ff0c984414b765ae76e6fa3cbeca5acc). [The code after it](https://github.com/rahuldave/babykev/tree/ccc3f900ff0c984414b765ae76e6fa3cbeca5acc).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/40012bdfeb76ad96615227e9772d387ee5e48495). [The code after it](https://github.com/rahuldave/babykev/tree/40012bdfeb76ad96615227e9772d387ee5e48495).
 
 <a id="tut-25.3"></a>
 
@@ -12364,7 +12363,7 @@ docker run --rm -v "$PWD":/work babykev-dev just check
 
 #### What changed
 
-- <a id="tut-25.3-.dockerignore-05a721"></a>`.dockerignore`: what a build never copies. New, 16 lines. [The file](https://github.com/rahuldave/babykev/blob/b51c80d19c319eee2a6bc42e420ad7cce140a324/.dockerignore).
+- <a id="tut-25.3-.dockerignore-05a721"></a>`.dockerignore`: what a build never copies. New, 16 lines. [The file](https://github.com/rahuldave/babykev/blob/f0862402733db839738f0b350a049b2ee5e2a2aa/.dockerignore).
   - look at `.venv`
 
 <details><summary>The diff of <code>.dockerignore</code></summary>
@@ -12391,7 +12390,7 @@ docker run --rm -v "$PWD":/work babykev-dev just check
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/b51c80d19c319eee2a6bc42e420ad7cce140a324). [The code after it](https://github.com/rahuldave/babykev/tree/b51c80d19c319eee2a6bc42e420ad7cce140a324).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/f0862402733db839738f0b350a049b2ee5e2a2aa). [The code after it](https://github.com/rahuldave/babykev/tree/f0862402733db839738f0b350a049b2ee5e2a2aa).
 
 <a id="tut-25.4"></a>
 
@@ -12416,7 +12415,7 @@ this Mac, so the change needs no new build. The tests print `82 passed, 1 desele
 
 #### What changed
 
-- <a id="tut-25.4-tests-conftest.py-626af3"></a>`tests/conftest.py`: no deadline, for every test that hypothesis feeds. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/a400f23875c6d23f3a43b4cbe2c9fece72e5f3c1/tests/conftest.py).
+- <a id="tut-25.4-tests-conftest.py-626af3"></a>`tests/conftest.py`: no deadline, for every test that hypothesis feeds. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/3043d160e0d6e424e7178bd6c86dfeb1aa17abb4/tests/conftest.py).
   - look at `settings.register_profile("babykev", deadline=None)`
 
 <details><summary>The diff of <code>tests/conftest.py</code></summary>
@@ -12445,7 +12444,7 @@ this Mac, so the change needs no new build. The tests print `82 passed, 1 desele
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/a400f23875c6d23f3a43b4cbe2c9fece72e5f3c1). [The code after it](https://github.com/rahuldave/babykev/tree/a400f23875c6d23f3a43b4cbe2c9fece72e5f3c1).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3043d160e0d6e424e7178bd6c86dfeb1aa17abb4). [The code after it](https://github.com/rahuldave/babykev/tree/3043d160e0d6e424e7178bd6c86dfeb1aa17abb4).
 
 <a id="tut-25.5"></a>
 
@@ -12480,7 +12479,7 @@ shell` starts a shell in the image, where `exit` ends it.
 
 #### What changed
 
-- <a id="tut-25.5-justfile-424f0b"></a>`justfile`: the recipe `image`. 33 lines added. [The file](https://github.com/rahuldave/babykev/blob/0f6c78afbcc856682940a1a4276d9f5dad664c17/justfile).
+- <a id="tut-25.5-justfile-424f0b"></a>`justfile`: the recipe `image`. 33 lines added. [The file](https://github.com/rahuldave/babykev/blob/a2cd7c083154e3f1161449592635e04b8f84cebe/justfile).
   - look at `image *args:`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -12530,7 +12529,7 @@ shell` starts a shell in the image, where `exit` ends it.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/0f6c78afbcc856682940a1a4276d9f5dad664c17). [The code after it](https://github.com/rahuldave/babykev/tree/0f6c78afbcc856682940a1a4276d9f5dad664c17).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a2cd7c083154e3f1161449592635e04b8f84cebe). [The code after it](https://github.com/rahuldave/babykev/tree/a2cd7c083154e3f1161449592635e04b8f84cebe).
 
 <a id="tut-25.6"></a>
 
@@ -12552,9 +12551,9 @@ It prints `Haskell Dockerfile Linter 2.15.1`.
 
 #### What changed
 
-- <a id="tut-25.6-pyproject.toml-5d07e7"></a>`pyproject.toml`: hadolint, in the group `lint`. 1 line added. It comes from `uv add --group lint hadolint-bin`. [The file](https://github.com/rahuldave/babykev/blob/01905a0ad5cc25d6e2eac477090fdf97d7cdc047/pyproject.toml).
+- <a id="tut-25.6-pyproject.toml-5d07e7"></a>`pyproject.toml`: hadolint, in the group `lint`. 1 line added. It comes from `uv add --group lint hadolint-bin`. [The file](https://github.com/rahuldave/babykev/blob/ce3646d2f0cdacf2177d9ba36355dd4ffc1b2f4a/pyproject.toml).
   - look at `"hadolint-bin>=2.15.1",`
-- <a id="tut-25.6-uv.lock-8356d8"></a>`uv.lock`: the exact version of hadolint. 13 lines added. It comes from `uv add --group lint hadolint-bin`. [The file](https://github.com/rahuldave/babykev/blob/01905a0ad5cc25d6e2eac477090fdf97d7cdc047/uv.lock).
+- <a id="tut-25.6-uv.lock-8356d8"></a>`uv.lock`: the exact version of hadolint. 13 lines added. It comes from `uv add --group lint hadolint-bin`. [The file](https://github.com/rahuldave/babykev/blob/ce3646d2f0cdacf2177d9ba36355dd4ffc1b2f4a/uv.lock).
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -12571,7 +12570,7 @@ It prints `Haskell Dockerfile Linter 2.15.1`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/01905a0ad5cc25d6e2eac477090fdf97d7cdc047). [The code after it](https://github.com/rahuldave/babykev/tree/01905a0ad5cc25d6e2eac477090fdf97d7cdc047).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ce3646d2f0cdacf2177d9ba36355dd4ffc1b2f4a). [The code after it](https://github.com/rahuldave/babykev/tree/ce3646d2f0cdacf2177d9ba36355dd4ffc1b2f4a).
 
 <a id="tut-25.7"></a>
 
@@ -12595,7 +12594,7 @@ of git. This finding is real, and nothing was broken to make it.
 
 #### What changed
 
-- <a id="tut-25.7-justfile-424f0b"></a>`justfile`: hadolint, in `lint-config`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/99abb877c0ecba346d4d7edb4fba1d01d02c369d/justfile).
+- <a id="tut-25.7-justfile-424f0b"></a>`justfile`: hadolint, in `lint-config`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/fe092b54847ade1223f40297937fe59259096f68/justfile).
   - look at `    uv run hadolint Dockerfile`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -12622,7 +12621,7 @@ of git. This finding is real, and nothing was broken to make it.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/99abb877c0ecba346d4d7edb4fba1d01d02c369d). [The code after it](https://github.com/rahuldave/babykev/tree/99abb877c0ecba346d4d7edb4fba1d01d02c369d).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/fe092b54847ade1223f40297937fe59259096f68). [The code after it](https://github.com/rahuldave/babykev/tree/fe092b54847ade1223f40297937fe59259096f68).
 
 <a id="tut-25.8"></a>
 
@@ -12646,7 +12645,7 @@ just lint-config
 
 #### What changed
 
-- <a id="tut-25.8-Dockerfile-6651dd"></a>`Dockerfile`: the reason, and the line for hadolint. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/d80c69075dcb31143414fb6b0a6dc99852ff0c4c/Dockerfile).
+- <a id="tut-25.8-Dockerfile-6651dd"></a>`Dockerfile`: the reason, and the line for hadolint. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/fd4dc51723462cdeaf072a4f2a18472a0cf6a645/Dockerfile).
   - look at `# hadolint ignore=DL3008`
 
 <details><summary>The diff of <code>Dockerfile</code></summary>
@@ -12667,7 +12666,7 @@ just lint-config
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/d80c69075dcb31143414fb6b0a6dc99852ff0c4c). [The code after it](https://github.com/rahuldave/babykev/tree/d80c69075dcb31143414fb6b0a6dc99852ff0c4c).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/fd4dc51723462cdeaf072a4f2a18472a0cf6a645). [The code after it](https://github.com/rahuldave/babykev/tree/fd4dc51723462cdeaf072a4f2a18472a0cf6a645).
 
 <a id="tut-25.9"></a>
 
@@ -12700,7 +12699,7 @@ just image shell --network none -- just check
 
 #### What changed
 
-- <a id="tut-25.9-README.md-8ec9a0"></a>`README.md`: the section on the images, and the row of the `Dockerfile`. 24 lines added. [The file](https://github.com/rahuldave/babykev/blob/af6c2cea3a9536d2cd34414a5f73102e03bab9c5/README.md).
+- <a id="tut-25.9-README.md-8ec9a0"></a>`README.md`: the section on the images, and the row of the `Dockerfile`. 24 lines added. [The file](https://github.com/rahuldave/babykev/blob/6c85dd08f3cd441259b3749ac38cceaf7f2392e0/README.md).
   - look at `## The images`
 
 <details><summary>The diff of <code>README.md</code></summary>
@@ -12748,7 +12747,7 @@ just image shell --network none -- just check
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/af6c2cea3a9536d2cd34414a5f73102e03bab9c5). [The code after it](https://github.com/rahuldave/babykev/tree/af6c2cea3a9536d2cd34414a5f73102e03bab9c5).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/6c85dd08f3cd441259b3749ac38cceaf7f2392e0). [The code after it](https://github.com/rahuldave/babykev/tree/6c85dd08f3cd441259b3749ac38cceaf7f2392e0).
 
 <a id="tut-26"></a>
 
@@ -12767,7 +12766,7 @@ GitHub runs workflows on its own machines. A workflow is a file of YAML in `.git
 the events that start it. The first workflow runs the gate after every push, and the second builds the docs site and
 publishes it on GitHub Pages. Nothing is pushed here. GitHub runs the workflows when the branch reaches it.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/af6c2cea3a9536d2cd34414a5f73102e03bab9c5). [The code after it](https://github.com/rahuldave/babykev/tree/dc4f71e920910eb8cdd5e2292b29175a619d4513).
+[The code before this part](https://github.com/rahuldave/babykev/tree/6c85dd08f3cd441259b3749ac38cceaf7f2392e0). [The code after it](https://github.com/rahuldave/babykev/tree/88854e32ebcb4647672742cc4ef709eefc5fde0c).
 
 <a id="tut-26.1"></a>
 
@@ -12792,7 +12791,7 @@ word `on` as true. GitHub reads it as the name `on`, and every workflow has it. 
 
 #### What changed
 
-- <a id="tut-26.1-.github-workflows-check.yaml-6ceb50"></a>`.github/workflows/check.yaml`: `just check`, after every push. New, 21 lines. [The file](https://github.com/rahuldave/babykev/blob/d4f1262a71537275cc810c1eb1b889aadd7ab7a9/.github/workflows/check.yaml).
+- <a id="tut-26.1-.github-workflows-check.yaml-6ceb50"></a>`.github/workflows/check.yaml`: `just check`, after every push. New, 21 lines. [The file](https://github.com/rahuldave/babykev/blob/2f210829183a3c52bb22f1196d50000716a4beec/.github/workflows/check.yaml).
   - look at `      - run: just check`
 
 <details><summary>The diff of <code>.github/workflows/check.yaml</code></summary>
@@ -12824,7 +12823,7 @@ word `on` as true. GitHub reads it as the name `on`, and every workflow has it. 
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/d4f1262a71537275cc810c1eb1b889aadd7ab7a9). [The code after it](https://github.com/rahuldave/babykev/tree/d4f1262a71537275cc810c1eb1b889aadd7ab7a9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/2f210829183a3c52bb22f1196d50000716a4beec). [The code after it](https://github.com/rahuldave/babykev/tree/2f210829183a3c52bb22f1196d50000716a4beec).
 
 <a id="tut-26.2"></a>
 
@@ -12845,7 +12844,7 @@ just lint-config
 
 #### What changed
 
-- <a id="tut-26.2-.yamllint-dfe50a"></a>`.yamllint`: the rule `truthy` checks no key. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/98be578dac5963c892f6f8636d1ce6e0863dd197/.yamllint).
+- <a id="tut-26.2-.yamllint-dfe50a"></a>`.yamllint`: the rule `truthy` checks no key. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/7b7e22f04247cefdd2d01adbe6dff64d88a6116c/.yamllint).
   - look at `  truthy: {check-keys: false}  # a key may be a word such as on, which YAML 1.1 reads as true`
 
 <details><summary>The diff of <code>.yamllint</code></summary>
@@ -12860,7 +12859,7 @@ just lint-config
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/98be578dac5963c892f6f8636d1ce6e0863dd197). [The code after it](https://github.com/rahuldave/babykev/tree/98be578dac5963c892f6f8636d1ce6e0863dd197).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7b7e22f04247cefdd2d01adbe6dff64d88a6116c). [The code after it](https://github.com/rahuldave/babykev/tree/7b7e22f04247cefdd2d01adbe6dff64d88a6116c).
 
 <a id="tut-26.3"></a>
 
@@ -12884,9 +12883,9 @@ The first line is `1.7.12`.
 
 #### What changed
 
-- <a id="tut-26.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: actionlint, in the group `lint`. 1 line added. It comes from `uv add --group lint actionlint-py`. [The file](https://github.com/rahuldave/babykev/blob/6a28f045ffed4a4ad611c763893eabf70cb6754f/pyproject.toml).
+- <a id="tut-26.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: actionlint, in the group `lint`. 1 line added. It comes from `uv add --group lint actionlint-py`. [The file](https://github.com/rahuldave/babykev/blob/bb15f17ccbb62cf1f8a61d67d67674bf9d445c86/pyproject.toml).
   - look at `"actionlint-py>=1.7.12.25",`
-- <a id="tut-26.3-uv.lock-8356d8"></a>`uv.lock`: the exact version of actionlint. 8 lines added. It comes from `uv add --group lint actionlint-py`. [The file](https://github.com/rahuldave/babykev/blob/6a28f045ffed4a4ad611c763893eabf70cb6754f/uv.lock).
+- <a id="tut-26.3-uv.lock-8356d8"></a>`uv.lock`: the exact version of actionlint. 8 lines added. It comes from `uv add --group lint actionlint-py`. [The file](https://github.com/rahuldave/babykev/blob/bb15f17ccbb62cf1f8a61d67d67674bf9d445c86/uv.lock).
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -12903,7 +12902,7 @@ The first line is `1.7.12`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/6a28f045ffed4a4ad611c763893eabf70cb6754f). [The code after it](https://github.com/rahuldave/babykev/tree/6a28f045ffed4a4ad611c763893eabf70cb6754f).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/bb15f17ccbb62cf1f8a61d67d67674bf9d445c86). [The code after it](https://github.com/rahuldave/babykev/tree/bb15f17ccbb62cf1f8a61d67d67674bf9d445c86).
 
 <a id="tut-26.4"></a>
 
@@ -12925,7 +12924,7 @@ actionlint prints nothing, and ends with exit code 0. It finds no problem in `ch
 
 #### What changed
 
-- <a id="tut-26.4-justfile-424f0b"></a>`justfile`: actionlint, in `lint-config`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/4b3403e07065d6c6676104d0420758fa8ed55a34/justfile).
+- <a id="tut-26.4-justfile-424f0b"></a>`justfile`: actionlint, in `lint-config`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/eb0acd148867bdbc6292660b7268b656074fb727/justfile).
   - look at `    uv run actionlint`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -12952,7 +12951,7 @@ actionlint prints nothing, and ends with exit code 0. It finds no problem in `ch
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/4b3403e07065d6c6676104d0420758fa8ed55a34). [The code after it](https://github.com/rahuldave/babykev/tree/4b3403e07065d6c6676104d0420758fa8ed55a34).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/eb0acd148867bdbc6292660b7268b656074fb727). [The code after it](https://github.com/rahuldave/babykev/tree/eb0acd148867bdbc6292660b7268b656074fb727).
 
 <a id="tut-26.5"></a>
 
@@ -12982,7 +12981,7 @@ workflows on, on the tab **Actions**. Pages publishes from a workflow when **Set
 
 #### What changed
 
-- <a id="tut-26.5-.github-workflows-docs.yaml-ce7835"></a>`.github/workflows/docs.yaml`: the docs site, built with the group `docs` alone, then published. New, 40 lines. [The file](https://github.com/rahuldave/babykev/blob/3bd36db7a253d468090eedd463442ba9e3a14a02/.github/workflows/docs.yaml).
+- <a id="tut-26.5-.github-workflows-docs.yaml-ce7835"></a>`.github/workflows/docs.yaml`: the docs site, built with the group `docs` alone, then published. New, 40 lines. [The file](https://github.com/rahuldave/babykev/blob/606da22657c965404206b25f8fbcccffbe3f2756/.github/workflows/docs.yaml).
   - look at `      - run: uv run --locked --no-default-groups --group docs smalldocs render docs`
 
 <details><summary>The diff of <code>.github/workflows/docs.yaml</code></summary>
@@ -13033,7 +13032,7 @@ workflows on, on the tab **Actions**. Pages publishes from a workflow when **Set
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/3bd36db7a253d468090eedd463442ba9e3a14a02). [The code after it](https://github.com/rahuldave/babykev/tree/3bd36db7a253d468090eedd463442ba9e3a14a02).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/606da22657c965404206b25f8fbcccffbe3f2756). [The code after it](https://github.com/rahuldave/babykev/tree/606da22657c965404206b25f8fbcccffbe3f2756).
 
 <a id="tut-26.6"></a>
 
@@ -13055,7 +13054,7 @@ just check
 
 #### What changed
 
-- <a id="tut-26.6-README.md-8ec9a0"></a>`README.md`: the section on GitHub, and the row of the workflows. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/dc4f71e920910eb8cdd5e2292b29175a619d4513/README.md).
+- <a id="tut-26.6-README.md-8ec9a0"></a>`README.md`: the section on GitHub, and the row of the workflows. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/88854e32ebcb4647672742cc4ef709eefc5fde0c/README.md).
   - look at `## On GitHub`
 
 <details><summary>The diff of <code>README.md</code></summary>
@@ -13093,4 +13092,4 @@ just check
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/dc4f71e920910eb8cdd5e2292b29175a619d4513). [The code after it](https://github.com/rahuldave/babykev/tree/dc4f71e920910eb8cdd5e2292b29175a619d4513).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/88854e32ebcb4647672742cc4ef709eefc5fde0c). [The code after it](https://github.com/rahuldave/babykev/tree/88854e32ebcb4647672742cc4ef709eefc5fde0c).

@@ -17,7 +17,7 @@ reading the types, and the linter asks only that they be there. A type checker r
 call and each value with the types that the code and its libraries declare. ty is a type checker. It finds two
 places in `model.py`, and both have one cause, in torch.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/f41d9c4b591493c35d77e92d7d12d63260c69231). [The code after it](https://github.com/rahuldave/babykev/tree/42f75dc784aa7fdfa6981c1f4defd0c798cc3b08).
+[The code before this part](https://github.com/rahuldave/babykev/tree/056fe2ced73ff8568dfc329555795524c2465eb1). [The code after it](https://github.com/rahuldave/babykev/tree/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9).
 
 ## 17.1 ty, in the group lint {#tut-17.1}
 
@@ -37,9 +37,9 @@ It prints `ty 0.0.88`, or a newer version. A newer ty can find more, or less, th
 
 ### What changed {#tut-17.1-what-changed-182c57}
 
-- <a id="tut-17.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: ty, in the group `lint`. 1 line added. It comes from `uv add --group lint ty`. [The file](https://github.com/rahuldave/babykev/blob/50011dc045ad666fe0c04f1f3eab9f531ea13cee/pyproject.toml).
+- <a id="tut-17.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: ty, in the group `lint`. 1 line added. It comes from `uv add --group lint ty`. [The file](https://github.com/rahuldave/babykev/blob/aaa8fe6d7d1dfbca863fe23dc0d660dd10d36c2b/pyproject.toml).
   - look at `"ty>=0.0.88",`
-- <a id="tut-17.1-uv.lock-8356d8"></a>`uv.lock`: the exact version of ty. 27 lines added. It comes from `uv add --group lint ty`. [The file](https://github.com/rahuldave/babykev/blob/50011dc045ad666fe0c04f1f3eab9f531ea13cee/uv.lock).
+- <a id="tut-17.1-uv.lock-8356d8"></a>`uv.lock`: the exact version of ty. 27 lines added. It comes from `uv add --group lint ty`. [The file](https://github.com/rahuldave/babykev/blob/aaa8fe6d7d1dfbca863fe23dc0d660dd10d36c2b/uv.lock).
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -56,7 +56,7 @@ It prints `ty 0.0.88`, or a newer version. A newer ty can find more, or less, th
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/50011dc045ad666fe0c04f1f3eab9f531ea13cee). [The code after it](https://github.com/rahuldave/babykev/tree/50011dc045ad666fe0c04f1f3eab9f531ea13cee).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/aaa8fe6d7d1dfbca863fe23dc0d660dd10d36c2b). [The code after it](https://github.com/rahuldave/babykev/tree/aaa8fe6d7d1dfbca863fe23dc0d660dd10d36c2b).
 
 ## 17.2 The recipe types {#tut-17.2}
 
@@ -96,7 +96,7 @@ into an attribute. Its example has a `value: int` in a base class and a `value: 
 
 ### What changed {#tut-17.2-what-changed-182c57}
 
-- <a id="tut-17.2-justfile-424f0b"></a>`justfile`: the recipe `types`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/b60eb5b2b67b3c8e94b5574d767be3905437e8f0/justfile).
+- <a id="tut-17.2-justfile-424f0b"></a>`justfile`: the recipe `types`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/7866ef7f88d528e2e7ee04d55c68e56ce461cff1/justfile).
   - look at `types *args:`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -119,7 +119,7 @@ into an attribute. Its example has a `value: int` in a base class and a `value: 
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/b60eb5b2b67b3c8e94b5574d767be3905437e8f0). [The code after it](https://github.com/rahuldave/babykev/tree/b60eb5b2b67b3c8e94b5574d767be3905437e8f0).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7866ef7f88d528e2e7ee04d55c68e56ce461cff1). [The code after it](https://github.com/rahuldave/babykev/tree/7866ef7f88d528e2e7ee04d55c68e56ce461cff1).
 
 ## 17.3 PointerHead.forward, past ty {#tut-17.3}
 
@@ -157,7 +157,7 @@ or of the return type.
 
 ### What changed {#tut-17.3-what-changed-182c57}
 
-- <a id="tut-17.3-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the rule off on the `forward` of `PointerHead`, with the reason. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/8b279381e0752d78b86fe87f7334656163a12a93/src/babykev/model.py).
+- <a id="tut-17.3-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the rule off on the `forward` of `PointerHead`, with the reason. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/d5312a3ec2ed265ca4dbf5c7dd2492c686024696/src/babykev/model.py).
   - look at `    # tensors accepts fewer calls, so ty refuses it. torch only calls forward, and never sets it`
 
 <details><summary>The diff of <code>src/babykev/model.py</code></summary>
@@ -178,7 +178,7 @@ or of the return type.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/8b279381e0752d78b86fe87f7334656163a12a93). [The code after it](https://github.com/rahuldave/babykev/tree/8b279381e0752d78b86fe87f7334656163a12a93).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d5312a3ec2ed265ca4dbf5c7dd2492c686024696). [The code after it](https://github.com/rahuldave/babykev/tree/d5312a3ec2ed265ca4dbf5c7dd2492c686024696).
 
 ## 17.4 DecisionModel.forward, past ty {#tut-17.4}
 
@@ -198,7 +198,7 @@ just types
 
 ### What changed {#tut-17.4-what-changed-182c57}
 
-- <a id="tut-17.4-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the rule off on the `forward` of `DecisionModel`, with the reason. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/655fda2b4bddefc75b11b224d69769cd11f3eba3/src/babykev/model.py).
+- <a id="tut-17.4-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the rule off on the `forward` of `DecisionModel`, with the reason. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/f14349138824af0b107742451814b1234e72b34a/src/babykev/model.py).
   - look at `    # As in PointerHead, nn.Module declares forward as an attribute, and torch never sets it`
 
 <details><summary>The diff of <code>src/babykev/model.py</code></summary>
@@ -218,7 +218,7 @@ just types
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/655fda2b4bddefc75b11b224d69769cd11f3eba3). [The code after it](https://github.com/rahuldave/babykev/tree/655fda2b4bddefc75b11b224d69769cd11f3eba3).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/f14349138824af0b107742451814b1234e72b34a). [The code after it](https://github.com/rahuldave/babykev/tree/f14349138824af0b107742451814b1234e72b34a).
 
 ## 17.5 The gate checks the types {#tut-17.5}
 
@@ -241,7 +241,7 @@ exit code 0. A call that does not match the types now stops `git commit`.
 
 ### What changed {#tut-17.5-what-changed-182c57}
 
-- <a id="tut-17.5-justfile-424f0b"></a>`justfile`: ty, in the gate. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/42f75dc784aa7fdfa6981c1f4defd0c798cc3b08/justfile).
+- <a id="tut-17.5-justfile-424f0b"></a>`justfile`: ty, in the gate. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9/justfile).
   - look at `    just types`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -268,4 +268,4 @@ exit code 0. A call that does not match the types now stops `git commit`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/42f75dc784aa7fdfa6981c1f4defd0c798cc3b08). [The code after it](https://github.com/rahuldave/babykev/tree/42f75dc784aa7fdfa6981c1f4defd0c798cc3b08).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9). [The code after it](https://github.com/rahuldave/babykev/tree/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9).

@@ -215,3 +215,10 @@ git config alias.check '!f() { i="$(git rev-parse --git-path check-index)" && { 
 Each other walk through the project has a website of its own:
 
 - [babykev, the first lecture](narrative/index.html). The first lecture, on the branch main of babykev: the steps step-00 to step-05b, with no moves between them.
+- [uv and the groups of dependencies of babykev](uv/index.html). The project and its lockfile, the groups `test` and `lint`, the first dependency, the packages of the model from the index of PyTorch, and the two Docker images, which install no group and every group.
+- [The formatter, the linter and the type checker of babykev](linting/index.html). ruff as the formatter and the linter, types in every signature, docstrings, one recipe for every check, pre-commit before each `git commit`, a check of the config files, and ty.
+- [The documentation of babykev](docs/index.html). The README as it grows, docstrings and their rule, docments and the docs check, a site built with smalldocs, a guide to the model, and the site on GitHub Pages.
+- [just, the recipes of babykev](just/index.html). The justfile of babykev, one recipe at a time, as each one comes in: setup, help, test, fmt, lint, check, hook, lint-config, docs, types, smoke, image, and GitHub running `just check`.
+- [The model of babykev, explained](model/index.html). A transformer decoder made into a model that decides: packing, a block-causal mask, positions that start again, and a pointer head, each with its tests on a tiny model.
+- [The tests of babykev](testing/index.html). pytest and the first tests, coverage, the tests of the contract, fixtures and a tiny model, unit and integration tests, a floor, property tests of the mask with hypothesis, the system test, and the tests on GitHub.
+- [The contract of babykev](contract/index.html). What a request and an answer hold, written with pydantic: the three types of question, the sample data, tests of what the contract refuses, and the code that turns a request into text for the model and probabilities into answers.

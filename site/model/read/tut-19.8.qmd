@@ -1,0 +1,116 @@
+---
+title: "19.8 A tiny model for the tests"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Read the tutorial.** [Build it yourself](../build/tut-19.8.qmd) is the other way to read this part.
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 67 packages`. Since the last part, the walk leaves out three groups of moves. ty, a
+checker of types, came in, and two comments in `model.py` answer it. The smoke run came in. It loads the real
+model, asks it the questions of a sample file, and prints how many it got right. Then the tests got a tiny tokenizer
+and a tiny backbone, in `tests/tiny.py`, and three fixtures, in `tests/conftest.py`.
+
+A test of the model checks something exact, such as which token is where, or which weights get a gradient. That holds
+for any weights. So the tests need no trained model, and no download. The tiny backbone is the same class as the
+real one, with small sizes.
+
+```bash
+sed -n '27,42p' tests/tiny.py
+```
+
+`tiny_backbone` builds `Qwen2Model`, the class of the real backbone, with 2 layers of 32 numbers, on lines 35 and 37.
+The real one has 24 layers of 896. The weights are random, from the seed on line 32, so they are the same at every
+run.
+
+```bash
+uv run python -c "from tests.tiny import tiny_tokenizer; t = tiny_tokenizer(); print(len(t), t.tokenize('ab<|fim_suffix|>'))"
+```
+
+The tiny tokenizer has `106` tokens, one for each printable character, the five delimiters, and `[UNK]` for any
+other character. It splits `ab<|fim_suffix|>` into `['a', 'b', '<|fim_suffix|>']`. Like the real tokenizer, it turns
+the text of a delimiter into the delimiter. A later part shows why that is a danger.
+
+```bash
+sed -n '22,27p' tests/conftest.py
+```
+
+The fixture `model` is a `DecisionModel` on the tiny backbone, on the CPU. The code that runs is the real
+`DecisionModel`. Only the backbone and the tokenizer under it are small.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/b4bf2491e8505697eaa015738f93178c6bd7f3fc). [The code after it](https://github.com/rahuldave/babykev/tree/321a8df2c597e0c46d06c9b36c711f0fe270900a).
+
+## 19.8 The first test of the model {#tut-19.8}
+
+The first test asks for the three fixtures. It packs the record with the tiny tokenizer, and runs the tiny model and
+the head. Each question gets one probability per option, and they sum to 1. Nothing is trained, so the probabilities
+mean nothing. The test checks what is true of any probabilities.
+
+A patch to [`tests/unit/test_model.py`](#tut-19.8-tests-unit-test_model.py-583145).
+
+The new file `tests/unit/test_model.py` has one test, on lines 11 to 20.
+
+```bash
+sed -n '11,20p' tests/unit/test_model.py
+just test -k probabilities_sum
+```
+
+The test never says "tiny". It names `model`, `tok` and `record`, and pytest passes them in. The code that runs is our
+`DecisionModel`. Only the backbone and the tokenizer under it are small. `[2, 3, 3]` on line 18 is known in advance,
+because the record of the fixture has questions of 2, 3 and 3 options. `just test -k probabilities_sum` prints
+`1 passed, 53 deselected`.
+
+```bash
+just test --fixtures-per-test -k probabilities_sum
+```
+
+`--fixtures-per-test` names the fixtures of each test, and where each is defined. The test gets `model`, `record` and
+`tok`, each with its line in `conftest.py`.
+
+```bash
+just test
+```
+
+`just test` prints `54 passed`. `model.py` goes from 33% to 85%, and the total from 45% to 67%, 178 of 267. One test
+runs the packing, the mask, the backbone and the head.
+
+Every test in the rest of this walk asks for these fixtures, and runs on the tiny model.
+
+### What changed {#tut-19.8-what-changed-182c57}
+
+- <a id="tut-19.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the first test of the model, on the tiny model. New, 20 lines. [The file](https://github.com/rahuldave/babykev/blob/321a8df2c597e0c46d06c9b36c711f0fe270900a/tests/unit/test_model.py).
+  - look at `def test_probabilities_sum_to_one_for_every_question(`
+
+<details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
+
+```diff
+@@ -0,0 +1,20 @@
++"""Tests of the model, on the tiny model."""
++
++from typing import Any
++
++import pytest
++from transformers import PreTrainedTokenizerFast
++
++from babykev.model import DecisionModel, encode
++
++
++def test_probabilities_sum_to_one_for_every_question(
++    model: DecisionModel,  # The tiny model
++    tok: PreTrainedTokenizerFast,  # Its tokenizer
++    record: dict[str, Any],  # A record with three questions
++) -> None:
++    """Each question gets one probability per option, and they sum to 1."""
++    probs = model.probs(encode(tok, record))
++    assert [len(p) for p in probs] == [2, 3, 3]
++    for p in probs:
++        assert p.sum().item() == pytest.approx(1)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/321a8df2c597e0c46d06c9b36c711f0fe270900a). [The code after it](https://github.com/rahuldave/babykev/tree/321a8df2c597e0c46d06c9b36c711f0fe270900a).

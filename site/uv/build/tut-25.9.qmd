@@ -1,0 +1,126 @@
+---
+title: "25.9 An image holds the lockfile of its build"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Build it yourself.** [Read the tutorial](../read/tut-25.9.qmd) is the other way to read this part.
+
+This part does not start where the part before it ends, because the walk skips some changes. This command puts the files that this part starts from in place of yours. Run it, and then go on:
+
+```bash
+git restore --source f0862402733d --staged -- :/ && git restore --source fd4dc5172346 --staged --worktree -- :/
+```
+
+If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
+
+```bash
+git rm -rq --cached --ignore-unmatch -- :/ && git restore --source fd4dc5172346 --staged --worktree -- :/
+```
+
+```bash
+just setup
+```
+
+The whole tutorial then turns off the time limit of hypothesis, and adds the recipe `just image`. `just image build
+dev` builds the dev image, and `just image shell` runs a command in it, with this folder at `/work`. hadolint, a
+linter for the `Dockerfile`, joins the group `lint`. Its one finding stays
+out, with the reason in a comment. Docker built the dev image before hadolint came in.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/fd4dc51723462cdeaf072a4f2a18472a0cf6a645). [The code after it](https://github.com/rahuldave/babykev/tree/6c85dd08f3cd441259b3749ac38cceaf7f2392e0).
+
+## 25.9 The README names the two images {#tut-25.9}
+
+The README gets a section on the images, with a table and the commands of the recipe. The table of the files gets a
+row for the `Dockerfile` and `.dockerignore`.
+
+Apply the patch to [`README.md`](#tut-25.9-README.md-8ec9a0), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/6c85dd08f3cd441259b3749ac38cceaf7f2392e0.diff | git apply --include=README.md
+```
+
+The patch adds the section `The images` above `What is here`, and the row of the `Dockerfile` above the row of
+`.python-version`.
+
+The README says that every check passes in the dev image with no network. `--network none` gives the container no
+network at all.
+
+```bash
+just image shell --network none -- just check
+```
+
+It fails before any check runs. uv cannot download `hadolint-bin==2.15.1`, with `dns error`. The dev image was built
+before hadolint came into `uv.lock`, and `UV_LOCKED` makes uv install the packages of the lockfile first. An image
+holds the packages of the lockfile at the time of its build.
+
+```bash
+just image build dev
+just image shell --network none -- just check
+```
+
+`just check` passes in the new image, with no network. Every check of the gate is hermetic.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 6c85dd08f3cd
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source fd4dc5172346 --staged -- :/ && git restore --source 6c85dd08f3cd --staged --worktree -- :/
+```
+
+### What changed {#tut-25.9-what-changed-182c57}
+
+- <a id="tut-25.9-README.md-8ec9a0"></a>`README.md`: the section on the images, and the row of the `Dockerfile`. 24 lines added. [The file](https://github.com/rahuldave/babykev/blob/6c85dd08f3cd441259b3749ac38cceaf7f2392e0/README.md).
+  - look at `## The images`
+
+<details open><summary>The patch to <code>README.md</code></summary>
+
+````diff
+@@ -74,6 +74,29 @@ Run `just hook` once in each clone. It installs a git hook, which runs `just che
+ `just check` runs every check of the project, and if one fails, git makes no commit. One check is a floor.
+ The tests must run at least 90% of the code. You can run `just check` yourself at any time.
+ 
++## The images
++
++The `Dockerfile` builds two images from `uv.lock`, for any machine with Docker. Docker runs Linux, so
++an image runs the same on a Mac, on Linux and on Windows.
++
++| Image | Holds | Starts |
++|---|---|---|
++| dev | the whole project with every group, uv, just and git | a shell |
++| run | the program and the packages that it needs, with no tool of the developers | `babykev` |
++
++```
++just image build dev                          # docker build --target dev, named babykev-dev
++just image shell                              # a shell in the dev image, with this folder at /work
++just image shell --network none -- just check # every check, in the dev image, with no network
++just image build run
++just image run smoke                          # the smoke in the run image, on the CPU
++```
++
++The environment of an image is in `/opt/venv`, so the image never uses the `.venv` of a mounted folder.
++Both images mount the cache of the Hugging Face Hub of this machine at `/hf`, so the base model is
++downloaded once. An image holds the packages of the lockfile at the time of its build, so build it again
++after a change to `uv.lock`.
++
+ ## What is here
+ 
+ | Path | What it is |
+@@ -92,6 +115,7 @@ The tests must run at least 90% of the code. You can run `just check` yourself a
+ | `justfile` | Every task of the project, one recipe each. `just help` explains them |
+ | `README.md` | This file |
+ | `LICENSE`, `NOTICE` | The licence, and the credit to kev |
++| `Dockerfile`, `.dockerignore` | The two images, dev and run, and what a build never copies into them |
+ | `.python-version` | The version of Python that the project uses |
+ | `.gitignore` | The files that git does not track, for example `.venv` |
+ | `.pre-commit-config.yaml` | The hooks that git runs before each commit, once `just hook` installs them. The last runs `just check` |
+````
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/6c85dd08f3cd441259b3749ac38cceaf7f2392e0). [The code after it](https://github.com/rahuldave/babykev/tree/6c85dd08f3cd441259b3749ac38cceaf7f2392e0).

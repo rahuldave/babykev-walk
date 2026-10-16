@@ -9,7 +9,7 @@ title: "18 The smoke run"
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
 
 ```bash
-git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 42f75dc784aa --staged --worktree -- :/
+git rm -rq --cached --ignore-unmatch -- :/ && git restore --source d4dd1c8d3d3c --staged --worktree -- :/
 ```
 
 ```bash
@@ -25,7 +25,7 @@ so the answers are guesses. The run shows that the contract, the packing, the mo
 `smoke.py` is ours, and it comes one function at a time. The command `babykev smoke` and the recipe `just smoke` run
 it, on this machine only.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/42f75dc784aa7fdfa6981c1f4defd0c798cc3b08). [The code after it](https://github.com/rahuldave/babykev/tree/6c2937bcf7bac5b94fcbc0b06269a14d36b8d97f).
+[The code before this part](https://github.com/rahuldave/babykev/tree/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9). [The code after it](https://github.com/rahuldave/babykev/tree/3edcb80f6814f9e0afe70942db6fce959799d9c5).
 
 ## 18.1 smoke.py, which reads the sample {#tut-18.1}
 
@@ -35,7 +35,7 @@ line of the file.
 Apply the patch to [`src/babykev/smoke.py`](#tut-18.1-src-babykev-smoke.py-76d2ec), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/ae6dc34784fa8c5146ae336c9c3b60b6dc1e71d9.diff | git apply --include=src/babykev/smoke.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/5ec6d4a73df947af8d705956fffa07c9787017de.diff | git apply --include=src/babykev/smoke.py
 ```
 
 The patch makes the file. Read the docstring, then `read_lines`.
@@ -56,18 +56,18 @@ The coverage counts every file of the package, and no test imports `smoke.py`.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check ae6dc34784fa
+git check 5ec6d4a73df9
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 42f75dc784aa --staged -- :/ && git restore --source ae6dc34784fa --staged --worktree -- :/
+git restore --source d4dd1c8d3d3c --staged -- :/ && git restore --source 5ec6d4a73df9 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-18.1-what-changed-182c57}
 
-- <a id="tut-18.1-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: the docstring, and the function that reads the sample. New, 22 lines. [The file](https://github.com/rahuldave/babykev/blob/ae6dc34784fa8c5146ae336c9c3b60b6dc1e71d9/src/babykev/smoke.py).
+- <a id="tut-18.1-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: the docstring, and the function that reads the sample. New, 22 lines. [The file](https://github.com/rahuldave/babykev/blob/5ec6d4a73df947af8d705956fffa07c9787017de/src/babykev/smoke.py).
   - look at `def read_lines(`
 
 <details open><summary>The patch to <code>src/babykev/smoke.py</code></summary>
@@ -100,7 +100,7 @@ git restore --source 42f75dc784aa --staged -- :/ && git restore --source ae6dc34
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/ae6dc34784fa8c5146ae336c9c3b60b6dc1e71d9). [The code after it](https://github.com/rahuldave/babykev/tree/ae6dc34784fa8c5146ae336c9c3b60b6dc1e71d9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/5ec6d4a73df947af8d705956fffa07c9787017de). [The code after it](https://github.com/rahuldave/babykev/tree/5ec6d4a73df947af8d705956fffa07c9787017de).
 
 ## 18.2 answer {#tut-18.2}
 
@@ -111,7 +111,7 @@ them into an answer for each question. `answer` also counts the tokens and times
 Apply the patch to [`src/babykev/smoke.py`](#tut-18.2-src-babykev-smoke.py-76d2ec), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/d106f54b43335d4e565d3fae2ce1105cc5b5507e.diff | git apply --include=src/babykev/smoke.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/0de1e2d0a2362ebd41d21b9146eae2961fb2366e.diff | git apply --include=src/babykev/smoke.py
 ```
 
 The patch adds the imports that `answer` needs, and `answer` at the end of the file.
@@ -128,18 +128,18 @@ just types
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check d106f54b4333
+git check 0de1e2d0a236
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source ae6dc34784fa --staged -- :/ && git restore --source d106f54b4333 --staged --worktree -- :/
+git restore --source 5ec6d4a73df9 --staged -- :/ && git restore --source 0de1e2d0a236 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-18.2-what-changed-182c57}
 
-- <a id="tut-18.2-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: one request, from the contract to the answers. 19 lines added. [The file](https://github.com/rahuldave/babykev/blob/d106f54b43335d4e565d3fae2ce1105cc5b5507e/src/babykev/smoke.py).
+- <a id="tut-18.2-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: one request, from the contract to the answers. 19 lines added. [The file](https://github.com/rahuldave/babykev/blob/0de1e2d0a2362ebd41d21b9146eae2961fb2366e/src/babykev/smoke.py).
   - look at `def answer(`
 
 <details open><summary>The patch to <code>src/babykev/smoke.py</code></summary>
@@ -182,7 +182,7 @@ git restore --source ae6dc34784fa --staged -- :/ && git restore --source d106f54
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/d106f54b43335d4e565d3fae2ce1105cc5b5507e). [The code after it](https://github.com/rahuldave/babykev/tree/d106f54b43335d4e565d3fae2ce1105cc5b5507e).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0de1e2d0a2362ebd41d21b9146eae2961fb2366e). [The code after it](https://github.com/rahuldave/babykev/tree/0de1e2d0a2362ebd41d21b9146eae2961fb2366e).
 
 ## 18.3 verdict {#tut-18.3}
 
@@ -193,7 +193,7 @@ its most likely level.
 Apply the patch to [`src/babykev/smoke.py`](#tut-18.3-src-babykev-smoke.py-76d2ec), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/3d4943832416314723cc909915f6ec83cc395efe.diff | git apply --include=src/babykev/smoke.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/bd333d90c32a516a97a443fa986f40932f691bad.diff | git apply --include=src/babykev/smoke.py
 ```
 
 The patch adds `verdict` at the end of the file.
@@ -209,18 +209,18 @@ they agree.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 3d4943832416
+git check bd333d90c32a
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source d106f54b4333 --staged -- :/ && git restore --source 3d4943832416 --staged --worktree -- :/
+git restore --source 0de1e2d0a236 --staged -- :/ && git restore --source bd333d90c32a --staged --worktree -- :/
 ```
 
 ### What changed {#tut-18.3-what-changed-182c57}
 
-- <a id="tut-18.3-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: one answer beside its label. 20 lines added. [The file](https://github.com/rahuldave/babykev/blob/3d4943832416314723cc909915f6ec83cc395efe/src/babykev/smoke.py).
+- <a id="tut-18.3-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: one answer beside its label. 20 lines added. [The file](https://github.com/rahuldave/babykev/blob/bd333d90c32a516a97a443fa986f40932f691bad/src/babykev/smoke.py).
   - look at `def verdict(`
 
 <details open><summary>The patch to <code>src/babykev/smoke.py</code></summary>
@@ -254,7 +254,7 @@ git restore --source d106f54b4333 --staged -- :/ && git restore --source 3d49438
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/3d4943832416314723cc909915f6ec83cc395efe). [The code after it](https://github.com/rahuldave/babykev/tree/3d4943832416314723cc909915f6ec83cc395efe).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/bd333d90c32a516a97a443fa986f40932f691bad). [The code after it](https://github.com/rahuldave/babykev/tree/bd333d90c32a516a97a443fa986f40932f691bad).
 
 ## 18.4 smoke {#tut-18.4}
 
@@ -265,7 +265,7 @@ time. Each question gets a line with `ok` or `--`. The last lines give the count
 Apply the patch to [`src/babykev/smoke.py`](#tut-18.4-src-babykev-smoke.py-76d2ec), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/cfe6bab89a64d39a1a60b505b7fbfbc096348b4b.diff | git apply --include=src/babykev/smoke.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/8490a58a1510d717ce32b48fa0def8498ceb51f9.diff | git apply --include=src/babykev/smoke.py
 ```
 
 The patch adds `Iterator` and `render` to the imports, and `smoke` at the end of the file.
@@ -280,18 +280,18 @@ a string.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check cfe6bab89a64
+git check 8490a58a1510
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 3d4943832416 --staged -- :/ && git restore --source cfe6bab89a64 --staged --worktree -- :/
+git restore --source bd333d90c32a --staged -- :/ && git restore --source 8490a58a1510 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-18.4-what-changed-182c57}
 
-- <a id="tut-18.4-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: the report, a line at a time. 25 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/cfe6bab89a64d39a1a60b505b7fbfbc096348b4b/src/babykev/smoke.py).
+- <a id="tut-18.4-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: the report, a line at a time. 25 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/8490a58a1510d717ce32b48fa0def8498ceb51f9/src/babykev/smoke.py).
   - look at `def smoke(`
 
 <details open><summary>The patch to <code>src/babykev/smoke.py</code></summary>
@@ -343,7 +343,7 @@ git restore --source 3d4943832416 --staged -- :/ && git restore --source cfe6bab
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/cfe6bab89a64d39a1a60b505b7fbfbc096348b4b). [The code after it](https://github.com/rahuldave/babykev/tree/cfe6bab89a64d39a1a60b505b7fbfbc096348b4b).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/8490a58a1510d717ce32b48fa0def8498ceb51f9). [The code after it](https://github.com/rahuldave/babykev/tree/8490a58a1510d717ce32b48fa0def8498ceb51f9).
 
 ## 18.5 main loads the real model and runs the smoke {#tut-18.5}
 
@@ -355,7 +355,7 @@ the same at every run. `main` counts the parameters, and prints the report of `s
 Apply the patch to [`src/babykev/smoke.py`](#tut-18.5-src-babykev-smoke.py-76d2ec), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/d4302c1f860c781a3b5946c4c10dec82f6264eca.diff | git apply --include=src/babykev/smoke.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/f1bfe993389643bda7f40c6f3b511827a3c9a9a0.diff | git apply --include=src/babykev/smoke.py
 ```
 
 The patch adds `sys`, `torch`, `load_tokenizer` and `pick_device` to the imports, `BASE`, `LORA_RANK` and `USAGE`
@@ -386,18 +386,18 @@ just test
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check d4302c1f860c
+git check f1bfe9933896
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source cfe6bab89a64 --staged -- :/ && git restore --source d4302c1f860c --staged --worktree -- :/
+git restore --source 8490a58a1510 --staged -- :/ && git restore --source f1bfe9933896 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-18.5-what-changed-182c57}
 
-- <a id="tut-18.5-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: the real model, loaded, and the report printed. 35 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/d4302c1f860c781a3b5946c4c10dec82f6264eca/src/babykev/smoke.py).
+- <a id="tut-18.5-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: the real model, loaded, and the report printed. 35 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/f1bfe993389643bda7f40c6f3b511827a3c9a9a0/src/babykev/smoke.py).
   - look at `def main(`
 
 <details open><summary>The patch to <code>src/babykev/smoke.py</code></summary>
@@ -464,7 +464,7 @@ git restore --source cfe6bab89a64 --staged -- :/ && git restore --source d4302c1
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/d4302c1f860c781a3b5946c4c10dec82f6264eca). [The code after it](https://github.com/rahuldave/babykev/tree/d4302c1f860c781a3b5946c4c10dec82f6264eca).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/f1bfe993389643bda7f40c6f3b511827a3c9a9a0). [The code after it](https://github.com/rahuldave/babykev/tree/f1bfe993389643bda7f40c6f3b511827a3c9a9a0).
 
 ## 18.6 The command babykev smoke {#tut-18.6}
 
@@ -475,7 +475,7 @@ branch of the command, and `babykev help` stays fast.
 Apply the patch to [`src/babykev/cli.py`](#tut-18.6-src-babykev-cli.py-a9e184), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/4d756e960a5613d7076808da5197fca58c850d55.diff | git apply --include=src/babykev/cli.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/117a59e9838e0fa2e28ad29d02d5aeba3a8622f9.diff | git apply --include=src/babykev/cli.py
 ```
 
 The patch replaces `There are no commands yet.` in `HELP` with a list of the commands, and adds the branch of `smoke`
@@ -503,18 +503,18 @@ prints `4 passed, 49 deselected`. Its table of coverage counts only the four tes
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 4d756e960a56
+git check 117a59e9838e
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source d4302c1f860c --staged -- :/ && git restore --source 4d756e960a56 --staged --worktree -- :/
+git restore --source f1bfe9933896 --staged -- :/ && git restore --source 117a59e9838e --staged --worktree -- :/
 ```
 
 ### What changed {#tut-18.6-what-changed-182c57}
 
-- <a id="tut-18.6-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: the command `smoke`, in the help and in `main`. 12 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/4d756e960a5613d7076808da5197fca58c850d55/src/babykev/cli.py).
+- <a id="tut-18.6-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: the command `smoke`, in the help and in `main`. 12 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/117a59e9838e0fa2e28ad29d02d5aeba3a8622f9/src/babykev/cli.py).
   - look at `        raise SystemExit(smoke.main(words[1:]))`
 
 <details open><summary>The patch to <code>src/babykev/cli.py</code></summary>
@@ -551,7 +551,7 @@ git restore --source d4302c1f860c --staged -- :/ && git restore --source 4d756e9
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/4d756e960a5613d7076808da5197fca58c850d55). [The code after it](https://github.com/rahuldave/babykev/tree/4d756e960a5613d7076808da5197fca58c850d55).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/117a59e9838e0fa2e28ad29d02d5aeba3a8622f9). [The code after it](https://github.com/rahuldave/babykev/tree/117a59e9838e0fa2e28ad29d02d5aeba3a8622f9).
 
 ## 18.7 The recipe smoke {#tut-18.7}
 
@@ -561,7 +561,7 @@ smoke`. It is in a group of its own, `model`.
 Apply the patch to [`justfile`](#tut-18.7-justfile-424f0b), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/eb2b6002dc55010dea092f3e57481bc12cd1e0ea.diff | git apply --include=justfile
+curl -fsSL https://github.com/rahuldave/babykev/commit/55844b2320b632b40dd3f34f0a6b5bb962551005.diff | git apply --include=justfile
 ```
 
 The patch adds the recipe `smoke` at the end of the `justfile`.
@@ -587,18 +587,18 @@ the usage of the program.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check eb2b6002dc55
+git check 55844b2320b6
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 4d756e960a56 --staged -- :/ && git restore --source eb2b6002dc55 --staged --worktree -- :/
+git restore --source 117a59e9838e --staged -- :/ && git restore --source 55844b2320b6 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-18.7-what-changed-182c57}
 
-- <a id="tut-18.7-justfile-424f0b"></a>`justfile`: the recipe `smoke`. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/eb2b6002dc55010dea092f3e57481bc12cd1e0ea/justfile).
+- <a id="tut-18.7-justfile-424f0b"></a>`justfile`: the recipe `smoke`. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/55844b2320b632b40dd3f34f0a6b5bb962551005/justfile).
   - look at `smoke *args:`
 
 <details open><summary>The patch to <code>justfile</code></summary>
@@ -620,7 +620,7 @@ git restore --source 4d756e960a56 --staged -- :/ && git restore --source eb2b600
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/eb2b6002dc55010dea092f3e57481bc12cd1e0ea). [The code after it](https://github.com/rahuldave/babykev/tree/eb2b6002dc55010dea092f3e57481bc12cd1e0ea).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/55844b2320b632b40dd3f34f0a6b5bb962551005). [The code after it](https://github.com/rahuldave/babykev/tree/55844b2320b632b40dd3f34f0a6b5bb962551005).
 
 ## 18.8 The front page names the smoke {#tut-18.8}
 
@@ -629,7 +629,7 @@ The front page of the docs lists the modules of the code. `babykev.smoke` is the
 Apply the patch to [`docs/index.qmd`](#tut-18.8-docs-index.qmd-d6d880), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/a52d047c3628b7ae2d980093ef3df5b7780b585f.diff | git apply --include=docs/index.qmd
+curl -fsSL https://github.com/rahuldave/babykev/commit/aedd5e6659581b7aa6f424e06ccfa12f6a07fff1.diff | git apply --include=docs/index.qmd
 ```
 
 The patch changes `three modules` to `four modules`, and adds an item for `babykev.smoke` at the end of the list.
@@ -645,18 +645,18 @@ grep -o 'href="api/smoke.html#[^"]*"' docs/_site/index.html
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check a52d047c3628
+git check aedd5e665958
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source eb2b6002dc55 --staged -- :/ && git restore --source a52d047c3628 --staged --worktree -- :/
+git restore --source 55844b2320b6 --staged -- :/ && git restore --source aedd5e665958 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-18.8-what-changed-182c57}
 
-- <a id="tut-18.8-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the module `babykev.smoke`, in the list. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a52d047c3628b7ae2d980093ef3df5b7780b585f/docs/index.qmd).
+- <a id="tut-18.8-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the module `babykev.smoke`, in the list. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/aedd5e6659581b7aa6f424e06ccfa12f6a07fff1/docs/index.qmd).
   - look at ``- `babykev.smoke` is the smoke run. `smoke()` asks the model every question of the sample data, and``
 
 <details open><summary>The patch to <code>docs/index.qmd</code></summary>
@@ -683,7 +683,7 @@ git restore --source eb2b6002dc55 --staged -- :/ && git restore --source a52d047
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/a52d047c3628b7ae2d980093ef3df5b7780b585f). [The code after it](https://github.com/rahuldave/babykev/tree/a52d047c3628b7ae2d980093ef3df5b7780b585f).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/aedd5e6659581b7aa6f424e06ccfa12f6a07fff1). [The code after it](https://github.com/rahuldave/babykev/tree/aedd5e6659581b7aa6f424e06ccfa12f6a07fff1).
 
 ## 18.9 The README names the smoke {#tut-18.9}
 
@@ -692,7 +692,7 @@ The README says what `just smoke` does, and what it downloads. The table gets a 
 Apply the patch to [`README.md`](#tut-18.9-README.md-8ec9a0), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/6c2937bcf7bac5b94fcbc0b06269a14d36b8d97f.diff | git apply --include=README.md
+curl -fsSL https://github.com/rahuldave/babykev/commit/3edcb80f6814f9e0afe70942db6fce959799d9c5.diff | git apply --include=README.md
 ```
 
 The patch adds a paragraph about `just smoke` above the paragraph about `just hook`, and a row for
@@ -709,18 +709,18 @@ tests of the model come next.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 6c2937bcf7ba
+git check 3edcb80f6814
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source a52d047c3628 --staged -- :/ && git restore --source 6c2937bcf7ba --staged --worktree -- :/
+git restore --source aedd5e665958 --staged -- :/ && git restore --source 3edcb80f6814 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-18.9-what-changed-182c57}
 
-- <a id="tut-18.9-README.md-8ec9a0"></a>`README.md`: `just smoke`, and the row of `smoke.py`. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/6c2937bcf7bac5b94fcbc0b06269a14d36b8d97f/README.md).
+- <a id="tut-18.9-README.md-8ec9a0"></a>`README.md`: `just smoke`, and the row of `smoke.py`. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/3edcb80f6814f9e0afe70942db6fce959799d9c5/README.md).
   - look at ``| `src/babykev/smoke.py` | The smoke run, which asks the real model the sample requests on this machine |``
 
 <details open><summary>The patch to <code>README.md</code></summary>
@@ -749,4 +749,4 @@ git restore --source a52d047c3628 --staged -- :/ && git restore --source 6c2937b
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/6c2937bcf7bac5b94fcbc0b06269a14d36b8d97f). [The code after it](https://github.com/rahuldave/babykev/tree/6c2937bcf7bac5b94fcbc0b06269a14d36b8d97f).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3edcb80f6814f9e0afe70942db6fce959799d9c5). [The code after it](https://github.com/rahuldave/babykev/tree/3edcb80f6814f9e0afe70942db6fce959799d9c5).

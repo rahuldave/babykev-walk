@@ -1,0 +1,198 @@
+---
+title: "5.8 to 5.11 From probabilities back to answers"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Read the tutorial.** [Build it yourself](../build/tut-05.8-to-tut-05.11.qmd) is the other way to read this part.
+
+```bash
+just setup
+```
+
+The model gives a probability for each option. The function `to_answers`, in `api.py`, turns them into an answer of
+the type of each question. The moves of this section add a test for each type.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/8368a8202dab8159f95043310e2bf22a24c1e474). [The code after it](https://github.com/rahuldave/babykev/tree/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f).
+
+## 5.8 The answer of a noul is the probability of yes {#tut-05.8}
+
+`to_answers` turns the probabilities of the model into answers. The answer to a noul is one number, the probability of
+yes.
+
+A patch to [`tests/unit/test_api.py`](#tut-05.8-tests-unit-test_api.py-58d97c).
+
+At the end of `tests/unit/test_api.py`, the test gives `to_answers` the probabilities `[0.25, 0.75]`, and expects
+`0.75`.
+
+```bash
+just test
+```
+
+`just test` prints `40 passed`, and `api.py` is at 86%.
+
+### What changed {#tut-05.8-what-changed-182c57}
+
+- <a id="tut-05.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the answer of a noul. 10 lines added. [The file](https://github.com/rahuldave/babykev/blob/0740c2c246273e99e34494512152d5b97ea4f7b9/tests/unit/test_api.py).
+  - look at `assert answers == {"blue": {"type": "noul", "noul": 0.75}}`
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -14,6 +14,7 @@ from babykev.api import (
+     SystemOneRequest,
+     option_text,
+     render,
++    to_answers,
+     to_record,
+ )
+ 
+@@ -201,3 +202,12 @@ def test_score_becomes_one_option_per_level_with_a_legend():
+     record, meta = to_record(cheese_request())
+     assert record["questions"][2]["options"] == FIRMNESS
+     assert meta[2]["legend"] == {"0": "Soft", "1": "Semi-soft", "2": "Semi-hard", "3": "Hard"}
++
++
++# From probabilities to answers
++
++
++def test_noul_answer_is_the_probability_of_yes():
++    """The answer to a yes-or-no question is one number."""
++    answers = to_answers([[0.25, 0.75]], [{"id": "blue", "type": "noul"}])
++    assert answers == {"blue": {"type": "noul", "noul": 0.75}}
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0740c2c246273e99e34494512152d5b97ea4f7b9). [The code after it](https://github.com/rahuldave/babykev/tree/0740c2c246273e99e34494512152d5b97ea4f7b9).
+
+## 5.9 A choice names the most likely option {#tut-05.9}
+
+The answer to a choice has its most likely option, a probability for each option, and a confidence.
+
+A patch to [`tests/unit/test_api.py`](#tut-05.9-tests-unit-test_api.py-58d97c).
+
+At the end of `tests/unit/test_api.py`, the test gives `[0.1, 0.7, 0.2]`, and expects `goat`.
+
+```bash
+just test
+```
+
+`just test` prints `41 passed`, and `api.py` is at 94%.
+
+### What changed {#tut-05.9-what-changed-182c57}
+
+- <a id="tut-05.9-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the answer of a choice. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/a27b71f6a341bb12029a2d3471d6b3bc19d0d94c/tests/unit/test_api.py).
+  - look at `assert answer["choice"] == "goat"`
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -211,3 +211,12 @@ def test_noul_answer_is_the_probability_of_yes():
+     """The answer to a yes-or-no question is one number."""
+     answers = to_answers([[0.25, 0.75]], [{"id": "blue", "type": "noul"}])
+     assert answers == {"blue": {"type": "noul", "noul": 0.75}}
++
++
++def test_choice_answer_names_the_most_likely_option():
++    """A choice answer has the winner, a probability for each option, and a confidence."""
++    meta = [{"id": "milk", "type": "choice", "keys": ["cow", "goat", "sheep"]}]
++    answer = to_answers([[0.1, 0.7, 0.2]], meta)["milk"]
++    assert answer["choice"] == "goat"
++    assert answer["probabilities"] == {"cow": 0.1, "goat": 0.7, "sheep": 0.2}
++    assert answer["confidence"] == pytest.approx(0.55)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a27b71f6a341bb12029a2d3471d6b3bc19d0d94c). [The code after it](https://github.com/rahuldave/babykev/tree/a27b71f6a341bb12029a2d3471d6b3bc19d0d94c).
+
+## 5.10 A score answers with the expected level {#tut-05.10}
+
+The answer to a score is the expected level, the mean of the levels weighted by their probabilities. For
+`[0.1, 0.2, 0.7]` it is 0 × 0.1 + 1 × 0.2 + 2 × 0.7 = 1.6.
+
+A patch to [`tests/unit/test_api.py`](#tut-05.10-tests-unit-test_api.py-58d97c).
+
+At the end of `tests/unit/test_api.py`, the test expects the score `1.6`.
+
+```bash
+just test
+```
+
+`just test` prints `42 passed`, and `api.py` is at 100%.
+
+### What changed {#tut-05.10-what-changed-182c57}
+
+- <a id="tut-05.10-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the answer of a score. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/be8c681092973e7ac1e12bbd1817da81bea45e7e/tests/unit/test_api.py).
+  - look at `assert answer["score"] == pytest.approx(1.6)`
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -220,3 +220,14 @@ def test_choice_answer_names_the_most_likely_option():
+     assert answer["choice"] == "goat"
+     assert answer["probabilities"] == {"cow": 0.1, "goat": 0.7, "sheep": 0.2}
+     assert answer["confidence"] == pytest.approx(0.55)
++
++
++def test_score_answer_is_the_expected_level():
++    """A score answer is the mean level under the probabilities, with the legend to read it by."""
++    legend = {"0": "Soft", "1": "Semi-soft", "2": "Hard"}
++    answer = to_answers([[0.1, 0.2, 0.7]], [{"id": "firmness", "type": "score", "legend": legend}])[
++        "firmness"
++    ]
++    assert answer["score"] == pytest.approx(1.6)
++    assert answer["legend"] == legend
++    assert answer["probabilities"] == {"0": 0.1, "1": 0.2, "2": 0.7}
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/be8c681092973e7ac1e12bbd1817da81bea45e7e). [The code after it](https://github.com/rahuldave/babykev/tree/be8c681092973e7ac1e12bbd1817da81bea45e7e).
+
+## 5.11 Every question gets an answer of its own type {#tut-05.11}
+
+A request of three questions must get three answers, each under the id of its question, each of its type. The test
+runs `to_record` and `to_answers` one after the other.
+
+A patch to [`tests/unit/test_api.py`](#tut-05.11-tests-unit-test_api.py-58d97c).
+
+At the end of `tests/unit/test_api.py`, the test checks the type of the answer to each of the three questions.
+
+```bash
+just test
+```
+
+`just test` prints `43 passed`, and every line of `api.py` runs, 100%. Two lines are still wrong, and the next part
+shows them. Coverage says which lines ran. It does not say that a test checked what each line does.
+
+### What changed {#tut-05.11-what-changed-182c57}
+
+- <a id="tut-05.11-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: one answer for each question. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f/tests/unit/test_api.py).
+  - look at `def test_every_question_gets_an_answer_of_its_own_type():`
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -231,3 +231,15 @@ def test_score_answer_is_the_expected_level():
+     assert answer["score"] == pytest.approx(1.6)
+     assert answer["legend"] == legend
+     assert answer["probabilities"] == {"0": 0.1, "1": 0.2, "2": 0.7}
++
++
++def test_every_question_gets_an_answer_of_its_own_type():
++    """Records and answers line up: one answer per question, under the question's id."""
++    record, meta = to_record(cheese_request())
++    uniform = [[1 / len(q["options"])] * len(q["options"]) for q in record["questions"]]
++    answers = to_answers(uniform, meta)
++    assert {qid: a["type"] for qid, a in answers.items()} == {
++        "blue": "noul",
++        "milk": "choice",
++        "firmness": "score",
++    }
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f). [The code after it](https://github.com/rahuldave/babykev/tree/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f).

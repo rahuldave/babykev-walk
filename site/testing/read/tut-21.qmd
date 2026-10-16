@@ -1,0 +1,306 @@
+---
+title: "21 Integration tests, and the floor"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Read the tutorial.** [Build it yourself](../build/tut-21.qmd) is the other way to read this part.
+
+The tests here run several parts together. When the coverage passes 90%, `just check` gets a floor.
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 67 packages`.
+
+An integration test runs several of our parts together. On the tiny model, it needs no download, and only our code can
+make it fail, so it is hermetic. The tests here check what trains, a pass over records of different lengths,
+and the whole smoke. Then the coverage is over 90%, and `just check` gets a floor.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/ebfa2a8cee251782b3709a379c35af77c80c6170). [The code after it](https://github.com/rahuldave/babykev/tree/922d6ba2495756622ad215301da7c48f2ec33fa9).
+
+## 21.1 With an adapter, only the adapter and the head train {#tut-21.1}
+
+Training changes the adapter and the head, and the backbone stays as it is. The test makes a tiny model with an
+adapter of rank 4, and takes one backward pass. Then it names every parameter that got a gradient. The fixture
+`model` has no adapter, so the test calls `tiny_backbone` itself.
+
+A patch to [`tests/unit/test_model.py`](#tut-21.1-tests-unit-test_model.py-583145).
+
+In `tests/unit/test_model.py`, the import is on line 18, and the new test is on lines 112 to 130.
+
+```bash
+sed -n '112,130p' tests/unit/test_model.py
+just test -k only_the_adapter
+```
+
+Line 127 checks that every parameter with a gradient is in the adapter, `lora_`, or in the head, `head.`. Lines 128 to
+130 check that `trainable_parameters` lists exactly those. pytest prints `1 passed`.
+
+```bash
+just test --cov-fail-under=90
+```
+
+`--cov-fail-under=90` makes pytest fail when the total is under 90%. It prints `73 passed`, then `FAIL Required test
+coverage of 90% not reached. Total coverage: 83.52%`, and ends with exit code 1. `model.py` is at 94%, and lines 211 to
+218 and 277 have run. The missing lines of `smoke.py` are the same as before.
+
+### What changed {#tut-21.1-what-changed-182c57}
+
+- <a id="tut-21.1-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: one backward pass with an adapter. 22 lines added. [The file](https://github.com/rahuldave/babykev/blob/0be44c1de17b8acb4e18a964a782584eb26fee97/tests/unit/test_model.py).
+  - look at `def test_with_an_adapter_only_the_adapter_and_the_head_train(`
+
+<details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
+
+```diff
+@@ -15,6 +15,7 @@ from babykev.model import (
+     pick_device,
+     user_tokens,
+ )
++from tests.tiny import tiny_backbone
+ 
+ 
+ def test_probabilities_sum_to_one_for_every_question(
+@@ -106,3 +107,24 @@ def test_pick_device_takes_an_override() -> None:
+ def test_pick_device_finds_something_to_run_on() -> None:
+     """With no override, the choice is one of the three kinds of device."""
+     assert pick_device() in {"cuda", "mps", "cpu"}
++
++
++def test_with_an_adapter_only_the_adapter_and_the_head_train(
++    tok: PreTrainedTokenizerFast,  # The tiny tokenizer
++    record: dict[str, Any],  # A record with three questions
++) -> None:
++    """The backbone is frozen: gradients reach the adapter and the pointer head, nothing else."""
++    model = DecisionModel("tiny", "cpu", lora=4, backbone=tiny_backbone(len(tok)))
++    enc = encode(tok, record)
++    labels = torch.tensor(enc["labels"])
++    losses = [
++        torch.nn.functional.cross_entropy(z[None], y[None])
++        for z, y in zip(model(enc), labels, strict=True)
++    ]
++    torch.stack(losses).sum().backward()
++    with_gradient = {name for name, p in model.named_parameters() if p.grad is not None}
++    assert with_gradient
++    assert all("lora_" in name or name.startswith("head.") for name in with_gradient)
++    assert {id(p) for p in model.trainable_parameters()} == {
++        id(p) for name, p in model.named_parameters() if name in with_gradient
++    }
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0be44c1de17b8acb4e18a964a782584eb26fee97). [The code after it](https://github.com/rahuldave/babykev/tree/0be44c1de17b8acb4e18a964a782584eb26fee97).
+
+## 21.2 Records of different lengths answer in one pass as alone {#tut-21.2}
+
+`forward_batch` reads several records in one pass. They are padded to the length of the longest. The test packs the
+record of the fixture and a shorter record, and runs them in one pass. It compares each with a pass of its own.
+
+A patch to [`tests/unit/test_model.py`](#tut-21.2-tests-unit-test_model.py-583145).
+
+In `tests/unit/test_model.py`, the new test is on lines 133 to 146.
+
+```bash
+just test -k different_lengths
+```
+
+pytest prints `1 passed`. Line 241 builds the mask of each record, with its padding, and every test of the model has
+run it. Only this test runs it with padding to build.
+
+```bash
+just test --cov-fail-under=90
+```
+
+pytest prints `74 passed`, and `Total coverage: 83.52%` again. The test adds no line to the coverage, and the floor
+still fails.
+
+### What changed {#tut-21.2-what-changed-182c57}
+
+- <a id="tut-21.2-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a padded pass. 16 lines added. [The file](https://github.com/rahuldave/babykev/blob/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac/tests/unit/test_model.py).
+  - look at `def test_records_of_different_lengths_answer_in_one_pass_as_alone(`
+
+<details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
+
+```diff
+@@ -128,3 +128,19 @@ def test_with_an_adapter_only_the_adapter_and_the_head_train(
+     assert {id(p) for p in model.trainable_parameters()} == {
+         id(p) for name, p in model.named_parameters() if name in with_gradient
+     }
++
++
++def test_records_of_different_lengths_answer_in_one_pass_as_alone(
++    model: DecisionModel,  # The tiny model
++    tok: PreTrainedTokenizerFast,  # Its tokenizer
++    record: dict[str, Any],  # A record with three questions
++) -> None:
++    """Padded to the longest, each record gets the logits that it gets in a pass of its own."""
++    short = {"state": "Brie.", "questions": record["questions"][:1]}
++    encs = [encode(tok, record), encode(tok, short)]
++    with torch.no_grad():
++        together = model.forward_batch(encs)
++        alone = [model(enc) for enc in encs]
++    for batch, single in zip(together, alone, strict=True):
++        for a, b in zip(batch, single, strict=True):
++            assert torch.allclose(a, b, atol=1e-5)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac). [The code after it](https://github.com/rahuldave/babykev/tree/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac).
+
+## 21.3 The smoke reports on every question, on the tiny model {#tut-21.3}
+
+`smoke` takes a model and a tokenizer. With the tiny ones, the five sample requests go through the contract, the
+packing, the model and the answers, with no download. The answers mean nothing. The report must have a verdict for
+each of the fifteen questions, and the count.
+
+A patch to [`tests/unit/test_smoke.py`](#tut-21.3-tests-unit-test_smoke.py-89db04).
+
+In `tests/unit/test_smoke.py`, the imports are on lines 3 to 6, and the new test is on lines 32 to 42.
+
+```bash
+sed -n '32,42p' tests/unit/test_smoke.py
+just test -k smoke_reports
+```
+
+pytest prints `1 passed`. The name of the test says `smoke`, and it is an integration test, of our function `smoke` on
+the tiny model. A smoke run uses the real model.
+
+```bash
+just test --cov-fail-under=90
+```
+
+pytest prints `75 passed`, then `Required test coverage of 90% reached. Total coverage: 91.76%`. The missing lines
+need the Hub or a GPU of NVIDIA. They are `63, 72-75, 204-207` of `model.py`, and `105-119` of `smoke.py`.
+
+### What changed {#tut-21.3-what-changed-182c57}
+
+- <a id="tut-21.3-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: the whole smoke, on the tiny model. 17 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/08acf0a3770d58ab7fc3ac85eebf5cf9ed0bad0e/tests/unit/test_smoke.py).
+  - look at `def test_smoke_reports_on_every_question_of_the_sample(`
+
+<details><summary>The diff of <code>tests/unit/test_smoke.py</code></summary>
+
+```diff
+@@ -1,6 +1,9 @@
+ """Tests of the smoke run, without the real model."""
+ 
+-from babykev.smoke import verdict
++from transformers import PreTrainedTokenizerFast
++
++from babykev.model import DecisionModel
++from babykev.smoke import read_lines, smoke, verdict
+ 
+ 
+ def test_verdict_agrees_when_the_answer_is_the_label() -> None:
+@@ -24,3 +27,16 @@ def test_verdict_reads_a_score_answer_as_its_most_likely_level() -> None:
+         "level 1",
+         True,
+     )
++
++
++def test_smoke_reports_on_every_question_of_the_sample(
++    model: DecisionModel,  # The tiny model
++    tok: PreTrainedTokenizerFast,  # Its tokenizer
++) -> None:
++    """Five requests of three questions: fifteen verdicts and a closing count."""
++    lines = read_lines()
++    report = list(smoke(model, tok, lines))
++    verdicts = [text for text in report if text.startswith(("  ok", "  --"))]
++    assert len(verdicts) == sum(len(line["questions"]) for line in lines) == 15
++    right = sum(text.startswith("  ok") for text in verdicts)
++    assert f"\n{right} of 15 right" in report[-2]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/08acf0a3770d58ab7fc3ac85eebf5cf9ed0bad0e). [The code after it](https://github.com/rahuldave/babykev/tree/08acf0a3770d58ab7fc3ac85eebf5cf9ed0bad0e).
+
+## 21.4 The gate has a floor of 90% {#tut-21.4}
+
+`just check` runs the tests with `--cov-fail-under=90`. A change that brings the total under 90% then fails the gate, and the hook refuses it.
+`just test` alone has no floor, so a run of a few tests, with `-k`, does not fail on the total.
+
+A patch to [`justfile`](#tut-21.4-justfile-424f0b).
+
+In the `justfile`, line 82 is `just test -q --cov-fail-under=90`, and the comment on line 72 names the coverage.
+
+```bash
+just --show check
+just check
+```
+
+`just check` prints `Required test coverage of 90% reached. Total coverage: 91.76%` after the tests, and ends with
+exit code 0.
+
+### What changed {#tut-21.4-what-changed-182c57}
+
+- <a id="tut-21.4-justfile-424f0b"></a>`justfile`: the floor, in the gate. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/57604134d9590c16b1c4db0b1d1a11509a65345b/justfile).
+  - look at `    just test -q --cov-fail-under=90`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -69,7 +69,7 @@ types *args:
+ test *args:
+     @{{ if args == "help" { "just help test" } else { 'uv run pytest "$@"' } }}
+ 
+-# Run the checks one after another, and stop at the first that fails: the format, the linter, the types, the tests, the docs, the config files
++# Run the checks one after another, and stop at the first that fails: the format, the linter, the types, the tests and their coverage, the docs, the config files
+ [group('quality')]
+ [no-exit-message]
+ check *args:
+@@ -79,7 +79,7 @@ check *args:
+     just fmt --check
+     just lint
+     just types
+-    just test -q
++    just test -q --cov-fail-under=90
+     just docs check
+     just lint-config
+ 
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/57604134d9590c16b1c4db0b1d1a11509a65345b). [The code after it](https://github.com/rahuldave/babykev/tree/57604134d9590c16b1c4db0b1d1a11509a65345b).
+
+## 21.5 The README names the floor {#tut-21.5}
+
+The README says that one of the checks of `just check` is the floor.
+
+A patch to [`README.md`](#tut-21.5-README.md-8ec9a0).
+
+In `README.md`, the two lines are 70 and 71.
+
+```bash
+grep -n '90%' README.md
+```
+
+`grep` prints line 71, with the floor.
+
+### What changed {#tut-21.5-what-changed-182c57}
+
+- <a id="tut-21.5-README.md-8ec9a0"></a>`README.md`: the floor of 90%, in the lines on `just check`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/922d6ba2495756622ad215301da7c48f2ec33fa9/README.md).
+  - look at ``The tests must run at least 90% of the code. You can run `just check` yourself at any time.``
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+```diff
+@@ -67,8 +67,8 @@ downloads the base model from the Hugging Face Hub, about 1 GB. It answers the f
+ untrained, and prints each answer beside its label.
+ 
+ Run `just hook` once in each clone. It installs a git hook, which runs `just check` before each commit.
+-`just check` runs every check of the project, and if one fails, git makes no commit. You can run `just check`
+-yourself at any time.
++`just check` runs every check of the project, and if one fails, git makes no commit. One check is a floor.
++The tests must run at least 90% of the code. You can run `just check` yourself at any time.
+ 
+ ## What is here
+ 
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/922d6ba2495756622ad215301da7c48f2ec33fa9). [The code after it](https://github.com/rahuldave/babykev/tree/922d6ba2495756622ad215301da7c48f2ec33fa9).

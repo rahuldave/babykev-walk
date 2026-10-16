@@ -1,0 +1,500 @@
+---
+title: "4 Tests of the contract"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Read the tutorial.** [Build it yourself](../build/tut-04.qmd) is the other way to read this part.
+
+The whole tutorial then adds the contract, `src/babykev/api.py`. It says what a request is and what an answer is,
+with pydantic, a library that checks the shape of data. Five sample requests about cheese go in
+`data/cheese/sample.jsonl`. No test reaches the contract, so the coverage falls to 11%.
+
+The tests here check the sample requests against the contract, then each rule of the contract, one at a time.
+
+```bash
+just setup
+```
+
+The contract says what a request is, and no test checks it. The tests of this part check the five sample requests
+against the contract. Then they check what the contract accepts and refuses, one rule at a time. They go in
+`tests/unit/test_api.py`, one test in each move.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/56606771fb23f7a0a01825f477050d2980a47736). [The code after it](https://github.com/rahuldave/babykev/tree/1fef13ae49e24d280d05c250289c41d5636feff7).
+
+## 4.1 Every line of the sample data fits the contract {#tut-04.1}
+
+The first test of `api.py` checks each of the five sample requests against the contract. `SAMPLE_LINES` reads the
+file. `parametrize` gives the test each line in turn. `model_validate` checks the line, and raises an error if it does
+not fit.
+
+A patch to [`tests/unit/test_api.py`](#tut-04.1-tests-unit-test_api.py-58d97c).
+
+The new file `tests/unit/test_api.py` reads the sample data into `SAMPLE_LINES`, and has one test,
+`test_sample_line_fits_the_contract`.
+
+```bash
+just test
+```
+
+`just test` prints `10 passed`, the 5 of the command and one for each sample line. `api.py` is at 77%. The missing
+lines are the functions that turn probabilities into answers.
+
+### What changed {#tut-04.1-what-changed-182c57}
+
+- <a id="tut-04.1-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the sample data, and the test that checks each line. New, 27 lines. [The file](https://github.com/rahuldave/babykev/blob/5e134165b7e1feeded775bcfb2269aec951ad39f/tests/unit/test_api.py).
+  - look at `def test_sample_line_fits_the_contract(line):`
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -0,0 +1,27 @@
++"""Unit tests of the contract in `babykev.api`: validation, rendering, mappings, confidences."""
++
++import json
++from pathlib import Path
++
++import pytest
++
++from babykev.api import SystemOneRequest, to_record
++
++SAMPLE = Path(__file__).parents[2] / "data" / "cheese" / "sample.jsonl"
++SAMPLE_LINES = [json.loads(line) for line in SAMPLE.read_text(encoding="utf-8").splitlines()]
++
++MILKS = {"cow": None, "goat": None, "sheep": None, "mixed": "More than one kind of milk"}
++FIRMNESS = ["Soft", "Semi-soft", "Semi-hard", "Hard"]
++
++
++# The sample data
++
++
++@pytest.mark.parametrize("line", SAMPLE_LINES)
++def test_sample_line_fits_the_contract(line):
++    """Every line of the sample data is a valid request, with one record question per question."""
++    request = SystemOneRequest.model_validate(line)
++    record, meta = to_record(request)
++    assert record["state"]
++    assert [m["id"] for m in meta] == list(line["questions"])
++    assert all(len(q["options"]) >= 2 for q in record["questions"])
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/5e134165b7e1feeded775bcfb2269aec951ad39f). [The code after it](https://github.com/rahuldave/babykev/tree/5e134165b7e1feeded775bcfb2269aec951ad39f).
+
+## 4.2 Every question of the sample data has a label {#tut-04.2}
+
+The tests will compare answers with labels, so each label must have the right kind. A label is a boolean for a noul,
+the name of an option for a choice, and the number of a level for a score.
+
+A patch to [`tests/unit/test_api.py`](#tut-04.2-tests-unit-test_api.py-58d97c).
+
+At the end of `tests/unit/test_api.py`, the new test checks the label of every question of each line.
+
+```bash
+just test -k label
+```
+
+pytest runs the new test once for each line, and prints `5 passed`.
+
+### What changed {#tut-04.2-what-changed-182c57}
+
+- <a id="tut-04.2-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the labels of the sample data. 13 lines added. [The file](https://github.com/rahuldave/babykev/blob/1ca39523b4fdf6c75c244b8c0e0f2371593cfbff/tests/unit/test_api.py).
+  - look at `def test_sample_line_has_a_usable_label_on_every_question(line):`
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -25,3 +25,16 @@ def test_sample_line_fits_the_contract(line):
+     assert record["state"]
+     assert [m["id"] for m in meta] == list(line["questions"])
+     assert all(len(q["options"]) >= 2 for q in record["questions"])
++
++
++@pytest.mark.parametrize("line", SAMPLE_LINES)
++def test_sample_line_has_a_usable_label_on_every_question(line):
++    """A label is a boolean for noul, an option name for choice, and a level index for score."""
++    for question in line["questions"].values():
++        label = question["label"]
++        if question["type"] == "noul":
++            assert isinstance(label, bool)
++        elif question["type"] == "choice":
++            assert label in question["criteria"]
++        else:
++            assert label in range(len(question["criteria"]))
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/1ca39523b4fdf6c75c244b8c0e0f2371593cfbff). [The code after it](https://github.com/rahuldave/babykev/tree/1ca39523b4fdf6c75c244b8c0e0f2371593cfbff).
+
+## 4.3 A request holds one model for each type of question {#tut-04.3}
+
+The field `type` of a question decides which class of the contract it becomes. A helper, `cheese_request`, makes one
+request with a question of each type, for the tests to share. The test checks that the noul is a `Noul`, the choice a
+`Choice` and the score a `Score`.
+
+A patch to [`tests/unit/test_api.py`](#tut-04.3-tests-unit-test_api.py-58d97c).
+
+In `tests/unit/test_api.py`, `cheese_request` stands under the constants. The new test at the end checks the class of
+each of its three questions.
+
+```bash
+just test -k one_model
+```
+
+pytest prints `1 passed`.
+
+### What changed {#tut-04.3-what-changed-182c57}
+
+- <a id="tut-04.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the helper, and the test of the three types. 32 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/847d160f4a2f014bd58eb06030268ce762577cbc/tests/unit/test_api.py).
+  - look at `def test_request_holds_one_model_per_question_type():`
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -5,7 +5,13 @@ from pathlib import Path
+ 
+ import pytest
+ 
+-from babykev.api import SystemOneRequest, to_record
++from babykev.api import (
++    Choice,
++    Noul,
++    Score,
++    SystemOneRequest,
++    to_record,
++)
+ 
+ SAMPLE = Path(__file__).parents[2] / "data" / "cheese" / "sample.jsonl"
+ SAMPLE_LINES = [json.loads(line) for line in SAMPLE.read_text(encoding="utf-8").splitlines()]
+@@ -14,6 +20,20 @@ MILKS = {"cow": None, "goat": None, "sheep": None, "mixed": "More than one kind
+ FIRMNESS = ["Soft", "Semi-soft", "Semi-hard", "Hard"]
+ 
+ 
++def cheese_request():
++    """One request that asks a question of each type."""
++    return SystemOneRequest.model_validate(
++        {
++            "state": {"cheese": "Roquefort", "origin": "France"},
++            "questions": {
++                "blue": {"type": "noul", "instructions": "Is this a blue cheese?"},
++                "milk": {"type": "choice", "instructions": "Which milk?", "criteria": MILKS},
++                "firmness": {"type": "score", "instructions": "How firm?", "criteria": FIRMNESS},
++            },
++        }
++    )
++
++
+ # The sample data
+ 
+ 
+@@ -38,3 +58,14 @@ def test_sample_line_has_a_usable_label_on_every_question(line):
+             assert label in question["criteria"]
+         else:
+             assert label in range(len(question["criteria"]))
++
++
++# Validation
++
++
++def test_request_holds_one_model_per_question_type():
++    """The `type` field decides which model a question becomes."""
++    questions = cheese_request().questions
++    assert isinstance(questions["blue"], Noul)
++    assert isinstance(questions["milk"], Choice)
++    assert isinstance(questions["firmness"], Score)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/847d160f4a2f014bd58eb06030268ce762577cbc). [The code after it](https://github.com/rahuldave/babykev/tree/847d160f4a2f014bd58eb06030268ce762577cbc).
+
+## 4.4 A request without questions is refused {#tut-04.4}
+
+A request must ask at least one question. `Field(min_length=1)` on `questions` says so. The test checks that pydantic
+refuses a request with none.
+
+A patch to [`tests/unit/test_api.py`](#tut-04.4-tests-unit-test_api.py-58d97c).
+
+At the end of `tests/unit/test_api.py`, the new test expects a `ValidationError` for `"questions": {}`.
+
+```bash
+just test -k without_questions
+```
+
+pytest prints `1 passed`.
+
+### What changed {#tut-04.4-what-changed-182c57}
+
+- <a id="tut-04.4-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a request with no questions. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/c2af99cdd8e0b6f40e33a1ebcf9aa602904a83ba/tests/unit/test_api.py).
+  - look at `def test_request_without_questions_is_rejected():`
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -4,6 +4,7 @@ import json
+ from pathlib import Path
+ 
+ import pytest
++from pydantic import ValidationError
+ 
+ from babykev.api import (
+     Choice,
+@@ -69,3 +70,9 @@ def test_request_holds_one_model_per_question_type():
+     assert isinstance(questions["blue"], Noul)
+     assert isinstance(questions["milk"], Choice)
+     assert isinstance(questions["firmness"], Score)
++
++
++def test_request_without_questions_is_rejected():
++    """A request must ask at least one question."""
++    with pytest.raises(ValidationError):
++        SystemOneRequest.model_validate({"state": "Brie", "questions": {}})
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/c2af99cdd8e0b6f40e33a1ebcf9aa602904a83ba). [The code after it](https://github.com/rahuldave/babykev/tree/c2af99cdd8e0b6f40e33a1ebcf9aa602904a83ba).
+
+## 4.5 An unknown type of question is refused {#tut-04.5}
+
+Only noul, choice and score exist. The test gives a question the type `essay`, and expects a refusal.
+
+A patch to [`tests/unit/test_api.py`](#tut-04.5-tests-unit-test_api.py-58d97c).
+
+At the end of `tests/unit/test_api.py`, the new test makes a question of type `essay`.
+
+```bash
+just test -k unknown_question
+```
+
+pytest prints `1 passed`.
+
+### What changed {#tut-04.5-what-changed-182c57}
+
+- <a id="tut-04.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a type that does not exist. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/6acc5e7d6f228ce76a9083d915f238c3d6696c85/tests/unit/test_api.py).
+  - look at `question = {"type": "essay", "instructions": "Describe this cheese."}`
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -76,3 +76,10 @@ def test_request_without_questions_is_rejected():
+     """A request must ask at least one question."""
+     with pytest.raises(ValidationError):
+         SystemOneRequest.model_validate({"state": "Brie", "questions": {}})
++
++
++def test_unknown_question_type_is_rejected():
++    """Only noul, choice and score exist."""
++    question = {"type": "essay", "instructions": "Describe this cheese."}
++    with pytest.raises(ValidationError):
++        SystemOneRequest.model_validate({"state": "Brie", "questions": {"q": question}})
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/6acc5e7d6f228ce76a9083d915f238c3d6696c85). [The code after it](https://github.com/rahuldave/babykev/tree/6acc5e7d6f228ce76a9083d915f238c3d6696c85).
+
+## 4.6 A noul needs no criteria {#tut-04.6}
+
+A question of yes or no may leave out what yes and no mean. The test makes a `Noul` with no criteria, and checks that
+its criteria are `None`.
+
+A patch to [`tests/unit/test_api.py`](#tut-04.6-tests-unit-test_api.py-58d97c).
+
+At the end of `tests/unit/test_api.py`, the new test makes a `Noul` with an instruction alone.
+
+```bash
+just test -k noul_needs
+```
+
+pytest prints `1 passed`.
+
+### What changed {#tut-04.6-what-changed-182c57}
+
+- <a id="tut-04.6-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a noul without criteria. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/3a99587d325837f9104661b3d06d9630679dc8eb/tests/unit/test_api.py).
+  - look at `assert Noul(type="noul", instructions="Is it blue?").criteria is None`
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -83,3 +83,8 @@ def test_unknown_question_type_is_rejected():
+     question = {"type": "essay", "instructions": "Describe this cheese."}
+     with pytest.raises(ValidationError):
+         SystemOneRequest.model_validate({"state": "Brie", "questions": {"q": question}})
++
++
++def test_noul_needs_no_criteria():
++    """A yes-or-no question may leave out what yes and no mean."""
++    assert Noul(type="noul", instructions="Is it blue?").criteria is None
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3a99587d325837f9104661b3d06d9630679dc8eb). [The code after it](https://github.com/rahuldave/babykev/tree/3a99587d325837f9104661b3d06d9630679dc8eb).
+
+## 4.7 A choice without options is refused {#tut-04.7}
+
+A choice needs at least one option. The test gives a `Choice` empty criteria, and expects a refusal.
+
+A patch to [`tests/unit/test_api.py`](#tut-04.7-tests-unit-test_api.py-58d97c).
+
+At the end of `tests/unit/test_api.py`, the new test makes a `Choice` with `criteria={}`.
+
+```bash
+just test -k choice_without
+```
+
+pytest prints `1 passed`.
+
+### What changed {#tut-04.7-what-changed-182c57}
+
+- <a id="tut-04.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a choice of nothing. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/4653d298261d887195e59a2cf00593036151657c/tests/unit/test_api.py).
+  - look at `def test_choice_without_options_is_rejected():`
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -88,3 +88,9 @@ def test_unknown_question_type_is_rejected():
+ def test_noul_needs_no_criteria():
+     """A yes-or-no question may leave out what yes and no mean."""
+     assert Noul(type="noul", instructions="Is it blue?").criteria is None
++
++
++def test_choice_without_options_is_rejected():
++    """A choice needs at least one option."""
++    with pytest.raises(ValidationError):
++        Choice(type="choice", instructions="Which milk?", criteria={})
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/4653d298261d887195e59a2cf00593036151657c). [The code after it](https://github.com/rahuldave/babykev/tree/4653d298261d887195e59a2cf00593036151657c).
+
+## 4.8 A choice has at most MAX_OPTIONS options {#tut-04.8}
+
+`MAX_OPTIONS` is 255. The test makes a choice of exactly 255 options, which is valid, and one of 256, which is
+refused. A limit is tested on both of its sides.
+
+A patch to [`tests/unit/test_api.py`](#tut-04.8-tests-unit-test_api.py-58d97c).
+
+At the end of `tests/unit/test_api.py`, the new test makes `at_limit`, 255 options, and then adds `one_more`.
+
+```bash
+just test -k largest
+```
+
+pytest prints `1 passed`.
+
+### What changed {#tut-04.8-what-changed-182c57}
+
+- <a id="tut-04.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the limit, from both sides. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/3addf0f2bd69e0910ba506a41a240fec5218c77a/tests/unit/test_api.py).
+  - look at `at_limit = {f"option{i}": None for i in range(MAX_OPTIONS)}`
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -7,6 +7,7 @@ import pytest
+ from pydantic import ValidationError
+ 
+ from babykev.api import (
++    MAX_OPTIONS,
+     Choice,
+     Noul,
+     Score,
+@@ -94,3 +95,13 @@ def test_choice_without_options_is_rejected():
+     """A choice needs at least one option."""
+     with pytest.raises(ValidationError):
+         Choice(type="choice", instructions="Which milk?", criteria={})
++
++
++def test_choice_accepts_the_largest_number_of_options_and_no_more():
++    """The limit on options is exact."""
++    at_limit = {f"option{i}": None for i in range(MAX_OPTIONS)}
++    assert (
++        len(Choice(type="choice", instructions="Which?", criteria=at_limit).criteria) == MAX_OPTIONS
++    )
++    with pytest.raises(ValidationError):
++        Choice(type="choice", instructions="Which?", criteria={**at_limit, "one_more": None})
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3addf0f2bd69e0910ba506a41a240fec5218c77a). [The code after it](https://github.com/rahuldave/babykev/tree/3addf0f2bd69e0910ba506a41a240fec5218c77a).
+
+## 4.9 A score of one level is refused {#tut-04.9}
+
+A scale needs two levels at least, or it measures nothing. The test gives a `Score` one level, and expects a refusal.
+
+A patch to [`tests/unit/test_api.py`](#tut-04.9-tests-unit-test_api.py-58d97c).
+
+At the end of `tests/unit/test_api.py`, the new test makes a `Score` with the one level `Soft`.
+
+```bash
+just test
+```
+
+`just test` prints `22 passed`. `api.py` is still at 77%. The tests of validation run lines that the sample data ran
+already.
+
+### What changed {#tut-04.9-what-changed-182c57}
+
+- <a id="tut-04.9-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a scale of one level. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/b9a4861a26a74623a6daf8c7c776cebe5f30a626/tests/unit/test_api.py).
+  - look at `Score(type="score", instructions="How firm?", criteria=["Soft"])`
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -105,3 +105,9 @@ def test_choice_accepts_the_largest_number_of_options_and_no_more():
+     )
+     with pytest.raises(ValidationError):
+         Choice(type="choice", instructions="Which?", criteria={**at_limit, "one_more": None})
++
++
++def test_score_with_one_level_is_rejected():
++    """A scale needs at least two levels."""
++    with pytest.raises(ValidationError):
++        Score(type="score", instructions="How firm?", criteria=["Soft"])
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b9a4861a26a74623a6daf8c7c776cebe5f30a626). [The code after it](https://github.com/rahuldave/babykev/tree/b9a4861a26a74623a6daf8c7c776cebe5f30a626).
+
+## 4.10 The README names the tests of the contract {#tut-04.10}
+
+The row of `tests/unit/` names only the tests of the command. It now names the tests of the contract too.
+
+A patch to [`README.md`](#tut-04.10-README.md-8ec9a0).
+
+In the table of `README.md`, the row of `tests/unit/` names the tests of the contract and the sample data.
+
+```bash
+grep -n 'tests/unit' README.md
+```
+
+`grep` prints the new row.
+
+### What changed {#tut-04.10-what-changed-182c57}
+
+- <a id="tut-04.10-README.md-8ec9a0"></a>`README.md`: the row of the tests. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/1fef13ae49e24d280d05c250289c41d5636feff7/README.md).
+  - look at ``| `tests/unit/` | The unit tests of the contract and of the command. One test checks every line of the sample data against the contract |``
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+```diff
+@@ -66,7 +66,7 @@ help of the program itself. A recipe gives its extra words to the tool behind it
+ | `src/babykev/api.py` | The contract: the request and its three types of question as pydantic models, the text and options the model reads, and the answers made from its probabilities |
+ | `src/babykev/cli.py` | The command `babykev` |
+ | `data/cheese/sample.jsonl` | Five requests about cheese, one on each line. Every question has a `label`, the right answer |
+-| `tests/unit/` | The unit tests. `test_cli.py` tests the command `babykev` |
++| `tests/unit/` | The unit tests of the contract and of the command. One test checks every line of the sample data against the contract |
+ | `justfile` | Every task of the project, one recipe each. `just help` explains them |
+ | `README.md` | This file |
+ | `LICENSE`, `NOTICE` | The licence, and the credit to kev |
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/1fef13ae49e24d280d05c250289c41d5636feff7). [The code after it](https://github.com/rahuldave/babykev/tree/1fef13ae49e24d280d05c250289c41d5636feff7).

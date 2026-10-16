@@ -1,0 +1,150 @@
+---
+title: "2.2 to 2.3 `just test`"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Build it yourself.** [Read the tutorial](../read/tut-02.2-to-tut-02.3.qmd) is the other way to read this part.
+
+This part does not start where the part before it ends, because the walk skips some changes. This command puts the files that this part starts from in place of yours. Run it, and then go on:
+
+```bash
+git restore --source 9218f21a7842 --staged -- :/ && git restore --source ad616a5cc1fc --staged --worktree -- :/
+```
+
+If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
+
+```bash
+git rm -rq --cached --ignore-unmatch -- :/ && git restore --source ad616a5cc1fc --staged --worktree -- :/
+```
+
+```bash
+just setup
+```
+
+The README now says how to begin, and what each file is. A setting in `pyproject.toml`, `default-groups = "all"`,
+makes uv install every dependency group. A dependency group is a named list of packages that only the people who
+work on babykev need.
+
+pytest comes into the group `test`, and the command that runs it gets a recipe.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/ad616a5cc1fcdf5b7c1672b79d0d2b267b72bd59). [The code after it](https://github.com/rahuldave/babykev/tree/b0840709e371a548d4b922c57c679ba040dd2c1a).
+
+## 2.2 Pytest, in the group test {#tut-02.2}
+
+Nothing runs tests yet. pytest finds the tests and runs them. It goes into the group `test`.
+
+```bash
+uv add --group test pytest
+```
+
+`uv add --group test` writes the group `test` in `pyproject.toml`, under `[dependency-groups]`. It prints
+`Resolved 7 packages`, and lists pytest and the four packages it needs.
+
+If a newer pytest is out, `uv add` writes its version as the lower bound. That line then differs from the one here,
+and so does `uv.lock`. Only the versions differ.
+
+```bash
+uv run pytest
+```
+
+`uv run pytest` looks for tests and finds none. It prints `collected 0 items` and `no tests ran`, and ends with exit
+code 5. pytest uses exit code 5 to say that it found no test.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 966956d738b5
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source ad616a5cc1fc --staged -- :/ && git restore --source 966956d738b5 --staged --worktree -- :/
+```
+
+### What changed {#tut-02.2-what-changed-182c57}
+
+- <a id="tut-02.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the group `test`, with pytest. 5 lines added. It comes from `uv add --group test pytest`. [The file](https://github.com/rahuldave/babykev/blob/966956d738b58505e23586af60f05cd5daceb12f/pyproject.toml).
+  - look at `"pytest>=9.1.1",`
+- <a id="tut-02.2-uv.lock-8356d8"></a>`uv.lock`: pytest and the five packages it needs. 71 lines added. It comes from `uv add --group test pytest`. [The file](https://github.com/rahuldave/babykev/blob/966956d738b58505e23586af60f05cd5daceb12f/uv.lock).
+
+<details><summary>The diff that <code>uv add --group test pytest</code> makes in <code>pyproject.toml</code></summary>
+
+```diff
+@@ -19,3 +19,8 @@ build-backend = "uv_build"
+ [tool.uv]
+ # uv sync and uv run install every dependency group, not only dev
+ default-groups = "all"
++
++[dependency-groups]
++test = [
++    "pytest>=9.1.1",
++]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/966956d738b58505e23586af60f05cd5daceb12f). [The code after it](https://github.com/rahuldave/babykev/tree/966956d738b58505e23586af60f05cd5daceb12f).
+
+## 2.3 The recipe test {#tut-02.3}
+
+The command that runs the tests is `uv run pytest`, and every task of the project has a recipe. A recipe `test` gives
+the command a short name.
+
+Apply the patch to [`justfile`](#tut-02.3-justfile-424f0b), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/b0840709e371a548d4b922c57c679ba040dd2c1a.diff | git apply --include=justfile
+```
+
+The patch adds the recipe `test` at the end of `justfile`, after one blank line.
+
+`test` gives every word after its name to pytest, as `"$@"`. So `just test -k help` runs `uv run pytest -k help`. The
+word `help` alone prints the line of the recipe. pytest prints what failed, so `[no-exit-message]` stops `just` from
+adding a line of its own when pytest ends with an error.
+
+```bash
+just --show test
+just test
+just help test
+```
+
+`just --show test` prints the recipe. `just test` runs pytest, which finds no test, prints `no tests ran` and ends with
+exit code 5. `just` prints no line of its own about the error. `just help test` prints the line of the recipe.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check b0840709e371
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 966956d738b5 --staged -- :/ && git restore --source b0840709e371 --staged --worktree -- :/
+```
+
+### What changed {#tut-02.3-what-changed-182c57}
+
+- <a id="tut-02.3-justfile-424f0b"></a>`justfile`: the recipe `test`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/b0840709e371a548d4b922c57c679ba040dd2c1a/justfile).
+  - look at `test *args:`
+
+<details open><summary>The patch to <code>justfile</code></summary>
+
+```diff
+@@ -24,3 +24,9 @@ help *verb:
+ [group('setup')]
+ setup *args:
+     @{{ if args == "help" { "just help setup" } else { "uv sync --locked" } }}
++
++# Run the tests. Extra words go to pytest: just test -k render
++[group('quality')]
++[no-exit-message]
++test *args:
++    @{{ if args == "help" { "just help test" } else { 'uv run pytest "$@"' } }}
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b0840709e371a548d4b922c57c679ba040dd2c1a). [The code after it](https://github.com/rahuldave/babykev/tree/b0840709e371a548d4b922c57c679ba040dd2c1a).

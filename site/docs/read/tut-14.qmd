@@ -1,0 +1,277 @@
+---
+title: "14 The docs site"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Read the tutorial.** [Build it yourself](../build/tut-14.qmd) is the other way to read this part.
+
+So far, `just docs module api` prints the reference of `api.py` as text in the terminal. This section builds a
+website from it, with a front page written by hand.
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 34 packages`.
+
+The reference exists only as Markdown that `just docs module` prints in a terminal. A reader wants a site, with a
+front page that says what babykev is, and a page of reference for each module. smalldocs builds that site from the
+same docstrings and docments. Git first learns to ignore the files that a build writes into `docs/`. Then the recipe
+`docs` builds the site, the site gets its settings and its front page, and the README names it.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/005b87bdfa2e70c6ceca52dc07197c69702f00be). [The code after it](https://github.com/rahuldave/babykev/tree/e1efb48492d7223fd0442906d2e55a83e0db481e).
+
+## 14.1 Git ignores what a build of the docs makes {#tut-14.1}
+
+smalldocs builds the site, and the build writes three things into `docs/`. `docs/_site/` is the site, as HTML.
+`docs/api/` holds the reference pages, as Markdown, and `docs/_symbols.json` holds the names that a link can point
+to. A build makes all three again from the code, so they do not belong in git. `.gitignore` names the files that git
+does not track, and three lines at its end name these, before the first build. A `/` at the start of a line means
+the root of the repository, so `/docs/api/` is only that folder.
+
+A patch to [`.gitignore`](#tut-14.1-.gitignore-a5cc29).
+
+At the end of `.gitignore`, the comment is on line 222, and `/docs/_site/`, `/docs/api/` and `/docs/_symbols.json` on
+lines 223 to 225.
+
+```bash
+tail -n 4 .gitignore
+```
+
+`tail -n 4 .gitignore` prints the comment and the three lines.
+
+### What changed {#tut-14.1-what-changed-182c57}
+
+- <a id="tut-14.1-.gitignore-a5cc29"></a>`.gitignore`: the files that a build of the docs makes. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/3593f61e4e221b04f00f360fe96e6dc4243b02dd/.gitignore).
+  - look at `/docs/_site/`
+
+<details><summary>The diff of <code>.gitignore</code></summary>
+
+```diff
+@@ -218,3 +218,8 @@ __marimo__/
+ 
+ # Streamlit
+ .streamlit/secrets.toml
++
++# smalldocs: the docs site, and the reference pages that each build makes from the code
++/docs/_site/
++/docs/api/
++/docs/_symbols.json
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3593f61e4e221b04f00f360fe96e6dc4243b02dd). [The code after it](https://github.com/rahuldave/babykev/tree/3593f61e4e221b04f00f360fe96e6dc4243b02dd).
+
+## 14.2 Just docs, alone, builds the site {#tut-14.2}
+
+`smalldocs render docs` builds the site from the folder `docs`. It writes the reference pages from the code, then
+the HTML of every page into `docs/_site`. With no words, the recipe `docs` now runs it. With words, it runs
+`smalldocs api` as before. So the body of the recipe is a script of `sh`.
+
+A patch to [`justfile`](#tut-14.2-justfile-424f0b).
+
+In the `justfile`, the recipe `docs` starts at line 79, with its comment. Line 85,
+`if [ "$#" -eq 0 ]; then exec uv run smalldocs render docs; fi`, is the case with no words.
+
+```bash
+uv run smalldocs render docs
+just --show docs
+just docs
+git status --short --ignored docs
+```
+
+`smalldocs render docs` prints `wrote 2 page(s) to docs/_site`. The two pages are the reference of `api.py` and of
+`cli.py`, because `docs/` has no page of its own yet. `just --show docs` prints the recipe, and `just docs` prints the
+same line as the command.
+
+`git status --short --ignored docs` lists the three paths that the build made, each marked `!!`, ignored. The lines
+of `.gitignore` from the move before keep them out of git.
+
+### What changed {#tut-14.2-what-changed-182c57}
+
+- <a id="tut-14.2-justfile-424f0b"></a>`justfile`: with no words, `docs` builds the site. 5 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/64de40516df5aa215bfac1c0198e898ac0960061/justfile).
+  - look at `    if [ "$#" -eq 0 ]; then exec uv run smalldocs render docs; fi`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -76,8 +76,11 @@ check *args:
+     just docs check
+     just lint-config
+ 
+-# The reference of the code, by smalldocs. Words go to smalldocs api: just docs check, just docs module api
++# The docs, by smalldocs. Alone, the site in docs/_site. Words go to smalldocs api: just docs check
+ [group('docs')]
+ [no-exit-message]
+ docs *args:
+-    @{{ if args == "help" { "just help docs" } else { 'uv run smalldocs api "$@" --dir docs' } }}
++    #!/usr/bin/env sh
++    if [ "$*" = help ]; then just help docs; exit 0; fi
++    if [ "$#" -eq 0 ]; then exec uv run smalldocs render docs; fi
++    exec uv run smalldocs api "$@" --dir docs
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/64de40516df5aa215bfac1c0198e898ac0960061). [The code after it](https://github.com/rahuldave/babykev/tree/64de40516df5aa215bfac1c0198e898ac0960061).
+
+## 14.3 The settings of the site {#tut-14.3}
+
+The site has no title, no sidebar and no links between its pages. Its settings go in `docs/_smalldocs.yml`, above the
+section `api`, which stays as it is. They are the type of the project, its output folder, the title, the sidebar, the
+theme and a table of contents on each page. With them, a name in backticks, such as `Score`, becomes a link to its
+entry in the reference.
+
+A patch to [`docs/_smalldocs.yml`](#tut-14.3-docs-_smalldocs.yml-4b0b48).
+
+In `docs/_smalldocs.yml`, the sidebar is on lines 8 to 12. It lists the front page, `index.qmd`, then the reference
+pages, `contents: api/*`, under the title Reference. The section `api` is on lines 18 to 21, as before.
+
+```bash
+just docs
+open docs/_site/api/api.html
+```
+
+`just docs` prints `wrote 2 page(s) to docs/_site`, then two warnings, `api/api.qmd: broken link /index.qmd` and the
+same for `api/cli.qmd`. The sidebar names the front page, which does not exist yet. The next move writes it. The
+reference of `api.py` opens in the browser, with the sidebar on the left.
+
+### What changed {#tut-14.3-what-changed-182c57}
+
+- <a id="tut-14.3-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the settings of the site, above the reference. 17 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/aee2a9faf7fe05e5d8780c8cf42e82c3d4145330/docs/_smalldocs.yml).
+  - look at `        contents: api/*  # the reference pages, which each build makes from the code`
+
+<details><summary>The diff of <code>docs/_smalldocs.yml</code></summary>
+
+```diff
+@@ -1,4 +1,20 @@
+-# The settings of smalldocs. `api` is the reference, made from the code of the package
++# The settings of smalldocs. `just docs` builds the site into docs/_site
++project:
++  type: website
++  output-dir: _site
++
++website:
++  title: "babykev"
++  sidebar:
++    contents:
++      - index.qmd
++      - section: Reference
++        contents: api/*  # the reference pages, which each build makes from the code
++
++theme: cosmo
++toc: true
++
++# `api` is the reference, made from the code of the package. A name in backticks links to its entry
+ api:
+   packages: [babykev]
+   source: https://github.com/rahuldave/babykev/blob/tutorial  # each entry links to its line here
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/aee2a9faf7fe05e5d8780c8cf42e82c3d4145330). [The code after it](https://github.com/rahuldave/babykev/tree/aee2a9faf7fe05e5d8780c8cf42e82c3d4145330).
+
+## 14.4 A front page {#tut-14.4}
+
+The front page, `docs/index.qmd`, says what babykev is, what a request holds, and what each module does. A `.qmd`
+file is Markdown, with a header between two lines `---` that gives the title of the page. The file is new, and comes
+whole, as a patch.
+
+A patch to [`docs/index.qmd`](#tut-14.4-docs-index.qmd-d6d880).
+
+The new file `docs/index.qmd` has 29 lines. Lines 1 to 3 are the header, with `title: babykev`. The list of modules is
+on lines 17 to 19.
+
+```bash
+just docs
+grep -o 'href="api/api.html#[^"]*"' docs/_site/index.html
+open docs/_site/index.html
+```
+
+`just docs` prints `wrote 3 page(s) to docs/_site`, and no warning. `grep -o` prints each link of the front page into
+the reference of `api.py`, seven of them. `SystemOneRequest`, `Noul`, `Choice` and `Score` link to their classes, and
+`to_record` and `to_answers` to their functions. `to_answers` is named twice. The front page opens in the browser.
+
+### What changed {#tut-14.4-what-changed-182c57}
+
+- <a id="tut-14.4-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the front page, written by hand. New, 29 lines. [The file](https://github.com/rahuldave/babykev/blob/e849099979801bc865c5a466d2b098b5ac9aa2e6/docs/index.qmd).
+  - look at ``A name in backticks, such as `to_answers`, links to its entry.``
+
+<details><summary>The diff of <code>docs/index.qmd</code></summary>
+
+```diff
+@@ -0,0 +1,29 @@
++---
++title: babykev
++---
++
++babykev is a small decision model. You send it one document, the context, and a set of typed questions
++about it. It returns a probability for every possible answer to every question.
++
++A request is a `SystemOneRequest`. It has a `state`, the context, and its questions, each under a name. A
++question has one of three types:
++
++- a `Noul` asks for yes or no
++- a `Choice` asks for one of several named options
++- a `Score` asks for a level on an ordered scale
++
++The code is in two modules:
++
++- `babykev.api` is the contract. `to_record` turns a request into the text and the options that the model
++  reads. `to_answers` turns the probabilities of the model into an answer of the type of each question.
++- `babykev.cli` is the command `babykev`.
++
++Each build of the site makes the pages under Reference from the code. A page takes these parts from each
++function and each class:
++
++- the signature and the types
++- the description, from the docstring
++- the description of each parameter, each return value and each field, from its docment or its
++  `Field(description=...)`
++
++A name in backticks, such as `to_answers`, links to its entry.
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e849099979801bc865c5a466d2b098b5ac9aa2e6). [The code after it](https://github.com/rahuldave/babykev/tree/e849099979801bc865c5a466d2b098b5ac9aa2e6).
+
+## 14.5 The README names the docs {#tut-14.5}
+
+The table of the README says where each part of the project is, and it does not list the docs. `docs/` gets a row,
+under the tests.
+
+A patch to [`README.md`](#tut-14.5-README.md-8ec9a0).
+
+In `README.md`, the row of `docs/` is on line 74.
+
+```bash
+grep -n 'docs/' README.md
+```
+
+`grep` prints line 74, the new row.
+
+### What changed {#tut-14.5-what-changed-182c57}
+
+- <a id="tut-14.5-README.md-8ec9a0"></a>`README.md`: a row for `docs/`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/e1efb48492d7223fd0442906d2e55a83e0db481e/README.md).
+  - look at ``| `docs/` | The docs site. `just docs` builds it into `docs/_site`, with the reference made from the code |``
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+```diff
+@@ -71,6 +71,7 @@ yourself at any time.
+ | `src/babykev/cli.py` | The command `babykev` |
+ | `data/cheese/sample.jsonl` | Five requests about cheese, one on each line. Every question has a `label`, the right answer |
+ | `tests/unit/` | The unit tests of the contract and of the command. One test checks every line of the sample data against the contract |
++| `docs/` | The docs site. `just docs` builds it into `docs/_site`, with the reference made from the code |
+ | `justfile` | Every task of the project, one recipe each. `just help` explains them |
+ | `README.md` | This file |
+ | `LICENSE`, `NOTICE` | The licence, and the credit to kev |
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e1efb48492d7223fd0442906d2e55a83e0db481e). [The code after it](https://github.com/rahuldave/babykev/tree/e1efb48492d7223fd0442906d2e55a83e0db481e).

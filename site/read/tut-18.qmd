@@ -19,7 +19,7 @@ so the answers are guesses. The run shows that the contract, the packing, the mo
 `smoke.py` is ours, and it comes one function at a time. The command `babykev smoke` and the recipe `just smoke` run
 it, on this machine only.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/42f75dc784aa7fdfa6981c1f4defd0c798cc3b08). [The code after it](https://github.com/rahuldave/babykev/tree/6c2937bcf7bac5b94fcbc0b06269a14d36b8d97f).
+[The code before this part](https://github.com/rahuldave/babykev/tree/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9). [The code after it](https://github.com/rahuldave/babykev/tree/3edcb80f6814f9e0afe70942db6fce959799d9c5).
 
 ## 18.1 smoke.py, which reads the sample {#tut-18.1}
 
@@ -46,7 +46,7 @@ The coverage counts every file of the package, and no test imports `smoke.py`.
 
 ### What changed {#tut-18.1-what-changed-182c57}
 
-- <a id="tut-18.1-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: the docstring, and the function that reads the sample. New, 22 lines. [The file](https://github.com/rahuldave/babykev/blob/ae6dc34784fa8c5146ae336c9c3b60b6dc1e71d9/src/babykev/smoke.py).
+- <a id="tut-18.1-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: the docstring, and the function that reads the sample. New, 22 lines. [The file](https://github.com/rahuldave/babykev/blob/5ec6d4a73df947af8d705956fffa07c9787017de/src/babykev/smoke.py).
   - look at `def read_lines(`
 
 <details><summary>The diff of <code>src/babykev/smoke.py</code></summary>
@@ -79,7 +79,7 @@ The coverage counts every file of the package, and no test imports `smoke.py`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/ae6dc34784fa8c5146ae336c9c3b60b6dc1e71d9). [The code after it](https://github.com/rahuldave/babykev/tree/ae6dc34784fa8c5146ae336c9c3b60b6dc1e71d9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/5ec6d4a73df947af8d705956fffa07c9787017de). [The code after it](https://github.com/rahuldave/babykev/tree/5ec6d4a73df947af8d705956fffa07c9787017de).
 
 ## 18.2 answer {#tut-18.2}
 
@@ -102,7 +102,7 @@ just types
 
 ### What changed {#tut-18.2-what-changed-182c57}
 
-- <a id="tut-18.2-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: one request, from the contract to the answers. 19 lines added. [The file](https://github.com/rahuldave/babykev/blob/d106f54b43335d4e565d3fae2ce1105cc5b5507e/src/babykev/smoke.py).
+- <a id="tut-18.2-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: one request, from the contract to the answers. 19 lines added. [The file](https://github.com/rahuldave/babykev/blob/0de1e2d0a2362ebd41d21b9146eae2961fb2366e/src/babykev/smoke.py).
   - look at `def answer(`
 
 <details><summary>The diff of <code>src/babykev/smoke.py</code></summary>
@@ -145,7 +145,7 @@ just types
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/d106f54b43335d4e565d3fae2ce1105cc5b5507e). [The code after it](https://github.com/rahuldave/babykev/tree/d106f54b43335d4e565d3fae2ce1105cc5b5507e).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0de1e2d0a2362ebd41d21b9146eae2961fb2366e). [The code after it](https://github.com/rahuldave/babykev/tree/0de1e2d0a2362ebd41d21b9146eae2961fb2366e).
 
 ## 18.3 verdict {#tut-18.3}
 
@@ -167,7 +167,7 @@ they agree.
 
 ### What changed {#tut-18.3-what-changed-182c57}
 
-- <a id="tut-18.3-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: one answer beside its label. 20 lines added. [The file](https://github.com/rahuldave/babykev/blob/3d4943832416314723cc909915f6ec83cc395efe/src/babykev/smoke.py).
+- <a id="tut-18.3-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: one answer beside its label. 20 lines added. [The file](https://github.com/rahuldave/babykev/blob/bd333d90c32a516a97a443fa986f40932f691bad/src/babykev/smoke.py).
   - look at `def verdict(`
 
 <details><summary>The diff of <code>src/babykev/smoke.py</code></summary>
@@ -201,7 +201,7 @@ they agree.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/3d4943832416314723cc909915f6ec83cc395efe). [The code after it](https://github.com/rahuldave/babykev/tree/3d4943832416314723cc909915f6ec83cc395efe).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/bd333d90c32a516a97a443fa986f40932f691bad). [The code after it](https://github.com/rahuldave/babykev/tree/bd333d90c32a516a97a443fa986f40932f691bad).
 
 ## 18.4 smoke {#tut-18.4}
 
@@ -222,7 +222,7 @@ a string.
 
 ### What changed {#tut-18.4-what-changed-182c57}
 
-- <a id="tut-18.4-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: the report, a line at a time. 25 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/cfe6bab89a64d39a1a60b505b7fbfbc096348b4b/src/babykev/smoke.py).
+- <a id="tut-18.4-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: the report, a line at a time. 25 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/8490a58a1510d717ce32b48fa0def8498ceb51f9/src/babykev/smoke.py).
   - look at `def smoke(`
 
 <details><summary>The diff of <code>src/babykev/smoke.py</code></summary>
@@ -274,7 +274,7 @@ a string.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/cfe6bab89a64d39a1a60b505b7fbfbc096348b4b). [The code after it](https://github.com/rahuldave/babykev/tree/cfe6bab89a64d39a1a60b505b7fbfbc096348b4b).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/8490a58a1510d717ce32b48fa0def8498ceb51f9). [The code after it](https://github.com/rahuldave/babykev/tree/8490a58a1510d717ce32b48fa0def8498ceb51f9).
 
 ## 18.5 main loads the real model and runs the smoke {#tut-18.5}
 
@@ -311,7 +311,7 @@ just test
 
 ### What changed {#tut-18.5-what-changed-182c57}
 
-- <a id="tut-18.5-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: the real model, loaded, and the report printed. 35 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/d4302c1f860c781a3b5946c4c10dec82f6264eca/src/babykev/smoke.py).
+- <a id="tut-18.5-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: the real model, loaded, and the report printed. 35 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/f1bfe993389643bda7f40c6f3b511827a3c9a9a0/src/babykev/smoke.py).
   - look at `def main(`
 
 <details><summary>The diff of <code>src/babykev/smoke.py</code></summary>
@@ -378,7 +378,7 @@ just test
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/d4302c1f860c781a3b5946c4c10dec82f6264eca). [The code after it](https://github.com/rahuldave/babykev/tree/d4302c1f860c781a3b5946c4c10dec82f6264eca).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/f1bfe993389643bda7f40c6f3b511827a3c9a9a0). [The code after it](https://github.com/rahuldave/babykev/tree/f1bfe993389643bda7f40c6f3b511827a3c9a9a0).
 
 ## 18.6 The command babykev smoke {#tut-18.6}
 
@@ -412,7 +412,7 @@ prints `4 passed, 49 deselected`. Its table of coverage counts only the four tes
 
 ### What changed {#tut-18.6-what-changed-182c57}
 
-- <a id="tut-18.6-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: the command `smoke`, in the help and in `main`. 12 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/4d756e960a5613d7076808da5197fca58c850d55/src/babykev/cli.py).
+- <a id="tut-18.6-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: the command `smoke`, in the help and in `main`. 12 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/117a59e9838e0fa2e28ad29d02d5aeba3a8622f9/src/babykev/cli.py).
   - look at `        raise SystemExit(smoke.main(words[1:]))`
 
 <details><summary>The diff of <code>src/babykev/cli.py</code></summary>
@@ -449,7 +449,7 @@ prints `4 passed, 49 deselected`. Its table of coverage counts only the four tes
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/4d756e960a5613d7076808da5197fca58c850d55). [The code after it](https://github.com/rahuldave/babykev/tree/4d756e960a5613d7076808da5197fca58c850d55).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/117a59e9838e0fa2e28ad29d02d5aeba3a8622f9). [The code after it](https://github.com/rahuldave/babykev/tree/117a59e9838e0fa2e28ad29d02d5aeba3a8622f9).
 
 ## 18.7 The recipe smoke {#tut-18.7}
 
@@ -480,7 +480,7 @@ the usage of the program.
 
 ### What changed {#tut-18.7-what-changed-182c57}
 
-- <a id="tut-18.7-justfile-424f0b"></a>`justfile`: the recipe `smoke`. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/eb2b6002dc55010dea092f3e57481bc12cd1e0ea/justfile).
+- <a id="tut-18.7-justfile-424f0b"></a>`justfile`: the recipe `smoke`. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/55844b2320b632b40dd3f34f0a6b5bb962551005/justfile).
   - look at `smoke *args:`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -502,7 +502,7 @@ the usage of the program.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/eb2b6002dc55010dea092f3e57481bc12cd1e0ea). [The code after it](https://github.com/rahuldave/babykev/tree/eb2b6002dc55010dea092f3e57481bc12cd1e0ea).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/55844b2320b632b40dd3f34f0a6b5bb962551005). [The code after it](https://github.com/rahuldave/babykev/tree/55844b2320b632b40dd3f34f0a6b5bb962551005).
 
 ## 18.8 The front page names the smoke {#tut-18.8}
 
@@ -522,7 +522,7 @@ grep -o 'href="api/smoke.html#[^"]*"' docs/_site/index.html
 
 ### What changed {#tut-18.8-what-changed-182c57}
 
-- <a id="tut-18.8-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the module `babykev.smoke`, in the list. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a52d047c3628b7ae2d980093ef3df5b7780b585f/docs/index.qmd).
+- <a id="tut-18.8-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the module `babykev.smoke`, in the list. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/aedd5e6659581b7aa6f424e06ccfa12f6a07fff1/docs/index.qmd).
   - look at ``- `babykev.smoke` is the smoke run. `smoke()` asks the model every question of the sample data, and``
 
 <details><summary>The diff of <code>docs/index.qmd</code></summary>
@@ -549,7 +549,7 @@ grep -o 'href="api/smoke.html#[^"]*"' docs/_site/index.html
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/a52d047c3628b7ae2d980093ef3df5b7780b585f). [The code after it](https://github.com/rahuldave/babykev/tree/a52d047c3628b7ae2d980093ef3df5b7780b585f).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/aedd5e6659581b7aa6f424e06ccfa12f6a07fff1). [The code after it](https://github.com/rahuldave/babykev/tree/aedd5e6659581b7aa6f424e06ccfa12f6a07fff1).
 
 ## 18.9 The README names the smoke {#tut-18.9}
 
@@ -569,7 +569,7 @@ tests of the model come next.
 
 ### What changed {#tut-18.9-what-changed-182c57}
 
-- <a id="tut-18.9-README.md-8ec9a0"></a>`README.md`: `just smoke`, and the row of `smoke.py`. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/6c2937bcf7bac5b94fcbc0b06269a14d36b8d97f/README.md).
+- <a id="tut-18.9-README.md-8ec9a0"></a>`README.md`: `just smoke`, and the row of `smoke.py`. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/3edcb80f6814f9e0afe70942db6fce959799d9c5/README.md).
   - look at ``| `src/babykev/smoke.py` | The smoke run, which asks the real model the sample requests on this machine |``
 
 <details><summary>The diff of <code>README.md</code></summary>
@@ -598,4 +598,4 @@ tests of the model come next.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/6c2937bcf7bac5b94fcbc0b06269a14d36b8d97f). [The code after it](https://github.com/rahuldave/babykev/tree/6c2937bcf7bac5b94fcbc0b06269a14d36b8d97f).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3edcb80f6814f9e0afe70942db6fce959799d9c5). [The code after it](https://github.com/rahuldave/babykev/tree/3edcb80f6814f9e0afe70942db6fce959799d9c5).

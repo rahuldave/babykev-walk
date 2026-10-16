@@ -1,0 +1,650 @@
+---
+title: "11 `just check` and `just hook`"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Build it yourself.** [Read the tutorial](../read/tut-11.qmd) is the other way to read this part.
+
+This part does not start where the part before it ends, because the walk skips some changes. This command puts the files that this part starts from in place of yours. Run it, and then go on:
+
+```bash
+git restore --source 7cdb1ba696a3 --staged -- :/ && git restore --source ebd0888f135c --staged --worktree -- :/
+```
+
+If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
+
+```bash
+git rm -rq --cached --ignore-unmatch -- :/ && git restore --source ebd0888f135c --staged --worktree -- :/
+```
+
+The whole tutorial then turns on the rules `ANN` of ruff, which ask for a type on every parameter and return. A
+person wrote the types that ruff cannot guess, and `just lint --fix --unsafe-fixes` wrote `-> None` on the other 31
+functions. Then the rules `D1` asked for a docstring on every public name, and each came by hand.
+
+A person must now remember three verbs before each `git commit`. One recipe runs them all, and a git hook runs that
+recipe.
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 15 packages`.
+
+The project has three checks, `just fmt --check`, `just lint` and `just test`. A person must remember to run each
+of them before each `git commit`. One recipe, `check`, runs them all, in order. git then runs that recipe itself
+before each `git commit`, through a hook that pre-commit installs. A check that git runs before it records a change
+is a gate, and a change that fails it does not go in.
+
+Three more hooks keep out a large file, the markers of a merge conflict and a `.env` file. Last, a mistake on purpose
+shows the gate at work.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/ebd0888f135c00e29b583f6fad0575c290fd4876). [The code after it](https://github.com/rahuldave/babykev/tree/cab87c139ebd3b72771ed6db08b02dd7646c7d02).
+
+## 11.1 The recipe check {#tut-11.1}
+
+The three checks are three commands, and a person can forget one. The recipe `check` runs them one after another.
+`set -e` stops it at the first that fails, so the last line that it prints names the check that failed.
+
+Apply the patch to [`justfile`](#tut-11.1-justfile-424f0b), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/dbfc285a2adeb4900fc68c863c4850b84004a04e.diff | git apply --include=justfile
+```
+
+The patch adds the recipe `check` at the end of the `justfile`, under the recipe `test`.
+
+`just check` has no floor on the coverage yet, such as `--cov-fail-under=90`. Later, the model comes in with no tests
+of its own, and the coverage then falls under 90%. The floor joins the gate after the tests of the model.
+
+The commands behind the recipe come first.
+
+```bash
+just fmt --check
+just lint
+just test -q
+```
+
+`just fmt --check` prints `6 files already formatted`, and `just lint` prints `All checks passed!`. `just test -q`
+prints a dot for each test, the table of coverage, and `53 passed`. The total is 100%, 83 of 83 statements.
+
+```bash
+just --show check
+just check
+just help check
+```
+
+`just --show check` prints the recipe. `just check` prints the same lines as the three commands, one after another,
+and ends with exit code 0. `just help check` prints the line of the recipe.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check dbfc285a2ade
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source ebd0888f135c --staged -- :/ && git restore --source dbfc285a2ade --staged --worktree -- :/
+```
+
+### What changed {#tut-11.1-what-changed-182c57}
+
+- <a id="tut-11.1-justfile-424f0b"></a>`justfile`: the recipe `check`, with three checks. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/dbfc285a2adeb4900fc68c863c4850b84004a04e/justfile).
+  - look at `    just test -q`
+
+<details open><summary>The patch to <code>justfile</code></summary>
+
+```diff
+@@ -42,3 +42,14 @@ lint *args:
+ [no-exit-message]
+ test *args:
+     @{{ if args == "help" { "just help test" } else { 'uv run pytest "$@"' } }}
++
++# Run the checks one after another, and stop at the first that fails: the format, the linter, the tests
++[group('quality')]
++[no-exit-message]
++check *args:
++    #!/usr/bin/env sh
++    set -e
++    if [ "$*" = help ]; then just help check; exit 0; fi
++    just fmt --check
++    just lint
++    just test -q
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/dbfc285a2adeb4900fc68c863c4850b84004a04e). [The code after it](https://github.com/rahuldave/babykev/tree/dbfc285a2adeb4900fc68c863c4850b84004a04e).
+
+## 11.2 Pre-commit, in the group lint {#tut-11.2}
+
+`just check` still waits for a person to run it. git can run a program of its own before it records a change, a
+hook. If the program fails, `git commit` records nothing. pre-commit installs such a hook, and runs the checks that a
+file of settings names. It is for working on babykev, so it goes in the group `lint`.
+
+```bash
+uv add --group lint pre-commit
+```
+
+`uv add` prints `Resolved 25 packages`, and installs `pre-commit==4.7.0` and the 9 packages that it needs, such as
+`pyyaml` and `virtualenv`.
+
+```bash
+uv run pre-commit --version
+```
+
+It prints `pre-commit 4.7.0`, or a newer version. No hook is installed yet.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 56dee300cda2
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source dbfc285a2ade --staged -- :/ && git restore --source 56dee300cda2 --staged --worktree -- :/
+```
+
+### What changed {#tut-11.2-what-changed-182c57}
+
+- <a id="tut-11.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: pre-commit, in the group `lint`. 1 line added. It comes from `uv add --group lint pre-commit`. [The file](https://github.com/rahuldave/babykev/blob/56dee300cda2e0f34bfb18be026897e83bf6981a/pyproject.toml).
+  - look at `"pre-commit>=4.7.0",`
+- <a id="tut-11.2-uv.lock-8356d8"></a>`uv.lock`: the exact version of pre-commit, and of the packages that it needs. 139 lines added, 1 removed. It comes from `uv add --group lint pre-commit`. [The file](https://github.com/rahuldave/babykev/blob/56dee300cda2e0f34bfb18be026897e83bf6981a/uv.lock).
+
+<details><summary>The diff that <code>uv add --group lint pre-commit</code> makes in <code>pyproject.toml</code></summary>
+
+```diff
+@@ -24,6 +24,7 @@ default-groups = "all"
+ 
+ [dependency-groups]
+ lint = [
++    "pre-commit>=4.7.0",
+     "ruff>=0.17.1",
+ ]
+ test = [
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/56dee300cda2e0f34bfb18be026897e83bf6981a). [The code after it](https://github.com/rahuldave/babykev/tree/56dee300cda2e0f34bfb18be026897e83bf6981a).
+
+## 11.3 A hook that runs just check {#tut-11.3}
+
+pre-commit reads its hooks from a file, `.pre-commit-config.yaml`. The first hook is local, which means that it is
+a command of the project itself, `just check`. So the hook and the terminal run the same checks. The file is new,
+and comes whole, as a patch.
+
+Apply the patch to [`.pre-commit-config.yaml`](#tut-11.3-.pre-commit-config.yaml-e7d14d), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/0c645eb0a770a34bf7fe3f055dfc9ab4c19aa6fe.diff | git apply --include=.pre-commit-config.yaml
+```
+
+Read the hook under `repo: local`, and the comment at the top of the file.
+
+With this hook, `just check` is the gate. The hook is not installed yet, and pre-commit can still run every hook
+by hand.
+
+```bash
+uv run pre-commit run --all-files
+```
+
+`pre-commit run --all-files` runs every hook on every file that git tracks, as `git commit` would. It prints one
+line for the hook, `just check....Passed`. A hook that passes prints nothing more.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 0c645eb0a770
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 56dee300cda2 --staged -- :/ && git restore --source 0c645eb0a770 --staged --worktree -- :/
+```
+
+### What changed {#tut-11.3-what-changed-182c57}
+
+- <a id="tut-11.3-.pre-commit-config.yaml-e7d14d"></a>`.pre-commit-config.yaml`: one hook, which runs `just check`. New, 14 lines. [The file](https://github.com/rahuldave/babykev/blob/0c645eb0a770a34bf7fe3f055dfc9ab4c19aa6fe/.pre-commit-config.yaml).
+  - look at `        entry: just check`
+
+<details open><summary>The patch to <code>.pre-commit-config.yaml</code></summary>
+
+```diff
+@@ -0,0 +1,14 @@
++# The hooks that git runs before each commit, once pre-commit is installed in the clone. If a hook
++# fails, git makes no commit.
++#
++# The project's own checks are one hook that runs `just check`, so the hook and the terminal run the
++# same thing.
++repos:
++  - repo: local
++    hooks:
++      - id: check
++        name: just check
++        entry: just check
++        language: system
++        pass_filenames: false
++        always_run: true
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0c645eb0a770a34bf7fe3f055dfc9ab4c19aa6fe). [The code after it](https://github.com/rahuldave/babykev/tree/0c645eb0a770a34bf7fe3f055dfc9ab4c19aa6fe).
+
+## 11.4 The recipe hook {#tut-11.4}
+
+`pre-commit install` writes the hook into the folder of the hooks of the clone, `.git/hooks`. git does not track
+that folder, so each clone installs its own hook, once. The recipe `hook` runs the command. It is a recipe of its own,
+because `just setup` runs often, and never touches git.
+
+Apply the patch to [`justfile`](#tut-11.4-justfile-424f0b), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/fbe4cca80366ec49c7fa9c23a11af8b4e1a2bde3.diff | git apply --include=justfile
+```
+
+The patch adds the recipe `hook` under the recipe `setup`, in the group `setup`.
+
+```bash
+uv run pre-commit install
+just --show hook
+just hook
+ls "$(git rev-parse --git-path hooks)"
+```
+
+`uv run pre-commit install` prints `pre-commit installed at .git/hooks/pre-commit`. `just --show hook` prints the
+recipe, and `just hook` prints the same line as the command. A second install writes the same file again.
+
+`git rev-parse --git-path hooks` names the folder of the hooks of this clone, and `ls` lists it. git puts a file
+`NAME.sample` there for each hook, and runs none of them. The new file `pre-commit`, with no `.sample`, is the one
+that `git commit` runs first.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check fbe4cca80366
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 0c645eb0a770 --staged -- :/ && git restore --source fbe4cca80366 --staged --worktree -- :/
+```
+
+### What changed {#tut-11.4-what-changed-182c57}
+
+- <a id="tut-11.4-justfile-424f0b"></a>`justfile`: the recipe `hook`. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/fbe4cca80366ec49c7fa9c23a11af8b4e1a2bde3/justfile).
+  - look at `hook *args:`
+
+<details open><summary>The patch to <code>justfile</code></summary>
+
+```diff
+@@ -25,6 +25,11 @@ help *verb:
+ setup *args:
+     @{{ if args == "help" { "just help setup" } else { "uv sync --locked" } }}
+ 
++# Install the git hook, which runs just check before each commit. Once in each clone: just setup never touches git
++[group('setup')]
++hook *args:
++    @{{ if args == "help" { "just help hook" } else { "uv run pre-commit install" } }}
++
+ # Write the Python of the project in one style. Extra words go to ruff: just fmt --check
+ [group('quality')]
+ [no-exit-message]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/fbe4cca80366ec49c7fa9c23a11af8b4e1a2bde3). [The code after it](https://github.com/rahuldave/babykev/tree/fbe4cca80366ec49c7fa9c23a11af8b4e1a2bde3).
+
+## 11.5 No file over 1 MB {#tut-11.5}
+
+A model's weights or a large file of data does not belong in git. Once git records it, it stays in the history,
+and every clone downloads it. pre-commit-hooks is pre-commit's own collection of hooks, and its hook
+`check-added-large-files` refuses a file over a size. `--maxkb=1000` sets the size, 1000 KB.
+
+Apply the patch to [`.pre-commit-config.yaml`](#tut-11.5-.pre-commit-config.yaml-e7d14d), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/352e33d87006028ec33ed46ba0e53d48255b3d66.diff | git apply --include=.pre-commit-config.yaml
+```
+
+The patch adds the repository `https://github.com/pre-commit/pre-commit-hooks` above `repo: local`, with its version
+and the hook `check-added-large-files`.
+
+```bash
+uv run pre-commit run --all-files
+```
+
+The first time on a machine, pre-commit prints lines that start with `[INFO]` while it downloads the collection, into a
+folder of its own. Then it prints two lines, `check for added large files....Passed` and `just check....Passed`.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 352e33d87006
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source fbe4cca80366 --staged -- :/ && git restore --source 352e33d87006 --staged --worktree -- :/
+```
+
+### What changed {#tut-11.5-what-changed-182c57}
+
+- <a id="tut-11.5-.pre-commit-config.yaml-e7d14d"></a>`.pre-commit-config.yaml`: the hook of large files. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/352e33d87006028ec33ed46ba0e53d48255b3d66/.pre-commit-config.yaml).
+  - look at `        args: [--maxkb=1000]`
+
+<details open><summary>The patch to <code>.pre-commit-config.yaml</code></summary>
+
+```diff
+@@ -4,6 +4,11 @@
+ # The project's own checks are one hook that runs `just check`, so the hook and the terminal run the
+ # same thing.
+ repos:
++  - repo: https://github.com/pre-commit/pre-commit-hooks
++    rev: v6.0.0
++    hooks:
++      - id: check-added-large-files
++        args: [--maxkb=1000]
+   - repo: local
+     hooks:
+       - id: check
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/352e33d87006028ec33ed46ba0e53d48255b3d66). [The code after it](https://github.com/rahuldave/babykev/tree/352e33d87006028ec33ed46ba0e53d48255b3d66).
+
+## 11.6 No merge-conflict markers {#tut-11.6}
+
+When git cannot merge two changes to the same lines, it writes both into the file, between the markers `<<<<<<<`,
+`=======` and `>>>>>>>`. A person must choose, and remove the markers. The hook `check-merge-conflict` refuses a file
+that still has them.
+
+Apply the patch to [`.pre-commit-config.yaml`](#tut-11.6-.pre-commit-config.yaml-e7d14d), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/64d0f4f781da1a8520315f899c4231645623280c.diff | git apply --include=.pre-commit-config.yaml
+```
+
+The patch adds the line of `check-merge-conflict` under the hook of large files.
+
+```bash
+uv run pre-commit run --all-files
+```
+
+pre-commit prints three lines, each `Passed`. The new one is `check for merge conflicts`.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 64d0f4f781da
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 352e33d87006 --staged -- :/ && git restore --source 64d0f4f781da --staged --worktree -- :/
+```
+
+### What changed {#tut-11.6-what-changed-182c57}
+
+- <a id="tut-11.6-.pre-commit-config.yaml-e7d14d"></a>`.pre-commit-config.yaml`: the hook of merge conflicts. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/64d0f4f781da1a8520315f899c4231645623280c/.pre-commit-config.yaml).
+  - look at `      - id: check-merge-conflict`
+
+<details open><summary>The patch to <code>.pre-commit-config.yaml</code></summary>
+
+```diff
+@@ -9,6 +9,7 @@ repos:
+     hooks:
+       - id: check-added-large-files
+         args: [--maxkb=1000]
++      - id: check-merge-conflict
+   - repo: local
+     hooks:
+       - id: check
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/64d0f4f781da1a8520315f899c4231645623280c). [The code after it](https://github.com/rahuldave/babykev/tree/64d0f4f781da1a8520315f899c4231645623280c).
+
+## 11.7 No .env file {#tut-11.7}
+
+A `.env` file holds the settings and secrets of one machine, such as a token. `.gitignore` ignores it already, but
+`git add -f .env` would still add it. A local hook with `language: fail` fails for every file that it is given, and
+prints its `entry` as the reason. `files:` gives it only the files named `.env`.
+
+Apply the patch to [`.pre-commit-config.yaml`](#tut-11.7-.pre-commit-config.yaml-e7d14d), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/2d080c9e228f2f9959f4eeed801726ea402e66a3.diff | git apply --include=.pre-commit-config.yaml
+```
+
+The patch adds the hook `no-env-file` under `repo: local`, above the hook of `just check`.
+
+```bash
+uv run pre-commit run --all-files
+```
+
+pre-commit prints four lines. The new one ends `(no files to check)Skipped`, because git tracks no `.env` file. The
+other three pass.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 2d080c9e228f
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 64d0f4f781da --staged -- :/ && git restore --source 2d080c9e228f --staged --worktree -- :/
+```
+
+### What changed {#tut-11.7-what-changed-182c57}
+
+- <a id="tut-11.7-.pre-commit-config.yaml-e7d14d"></a>`.pre-commit-config.yaml`: the hook that refuses a `.env` file. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/2d080c9e228f2f9959f4eeed801726ea402e66a3/.pre-commit-config.yaml).
+  - look at `        language: fail`
+
+<details open><summary>The patch to <code>.pre-commit-config.yaml</code></summary>
+
+```diff
+@@ -12,6 +12,11 @@ repos:
+       - id: check-merge-conflict
+   - repo: local
+     hooks:
++      - id: no-env-file
++        name: no .env file
++        entry: A .env file holds the settings and secrets of one machine. It is never committed
++        language: fail
++        files: (^|/)\.env$
+       - id: check
+         name: just check
+         entry: just check
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/2d080c9e228f2f9959f4eeed801726ea402e66a3). [The code after it](https://github.com/rahuldave/babykev/tree/2d080c9e228f2f9959f4eeed801726ea402e66a3).
+
+## 11.8 An unused import, on purpose {#tut-11.8}
+
+The hook works only if it fails on a mistake. This move makes one on purpose. `cli.py` imports `os`, and never uses
+it. The next move removes it.
+
+Apply the patch to [`src/babykev/cli.py`](#tut-11.8-src-babykev-cli.py-a9e184), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/f4fabd3272713cb5ac1c26021e4c23fa33ab15e6.diff | git apply --include=src/babykev/cli.py
+```
+
+The patch adds the line `import os` above `import sys`.
+
+```bash
+uv run pre-commit run --all-files
+```
+
+The first three hooks pass or skip, as before. `just check....Failed` follows, with `- exit code: 1` and the output of
+`just check`. `just fmt --check` prints `6 files already formatted`, because the import is in its place. Then
+`just lint` finds `F401`, `` `os` imported but unused ``, at line 3, column 8 of `src/babykev/cli.py`.
+
+`set -e` stops `just check` there, so the tests do not run. pre-commit ends with exit code 1. A `git commit` would
+stop here, and record nothing.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check f4fabd327271
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 2d080c9e228f --staged -- :/ && git restore --source f4fabd327271 --staged --worktree -- :/
+```
+
+### What changed {#tut-11.8-what-changed-182c57}
+
+- <a id="tut-11.8-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: an import that nothing uses, on purpose. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/f4fabd3272713cb5ac1c26021e4c23fa33ab15e6/src/babykev/cli.py).
+  - look at `import os`
+
+<details open><summary>The patch to <code>src/babykev/cli.py</code></summary>
+
+```diff
+@@ -1,5 +1,6 @@
+ """The babykev command. `babykev help` says what it can do; every command arrives here."""
+ 
++import os
+ import sys
+ 
+ HELP = """\
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/f4fabd3272713cb5ac1c26021e4c23fa33ab15e6). [The code after it](https://github.com/rahuldave/babykev/tree/f4fabd3272713cb5ac1c26021e4c23fa33ab15e6).
+
+## 11.9 The import goes {#tut-11.9}
+
+The linter said what is wrong, and that `--fix` can remove the line. The move removes it by hand.
+
+Apply the patch to [`src/babykev/cli.py`](#tut-11.9-src-babykev-cli.py-a9e184), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/054c40b6cc1839f8b35dfab81f9f2ae7c9f1aaf0.diff | git apply --include=src/babykev/cli.py
+```
+
+The patch removes the line `import os`.
+
+```bash
+uv run pre-commit run --all-files
+```
+
+The four hooks pass or skip, and pre-commit ends with exit code 0. A `git commit` would now record the change.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 054c40b6cc18
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source f4fabd327271 --staged -- :/ && git restore --source 054c40b6cc18 --staged --worktree -- :/
+```
+
+### What changed {#tut-11.9-what-changed-182c57}
+
+- <a id="tut-11.9-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: the import of `os` goes. 0 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/054c40b6cc1839f8b35dfab81f9f2ae7c9f1aaf0/src/babykev/cli.py).
+  - look at `import os`
+
+<details open><summary>The patch to <code>src/babykev/cli.py</code></summary>
+
+```diff
+@@ -1,6 +1,5 @@
+ """The babykev command. `babykev help` says what it can do; every command arrives here."""
+ 
+-import os
+ import sys
+ 
+ HELP = """\
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/054c40b6cc1839f8b35dfab81f9f2ae7c9f1aaf0). [The code after it](https://github.com/rahuldave/babykev/tree/054c40b6cc1839f8b35dfab81f9f2ae7c9f1aaf0).
+
+## 11.10 The README names the hook {#tut-11.10}
+
+A new clone has no hook until someone runs `just hook`. The README says so, under "Start", and its table names the
+file of the hooks.
+
+Apply the patch to [`README.md`](#tut-11.10-README.md-8ec9a0), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/cab87c139ebd3b72771ed6db08b02dd7646c7d02.diff | git apply --include=README.md
+```
+
+The patch adds a paragraph at the end of the section "Start", and a row for `.pre-commit-config.yaml` at the end of the
+table of files.
+
+```bash
+grep -n 'just hook' README.md
+```
+
+`grep` prints line 61, the first line of the paragraph, and line 79, the row of the table.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check cab87c139ebd
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 054c40b6cc18 --staged -- :/ && git restore --source cab87c139ebd --staged --worktree -- :/
+```
+
+### What changed {#tut-11.10-what-changed-182c57}
+
+- <a id="tut-11.10-README.md-8ec9a0"></a>`README.md`: a paragraph on `just hook`, and a row of the table. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/cab87c139ebd3b72771ed6db08b02dd7646c7d02/README.md).
+  - look at ``Run `just hook` once in each clone. It installs a git hook, which runs `just check` before each commit.``
+
+<details open><summary>The patch to <code>README.md</code></summary>
+
+```diff
+@@ -58,6 +58,10 @@ Then run `just test`. `just` lists the tasks, `just help VERB` explains one, and
+ help of the program itself. A recipe gives its extra words to the tool behind it. For example,
+ `just test -k help` runs only the tests with `help` in their name.
+ 
++Run `just hook` once in each clone. It installs a git hook, which runs `just check` before each commit.
++`just check` runs every check of the project, and if one fails, git makes no commit. You can run `just check`
++yourself at any time.
++
+ ## What is here
+ 
+ | Path | What it is |
+@@ -72,6 +76,7 @@ help of the program itself. A recipe gives its extra words to the tool behind it
+ | `LICENSE`, `NOTICE` | The licence, and the credit to kev |
+ | `.python-version` | The version of Python that the project uses |
+ | `.gitignore` | The files that git does not track, for example `.venv` |
++| `.pre-commit-config.yaml` | The hooks that git runs before each commit, once `just hook` installs them. The last runs `just check` |
+ 
+ ## How the history is organised
+ 
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/cab87c139ebd3b72771ed6db08b02dd7646c7d02). [The code after it](https://github.com/rahuldave/babykev/tree/cab87c139ebd3b72771ed6db08b02dd7646c7d02).

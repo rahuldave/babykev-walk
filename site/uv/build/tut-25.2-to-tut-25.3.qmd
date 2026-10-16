@@ -1,0 +1,194 @@
+---
+title: "25.2 to 25.3 The dev image installs every group"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Build it yourself.** [Read the tutorial](../read/tut-25.2-to-tut-25.3.qmd) is the other way to read this part.
+
+If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
+
+```bash
+git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 570bb2134f03 --staged --worktree -- :/
+```
+
+```bash
+just setup
+```
+
+The dev image is for working on the project, so it installs every group. Its build runs `uv sync --locked`, with no
+`--no-default-groups`, and `default-groups = "all"` holds.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/570bb2134f032a64a34d14852c82fa1a199f69f6). [The code after it](https://github.com/rahuldave/babykev/tree/f0862402733db839738f0b350a049b2ee5e2a2aa).
+
+## 25.2 The dev image {#tut-25.2}
+
+The stage `dev` builds the image to work in. It installs git with `apt-get`, and copies uv and uvx. It installs just
+as a wheel from PyPI. Then it installs the whole project with every group, into `/opt/venv`. The folder of this
+machine can then be mounted at `/work`, and the image runs it with its own environment.
+
+Apply the patch to [`Dockerfile`](#tut-25.2-Dockerfile-6651dd), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/40012bdfeb76ad96615227e9772d387ee5e48495.diff | git apply --include=Dockerfile
+```
+
+The patch adds the dev image to the comment at the top of the file, and the stage `dev` at the end of the file.
+
+```bash
+docker build --target dev --tag babykev-dev .
+```
+
+The line `transferring context` gives what Docker read from the folder, about 760 to 830 MB. `COPY . .` copies the whole
+folder, the `.venv` of this Mac too.
+
+```bash
+docker run --rm babykev-dev du -sh /work/.venv /opt/venv
+docker image ls babykev-dev:latest
+```
+
+`du` prints about `800M` for `/work/.venv`, the environment of this Mac, built for macOS, which Linux cannot use.
+`/opt/venv` is the environment of the image, 1.1G. The image takes about 2.1 GB.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 40012bdfeb76
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 570bb2134f03 --staged -- :/ && git restore --source 40012bdfeb76 --staged --worktree -- :/
+```
+
+### What changed {#tut-25.2-what-changed-182c57}
+
+- <a id="tut-25.2-Dockerfile-6651dd"></a>`Dockerfile`: the stage `dev`. 31 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/40012bdfeb76ad96615227e9772d387ee5e48495/Dockerfile).
+  - look at `FROM python:3.13-slim-trixie AS dev`
+
+<details open><summary>The patch to <code>Dockerfile</code></summary>
+
+```diff
+@@ -2,8 +2,11 @@
+ #
+ #   docker build --target run --tag babykev-run .
+ #       the program and what it needs, and no tool of the developers. It starts babykev
++#   docker build --target dev --tag babykev-dev .
++#       the whole project, with every group, uv, just and git. It starts a shell
+ #
+-# The environment is in /opt/venv, and never in the folder of the project.
++# The environment is in /opt/venv, and never in the folder of the project. So the dev image can run
++# the folder of this machine, mounted at /work, and never uses its .venv.
+ 
+ # uv, copied from its own image, at the version that wrote the lockfile
+ FROM ghcr.io/astral-sh/uv:0.12.13 AS uv
+@@ -34,3 +37,30 @@ ENV PATH=/opt/venv/bin:$PATH \
+     PYTHONUNBUFFERED=1
+ ENTRYPOINT ["babykev"]
+ CMD ["help"]
++
++# The dev image: the whole project with every group, and the tools to work on it
++FROM python:3.13-slim-trixie AS dev
++ARG JUST=1.50.0
++RUN apt-get update \
++    && apt-get install --yes --no-install-recommends git \
++    && rm -rf /var/lib/apt/lists/*
++COPY --from=uv /uv /uvx /usr/local/bin/
++ENV UV_PROJECT_ENVIRONMENT=/opt/venv \
++    UV_PYTHON_DOWNLOADS=never \
++    UV_COMPILE_BYTECODE=1 \
++    UV_LINK_MODE=copy \
++    UV_NO_CACHE=1 \
++    UV_TOOL_BIN_DIR=/usr/local/bin \
++    PATH=/opt/venv/bin:$PATH \
++    HF_HOME=/hf \
++    PYTHONUNBUFFERED=1
++# just, as a wheel from PyPI. git refuses a repository that another user owns, and a mounted folder
++# can belong to the user of this machine, so every folder is declared safe
++RUN uv tool install "rust-just==${JUST}" \
++    && git config --system --add safe.directory '*'
++WORKDIR /work
++COPY pyproject.toml uv.lock .python-version ./
++RUN uv sync --locked --no-install-project
++COPY . .
++RUN uv sync --locked
++CMD ["bash"]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/40012bdfeb76ad96615227e9772d387ee5e48495). [The code after it](https://github.com/rahuldave/babykev/tree/40012bdfeb76ad96615227e9772d387ee5e48495).
+
+## 25.3 What a build never copies into an image {#tut-25.3}
+
+`.dockerignore` names the files that `docker build` never reads from the folder, as `.gitignore` names the files that
+git never tracks. They are the history of git, the environment and the settings of this machine, and what a run or a
+tool writes.
+
+Apply the patch to [`.dockerignore`](#tut-25.3-.dockerignore-05a721), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/f0862402733db839738f0b350a049b2ee5e2a2aa.diff | git apply --include=.dockerignore
+```
+
+The patch makes the file.
+
+```bash
+docker build --target dev --tag babykev-dev .
+docker run --rm babykev-dev ls -A /work
+docker image ls babykev-dev:latest
+```
+
+`ls -A` lists the folder in the image, with no `.git` and no `.venv`. The image takes about 1.4 GB.
+
+The dev image can run every check, with this folder mounted at `/work`.
+
+```bash
+docker run --rm -v "$PWD":/work babykev-dev just check
+```
+
+`just check` passes in the image, on Linux. The tests print `82 passed, 1 deselected`, and the total of 91.76%.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check f0862402733d
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 40012bdfeb76 --staged -- :/ && git restore --source f0862402733d --staged --worktree -- :/
+```
+
+### What changed {#tut-25.3-what-changed-182c57}
+
+- <a id="tut-25.3-.dockerignore-05a721"></a>`.dockerignore`: what a build never copies. New, 16 lines. [The file](https://github.com/rahuldave/babykev/blob/f0862402733db839738f0b350a049b2ee5e2a2aa/.dockerignore).
+  - look at `.venv`
+
+<details open><summary>The patch to <code>.dockerignore</code></summary>
+
+```diff
+@@ -0,0 +1,16 @@
++# What docker build never copies into an image: the history of git, the environment and the
++# settings of this machine, and what a run or a tool writes. An image makes its own environment.
++.git
++.venv
++.env
++.env.*
++**/__pycache__
++.ruff_cache
++.pytest_cache
++.hypothesis
++.coverage
++.coverage.*
++docs/_site
++docs/api
++docs/_symbols.json
++.DS_Store
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/f0862402733db839738f0b350a049b2ee5e2a2aa). [The code after it](https://github.com/rahuldave/babykev/tree/f0862402733db839738f0b350a049b2ee5e2a2aa).

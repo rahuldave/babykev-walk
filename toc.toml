@@ -33,3 +33,91 @@ kind = "narrative"
 tags = "step-*"
 folder = "walks/narrative"
 intro = "walks/narrative/intro.md"
+
+# The small walks have notes of their own, walks/ID/notes.md. Their {{include}} lines take sections of
+# walks/tutorial/notes.md, with the same slides and commits. Each starts in watch mode.
+
+
+[[walk]]
+id = "uv"
+title = "uv and the groups of dependencies of babykev"
+description = "The project and its lockfile, the groups `test` and `lint`, the first dependency, the packages of the model from the index of PyTorch, and the two Docker images, which install no group and every group."
+kind = "tutorial"
+tags = "tut-*"
+loose = ["pyproject.toml", "uv.lock"]
+notes = "walks/uv/notes.md"
+shared = "walks/tutorial/notes.md"
+slides = "walks/tutorial/slides/slides.toml"
+moves = "watch"
+
+[[walk]]
+id = "linting"
+title = "The formatter, the linter and the type checker of babykev"
+description = "ruff as the formatter and the linter, types in every signature, docstrings, one recipe for every check, pre-commit before each `git commit`, a check of the config files, and ty."
+kind = "tutorial"
+tags = "tut-*"
+loose = ["pyproject.toml", "uv.lock"]
+notes = "walks/linting/notes.md"
+shared = "walks/tutorial/notes.md"
+slides = "walks/tutorial/slides/slides.toml"
+moves = "watch"
+
+[[walk]]
+id = "docs"
+title = "The documentation of babykev"
+description = "The README as it grows, docstrings and their rule, docments and the docs check, a site built with smalldocs, a guide to the model, and the site on GitHub Pages."
+kind = "tutorial"
+tags = "tut-*"
+loose = ["pyproject.toml", "uv.lock"]
+notes = "walks/docs/notes.md"
+shared = "walks/tutorial/notes.md"
+slides = "walks/tutorial/slides/slides.toml"
+moves = "watch"
+
+[[walk]]
+id = "just"
+title = "just, the recipes of babykev"
+description = "The justfile of babykev, one recipe at a time, as each one comes in: setup, help, test, fmt, lint, check, hook, lint-config, docs, types, smoke, image, and GitHub running `just check`."
+kind = "tutorial"
+tags = "tut-*"
+loose = ["pyproject.toml", "uv.lock"]
+notes = "walks/just/notes.md"
+shared = "walks/tutorial/notes.md"
+slides = "walks/tutorial/slides/slides.toml"
+moves = "watch"
+
+[[walk]]
+id = "model"
+title = "The model of babykev, explained"
+description = "A transformer decoder made into a model that decides: packing, a block-causal mask, positions that start again, and a pointer head, each with its tests on a tiny model."
+kind = "tutorial"
+tags = "tut-*"
+loose = ["pyproject.toml", "uv.lock"]
+notes = "walks/model/notes.md"
+shared = "walks/tutorial/notes.md"
+slides = "walks/tutorial/slides/slides.toml"
+moves = "watch"
+
+[[walk]]
+id = "testing"
+title = "The tests of babykev"
+description = "pytest and the first tests, coverage, the tests of the contract, fixtures and a tiny model, unit and integration tests, a floor, property tests of the mask with hypothesis, the system test, and the tests on GitHub."
+kind = "tutorial"
+tags = "tut-*"
+loose = ["pyproject.toml", "uv.lock"]
+notes = "walks/testing/notes.md"    # its own notes: an intro, and a ## stop for each place, with its includes
+shared = "walks/tutorial/notes.md"
+slides = "walks/tutorial/slides/slides.toml"
+moves = "watch"
+
+[[walk]]
+id = "contract"
+title = "The contract of babykev"
+description = "What a request and an answer hold, written with pydantic: the three types of question, the sample data, tests of what the contract refuses, and the code that turns a request into text for the model and probabilities into answers."
+kind = "tutorial"
+tags = "tut-*"
+loose = ["pyproject.toml", "uv.lock"]
+notes = "walks/contract/notes.md"
+shared = "walks/tutorial/notes.md"
+slides = "walks/tutorial/slides/slides.toml"
+moves = "watch"

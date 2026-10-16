@@ -1,0 +1,95 @@
+---
+title: "10.3 The classes of a request say what they are"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Read the tutorial.** [Build it yourself](../build/tut-10.3.qmd) is the other way to read this part.
+
+```bash
+just setup
+```
+
+The whole tutorial then fixed two bugs in the answers, one in the rounding of the probabilities and one in the
+confidence of a score.
+
+It brought in ruff, a tool that formats the code and checks it against rules. Then it wrote down, for every function,
+the kind of value that each input and the result hold. The tests grew to 53.
+
+Then the whole tutorial turned on the rules `D1` of ruff. They ask for a docstring on every public file, class and
+function. A name is public when it does not start with `_`. The package, the folder `src/babykev` that holds the code,
+got its docstring first.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/7943e585faa81e4c0400f5e2e9ca7b42ce4bf286). [The code after it](https://github.com/rahuldave/babykev/tree/9a769c7d9551fb181bf7c36d989f94f35f836c2d).
+
+## 10.3 The docstrings of the four classes of a request {#tut-10.3}
+
+`D101`: `Noul`, `Choice`, `Score` and `SystemOneRequest` are the classes of a request, and none has a docstring.
+Each gets one line, under its `class` line, that says what it is.
+
+A patch to [`src/babykev/api.py`](#tut-10.3-src-babykev-api.py-2ea65f).
+
+In `src/babykev/api.py`, the docstrings of the classes are on lines 17, 25, 39 and 50, under the lines of `Noul`,
+`Choice`, `Score` and `SystemOneRequest`.
+
+```bash
+uv run python -c "from babykev.api import Score; print(Score.__doc__)"
+just lint --statistics
+```
+
+`uv run python -c` prints the docstring of `Score`, `A question answered by a level of a scale, whose criteria are
+the levels in order.` `just lint --statistics` prints 3 problems, all `D103`.
+
+The four classes of a request now say what they are. There is one class for the request, and one for each of the three
+types of question. Their docstrings stand in the code, and Python's own function `help()` prints them. The contract is
+now whole. It says what a request holds, what it refuses, and how the model's probabilities become an answer for each
+question.
+
+### What changed {#tut-10.3-what-changed-182c57}
+
+- <a id="tut-10.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring on each class of a request. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/9a769c7d9551fb181bf7c36d989f94f35f836c2d/src/babykev/api.py).
+  - look at `    """A question answered by a level of a scale, whose criteria are the levels in order."""`
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -14,12 +14,16 @@ MAX_OPTIONS = 255
+ 
+ 
+ class Noul(BaseModel):
++    """A question of yes or no. Its criteria, if it has them, describe false and true."""
++
+     type: Literal["noul"]
+     instructions: JSONContent
+     criteria: dict[str, JSONContent] | None = None
+ 
+ 
+ class Choice(BaseModel):
++    """A question answered by one of its options, named in its criteria."""
++
+     type: Literal["choice"]
+     instructions: JSONContent
+     criteria: dict[str, JSONContent]
+@@ -32,6 +36,8 @@ class Choice(BaseModel):
+ 
+ 
+ class Score(BaseModel):
++    """A question answered by a level of a scale, whose criteria are the levels in order."""
++
+     type: Literal["score"]
+     instructions: JSONContent
+     criteria: list[JSONContent] = Field(min_length=2, max_length=MAX_OPTIONS)
+@@ -41,6 +47,8 @@ Question = Noul | Choice | Score
+ 
+ 
+ class SystemOneRequest(BaseModel):
++    """One request: a state, and the questions to answer about it, each by its name."""
++
+     state: JSONContent
+     questions: dict[str, Question] = Field(min_length=1)
+ 
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9a769c7d9551fb181bf7c36d989f94f35f836c2d). [The code after it](https://github.com/rahuldave/babykev/tree/9a769c7d9551fb181bf7c36d989f94f35f836c2d).

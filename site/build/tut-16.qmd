@@ -9,7 +9,7 @@ title: "16 The model"
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
 
 ```bash
-git rm -rq --cached --ignore-unmatch -- :/ && git restore --source c8e050183058 --staged --worktree -- :/
+git rm -rq --cached --ignore-unmatch -- :/ && git restore --source c7037ec46096 --staged --worktree -- :/
 ```
 
 ```bash
@@ -22,7 +22,7 @@ babykev has a contract and no model. `model.py` is the model. It comes in whole,
 read it before anything else. It meets the gate as it is. No test calls it yet, and the coverage shows it. Then the
 front page of the docs and the README name it.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/c8e050183058bbee970a1d8ed702de0e3e7f773b). [The code after it](https://github.com/rahuldave/babykev/tree/f41d9c4b591493c35d77e92d7d12d63260c69231).
+[The code before this part](https://github.com/rahuldave/babykev/tree/c7037ec460963acd41edf1f63a6a03d2e52e5bae). [The code after it](https://github.com/rahuldave/babykev/tree/056fe2ced73ff8568dfc329555795524c2465eb1).
 
 ## 16.1 model.py, the model {#tut-16.1}
 
@@ -32,7 +32,7 @@ names. The file comes in whole, as a patch.
 Apply the patch to [`src/babykev/model.py`](#tut-16.1-src-babykev-model.py-a86a0b), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/fb1d51c46acf2d492da205b572fa797e70029c6e.diff | git apply --include=src/babykev/model.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93.diff | git apply --include=src/babykev/model.py
 ```
 
 Read the docstring of the module first, lines 1 to 18.
@@ -95,18 +95,18 @@ tests of the model come later, and bring the coverage back.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check fb1d51c46acf
+git check c4c288ccc7e4
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source c8e050183058 --staged -- :/ && git restore --source fb1d51c46acf --staged --worktree -- :/
+git restore --source c7037ec46096 --staged -- :/ && git restore --source c4c288ccc7e4 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-16.1-what-changed-182c57}
 
-- <a id="tut-16.1-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the model. It packs a request into tokens, masks it, and points at the options. New, 274 lines. [The file](https://github.com/rahuldave/babykev/blob/fb1d51c46acf2d492da205b572fa797e70029c6e/src/babykev/model.py).
+- <a id="tut-16.1-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the model. It packs a request into tokens, masks it, and points at the options. New, 274 lines. [The file](https://github.com/rahuldave/babykev/blob/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93/src/babykev/model.py).
   - look at `class DecisionModel(nn.Module):`
 
 <details open><summary>The patch to <code>src/babykev/model.py</code></summary>
@@ -391,7 +391,7 @@ git restore --source c8e050183058 --staged -- :/ && git restore --source fb1d51c
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/fb1d51c46acf2d492da205b572fa797e70029c6e). [The code after it](https://github.com/rahuldave/babykev/tree/fb1d51c46acf2d492da205b572fa797e70029c6e).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93). [The code after it](https://github.com/rahuldave/babykev/tree/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93).
 
 ## 16.2 The front page names the model {#tut-16.2}
 
@@ -400,7 +400,7 @@ The front page of the docs says that the code is in two modules. Now it is in th
 Apply the patch to [`docs/index.qmd`](#tut-16.2-docs-index.qmd-d6d880), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/7b809006ff87efaee3d63dccfe6533a2e0888c0d.diff | git apply --include=docs/index.qmd
+curl -fsSL https://github.com/rahuldave/babykev/commit/bc2df6d99386f11f4e193e0b530fa87128a3acd7.diff | git apply --include=docs/index.qmd
 ```
 
 The patch changes `two modules` to `three modules`, and adds an item for `babykev.model` at the end of the list.
@@ -419,18 +419,18 @@ grep -o 'href="api/model.html#[^"]*"' docs/_site/index.html
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 7b809006ff87
+git check bc2df6d99386
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source fb1d51c46acf --staged -- :/ && git restore --source 7b809006ff87 --staged --worktree -- :/
+git restore --source c4c288ccc7e4 --staged -- :/ && git restore --source bc2df6d99386 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-16.2-what-changed-182c57}
 
-- <a id="tut-16.2-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the module `babykev.model`, in the list. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/7b809006ff87efaee3d63dccfe6533a2e0888c0d/docs/index.qmd).
+- <a id="tut-16.2-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the module `babykev.model`, in the list. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/bc2df6d99386f11f4e193e0b530fa87128a3acd7/docs/index.qmd).
   - look at ``- `babykev.model` is the model. `encode()` packs a record into one sequence of tokens, and a``
 
 <details open><summary>The patch to <code>docs/index.qmd</code></summary>
@@ -455,7 +455,7 @@ git restore --source fb1d51c46acf --staged -- :/ && git restore --source 7b80900
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/7b809006ff87efaee3d63dccfe6533a2e0888c0d). [The code after it](https://github.com/rahuldave/babykev/tree/7b809006ff87efaee3d63dccfe6533a2e0888c0d).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/bc2df6d99386f11f4e193e0b530fa87128a3acd7). [The code after it](https://github.com/rahuldave/babykev/tree/bc2df6d99386f11f4e193e0b530fa87128a3acd7).
 
 ## 16.3 The README names model.py {#tut-16.3}
 
@@ -464,7 +464,7 @@ The table of the README lists each file of the code. `model.py` gets a row, unde
 Apply the patch to [`README.md`](#tut-16.3-README.md-8ec9a0), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/f41d9c4b591493c35d77e92d7d12d63260c69231.diff | git apply --include=README.md
+curl -fsSL https://github.com/rahuldave/babykev/commit/056fe2ced73ff8568dfc329555795524c2465eb1.diff | git apply --include=README.md
 ```
 
 The patch adds a row for `src/babykev/model.py` under the row of `src/babykev/cli.py`.
@@ -478,18 +478,18 @@ grep -n 'model.py' README.md
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check f41d9c4b5914
+git check 056fe2ced73f
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 7b809006ff87 --staged -- :/ && git restore --source f41d9c4b5914 --staged --worktree -- :/
+git restore --source bc2df6d99386 --staged -- :/ && git restore --source 056fe2ced73f --staged --worktree -- :/
 ```
 
 ### What changed {#tut-16.3-what-changed-182c57}
 
-- <a id="tut-16.3-README.md-8ec9a0"></a>`README.md`: a row for `src/babykev/model.py`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/f41d9c4b591493c35d77e92d7d12d63260c69231/README.md).
+- <a id="tut-16.3-README.md-8ec9a0"></a>`README.md`: a row for `src/babykev/model.py`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/056fe2ced73ff8568dfc329555795524c2465eb1/README.md).
   - look at ``| `src/babykev/model.py` | The model, a language model with a head that points at the options |``
 
 <details open><summary>The patch to <code>README.md</code></summary>
@@ -507,4 +507,4 @@ git restore --source 7b809006ff87 --staged -- :/ && git restore --source f41d9c4
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/f41d9c4b591493c35d77e92d7d12d63260c69231). [The code after it](https://github.com/rahuldave/babykev/tree/f41d9c4b591493c35d77e92d7d12d63260c69231).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/056fe2ced73ff8568dfc329555795524c2465eb1). [The code after it](https://github.com/rahuldave/babykev/tree/056fe2ced73ff8568dfc329555795524c2465eb1).

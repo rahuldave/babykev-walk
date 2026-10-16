@@ -1,0 +1,235 @@
+---
+title: "1.9 to 1.12 The project, and its justfile"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Read the tutorial.** [Build it yourself](../build/tut-01.9-to-tut-01.12.qmd) is the other way to read this part.
+
+The project already has its words and its command. `uv init` made it a Python package, and `uv lock` wrote its lockfile
+`uv.lock`. `src/babykev/cli.py` holds the command `babykev`, which so far prints only its help. There is no
+justfile yet, so do not run `just` before the first move of this section.
+
+The first recipe, `setup`, makes the environment of the project. The second, `help`, explains a verb.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/e32c7ba9f7983fc03cc8d91411562b1eac1d38e9). [The code after it](https://github.com/rahuldave/babykev/tree/9218f21a784277593cf6930e10389b04e41bf9d0).
+
+## 1.9 A justfile with the recipe setup {#tut-01.9}
+
+The command that sets up the project is `uv sync --locked`, and nobody should have to remember it. A `justfile` names
+each task of the project once. `just` reads the file. Each task is a recipe, a name and then the commands to run,
+indented. Before the justfile comes in, we run the command of the recipe `setup` by hand.
+
+```bash
+uv sync --locked
+```
+
+`uv sync` makes `.venv` exactly as `uv.lock` says. `--locked` makes it refuse a `uv.lock` that no longer matches
+`pyproject.toml`. Here it prints `Resolved 1 package` and `Checked 1 package`, because `.venv` is already right.
+
+A patch to [`justfile`](#tut-01.9-justfile-424f0b).
+
+`justfile` is new, with two recipes. `default` lists the others, and `setup` runs `uv sync --locked`.
+
+`just` alone runs the first recipe, `default`, which lists the others. `[private]` keeps `default` out of the list.
+The comment above a recipe is its line in the list. `[group('setup')]` puts the recipe under a heading.
+
+```bash
+just --show setup
+just setup
+just
+```
+
+`just --show setup` prints the recipe. `just setup` prints the command, `uv sync --locked`, then runs it. `just` lists
+the one recipe, under `[setup]`.
+
+### What changed {#tut-01.9-what-changed-182c57}
+
+- <a id="tut-01.9-justfile-424f0b"></a>`justfile`: the recipe `setup` and its line. New, 10 lines. [The file](https://github.com/rahuldave/babykev/blob/e14dffa877a2d24a53d67d8dd3d54b17204885b1/justfile).
+  - look at `setup:`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -0,0 +1,10 @@
++# babykev: every task is a recipe here. `just` lists them.
++
++[private]
++default:
++    @just --list --unsorted
++
++# Install Python and every dependency into .venv, exactly as the lockfile says
++[group('setup')]
++setup:
++    uv sync --locked
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e14dffa877a2d24a53d67d8dd3d54b17204885b1). [The code after it](https://github.com/rahuldave/babykev/tree/e14dffa877a2d24a53d67d8dd3d54b17204885b1).
+
+## 1.10 The recipe help {#tut-01.10}
+
+`just` lists the recipes, but nothing explains one of them. A recipe `help` does. `just help setup` prints the line of
+the recipe `setup`, and `just help` alone prints the list.
+
+`help` needs the word after its name, for example `setup` in `just help setup`. The line
+`set positional-arguments` passes such words to the commands of a recipe. The first word becomes `"$1"` and the
+second `"$2"`, and a word with spaces in it stays one word. So `help` finds the name `setup` in `"$1"`.
+
+A patch to [`justfile`](#tut-01.10-justfile-424f0b).
+
+In `justfile`, `set positional-arguments` now stands near the top, and the recipe `help` comes after `default`. The
+first line of the file now names `just help VERB`.
+
+`help` runs `just --show` for the recipe, and prints its first line without the `# `. For a recipe with a comment,
+that line is the comment.
+
+```bash
+just --show help
+just help setup
+just help
+```
+
+`just --show help` prints the recipe. `just help setup` prints
+`Install Python and every dependency into .venv, exactly as the lockfile says`. `just help` prints the list, now with
+`help` first.
+
+### What changed {#tut-01.10-what-changed-182c57}
+
+- <a id="tut-01.10-justfile-424f0b"></a>`justfile`: the recipe `help`. 12 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a55c90355687e4bf94dfad2277262548ba4ea682/justfile).
+  - look at `help *verb:`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -1,9 +1,20 @@
+-# babykev: every task is a recipe here. `just` lists them.
++# babykev: every task is a recipe here. `just` lists them; `just help VERB` explains one.
++
++# Each word after a recipe's name reaches its commands whole, as "$1", "$2" and so on; "$@" is all of them
++set positional-arguments
+ 
+ [private]
+ default:
+     @just --list --unsorted
+ 
++# Explain a verb: its line. Alone, the list
++[no-exit-message]
++help *verb:
++    #!/usr/bin/env sh
++    if [ "$#" -eq 0 ]; then just --list --unsorted; exit 0; fi
++    shown=$(just --show "$1") || exit 1
++    printf '%s\n' "$shown" | head -1 | sed 's/^# //'
++
+ # Install Python and every dependency into .venv, exactly as the lockfile says
+ [group('setup')]
+ setup:
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a55c90355687e4bf94dfad2277262548ba4ea682). [The code after it](https://github.com/rahuldave/babykev/tree/a55c90355687e4bf94dfad2277262548ba4ea682).
+
+## 1.11 setup answers help {#tut-01.11}
+
+A person who types `just setup help` gets `uv sync --locked`, and no help. The recipe `setup` now takes words, and
+answers the word `help` with `just help setup`. The `@` at the start of its line stops `just` from printing the
+command before it runs it.
+
+A patch to [`justfile`](#tut-01.11-justfile-424f0b).
+
+In `justfile`, `setup` takes `*args`. Its one line runs `just help setup` for the word `help`, and
+`uv sync --locked` for anything else.
+
+```bash
+just setup help
+just setup
+```
+
+`just setup help` prints the line of `setup`. `just setup` prints `Resolved 1 package` and `Checked 1 package`. It no
+longer prints `uv sync --locked` first, because of the `@`.
+
+### What changed {#tut-01.11-what-changed-182c57}
+
+- <a id="tut-01.11-justfile-424f0b"></a>`justfile`: `setup` answers `help`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/3016e7ee53854d719456c12a48c8c8e620614bde/justfile).
+  - look at `@{{ if args == "help" { "just help setup" } else { "uv sync --locked" } }}`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -17,5 +17,5 @@ help *verb:
+ 
+ # Install Python and every dependency into .venv, exactly as the lockfile says
+ [group('setup')]
+-setup:
+-    uv sync --locked
++setup *args:
++    @{{ if args == "help" { "just help setup" } else { "uv sync --locked" } }}
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3016e7ee53854d719456c12a48c8c8e620614bde). [The code after it](https://github.com/rahuldave/babykev/tree/3016e7ee53854d719456c12a48c8c8e620614bde).
+
+## 1.12 help gives the help of the program too {#tut-01.12}
+
+Later recipes run the program, as `uv run babykev VERB`. Their help should also show the help of the program. A
+variable, `program`, names the command once. `help` looks for `uv run {{ program }} VERB` in a recipe, and then runs
+the program's own help too.
+
+A patch to [`justfile`](#tut-01.12-justfile-424f0b).
+
+In `justfile`, `program := "babykev"` stands near the top. `help` now ends with an `if` that runs
+`uv run {{ program }} "$1" help`.
+
+`just` replaces each `{{ ... }}` in a recipe with its value. So the text `{{ program }}` cannot stand in a recipe as it
+is. `{{ "{{ program }}" }}` is a value in quotes, and `just` writes it as the text `{{ program }}`. No recipe runs the
+program yet, so the new branch waits for one.
+
+```bash
+just --evaluate program
+just help setup
+```
+
+`just --evaluate program` prints `babykev`. `just help setup` prints the line of `setup`, as before.
+
+### What changed {#tut-01.12-what-changed-182c57}
+
+- <a id="tut-01.12-justfile-424f0b"></a>`justfile`: the variable `program`, and the branch of `help` that runs the program's help. 6 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/9218f21a784277593cf6930e10389b04e41bf9d0/justfile).
+  - look at `program := "babykev"`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -1,5 +1,7 @@
+ # babykev: every task is a recipe here. `just` lists them; `just help VERB` explains one.
+ 
++program := "babykev"
++
+ # Each word after a recipe's name reaches its commands whole, as "$1", "$2" and so on; "$@" is all of them
+ set positional-arguments
+ 
+@@ -7,13 +9,16 @@ set positional-arguments
+ default:
+     @just --list --unsorted
+ 
+-# Explain a verb: its line. Alone, the list
++# Explain a verb: its line, and the program's flags where the program has them. Alone, the list
+ [no-exit-message]
+ help *verb:
+     #!/usr/bin/env sh
+     if [ "$#" -eq 0 ]; then just --list --unsorted; exit 0; fi
+     shown=$(just --show "$1") || exit 1
+     printf '%s\n' "$shown" | head -1 | sed 's/^# //'
++    if printf '%s\n' "$shown" | grep -qF '{{ "{{ program }}" }} '"$1"; then
++        uv run {{ program }} "$1" help
++    fi
+ 
+ # Install Python and every dependency into .venv, exactly as the lockfile says
+ [group('setup')]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9218f21a784277593cf6930e10389b04e41bf9d0). [The code after it](https://github.com/rahuldave/babykev/tree/9218f21a784277593cf6930e10389b04e41bf9d0).

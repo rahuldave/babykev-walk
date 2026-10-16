@@ -1,0 +1,181 @@
+---
+title: "21.1 to 21.2 DecisionModel, with an adapter, over several records"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Read the tutorial.** [Build it yourself](../build/tut-21.1-to-tut-21.2.qmd) is the other way to read this part.
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 67 packages`. Since the last part, the walk leaves out the tests of `pick_device`, which
+chooses the GPU or the CPU. It also leaves out the tests of the smoke run and its command.
+
+`DecisionModel` puts the backbone, the mask, the positions and the head together. With `lora`, it also wraps the
+backbone in an adapter.
+
+```bash
+sed -n '39p;208,219p' src/babykev/model.py
+```
+
+LoRA, low-rank adaptation, leaves each weight of the backbone as it is. Beside a weight of shape out by in, it puts
+two small matrices, `A` of r by in and `B` of out by r. Their product goes into the output. Lines 210 to
+218 do it with peft, on the seven projections of `LORA_TARGETS`, line 39. r is the rank, the argument `lora`. peft freezes the
+backbone, so training changes the adapter and the head, and nothing else.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/ebfa2a8cee251782b3709a379c35af77c80c6170). [The code after it](https://github.com/rahuldave/babykev/tree/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac).
+
+## 21.1 With an adapter, only the adapter and the head train {#tut-21.1}
+
+Training changes the adapter and the head, and the backbone stays as it is. The test makes a tiny model with an
+adapter of rank 4, and takes one backward pass. Then it names every parameter that got a gradient. The fixture
+`model` has no adapter, so the test calls `tiny_backbone` itself.
+
+A patch to [`tests/unit/test_model.py`](#tut-21.1-tests-unit-test_model.py-583145).
+
+In `tests/unit/test_model.py`, the import is on line 18, and the new test is on lines 112 to 130.
+
+```bash
+sed -n '112,130p' tests/unit/test_model.py
+just test -k only_the_adapter
+```
+
+Line 127 checks that every parameter with a gradient is in the adapter, `lora_`, or in the head, `head.`. Lines 128 to
+130 check that `trainable_parameters` lists exactly those. pytest prints `1 passed`.
+
+```bash
+just test --cov-fail-under=90
+```
+
+`--cov-fail-under=90` makes pytest fail when the total is under 90%. It prints `73 passed`, then `FAIL Required test
+coverage of 90% not reached. Total coverage: 83.52%`, and ends with exit code 1. `model.py` is at 94%, and lines 211 to
+218 and 277 have run. The missing lines of `smoke.py` are the same as before.
+
+```bash
+uv run python -c "from tests.tiny import tiny_tokenizer, tiny_backbone; from babykev.model import DecisionModel; m = DecisionModel('tiny', 'cpu', lora=4, backbone=tiny_backbone(len(tiny_tokenizer()))); print(sum(p.numel() for p in m.parameters()), sum(p.numel() for p in m.trainable_parameters()), sum(p.numel() for p in m.head.parameters()))"
+```
+
+It prints `45472 21248 16896`. The tiny model with an adapter of rank 4 has 45472 parameters, and 21248 of them
+train. The head has 16896, two maps of 32 to 256 with their biases. The other 4352 are the adapter. For a weight
+of 32 by 32, an adapter of rank 4 has 4 by 32 and 32 by 4. It has 256 numbers, where the weight has 1024.
+
+`hidden` reads several records in one pass. The records have different lengths, so it pads each to the longest.
+
+```bash
+sed -n '233,243p' src/babykev/model.py
+```
+
+Line 234 makes a tensor of zeros, as long as the longest record, and line 239 writes the tokens of each record into
+it. The positions of the padding stay 0. Line 241 gives the padding the segment `PAD_SEGMENT`, which is -1, on line
+40. So the mask treats the padding as one more question. The padding comes after every real token, and the causal
+part of the mask already keeps the real tokens from it. Nothing reads the vectors at the padding, because the head
+reads only the places of `decide_idx` and `opt_idx`.
+
+### What changed {#tut-21.1-what-changed-182c57}
+
+- <a id="tut-21.1-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: one backward pass with an adapter. 22 lines added. [The file](https://github.com/rahuldave/babykev/blob/0be44c1de17b8acb4e18a964a782584eb26fee97/tests/unit/test_model.py).
+  - look at `def test_with_an_adapter_only_the_adapter_and_the_head_train(`
+
+<details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
+
+```diff
+@@ -15,6 +15,7 @@ from babykev.model import (
+     pick_device,
+     user_tokens,
+ )
++from tests.tiny import tiny_backbone
+ 
+ 
+ def test_probabilities_sum_to_one_for_every_question(
+@@ -106,3 +107,24 @@ def test_pick_device_takes_an_override() -> None:
+ def test_pick_device_finds_something_to_run_on() -> None:
+     """With no override, the choice is one of the three kinds of device."""
+     assert pick_device() in {"cuda", "mps", "cpu"}
++
++
++def test_with_an_adapter_only_the_adapter_and_the_head_train(
++    tok: PreTrainedTokenizerFast,  # The tiny tokenizer
++    record: dict[str, Any],  # A record with three questions
++) -> None:
++    """The backbone is frozen: gradients reach the adapter and the pointer head, nothing else."""
++    model = DecisionModel("tiny", "cpu", lora=4, backbone=tiny_backbone(len(tok)))
++    enc = encode(tok, record)
++    labels = torch.tensor(enc["labels"])
++    losses = [
++        torch.nn.functional.cross_entropy(z[None], y[None])
++        for z, y in zip(model(enc), labels, strict=True)
++    ]
++    torch.stack(losses).sum().backward()
++    with_gradient = {name for name, p in model.named_parameters() if p.grad is not None}
++    assert with_gradient
++    assert all("lora_" in name or name.startswith("head.") for name in with_gradient)
++    assert {id(p) for p in model.trainable_parameters()} == {
++        id(p) for name, p in model.named_parameters() if name in with_gradient
++    }
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0be44c1de17b8acb4e18a964a782584eb26fee97). [The code after it](https://github.com/rahuldave/babykev/tree/0be44c1de17b8acb4e18a964a782584eb26fee97).
+
+## 21.2 Records of different lengths answer in one pass as alone {#tut-21.2}
+
+`forward_batch` reads several records in one pass. They are padded to the length of the longest. The test packs the
+record of the fixture and a shorter record, and runs them in one pass. It compares each with a pass of its own.
+
+A patch to [`tests/unit/test_model.py`](#tut-21.2-tests-unit-test_model.py-583145).
+
+In `tests/unit/test_model.py`, the new test is on lines 133 to 146.
+
+```bash
+just test -k different_lengths
+```
+
+pytest prints `1 passed`. Line 241 builds the mask of each record, with its padding, and every test of the model has
+run it. Only this test runs it with padding to build.
+
+```bash
+just test --cov-fail-under=90
+```
+
+pytest prints `74 passed`, and `Total coverage: 83.52%` again. The test adds no line to the coverage, and the floor
+still fails.
+
+The test compares to within `1e-5`, and not exactly. A padded pass multiplies larger matrices, and adds the same
+numbers in another order. So the last bits of a float can differ.
+
+### What changed {#tut-21.2-what-changed-182c57}
+
+- <a id="tut-21.2-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a padded pass. 16 lines added. [The file](https://github.com/rahuldave/babykev/blob/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac/tests/unit/test_model.py).
+  - look at `def test_records_of_different_lengths_answer_in_one_pass_as_alone(`
+
+<details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
+
+```diff
+@@ -128,3 +128,19 @@ def test_with_an_adapter_only_the_adapter_and_the_head_train(
+     assert {id(p) for p in model.trainable_parameters()} == {
+         id(p) for name, p in model.named_parameters() if name in with_gradient
+     }
++
++
++def test_records_of_different_lengths_answer_in_one_pass_as_alone(
++    model: DecisionModel,  # The tiny model
++    tok: PreTrainedTokenizerFast,  # Its tokenizer
++    record: dict[str, Any],  # A record with three questions
++) -> None:
++    """Padded to the longest, each record gets the logits that it gets in a pass of its own."""
++    short = {"state": "Brie.", "questions": record["questions"][:1]}
++    encs = [encode(tok, record), encode(tok, short)]
++    with torch.no_grad():
++        together = model.forward_batch(encs)
++        alone = [model(enc) for enc in encs]
++    for batch, single in zip(together, alone, strict=True):
++        for a, b in zip(batch, single, strict=True):
++            assert torch.allclose(a, b, atol=1e-5)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac). [The code after it](https://github.com/rahuldave/babykev/tree/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac).

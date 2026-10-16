@@ -1,0 +1,109 @@
+---
+title: "2.2 to 2.3 `just test`"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Read the tutorial.** [Build it yourself](../build/tut-02.2-to-tut-02.3.qmd) is the other way to read this part.
+
+```bash
+just setup
+```
+
+The README now says how to begin, and what each file is. A setting in `pyproject.toml`, `default-groups = "all"`,
+makes uv install every dependency group. A dependency group is a named list of packages that only the people who
+work on babykev need.
+
+pytest comes into the group `test`, and the command that runs it gets a recipe.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/ad616a5cc1fcdf5b7c1672b79d0d2b267b72bd59). [The code after it](https://github.com/rahuldave/babykev/tree/b0840709e371a548d4b922c57c679ba040dd2c1a).
+
+## 2.2 Pytest, in the group test {#tut-02.2}
+
+Nothing runs tests yet. pytest finds the tests and runs them. It goes into the group `test`.
+
+This change came from running `uv add --group test pytest`.
+
+`uv add --group test` writes the group `test` in `pyproject.toml`, under `[dependency-groups]`. It prints
+`Resolved 7 packages`, and lists pytest and the four packages it needs.
+
+At the end of `pyproject.toml`, the new table `[dependency-groups]` has the group `test`, with the line
+`"pytest>=9.1.1",`. `uv.lock` has pytest and the five packages it needs. One of them, colorama, is only for Windows,
+so on a Mac or on Linux uv installs the other four.
+
+```bash
+uv run pytest
+```
+
+`uv run pytest` looks for tests and finds none. It prints `collected 0 items` and `no tests ran`, and ends with exit
+code 5. pytest uses exit code 5 to say that it found no test.
+
+### What changed {#tut-02.2-what-changed-182c57}
+
+- <a id="tut-02.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the group `test`, with pytest. 5 lines added. It comes from `uv add --group test pytest`. [The file](https://github.com/rahuldave/babykev/blob/966956d738b58505e23586af60f05cd5daceb12f/pyproject.toml).
+  - look at `"pytest>=9.1.1",`
+- <a id="tut-02.2-uv.lock-8356d8"></a>`uv.lock`: pytest and the five packages it needs. 71 lines added. It comes from `uv add --group test pytest`. [The file](https://github.com/rahuldave/babykev/blob/966956d738b58505e23586af60f05cd5daceb12f/uv.lock).
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -19,3 +19,8 @@ build-backend = "uv_build"
+ [tool.uv]
+ # uv sync and uv run install every dependency group, not only dev
+ default-groups = "all"
++
++[dependency-groups]
++test = [
++    "pytest>=9.1.1",
++]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/966956d738b58505e23586af60f05cd5daceb12f). [The code after it](https://github.com/rahuldave/babykev/tree/966956d738b58505e23586af60f05cd5daceb12f).
+
+## 2.3 The recipe test {#tut-02.3}
+
+The command that runs the tests is `uv run pytest`, and every task of the project has a recipe. A recipe `test` gives
+the command a short name.
+
+A patch to [`justfile`](#tut-02.3-justfile-424f0b).
+
+At the end of `justfile`, the recipe `test` runs `uv run pytest "$@"`. It sits under a new heading, `quality`.
+
+`test` gives every word after its name to pytest, as `"$@"`. So `just test -k help` runs `uv run pytest -k help`. The
+word `help` alone prints the line of the recipe. pytest prints what failed, so `[no-exit-message]` stops `just` from
+adding a line of its own when pytest ends with an error.
+
+```bash
+just --show test
+just test
+just help test
+```
+
+`just --show test` prints the recipe. `just test` runs pytest, which finds no test, prints `no tests ran` and ends with
+exit code 5. `just` prints no line of its own about the error. `just help test` prints the line of the recipe.
+
+### What changed {#tut-02.3-what-changed-182c57}
+
+- <a id="tut-02.3-justfile-424f0b"></a>`justfile`: the recipe `test`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/b0840709e371a548d4b922c57c679ba040dd2c1a/justfile).
+  - look at `test *args:`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -24,3 +24,9 @@ help *verb:
+ [group('setup')]
+ setup *args:
+     @{{ if args == "help" { "just help setup" } else { "uv sync --locked" } }}
++
++# Run the tests. Extra words go to pytest: just test -k render
++[group('quality')]
++[no-exit-message]
++test *args:
++    @{{ if args == "help" { "just help test" } else { 'uv run pytest "$@"' } }}
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b0840709e371a548d4b922c57c679ba040dd2c1a). [The code after it](https://github.com/rahuldave/babykev/tree/b0840709e371a548d4b922c57c679ba040dd2c1a).

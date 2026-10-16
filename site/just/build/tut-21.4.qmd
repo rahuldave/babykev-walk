@@ -1,0 +1,96 @@
+---
+title: "21.4 The floor on the coverage"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Build it yourself.** [Read the tutorial](../read/tut-21.4.qmd) is the other way to read this part.
+
+This part does not start where the part before it ends, because the walk skips some changes. This command puts the files that this part starts from in place of yours. Run it, and then go on:
+
+```bash
+git restore --source 55844b2320b6 --staged -- :/ && git restore --source 08acf0a3770d --staged --worktree -- :/
+```
+
+If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
+
+```bash
+git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 08acf0a3770d --staged --worktree -- :/
+```
+
+```bash
+just setup
+```
+
+The code now has a tiny model, built in memory, and fixtures of pytest that make it. Unit tests and integration tests
+of the model and the smoke run on it. The total coverage is 91.76%.
+
+`just check` gets a floor. `just test` alone keeps none.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/08acf0a3770d58ab7fc3ac85eebf5cf9ed0bad0e). [The code after it](https://github.com/rahuldave/babykev/tree/57604134d9590c16b1c4db0b1d1a11509a65345b).
+
+## 21.4 The gate has a floor of 90% {#tut-21.4}
+
+`just check` runs the tests with `--cov-fail-under=90`. A change that brings the total under 90% then fails the gate, and the hook refuses it.
+`just test` alone has no floor, so a run of a few tests, with `-k`, does not fail on the total.
+
+Apply the patch to [`justfile`](#tut-21.4-justfile-424f0b), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/57604134d9590c16b1c4db0b1d1a11509a65345b.diff | git apply --include=justfile
+```
+
+In the recipe `check`, the patch adds `--cov-fail-under=90` to `just test -q`, and names the coverage in the comment
+above the recipe.
+
+```bash
+just --show check
+just check
+```
+
+`just check` prints `Required test coverage of 90% reached. Total coverage: 91.76%` after the tests, and ends with
+exit code 0.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 57604134d959
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 08acf0a3770d --staged -- :/ && git restore --source 57604134d959 --staged --worktree -- :/
+```
+
+### What changed {#tut-21.4-what-changed-182c57}
+
+- <a id="tut-21.4-justfile-424f0b"></a>`justfile`: the floor, in the gate. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/57604134d9590c16b1c4db0b1d1a11509a65345b/justfile).
+  - look at `    just test -q --cov-fail-under=90`
+
+<details open><summary>The patch to <code>justfile</code></summary>
+
+```diff
+@@ -69,7 +69,7 @@ types *args:
+ test *args:
+     @{{ if args == "help" { "just help test" } else { 'uv run pytest "$@"' } }}
+ 
+-# Run the checks one after another, and stop at the first that fails: the format, the linter, the types, the tests, the docs, the config files
++# Run the checks one after another, and stop at the first that fails: the format, the linter, the types, the tests and their coverage, the docs, the config files
+ [group('quality')]
+ [no-exit-message]
+ check *args:
+@@ -79,7 +79,7 @@ check *args:
+     just fmt --check
+     just lint
+     just types
+-    just test -q
++    just test -q --cov-fail-under=90
+     just docs check
+     just lint-config
+ 
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/57604134d9590c16b1c4db0b1d1a11509a65345b). [The code after it](https://github.com/rahuldave/babykev/tree/57604134d9590c16b1c4db0b1d1a11509a65345b).

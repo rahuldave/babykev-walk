@@ -9,7 +9,7 @@ title: "25 Two images"
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
 
 ```bash
-git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 495a6cd9b395 --staged --worktree -- :/
+git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 41d247296821 --staged --worktree -- :/
 ```
 
 ```bash
@@ -26,7 +26,7 @@ The `Dockerfile` of babykev builds two images from `uv.lock`. The run image hold
 starts `babykev`. The dev image holds the whole project and the tools to work on it, and starts a shell. The images
 are built and run on this machine only, and pushed nowhere.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/495a6cd9b395c1479a3b711641a5d25ca2fd9226). [The code after it](https://github.com/rahuldave/babykev/tree/af6c2cea3a9536d2cd34414a5f73102e03bab9c5).
+[The code before this part](https://github.com/rahuldave/babykev/tree/41d24729682119b9bbb828187c5e9684a2921308). [The code after it](https://github.com/rahuldave/babykev/tree/6c85dd08f3cd441259b3749ac38cceaf7f2392e0).
 
 ## 25.1 The Dockerfile, with the run image {#tut-25.1}
 
@@ -41,7 +41,7 @@ the stage `build`.
 Apply the patch to [`Dockerfile`](#tut-25.1-Dockerfile-6651dd), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/259d20bc81bfa0dda82f78dd4a77392f2d11ac42.diff | git apply --include=Dockerfile
+curl -fsSL https://github.com/rahuldave/babykev/commit/570bb2134f032a64a34d14852c82fa1a199f69f6.diff | git apply --include=Dockerfile
 ```
 
 The patch makes the file. Read the three stages, from each `FROM`.
@@ -73,18 +73,18 @@ machine, and sees no GPU of Apple. It prints `4 of 15 right`, and the fifteen an
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 259d20bc81bf
+git check 570bb2134f03
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 495a6cd9b395 --staged -- :/ && git restore --source 259d20bc81bf --staged --worktree -- :/
+git restore --source 41d247296821 --staged -- :/ && git restore --source 570bb2134f03 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-25.1-what-changed-182c57}
 
-- <a id="tut-25.1-Dockerfile-6651dd"></a>`Dockerfile`: the stages `uv`, `build` and `run`. New, 36 lines. [The file](https://github.com/rahuldave/babykev/blob/259d20bc81bfa0dda82f78dd4a77392f2d11ac42/Dockerfile).
+- <a id="tut-25.1-Dockerfile-6651dd"></a>`Dockerfile`: the stages `uv`, `build` and `run`. New, 36 lines. [The file](https://github.com/rahuldave/babykev/blob/570bb2134f032a64a34d14852c82fa1a199f69f6/Dockerfile).
   - look at `FROM python:3.13-slim-trixie AS run`
 
 <details open><summary>The patch to <code>Dockerfile</code></summary>
@@ -131,7 +131,7 @@ git restore --source 495a6cd9b395 --staged -- :/ && git restore --source 259d20b
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/259d20bc81bfa0dda82f78dd4a77392f2d11ac42). [The code after it](https://github.com/rahuldave/babykev/tree/259d20bc81bfa0dda82f78dd4a77392f2d11ac42).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/570bb2134f032a64a34d14852c82fa1a199f69f6). [The code after it](https://github.com/rahuldave/babykev/tree/570bb2134f032a64a34d14852c82fa1a199f69f6).
 
 ## 25.2 The dev image {#tut-25.2}
 
@@ -142,7 +142,7 @@ machine can then be mounted at `/work`, and the image runs it with its own envir
 Apply the patch to [`Dockerfile`](#tut-25.2-Dockerfile-6651dd), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/ccc3f900ff0c984414b765ae76e6fa3cbeca5acc.diff | git apply --include=Dockerfile
+curl -fsSL https://github.com/rahuldave/babykev/commit/40012bdfeb76ad96615227e9772d387ee5e48495.diff | git apply --include=Dockerfile
 ```
 
 The patch adds the dev image to the comment at the top of the file, and the stage `dev` at the end of the file.
@@ -165,18 +165,18 @@ docker image ls babykev-dev:latest
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check ccc3f900ff0c
+git check 40012bdfeb76
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 259d20bc81bf --staged -- :/ && git restore --source ccc3f900ff0c --staged --worktree -- :/
+git restore --source 570bb2134f03 --staged -- :/ && git restore --source 40012bdfeb76 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-25.2-what-changed-182c57}
 
-- <a id="tut-25.2-Dockerfile-6651dd"></a>`Dockerfile`: the stage `dev`. 31 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/ccc3f900ff0c984414b765ae76e6fa3cbeca5acc/Dockerfile).
+- <a id="tut-25.2-Dockerfile-6651dd"></a>`Dockerfile`: the stage `dev`. 31 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/40012bdfeb76ad96615227e9772d387ee5e48495/Dockerfile).
   - look at `FROM python:3.13-slim-trixie AS dev`
 
 <details open><summary>The patch to <code>Dockerfile</code></summary>
@@ -230,7 +230,7 @@ git restore --source 259d20bc81bf --staged -- :/ && git restore --source ccc3f90
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/ccc3f900ff0c984414b765ae76e6fa3cbeca5acc). [The code after it](https://github.com/rahuldave/babykev/tree/ccc3f900ff0c984414b765ae76e6fa3cbeca5acc).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/40012bdfeb76ad96615227e9772d387ee5e48495). [The code after it](https://github.com/rahuldave/babykev/tree/40012bdfeb76ad96615227e9772d387ee5e48495).
 
 ## 25.3 What a build never copies into an image {#tut-25.3}
 
@@ -241,7 +241,7 @@ tool writes.
 Apply the patch to [`.dockerignore`](#tut-25.3-.dockerignore-05a721), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/b51c80d19c319eee2a6bc42e420ad7cce140a324.diff | git apply --include=.dockerignore
+curl -fsSL https://github.com/rahuldave/babykev/commit/f0862402733db839738f0b350a049b2ee5e2a2aa.diff | git apply --include=.dockerignore
 ```
 
 The patch makes the file.
@@ -265,18 +265,18 @@ docker run --rm -v "$PWD":/work babykev-dev just check
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check b51c80d19c31
+git check f0862402733d
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source ccc3f900ff0c --staged -- :/ && git restore --source b51c80d19c31 --staged --worktree -- :/
+git restore --source 40012bdfeb76 --staged -- :/ && git restore --source f0862402733d --staged --worktree -- :/
 ```
 
 ### What changed {#tut-25.3-what-changed-182c57}
 
-- <a id="tut-25.3-.dockerignore-05a721"></a>`.dockerignore`: what a build never copies. New, 16 lines. [The file](https://github.com/rahuldave/babykev/blob/b51c80d19c319eee2a6bc42e420ad7cce140a324/.dockerignore).
+- <a id="tut-25.3-.dockerignore-05a721"></a>`.dockerignore`: what a build never copies. New, 16 lines. [The file](https://github.com/rahuldave/babykev/blob/f0862402733db839738f0b350a049b2ee5e2a2aa/.dockerignore).
   - look at `.venv`
 
 <details open><summary>The patch to <code>.dockerignore</code></summary>
@@ -303,7 +303,7 @@ git restore --source ccc3f900ff0c --staged -- :/ && git restore --source b51c80d
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/b51c80d19c319eee2a6bc42e420ad7cce140a324). [The code after it](https://github.com/rahuldave/babykev/tree/b51c80d19c319eee2a6bc42e420ad7cce140a324).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/f0862402733db839738f0b350a049b2ee5e2a2aa). [The code after it](https://github.com/rahuldave/babykev/tree/f0862402733db839738f0b350a049b2ee5e2a2aa).
 
 ## 25.4 No example of hypothesis has a deadline {#tut-25.4}
 
@@ -315,7 +315,7 @@ rule, and not a speed, so a profile of hypothesis turns the deadline off for eve
 Apply the patch to [`tests/conftest.py`](#tut-25.4-tests-conftest.py-626af3), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/a400f23875c6d23f3a43b4cbe2c9fece72e5f3c1.diff | git apply --include=tests/conftest.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/3043d160e0d6e424e7178bd6c86dfeb1aa17abb4.diff | git apply --include=tests/conftest.py
 ```
 
 The patch adds the import of `settings` from hypothesis, and under the imports a comment and two lines that register
@@ -332,18 +332,18 @@ this Mac, so the change needs no new build. The tests print `82 passed, 1 desele
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check a400f23875c6
+git check 3043d160e0d6
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source b51c80d19c31 --staged -- :/ && git restore --source a400f23875c6 --staged --worktree -- :/
+git restore --source f0862402733d --staged -- :/ && git restore --source 3043d160e0d6 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-25.4-what-changed-182c57}
 
-- <a id="tut-25.4-tests-conftest.py-626af3"></a>`tests/conftest.py`: no deadline, for every test that hypothesis feeds. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/a400f23875c6d23f3a43b4cbe2c9fece72e5f3c1/tests/conftest.py).
+- <a id="tut-25.4-tests-conftest.py-626af3"></a>`tests/conftest.py`: no deadline, for every test that hypothesis feeds. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/3043d160e0d6e424e7178bd6c86dfeb1aa17abb4/tests/conftest.py).
   - look at `settings.register_profile("babykev", deadline=None)`
 
 <details open><summary>The patch to <code>tests/conftest.py</code></summary>
@@ -372,7 +372,7 @@ git restore --source b51c80d19c31 --staged -- :/ && git restore --source a400f23
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/a400f23875c6d23f3a43b4cbe2c9fece72e5f3c1). [The code after it](https://github.com/rahuldave/babykev/tree/a400f23875c6d23f3a43b4cbe2c9fece72e5f3c1).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3043d160e0d6e424e7178bd6c86dfeb1aa17abb4). [The code after it](https://github.com/rahuldave/babykev/tree/3043d160e0d6e424e7178bd6c86dfeb1aa17abb4).
 
 ## 25.5 The recipe image {#tut-25.5}
 
@@ -388,7 +388,7 @@ The recipe `image` runs the commands of the last moves. It has three words:
 Apply the patch to [`justfile`](#tut-25.5-justfile-424f0b), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/0f6c78afbcc856682940a1a4276d9f5dad664c17.diff | git apply --include=justfile
+curl -fsSL https://github.com/rahuldave/babykev/commit/a2cd7c083154e3f1161449592635e04b8f84cebe.diff | git apply --include=justfile
 ```
 
 The patch adds the recipe `image` under the recipe `hook`, in the group `setup`.
@@ -409,18 +409,18 @@ shell` starts a shell in the image, where `exit` ends it.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 0f6c78afbcc8
+git check a2cd7c083154
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source a400f23875c6 --staged -- :/ && git restore --source 0f6c78afbcc8 --staged --worktree -- :/
+git restore --source 3043d160e0d6 --staged -- :/ && git restore --source a2cd7c083154 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-25.5-what-changed-182c57}
 
-- <a id="tut-25.5-justfile-424f0b"></a>`justfile`: the recipe `image`. 33 lines added. [The file](https://github.com/rahuldave/babykev/blob/0f6c78afbcc856682940a1a4276d9f5dad664c17/justfile).
+- <a id="tut-25.5-justfile-424f0b"></a>`justfile`: the recipe `image`. 33 lines added. [The file](https://github.com/rahuldave/babykev/blob/a2cd7c083154e3f1161449592635e04b8f84cebe/justfile).
   - look at `image *args:`
 
 <details open><summary>The patch to <code>justfile</code></summary>
@@ -470,7 +470,7 @@ git restore --source a400f23875c6 --staged -- :/ && git restore --source 0f6c78a
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/0f6c78afbcc856682940a1a4276d9f5dad664c17). [The code after it](https://github.com/rahuldave/babykev/tree/0f6c78afbcc856682940a1a4276d9f5dad664c17).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a2cd7c083154e3f1161449592635e04b8f84cebe). [The code after it](https://github.com/rahuldave/babykev/tree/a2cd7c083154e3f1161449592635e04b8f84cebe).
 
 ## 25.6 hadolint, in the group lint {#tut-25.6}
 
@@ -491,20 +491,20 @@ It prints `Haskell Dockerfile Linter 2.15.1`.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 01905a0ad5cc
+git check ce3646d2f0cd
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 0f6c78afbcc8 --staged -- :/ && git restore --source 01905a0ad5cc --staged --worktree -- :/
+git restore --source a2cd7c083154 --staged -- :/ && git restore --source ce3646d2f0cd --staged --worktree -- :/
 ```
 
 ### What changed {#tut-25.6-what-changed-182c57}
 
-- <a id="tut-25.6-pyproject.toml-5d07e7"></a>`pyproject.toml`: hadolint, in the group `lint`. 1 line added. It comes from `uv add --group lint hadolint-bin`. [The file](https://github.com/rahuldave/babykev/blob/01905a0ad5cc25d6e2eac477090fdf97d7cdc047/pyproject.toml).
+- <a id="tut-25.6-pyproject.toml-5d07e7"></a>`pyproject.toml`: hadolint, in the group `lint`. 1 line added. It comes from `uv add --group lint hadolint-bin`. [The file](https://github.com/rahuldave/babykev/blob/ce3646d2f0cdacf2177d9ba36355dd4ffc1b2f4a/pyproject.toml).
   - look at `"hadolint-bin>=2.15.1",`
-- <a id="tut-25.6-uv.lock-8356d8"></a>`uv.lock`: the exact version of hadolint. 13 lines added. It comes from `uv add --group lint hadolint-bin`. [The file](https://github.com/rahuldave/babykev/blob/01905a0ad5cc25d6e2eac477090fdf97d7cdc047/uv.lock).
+- <a id="tut-25.6-uv.lock-8356d8"></a>`uv.lock`: the exact version of hadolint. 13 lines added. It comes from `uv add --group lint hadolint-bin`. [The file](https://github.com/rahuldave/babykev/blob/ce3646d2f0cdacf2177d9ba36355dd4ffc1b2f4a/uv.lock).
 
 <details><summary>The diff that <code>uv add --group lint hadolint-bin</code> makes in <code>pyproject.toml</code></summary>
 
@@ -521,7 +521,7 @@ git restore --source 0f6c78afbcc8 --staged -- :/ && git restore --source 01905a0
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/01905a0ad5cc25d6e2eac477090fdf97d7cdc047). [The code after it](https://github.com/rahuldave/babykev/tree/01905a0ad5cc25d6e2eac477090fdf97d7cdc047).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ce3646d2f0cdacf2177d9ba36355dd4ffc1b2f4a). [The code after it](https://github.com/rahuldave/babykev/tree/ce3646d2f0cdacf2177d9ba36355dd4ffc1b2f4a).
 
 ## 25.7 lint-config runs hadolint {#tut-25.7}
 
@@ -531,7 +531,7 @@ first.
 Apply the patch to [`justfile`](#tut-25.7-justfile-424f0b), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/99abb877c0ecba346d4d7edb4fba1d01d02c369d.diff | git apply --include=justfile
+curl -fsSL https://github.com/rahuldave/babykev/commit/fe092b54847ade1223f40297937fe59259096f68.diff | git apply --include=justfile
 ```
 
 In the recipe `lint-config`, the patch adds `uv run hadolint Dockerfile` after yamllint, and names the `Dockerfile`
@@ -549,18 +549,18 @@ of git. This finding is real, and nothing was broken to make it.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 99abb877c0ec
+git check fe092b54847a
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 01905a0ad5cc --staged -- :/ && git restore --source 99abb877c0ec --staged --worktree -- :/
+git restore --source ce3646d2f0cd --staged -- :/ && git restore --source fe092b54847a --staged --worktree -- :/
 ```
 
 ### What changed {#tut-25.7-what-changed-182c57}
 
-- <a id="tut-25.7-justfile-424f0b"></a>`justfile`: hadolint, in `lint-config`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/99abb877c0ecba346d4d7edb4fba1d01d02c369d/justfile).
+- <a id="tut-25.7-justfile-424f0b"></a>`justfile`: hadolint, in `lint-config`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/fe092b54847ade1223f40297937fe59259096f68/justfile).
   - look at `    uv run hadolint Dockerfile`
 
 <details open><summary>The patch to <code>justfile</code></summary>
@@ -587,7 +587,7 @@ git restore --source 01905a0ad5cc --staged -- :/ && git restore --source 99abb87
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/99abb877c0ecba346d4d7edb4fba1d01d02c369d). [The code after it](https://github.com/rahuldave/babykev/tree/99abb877c0ecba346d4d7edb4fba1d01d02c369d).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/fe092b54847ade1223f40297937fe59259096f68). [The code after it](https://github.com/rahuldave/babykev/tree/fe092b54847ade1223f40297937fe59259096f68).
 
 ## 25.8 DL3008, declined with its reason {#tut-25.8}
 
@@ -600,7 +600,7 @@ A comment says so, and a line tells hadolint to ignore DL3008 on the next instru
 Apply the patch to [`Dockerfile`](#tut-25.8-Dockerfile-6651dd), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/d80c69075dcb31143414fb6b0a6dc99852ff0c4c.diff | git apply --include=Dockerfile
+curl -fsSL https://github.com/rahuldave/babykev/commit/fd4dc51723462cdeaf072a4f2a18472a0cf6a645.diff | git apply --include=Dockerfile
 ```
 
 The patch adds four comment lines above the `RUN apt-get update` of the dev image.
@@ -614,18 +614,18 @@ just lint-config
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check d80c69075dcb
+git check fd4dc5172346
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 99abb877c0ec --staged -- :/ && git restore --source d80c69075dcb --staged --worktree -- :/
+git restore --source fe092b54847a --staged -- :/ && git restore --source fd4dc5172346 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-25.8-what-changed-182c57}
 
-- <a id="tut-25.8-Dockerfile-6651dd"></a>`Dockerfile`: the reason, and the line for hadolint. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/d80c69075dcb31143414fb6b0a6dc99852ff0c4c/Dockerfile).
+- <a id="tut-25.8-Dockerfile-6651dd"></a>`Dockerfile`: the reason, and the line for hadolint. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/fd4dc51723462cdeaf072a4f2a18472a0cf6a645/Dockerfile).
   - look at `# hadolint ignore=DL3008`
 
 <details open><summary>The patch to <code>Dockerfile</code></summary>
@@ -646,7 +646,7 @@ git restore --source 99abb877c0ec --staged -- :/ && git restore --source d80c690
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/d80c69075dcb31143414fb6b0a6dc99852ff0c4c). [The code after it](https://github.com/rahuldave/babykev/tree/d80c69075dcb31143414fb6b0a6dc99852ff0c4c).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/fd4dc51723462cdeaf072a4f2a18472a0cf6a645). [The code after it](https://github.com/rahuldave/babykev/tree/fd4dc51723462cdeaf072a4f2a18472a0cf6a645).
 
 ## 25.9 The README names the two images {#tut-25.9}
 
@@ -656,7 +656,7 @@ row for the `Dockerfile` and `.dockerignore`.
 Apply the patch to [`README.md`](#tut-25.9-README.md-8ec9a0), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/af6c2cea3a9536d2cd34414a5f73102e03bab9c5.diff | git apply --include=README.md
+curl -fsSL https://github.com/rahuldave/babykev/commit/6c85dd08f3cd441259b3749ac38cceaf7f2392e0.diff | git apply --include=README.md
 ```
 
 The patch adds the section `The images` above `What is here`, and the row of the `Dockerfile` above the row of
@@ -683,18 +683,18 @@ just image shell --network none -- just check
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check af6c2cea3a95
+git check 6c85dd08f3cd
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source d80c69075dcb --staged -- :/ && git restore --source af6c2cea3a95 --staged --worktree -- :/
+git restore --source fd4dc5172346 --staged -- :/ && git restore --source 6c85dd08f3cd --staged --worktree -- :/
 ```
 
 ### What changed {#tut-25.9-what-changed-182c57}
 
-- <a id="tut-25.9-README.md-8ec9a0"></a>`README.md`: the section on the images, and the row of the `Dockerfile`. 24 lines added. [The file](https://github.com/rahuldave/babykev/blob/af6c2cea3a9536d2cd34414a5f73102e03bab9c5/README.md).
+- <a id="tut-25.9-README.md-8ec9a0"></a>`README.md`: the section on the images, and the row of the `Dockerfile`. 24 lines added. [The file](https://github.com/rahuldave/babykev/blob/6c85dd08f3cd441259b3749ac38cceaf7f2392e0/README.md).
   - look at `## The images`
 
 <details open><summary>The patch to <code>README.md</code></summary>
@@ -742,4 +742,4 @@ git restore --source d80c69075dcb --staged -- :/ && git restore --source af6c2ce
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/af6c2cea3a9536d2cd34414a5f73102e03bab9c5). [The code after it](https://github.com/rahuldave/babykev/tree/af6c2cea3a9536d2cd34414a5f73102e03bab9c5).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/6c85dd08f3cd441259b3749ac38cceaf7f2392e0). [The code after it](https://github.com/rahuldave/babykev/tree/6c85dd08f3cd441259b3749ac38cceaf7f2392e0).

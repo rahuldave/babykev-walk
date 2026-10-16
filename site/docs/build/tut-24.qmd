@@ -1,0 +1,424 @@
+---
+title: "24 The guide to the model"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Build it yourself.** [Read the tutorial](../read/tut-24.qmd) is the other way to read this part.
+
+This part does not start where the part before it ends, because the walk skips some changes. This command puts the files that this part starts from in place of yours. Run it, and then go on:
+
+```bash
+git restore --source e1efb48492d7 --staged -- :/ && git restore --source d9df8f2a02ed --staged --worktree -- :/
+```
+
+If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
+
+```bash
+git rm -rq --cached --ignore-unmatch -- :/ && git restore --source d9df8f2a02ed --staged --worktree -- :/
+```
+
+The whole tutorial then builds the model, and tests it. The project adds four packages for the model, torch,
+transformers, peft and safetensors. `src/babykev/model.py` holds the model. ty checks the types, through
+`just types`. `src/babykev/smoke.py` runs the real model on the sample data, through `just smoke`.
+
+The model reads text as tokens, which are small pieces of words. `encode` packs the state and its questions into one
+sequence of tokens. `branch_mask` builds the mask, a table that says which tokens the model may look at while it
+reads each token.
+
+The tests of the model run on a tiny model, in `tests/tiny.py`. `tests/conftest.py` holds the fixtures, the objects
+that a test gets ready-made, such as the tiny model and a record. The gate asks
+the tests to run at least 90% of the code. `tests/unit/test_mask.py` draws the mask of a small request as a picture.
+It found a bug in the mask, which is now fixed. A test of the real model is marked `system`, and `just test` leaves
+it out.
+
+The site now has a page of reference for each of `api.py`, `cli.py`, `model.py` and `smoke.py`. The front
+page and the README name the model and the smoke.
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 69 packages`.
+
+The reference pages of the site give the signature and the docstring of each function of `model.py`. They do not say
+why the model is built as it is. Two pages of a guide say it, in prose. The first gives the four ideas of the model,
+and the second draws the mask as a grid. smalldocs runs no code, so a page holds its grids as text.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/d9df8f2a02ed7a7780325aebf281d6107317f9d9). [The code after it](https://github.com/rahuldave/babykev/tree/41d24729682119b9bbb828187c5e9684a2921308).
+
+## 24.1 A page of the guide on the model {#tut-24.1}
+
+The page explains packing, the mask, the positions that restart, and pointing, and then what trains. A name in
+backticks, such as `encode()`, links to its entry in the reference, as on the front page.
+
+Apply the patch to [`docs/guide/model.qmd`](#tut-24.1-docs-guide-model.qmd-3d8904), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/b23fa492cea947fd91a783a6ef8c19ee1d4f38eb.diff | git apply --include=docs/guide/model.qmd
+```
+
+The patch makes the file, in a new folder `docs/guide`. Read the headings, then the part on the mask.
+
+```bash
+just docs
+grep -o 'href="../api/model.html#[^"]*"' docs/_site/guide/model.html
+```
+
+`just docs` prints `wrote 6 page(s) to docs/_site`. The sixth page is `docs/_site/guide/model.html`. `grep -o` prints
+the eight links of the page into the reference of `model.py`, `encode` twice. The sidebar does not list the page yet.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check b23fa492cea9
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source d9df8f2a02ed --staged -- :/ && git restore --source b23fa492cea9 --staged --worktree -- :/
+```
+
+### What changed {#tut-24.1-what-changed-182c57}
+
+- <a id="tut-24.1-docs-guide-model.qmd-3d8904"></a>`docs/guide/model.qmd`: the four ideas of the model. New, 61 lines. [The file](https://github.com/rahuldave/babykev/blob/b23fa492cea947fd91a783a6ef8c19ee1d4f38eb/docs/guide/model.qmd).
+  - look at `## Packing`
+
+<details open><summary>The patch to <code>docs/guide/model.qmd</code></summary>
+
+```diff
+@@ -0,0 +1,61 @@
++---
++title: The model
++---
++
++babykev is a language model with a head that points at an option, and it writes no text. Four ideas make it
++work, and each is a part of `model.py`. The reference pages give the signatures, and this page gives the
++reasons.
++
++## Packing
++
++A request is one state and several questions. `encode()` writes all of it into one sequence of tokens, in this
++order:
++
++- a delimiter, then the state
++- for each question, a delimiter and the instruction
++- each option of the question, between an opening and a closing delimiter
++- a decide delimiter at the end of each question
++
++The five delimiters are in `SPECIAL`. They are special tokens that the base model already has and rarely uses.
++So no new token is added, and the adapter learns what each one means here.
++
++Text from a caller goes through `user_tokens` first. It rewrites the text of a delimiter, such as
++`<|box_end|>`, to `<¦box_end¦>`, which the tokenizer reads as ordinary text. Without it, a state that holds
++the text of the closing delimiter could close an option early.
++
++`encode()` returns an `Encoded`. Its parts are these:
++
++- the ids of the tokens
++- the segment of each token, 0 for the state and k for question k
++- the position of each token
++- the places of the decide token and of the option tokens of each question
++
++## The mask
++
++The questions share the state, and nothing else. `branch_mask` builds the attention mask that makes this true.
++Token i may attend to token j when j is not after i, and j is in the state or in the question of i. The mask
++is added to the scores of the attention. So a blocked pair gets the most negative number that the type can
++hold, and its weight after the softmax is 0.
++
++With this mask, three questions in one request get the answers that they get in three requests of one
++question each. The tests check it.
++
++## Positions restart
++
++The positions of every question start right after the state. So a question looks the same to the model, in
++any place in the request. The tests check that the order of the questions changes no answer.
++
++## Pointing
++
++`PointerHead` has two small projections. At the decide token of a question, it projects the hidden state. At
++the closing token of each option, it projects the hidden state too. The scaled dot product of the two is the
++score of the option. One pass gives every question its scores.
++
++`DecisionModel` keeps the transformer of the base model, and drops its head over the vocabulary. It adds a
++LoRA adapter when it is asked to, and then the head. So the model cannot write text.
++
++## What trains
++
++With an adapter, the backbone does not change. The gradients reach the matrices of the adapter and the
++pointer head, and nothing else. `DecisionModel.trainable_parameters()` lists exactly those. The smoke run
++prints their number, 9.3M of 503M.
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b23fa492cea947fd91a783a6ef8c19ee1d4f38eb). [The code after it](https://github.com/rahuldave/babykev/tree/b23fa492cea947fd91a783a6ef8c19ee1d4f38eb).
+
+## 24.2 A page of the guide on the mask {#tut-24.2}
+
+The page draws the mask of the small request of `test_mask.py`, then the grid of a plain causal mask for the same
+request. The first grid is the picture of the test, so `just test` keeps it true.
+
+Apply the patch to [`docs/guide/mask.qmd`](#tut-24.2-docs-guide-mask.qmd-5cd81a), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/872a008d4a67bfd58f67b5db28198f4293cc34f5.diff | git apply --include=docs/guide/mask.qmd
+```
+
+The patch makes the file. Read the two grids.
+
+```bash
+just docs
+```
+
+`just docs` prints `wrote 7 page(s) to docs/_site`.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 872a008d4a67
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source b23fa492cea9 --staged -- :/ && git restore --source 872a008d4a67 --staged --worktree -- :/
+```
+
+### What changed {#tut-24.2-what-changed-182c57}
+
+- <a id="tut-24.2-docs-guide-mask.qmd-5cd81a"></a>`docs/guide/mask.qmd`: the mask, as a grid. New, 52 lines. [The file](https://github.com/rahuldave/babykev/blob/872a008d4a67bfd58f67b5db28198f4293cc34f5/docs/guide/mask.qmd).
+  - look at `## A plain causal mask`
+
+<details open><summary>The patch to <code>docs/guide/mask.qmd</code></summary>
+
+````diff
+@@ -0,0 +1,52 @@
++---
++title: The mask
++---
++
++The mask says which token of a packed request may attend to which. This page draws it as a grid. A row is a
++token, and a column is a token that it might attend to. `#` is allowed, and `.` is blocked.
++
++## A small request
++
++The request has a state of two tokens and two questions of two tokens each. The segments are
++`[0, 0, 1, 1, 2, 2]`.
++
++```
++     s s 1 1 2 2
++s    # . . . . .
++s    # # . . . .
++1    # # # . . .
++1    # # # # . .
++2    # # . . # .
++2    # # . . # #
++```
++
++Every token sees the state and the tokens of its own question that come before it. Rows 5 and 6, the tokens of
++question 2, do not see columns 3 and 4, the tokens of question 1.
++
++The picture is the test `test_mask_of_a_small_request`, in `tests/unit/test_mask.py`. So `just test` checks
++that the grid on the page is the grid that `branch_mask` builds.
++
++## A plain causal mask
++
++A plain causal mask lets each token see every token before it. For the same request, it gives this grid.
++
++```
++     s s 1 1 2 2
++s    # . . . . .
++s    # # . . . .
++1    # # # . . .
++1    # # # # . .
++2    # # # # # .
++2    # # # # # #
++```
++
++Rows 5 and 6 differ. Question 2 sees question 1, so the answer to question 2 depends on question 1.
++
++## The rule, for any request
++
++One picture checks one size. The tests in `test_mask.py` state the rule, and hypothesis tries many sizes of
++request:
++
++- no token sees a token after it
++- no token of a question sees a token of another question
++- the mask allows exactly what the rule allows
+````
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/872a008d4a67bfd58f67b5db28198f4293cc34f5). [The code after it](https://github.com/rahuldave/babykev/tree/872a008d4a67bfd58f67b5db28198f4293cc34f5).
+
+## 24.3 The guide in the sidebar {#tut-24.3}
+
+The sidebar of the site gets a section, Guide, between the front page and the reference. It names the two pages one
+by one, so that the model comes before the mask. A pattern such as `guide/*` would list them in the order of their
+names.
+
+Apply the patch to [`docs/_smalldocs.yml`](#tut-24.3-docs-_smalldocs.yml-4b0b48), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/f19e99afaa9f11778658710d44ef1785dbc40ed0.diff | git apply --include=docs/_smalldocs.yml
+```
+
+The patch adds the section `Guide` under `index.qmd`, in the list `contents` of the sidebar.
+
+```bash
+just docs
+grep -o 'href="guide/[^"]*"' docs/_site/index.html
+```
+
+`just docs` prints `wrote 7 page(s) to docs/_site`. `grep -o` prints the two links of the sidebar of the front page,
+`guide/model.html` and then `guide/mask.html`.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check f19e99afaa9f
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 872a008d4a67 --staged -- :/ && git restore --source f19e99afaa9f --staged --worktree -- :/
+```
+
+### What changed {#tut-24.3-what-changed-182c57}
+
+- <a id="tut-24.3-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the section `Guide`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/f19e99afaa9f11778658710d44ef1785dbc40ed0/docs/_smalldocs.yml).
+  - look at `      - section: Guide`
+
+<details open><summary>The patch to <code>docs/_smalldocs.yml</code></summary>
+
+```diff
+@@ -8,6 +8,10 @@ website:
+   sidebar:
+     contents:
+       - index.qmd
++      - section: Guide
++        contents:  # named one by one, so that the model comes before its mask
++          - guide/model.qmd
++          - guide/mask.qmd
+       - section: Reference
+         contents: api/*  # the reference pages, which each build makes from the code
+ 
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/f19e99afaa9f11778658710d44ef1785dbc40ed0). [The code after it](https://github.com/rahuldave/babykev/tree/f19e99afaa9f11778658710d44ef1785dbc40ed0).
+
+## 24.4 The front page names the guide {#tut-24.4}
+
+A paragraph of the front page links to the two pages.
+
+Apply the patch to [`docs/index.qmd`](#tut-24.4-docs-index.qmd-d6d880), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/62f48f0b9de6c97825153cd50a7f131a5c07b0c7.diff | git apply --include=docs/index.qmd
+```
+
+The patch adds a paragraph under the list of the modules.
+
+```bash
+just docs
+grep -o 'href="guide/[^"]*"' docs/_site/index.html
+```
+
+`grep -o` prints four links to the guide. The first two are in the sidebar, and the last two are in the new
+paragraph.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 62f48f0b9de6
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source f19e99afaa9f --staged -- :/ && git restore --source 62f48f0b9de6 --staged --worktree -- :/
+```
+
+### What changed {#tut-24.4-what-changed-182c57}
+
+- <a id="tut-24.4-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the links to the guide. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/62f48f0b9de6c97825153cd50a7f131a5c07b0c7/docs/index.qmd).
+  - look at ``The pages under Guide explain the model. [The model](guide/model.qmd) gives the four ideas of `model.py`, and``
+
+<details open><summary>The patch to <code>docs/index.qmd</code></summary>
+
+```diff
+@@ -22,6 +22,9 @@ The code is in four modules:
+ - `babykev.smoke` is the smoke run. `smoke()` asks the model every question of the sample data, and
+   reports each answer beside its label.
+ 
++The pages under Guide explain the model. [The model](guide/model.qmd) gives the four ideas of `model.py`, and
++[the mask](guide/mask.qmd) draws the mask as a grid.
++
+ Each build of the site makes the pages under Reference from the code. A page takes these parts from each
+ function and each class:
+ 
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/62f48f0b9de6c97825153cd50a7f131a5c07b0c7). [The code after it](https://github.com/rahuldave/babykev/tree/62f48f0b9de6c97825153cd50a7f131a5c07b0c7).
+
+## 24.5 The README names the guide {#tut-24.5}
+
+The row of `docs/` in the table of the README names the two pages.
+
+Apply the patch to [`README.md`](#tut-24.5-README.md-8ec9a0), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/41d24729682119b9bbb828187c5e9684a2921308.diff | git apply --include=README.md
+```
+
+The patch changes the row of `docs/` in the table.
+
+```bash
+just check
+```
+
+`just check` passes. The tests print `82 passed, 1 deselected`, and `Total coverage: 91.76%`. `just docs check` prints
+`98 of 98`. It checks the docments of the code, and does not read the pages of the guide.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 41d247296821
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 62f48f0b9de6 --staged -- :/ && git restore --source 41d247296821 --staged --worktree -- :/
+```
+
+### What changed {#tut-24.5-what-changed-182c57}
+
+- <a id="tut-24.5-README.md-8ec9a0"></a>`README.md`: the guide, in the row of `docs/`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/41d24729682119b9bbb828187c5e9684a2921308/README.md).
+  - look at ``The two pages of `docs/guide/` explain the model and its mask |``
+
+<details open><summary>The patch to <code>README.md</code></summary>
+
+```diff
+@@ -88,7 +88,7 @@ The tests must run at least 90% of the code. You can run `just check` yourself a
+ | `tests/system/` | The test of the real model, marked `system`. `just test -m system` runs it |
+ | `tests/conftest.py` | The fixtures that every test can ask for: the tiny tokenizer, a tiny model and a record |
+ | `tests/tiny.py` | A small tokenizer and backbone, built in memory, in place of the real ones |
+-| `docs/` | The docs site. `just docs` builds it into `docs/_site`, with the reference made from the code |
++| `docs/` | The docs site. `just docs` builds it into `docs/_site`, with the reference made from the code. The two pages of `docs/guide/` explain the model and its mask |
+ | `justfile` | Every task of the project, one recipe each. `just help` explains them |
+ | `README.md` | This file |
+ | `LICENSE`, `NOTICE` | The licence, and the credit to kev |
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/41d24729682119b9bbb828187c5e9684a2921308). [The code after it](https://github.com/rahuldave/babykev/tree/41d24729682119b9bbb828187c5e9684a2921308).

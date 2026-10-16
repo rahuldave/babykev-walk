@@ -18,7 +18,7 @@ real model is a test too, of the whole program with its real parts. It needs the
 system test of the table of the kinds of tests. Here it becomes a test, an experiment shows that it is not
 hermetic, and keeps it out of `just test` and the gate.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/c81f75cdfb68558cb40ab45c4c8995476630f844). [The code after it](https://github.com/rahuldave/babykev/tree/89de4845180ac0ad80a2fa810d8d0cb58366c720).
+[The code before this part](https://github.com/rahuldave/babykev/tree/9bfadf5448a5951580b313a781b277f343aa6e30). [The code after it](https://github.com/rahuldave/babykev/tree/d9df8f2a02ed7a7780325aebf281d6107317f9d9).
 
 ## 23.1 The smoke on the real model, as a test {#tut-23.1}
 
@@ -58,7 +58,7 @@ and not because it is hermetic.
 
 ### What changed {#tut-23.1-what-changed-182c57}
 
-- <a id="tut-23.1-tests-system-test_real_model.py-df0b9d"></a>`tests/system/test_real_model.py`: the smoke on the real model, as a test. New, 24 lines. [The file](https://github.com/rahuldave/babykev/blob/72839bbef1b869ae388f5d32807bfef47b0461d9/tests/system/test_real_model.py).
+- <a id="tut-23.1-tests-system-test_real_model.py-df0b9d"></a>`tests/system/test_real_model.py`: the smoke on the real model, as a test. New, 24 lines. [The file](https://github.com/rahuldave/babykev/blob/e8d250399661741adb430b0ab9020fb869279074/tests/system/test_real_model.py).
   - look at `def test_the_real_model_answers_every_sample_question(`
 
 <details><summary>The diff of <code>tests/system/test_real_model.py</code></summary>
@@ -93,7 +93,7 @@ and not because it is hermetic.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/72839bbef1b869ae388f5d32807bfef47b0461d9). [The code after it](https://github.com/rahuldave/babykev/tree/72839bbef1b869ae388f5d32807bfef47b0461d9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e8d250399661741adb430b0ab9020fb869279074). [The code after it](https://github.com/rahuldave/babykev/tree/e8d250399661741adb430b0ab9020fb869279074).
 
 ## 23.2 The test of the real model is marked system {#tut-23.2}
 
@@ -114,7 +114,7 @@ error.
 
 ### What changed {#tut-23.2-what-changed-182c57}
 
-- <a id="tut-23.2-tests-system-test_real_model.py-df0b9d"></a>`tests/system/test_real_model.py`: the marker `system`. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/82d933e1f5cfef31c717f1e416352977b5246a20/tests/system/test_real_model.py).
+- <a id="tut-23.2-tests-system-test_real_model.py-df0b9d"></a>`tests/system/test_real_model.py`: the marker `system`. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/14e3ab70450cd154b85d49f1b9a694de35a18557/tests/system/test_real_model.py).
   - look at `pytestmark = pytest.mark.system`
 
 <details><summary>The diff of <code>tests/system/test_real_model.py</code></summary>
@@ -134,7 +134,7 @@ error.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/82d933e1f5cfef31c717f1e416352977b5246a20). [The code after it](https://github.com/rahuldave/babykev/tree/82d933e1f5cfef31c717f1e416352977b5246a20).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/14e3ab70450cd154b85d49f1b9a694de35a18557). [The code after it](https://github.com/rahuldave/babykev/tree/14e3ab70450cd154b85d49f1b9a694de35a18557).
 
 ## 23.3 pytest knows the marker system {#tut-23.3}
 
@@ -154,7 +154,7 @@ The test passes with no warning. `just test --markers` lists every marker, and t
 
 ### What changed {#tut-23.3-what-changed-182c57}
 
-- <a id="tut-23.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: the marker `system`, declared. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/97d8afa31ab7738dc6481dde0fc01d70f88334bb/pyproject.toml).
+- <a id="tut-23.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: the marker `system`, declared. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/e194931f1402c90fe5d4d59d5ac3e5c5846b8ac1/pyproject.toml).
   - look at `markers = ["system: needs the network, the real model or a device"]`
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
@@ -173,7 +173,7 @@ The test passes with no warning. `just test --markers` lists every marker, and t
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/97d8afa31ab7738dc6481dde0fc01d70f88334bb). [The code after it](https://github.com/rahuldave/babykev/tree/97d8afa31ab7738dc6481dde0fc01d70f88334bb).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e194931f1402c90fe5d4d59d5ac3e5c5846b8ac1). [The code after it](https://github.com/rahuldave/babykev/tree/e194931f1402c90fe5d4d59d5ac3e5c5846b8ac1).
 
 ## 23.4 just test leaves out the tests marked system {#tut-23.4}
 
@@ -196,7 +196,7 @@ the same tests, so the gate and the hook never need the network. `just test -m s
 
 ### What changed {#tut-23.4-what-changed-182c57}
 
-- <a id="tut-23.4-pyproject.toml-5d07e7"></a>`pyproject.toml`: the tests marked `system` stay out of every run that does not ask for them. 3 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/faeb349ca2ff1ff1b76da839a3283f33720e7bca/pyproject.toml).
+- <a id="tut-23.4-pyproject.toml-5d07e7"></a>`pyproject.toml`: the tests marked `system` stay out of every run that does not ask for them. 3 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/12e34ad11cf268f667238c3362902c25b462225c/pyproject.toml).
   - look at `addopts = "--cov=babykev --cov-report=term-missing -m 'not system'"`
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
@@ -218,7 +218,7 @@ the same tests, so the gate and the hook never need the network. `just test -m s
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/faeb349ca2ff1ff1b76da839a3283f33720e7bca). [The code after it](https://github.com/rahuldave/babykev/tree/faeb349ca2ff1ff1b76da839a3283f33720e7bca).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/12e34ad11cf268f667238c3362902c25b462225c). [The code after it](https://github.com/rahuldave/babykev/tree/12e34ad11cf268f667238c3362902c25b462225c).
 
 ## 23.5 The README names the test of the real model {#tut-23.5}
 
@@ -238,7 +238,7 @@ just check
 
 ### What changed {#tut-23.5-what-changed-182c57}
 
-- <a id="tut-23.5-README.md-8ec9a0"></a>`README.md`: `just test -m system`, and the row of `tests/system/`. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/89de4845180ac0ad80a2fa810d8d0cb58366c720/README.md).
+- <a id="tut-23.5-README.md-8ec9a0"></a>`README.md`: `just test -m system`, and the row of `tests/system/`. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/d9df8f2a02ed7a7780325aebf281d6107317f9d9/README.md).
   - look at ``| `tests/system/` | The test of the real model, marked `system`. `just test -m system` runs it |``
 
 <details><summary>The diff of <code>README.md</code></summary>
@@ -267,4 +267,4 @@ just check
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/89de4845180ac0ad80a2fa810d8d0cb58366c720). [The code after it](https://github.com/rahuldave/babykev/tree/89de4845180ac0ad80a2fa810d8d0cb58366c720).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d9df8f2a02ed7a7780325aebf281d6107317f9d9). [The code after it](https://github.com/rahuldave/babykev/tree/d9df8f2a02ed7a7780325aebf281d6107317f9d9).

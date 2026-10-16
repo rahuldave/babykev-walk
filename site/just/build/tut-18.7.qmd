@@ -1,0 +1,100 @@
+---
+title: "18.7 `just smoke`"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Build it yourself.** [Read the tutorial](../read/tut-18.7.qmd) is the other way to read this part.
+
+This part does not start where the part before it ends, because the walk skips some changes. This command puts the files that this part starts from in place of yours. Run it, and then go on:
+
+```bash
+git restore --source d4dd1c8d3d3c --staged -- :/ && git restore --source 117a59e9838e --staged --worktree -- :/
+```
+
+If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
+
+```bash
+git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 117a59e9838e --staged --worktree -- :/
+```
+
+```bash
+just setup
+```
+
+The code now has `src/babykev/smoke.py`, a smoke run. It loads the real model on this machine, asks it the questions
+of the sample data, and prints each answer beside its label. The command `babykev smoke` runs it. The first run
+downloads the model from the Hugging Face Hub.
+
+The smoke gets a recipe of its own, in a group `model`. `just check` does not run it.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/117a59e9838e0fa2e28ad29d02d5aeba3a8622f9). [The code after it](https://github.com/rahuldave/babykev/tree/55844b2320b632b40dd3f34f0a6b5bb962551005).
+
+## 18.7 The recipe smoke {#tut-18.7}
+
+The recipe `smoke` runs the command. It answers `help` as every recipe does, and gives any other word to `babykev
+smoke`. It is in a group of its own, `model`.
+
+Apply the patch to [`justfile`](#tut-18.7-justfile-424f0b), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/55844b2320b632b40dd3f34f0a6b5bb962551005.diff | git apply --include=justfile
+```
+
+The patch adds the recipe `smoke` at the end of the `justfile`.
+
+The command behind the recipe comes first.
+
+```bash
+uv run babykev smoke
+just --show smoke
+just smoke
+```
+
+`uv run babykev smoke` prints the same report as the last move, `6 of 15 right`, with other times. `just --show
+smoke` prints the recipe. `just smoke` runs it, and prints the same report again.
+
+```bash
+just help smoke
+```
+
+`just help smoke` prints the line of the recipe. Line 101 names `{{ program }} smoke`, so the recipe `help` also prints
+the usage of the program.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 55844b2320b6
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 117a59e9838e --staged -- :/ && git restore --source 55844b2320b6 --staged --worktree -- :/
+```
+
+### What changed {#tut-18.7-what-changed-182c57}
+
+- <a id="tut-18.7-justfile-424f0b"></a>`justfile`: the recipe `smoke`. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/55844b2320b632b40dd3f34f0a6b5bb962551005/justfile).
+  - look at `smoke *args:`
+
+<details open><summary>The patch to <code>justfile</code></summary>
+
+```diff
+@@ -91,3 +91,11 @@ docs *args:
+     if [ "$*" = help ]; then just help docs; exit 0; fi
+     if [ "$#" -eq 0 ]; then exec uv run smalldocs render docs; fi
+     exec uv run smalldocs api "$@" --dir docs
++
++# Run the smoke on this machine: the real model answers the sample requests, untrained
++[group('model')]
++[no-exit-message]
++smoke *args:
++    #!/usr/bin/env sh
++    if [ "$*" = help ]; then just help smoke; exit 0; fi
++    exec uv run {{ program }} smoke "$@"
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/55844b2320b632b40dd3f34f0a6b5bb962551005). [The code after it](https://github.com/rahuldave/babykev/tree/55844b2320b632b40dd3f34f0a6b5bb962551005).

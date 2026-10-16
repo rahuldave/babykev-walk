@@ -1,0 +1,111 @@
+---
+title: "14.1 to 14.2 `just docs` alone builds the site"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Read the tutorial.** [Build it yourself](../build/tut-14.1-to-tut-14.2.qmd) is the other way to read this part.
+
+```bash
+just setup
+```
+
+The reference is text in a terminal. The recipe `docs` changes. With no words, it builds a site. With words, it works
+as before, so `just docs check` is the same command.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/005b87bdfa2e70c6ceca52dc07197c69702f00be). [The code after it](https://github.com/rahuldave/babykev/tree/64de40516df5aa215bfac1c0198e898ac0960061).
+
+## 14.1 Git ignores what a build of the docs makes {#tut-14.1}
+
+smalldocs builds the site, and the build writes three things into `docs/`. `docs/_site/` is the site, as HTML.
+`docs/api/` holds the reference pages, as Markdown, and `docs/_symbols.json` holds the names that a link can point
+to. A build makes all three again from the code, so they do not belong in git. `.gitignore` names the files that git
+does not track, and three lines at its end name these, before the first build. A `/` at the start of a line means
+the root of the repository, so `/docs/api/` is only that folder.
+
+A patch to [`.gitignore`](#tut-14.1-.gitignore-a5cc29).
+
+At the end of `.gitignore`, the comment is on line 222, and `/docs/_site/`, `/docs/api/` and `/docs/_symbols.json` on
+lines 223 to 225.
+
+```bash
+tail -n 4 .gitignore
+```
+
+`tail -n 4 .gitignore` prints the comment and the three lines.
+
+### What changed {#tut-14.1-what-changed-182c57}
+
+- <a id="tut-14.1-.gitignore-a5cc29"></a>`.gitignore`: the files that a build of the docs makes. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/3593f61e4e221b04f00f360fe96e6dc4243b02dd/.gitignore).
+  - look at `/docs/_site/`
+
+<details><summary>The diff of <code>.gitignore</code></summary>
+
+```diff
+@@ -218,3 +218,8 @@ __marimo__/
+ 
+ # Streamlit
+ .streamlit/secrets.toml
++
++# smalldocs: the docs site, and the reference pages that each build makes from the code
++/docs/_site/
++/docs/api/
++/docs/_symbols.json
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3593f61e4e221b04f00f360fe96e6dc4243b02dd). [The code after it](https://github.com/rahuldave/babykev/tree/3593f61e4e221b04f00f360fe96e6dc4243b02dd).
+
+## 14.2 Just docs, alone, builds the site {#tut-14.2}
+
+`smalldocs render docs` builds the site from the folder `docs`. It writes the reference pages from the code, then
+the HTML of every page into `docs/_site`. With no words, the recipe `docs` now runs it. With words, it runs
+`smalldocs api` as before. So the body of the recipe is a script of `sh`.
+
+A patch to [`justfile`](#tut-14.2-justfile-424f0b).
+
+In the `justfile`, the recipe `docs` starts at line 79, with its comment. Line 85,
+`if [ "$#" -eq 0 ]; then exec uv run smalldocs render docs; fi`, is the case with no words.
+
+```bash
+uv run smalldocs render docs
+just --show docs
+just docs
+git status --short --ignored docs
+```
+
+`smalldocs render docs` prints `wrote 2 page(s) to docs/_site`. The two pages are the reference of `api.py` and of
+`cli.py`, because `docs/` has no page of its own yet. `just --show docs` prints the recipe, and `just docs` prints the
+same line as the command.
+
+`git status --short --ignored docs` lists the three paths that the build made, each marked `!!`, ignored. The lines
+of `.gitignore` from the move before keep them out of git.
+
+### What changed {#tut-14.2-what-changed-182c57}
+
+- <a id="tut-14.2-justfile-424f0b"></a>`justfile`: with no words, `docs` builds the site. 5 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/64de40516df5aa215bfac1c0198e898ac0960061/justfile).
+  - look at `    if [ "$#" -eq 0 ]; then exec uv run smalldocs render docs; fi`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -76,8 +76,11 @@ check *args:
+     just docs check
+     just lint-config
+ 
+-# The reference of the code, by smalldocs. Words go to smalldocs api: just docs check, just docs module api
++# The docs, by smalldocs. Alone, the site in docs/_site. Words go to smalldocs api: just docs check
+ [group('docs')]
+ [no-exit-message]
+ docs *args:
+-    @{{ if args == "help" { "just help docs" } else { 'uv run smalldocs api "$@" --dir docs' } }}
++    #!/usr/bin/env sh
++    if [ "$*" = help ]; then just help docs; exit 0; fi
++    if [ "$#" -eq 0 ]; then exec uv run smalldocs render docs; fi
++    exec uv run smalldocs api "$@" --dir docs
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/64de40516df5aa215bfac1c0198e898ac0960061). [The code after it](https://github.com/rahuldave/babykev/tree/64de40516df5aa215bfac1c0198e898ac0960061).

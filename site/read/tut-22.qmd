@@ -19,7 +19,7 @@ came in, and the coverage of `branch_mask` is 100%. But no test has looked at wh
 The tests here look, and they find that a question sees the questions before it. The code runs, its types are
 right, and its lines are covered. It does the wrong thing for its task.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/7be9407f2747077002f882085c9c043eb35d6c35). [The code after it](https://github.com/rahuldave/babykev/tree/c81f75cdfb68558cb40ab45c4c8995476630f844).
+[The code before this part](https://github.com/rahuldave/babykev/tree/922d6ba2495756622ad215301da7c48f2ec33fa9). [The code after it](https://github.com/rahuldave/babykev/tree/9bfadf5448a5951580b313a781b277f343aa6e30).
 
 ## 22.1 The picture of the mask of a small request {#tut-22.1}
 
@@ -45,7 +45,7 @@ the picture has `##..#.` and `##..##`. Question 2 sees question 1.
 
 ### What changed {#tut-22.1-what-changed-182c57}
 
-- <a id="tut-22.1-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the picture of a small request. New, 26 lines. [The file](https://github.com/rahuldave/babykev/blob/512d3c63be602fa415a3bfa9252b7bb8bc6645ae/tests/unit/test_mask.py).
+- <a id="tut-22.1-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the picture of a small request. New, 26 lines. [The file](https://github.com/rahuldave/babykev/blob/e7db07241985b2cc80908d108e4229cfb512646b/tests/unit/test_mask.py).
   - look at `def test_mask_of_a_small_request() -> None:`
 
 <details><summary>The diff of <code>tests/unit/test_mask.py</code></summary>
@@ -82,7 +82,7 @@ the picture has `##..#.` and `##..##`. Question 2 sees question 1.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/512d3c63be602fa415a3bfa9252b7bb8bc6645ae). [The code after it](https://github.com/rahuldave/babykev/tree/512d3c63be602fa415a3bfa9252b7bb8bc6645ae).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e7db07241985b2cc80908d108e4229cfb512646b). [The code after it](https://github.com/rahuldave/babykev/tree/e7db07241985b2cc80908d108e4229cfb512646b).
 
 ## 22.2 hypothesis, in the group test {#tut-22.2}
 
@@ -104,9 +104,9 @@ It prints `6.170.0`, or a newer version.
 
 ### What changed {#tut-22.2-what-changed-182c57}
 
-- <a id="tut-22.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: hypothesis, in the group `test`. 1 line added. It comes from `uv add --group test hypothesis`. [The file](https://github.com/rahuldave/babykev/blob/c4276310b96963fe285e2929dd8a36b7241e3baf/pyproject.toml).
+- <a id="tut-22.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: hypothesis, in the group `test`. 1 line added. It comes from `uv add --group test hypothesis`. [The file](https://github.com/rahuldave/babykev/blob/aa4f870deb9ec19ee18484e187f5d850399fa554/pyproject.toml).
   - look at `"hypothesis>=6.170.0",`
-- <a id="tut-22.2-uv.lock-8356d8"></a>`uv.lock`: the exact versions of hypothesis and sortedcontainers. 80 lines added. It comes from `uv add --group test hypothesis`. [The file](https://github.com/rahuldave/babykev/blob/c4276310b96963fe285e2929dd8a36b7241e3baf/uv.lock).
+- <a id="tut-22.2-uv.lock-8356d8"></a>`uv.lock`: the exact versions of hypothesis and sortedcontainers. 80 lines added. It comes from `uv add --group test hypothesis`. [The file](https://github.com/rahuldave/babykev/blob/aa4f870deb9ec19ee18484e187f5d850399fa554/uv.lock).
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -123,7 +123,7 @@ It prints `6.170.0`, or a newer version.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/c4276310b96963fe285e2929dd8a36b7241e3baf). [The code after it](https://github.com/rahuldave/babykev/tree/c4276310b96963fe285e2929dd8a36b7241e3baf).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/aa4f870deb9ec19ee18484e187f5d850399fa554). [The code after it](https://github.com/rahuldave/babykev/tree/aa4f870deb9ec19ee18484e187f5d850399fa554).
 
 ## 22.3 No question sees another, for any shape of request {#tut-22.3}
 
@@ -155,7 +155,7 @@ mask. hypothesis keeps the failing shape in the folder `.hypothesis`, and tries 
 
 ### What changed {#tut-22.3-what-changed-182c57}
 
-- <a id="tut-22.3-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the shapes, and the first rule. 23 lines added. [The file](https://github.com/rahuldave/babykev/blob/76391b33ac277ee8d7138543b20f01da225ba2cc/tests/unit/test_mask.py).
+- <a id="tut-22.3-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the shapes, and the first rule. 23 lines added. [The file](https://github.com/rahuldave/babykev/blob/857445da99027d423543017a9face7f2cd41ea19/tests/unit/test_mask.py).
   - look at `def test_no_question_sees_another_question(`
 
 <details><summary>The diff of <code>tests/unit/test_mask.py</code></summary>
@@ -202,7 +202,7 @@ mask. hypothesis keeps the failing shape in the folder `.hypothesis`, and tries 
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/76391b33ac277ee8d7138543b20f01da225ba2cc). [The code after it](https://github.com/rahuldave/babykev/tree/76391b33ac277ee8d7138543b20f01da225ba2cc).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/857445da99027d423543017a9face7f2cd41ea19). [The code after it](https://github.com/rahuldave/babykev/tree/857445da99027d423543017a9face7f2cd41ea19).
 
 ## 22.4 No token sees a later token, for any shape of request {#tut-22.4}
 
@@ -221,7 +221,7 @@ pytest prints `1 passed`. The causal part of the mask was never wrong. Only the 
 
 ### What changed {#tut-22.4-what-changed-182c57}
 
-- <a id="tut-22.4-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the causal rule. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/1b5b940ca4c0ff99cd693ff4d7a6d0ae14f55d5b/tests/unit/test_mask.py).
+- <a id="tut-22.4-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the causal rule. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/55034fc9085b7ba3a5ac86f3cd40b955a698b642/tests/unit/test_mask.py).
   - look at `def test_no_token_sees_a_later_token(`
 
 <details><summary>The diff of <code>tests/unit/test_mask.py</code></summary>
@@ -243,7 +243,7 @@ pytest prints `1 passed`. The causal part of the mask was never wrong. Only the 
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/1b5b940ca4c0ff99cd693ff4d7a6d0ae14f55d5b). [The code after it](https://github.com/rahuldave/babykev/tree/1b5b940ca4c0ff99cd693ff4d7a6d0ae14f55d5b).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/55034fc9085b7ba3a5ac86f3cd40b955a698b642). [The code after it](https://github.com/rahuldave/babykev/tree/55034fc9085b7ba3a5ac86f3cd40b955a698b642).
 
 ## 22.5 What the mask allows is exactly the rule {#tut-22.5}
 
@@ -265,7 +265,7 @@ alone, so they are unit tests.
 
 ### What changed {#tut-22.5-what-changed-182c57}
 
-- <a id="tut-22.5-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the whole rule. 13 lines added. [The file](https://github.com/rahuldave/babykev/blob/e2397970f5017e67db3bb61ffd648d1cec6f8522/tests/unit/test_mask.py).
+- <a id="tut-22.5-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the whole rule. 13 lines added. [The file](https://github.com/rahuldave/babykev/blob/41b4f5f236a25a9e8438ba2a00682b5125868a50/tests/unit/test_mask.py).
   - look at `def test_what_is_allowed_is_exactly_the_rule(`
 
 <details><summary>The diff of <code>tests/unit/test_mask.py</code></summary>
@@ -292,7 +292,7 @@ alone, so they are unit tests.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e2397970f5017e67db3bb61ffd648d1cec6f8522). [The code after it](https://github.com/rahuldave/babykev/tree/e2397970f5017e67db3bb61ffd648d1cec6f8522).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/41b4f5f236a25a9e8438ba2a00682b5125868a50). [The code after it](https://github.com/rahuldave/babykev/tree/41b4f5f236a25a9e8438ba2a00682b5125868a50).
 
 ## 22.6 A question cannot see its sibling {#tut-22.6}
 
@@ -316,7 +316,7 @@ question 1 comes first and sees only the state. The tiny model is untrained, so 
 
 ### What changed {#tut-22.6-what-changed-182c57}
 
-- <a id="tut-22.6-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: rewrite question 2, and questions 1 and 3 keep their answers. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/098423d0db55e49d095c19021052c8c841289198/tests/unit/test_model.py).
+- <a id="tut-22.6-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: rewrite question 2, and questions 1 and 3 keep their answers. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/12e9fb18c4c86cbd1291da858fd6ad39af01929b/tests/unit/test_model.py).
   - look at `def test_a_question_cannot_see_its_sibling(`
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
@@ -344,7 +344,7 @@ question 1 comes first and sees only the state. The tiny model is untrained, so 
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/098423d0db55e49d095c19021052c8c841289198). [The code after it](https://github.com/rahuldave/babykev/tree/098423d0db55e49d095c19021052c8c841289198).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/12e9fb18c4c86cbd1291da858fd6ad39af01929b). [The code after it](https://github.com/rahuldave/babykev/tree/12e9fb18c4c86cbd1291da858fd6ad39af01929b).
 
 ## 22.7 Packed questions answer as they would alone {#tut-22.7}
 
@@ -364,7 +364,7 @@ The test fails on question 2. Packed, it gets `[0.3321, 0.3346, 0.3333]`, and al
 
 ### What changed {#tut-22.7-what-changed-182c57}
 
-- <a id="tut-22.7-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: three questions in one pass, and each alone. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/6157863e8297a7a6ad004df66f3425d09ee9c3cd/tests/unit/test_model.py).
+- <a id="tut-22.7-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: three questions in one pass, and each alone. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/d3e4a6a067cd7f481a1bd327af08cb2358429e9c/tests/unit/test_model.py).
   - look at `def test_packed_questions_answer_as_they_would_alone(`
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
@@ -390,7 +390,7 @@ The test fails on question 2. Packed, it gets `[0.3321, 0.3346, 0.3333]`, and al
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/6157863e8297a7a6ad004df66f3425d09ee9c3cd). [The code after it](https://github.com/rahuldave/babykev/tree/6157863e8297a7a6ad004df66f3425d09ee9c3cd).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d3e4a6a067cd7f481a1bd327af08cb2358429e9c). [The code after it](https://github.com/rahuldave/babykev/tree/d3e4a6a067cd7f481a1bd327af08cb2358429e9c).
 
 ## 22.8 The order of questions does not matter {#tut-22.8}
 
@@ -411,7 +411,7 @@ probabilities go from `[0.5016, 0.4984]` to `[0.5007, 0.4993]`. `-k order_of_que
 
 ### What changed {#tut-22.8-what-changed-182c57}
 
-- <a id="tut-22.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the questions in the reverse order. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/ccf90b5467d36f291f716f46a530380b00353664/tests/unit/test_model.py).
+- <a id="tut-22.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the questions in the reverse order. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/c3e2706e2b1fbc58bda631e173e26145256bc47e/tests/unit/test_model.py).
   - look at `def test_the_order_of_questions_does_not_matter(`
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
@@ -437,7 +437,7 @@ probabilities go from `[0.5016, 0.4984]` to `[0.5007, 0.4993]`. `-k order_of_que
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/ccf90b5467d36f291f716f46a530380b00353664). [The code after it](https://github.com/rahuldave/babykev/tree/ccf90b5467d36f291f716f46a530380b00353664).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/c3e2706e2b1fbc58bda631e173e26145256bc47e). [The code after it](https://github.com/rahuldave/babykev/tree/c3e2706e2b1fbc58bda631e173e26145256bc47e).
 
 ## 22.9 A fix for the picture, wrong on purpose {#tut-22.9}
 
@@ -465,7 +465,7 @@ longer sees. A rule for every shape found the size with three questions.
 
 ### What changed {#tut-22.9-what-changed-182c57}
 
-- <a id="tut-22.9-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: a mask that blocks only the question just before, on purpose. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/abd6e56722cf3c5745241b045a848547d2213e77/src/babykev/model.py).
+- <a id="tut-22.9-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: a mask that blocks only the question just before, on purpose. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/18bdfee89d950245956448ab8377cfc8b90e8595/src/babykev/model.py).
   - look at `    same = (s[None, :] == s[:, None]) | (s[None, :] == 0) | (s[None, :] < s[:, None] - 1)`
 
 <details><summary>The diff of <code>src/babykev/model.py</code></summary>
@@ -484,7 +484,7 @@ longer sees. A rule for every shape found the size with three questions.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/abd6e56722cf3c5745241b045a848547d2213e77). [The code after it](https://github.com/rahuldave/babykev/tree/abd6e56722cf3c5745241b045a848547d2213e77).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/18bdfee89d950245956448ab8377cfc8b90e8595). [The code after it](https://github.com/rahuldave/babykev/tree/18bdfee89d950245956448ab8377cfc8b90e8595).
 
 ## 22.10 A token sees the state and its own question {#tut-22.10}
 
@@ -518,7 +518,7 @@ chance.
 
 ### What changed {#tut-22.10-what-changed-182c57}
 
-- <a id="tut-22.10-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the state, or the same question. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/78256c6c1ae27f65f1d61afca6c73a47372ed314/src/babykev/model.py).
+- <a id="tut-22.10-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the state, or the same question. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/5f63fb463f94ae6c82a647db8a4b86d4a3d6caa1/src/babykev/model.py).
   - look at `    same = (s[None, :] == s[:, None]) | (s[None, :] == 0)`
 
 <details><summary>The diff of <code>src/babykev/model.py</code></summary>
@@ -537,7 +537,7 @@ chance.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/78256c6c1ae27f65f1d61afca6c73a47372ed314). [The code after it](https://github.com/rahuldave/babykev/tree/78256c6c1ae27f65f1d61afca6c73a47372ed314).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/5f63fb463f94ae6c82a647db8a4b86d4a3d6caa1). [The code after it](https://github.com/rahuldave/babykev/tree/5f63fb463f94ae6c82a647db8a4b86d4a3d6caa1).
 
 ## 22.11 The README names the tests of the mask {#tut-22.11}
 
@@ -556,7 +556,7 @@ with the six functions of `test_mask.py`.
 
 ### What changed {#tut-22.11-what-changed-182c57}
 
-- <a id="tut-22.11-README.md-8ec9a0"></a>`README.md`: the tests of the mask, in the row of `tests/unit/`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/c81f75cdfb68558cb40ab45c4c8995476630f844/README.md).
+- <a id="tut-22.11-README.md-8ec9a0"></a>`README.md`: the tests of the mask, in the row of `tests/unit/`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/9bfadf5448a5951580b313a781b277f343aa6e30/README.md).
   - look at `hypothesis tries the rules of the mask on many shapes of request |`
 
 <details><summary>The diff of <code>README.md</code></summary>
@@ -575,4 +575,4 @@ with the six functions of `test_mask.py`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/c81f75cdfb68558cb40ab45c4c8995476630f844). [The code after it](https://github.com/rahuldave/babykev/tree/c81f75cdfb68558cb40ab45c4c8995476630f844).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9bfadf5448a5951580b313a781b277f343aa6e30). [The code after it](https://github.com/rahuldave/babykev/tree/9bfadf5448a5951580b313a781b277f343aa6e30).

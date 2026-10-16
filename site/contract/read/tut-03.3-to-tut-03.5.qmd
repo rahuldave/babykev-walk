@@ -1,0 +1,130 @@
+---
+title: "3.3 to 3.5 What babykev leaves out of the contract"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Read the tutorial.** [Build it yourself](../build/tut-03.3-to-tut-03.5.qmd) is the other way to read this part.
+
+```bash
+just setup
+```
+
+`api.py` came from kev, a larger project. kev answered requests on a server. Each request named the model for the
+server to run. kev also counted the tokens of each answer, to bill for it. Tokens are the small pieces of text that a
+model reads.
+
+babykev has no server and no bill. A docstring is the text at the top of a file, or under a class or a function, that
+says what it is for. The moves take the server out of the docstring of `api.py`. They also take the name of the model
+out of a request, and remove the count of tokens.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/e8e2e72adad9364a58be21dadf6d757e84436b97). [The code after it](https://github.com/rahuldave/babykev/tree/43b7ea4eda990f90abd605920e2fb1d9b376378d).
+
+## 3.3 The docstring of api.py names no server {#tut-03.3}
+
+kev served the model over HTTP, and babykev has no server. The first line of `api.py` names the address of kev's
+server, `POST /v1/systemone`.
+
+A patch to [`src/babykev/api.py`](#tut-03.3-src-babykev-api.py-2ea65f).
+
+In `src/babykev/api.py`, the docstring no longer names `POST /v1/systemone`.
+
+```bash
+head -n 1 src/babykev/api.py
+```
+
+It prints the new first line.
+
+### What changed {#tut-03.3-what-changed-182c57}
+
+- <a id="tut-03.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the docstring. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/93618951b784e928af3d3547f077bb49bff4d5da/src/babykev/api.py).
+  - look at `"""The contract: request and answer shapes, mapped onto the single pointer primitive.`
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -1,4 +1,4 @@
+-"""TypeSafe-compatible request/response shapes (POST /v1/systemone) mapped onto the single pointer primitive.
++"""The contract: request and answer shapes, mapped onto the single pointer primitive.
+ 
+ Noul   -> 2 options [false, true];            answer = p(true)
+ Choice -> options 'name' or 'name: desc';      answer = argmax, probabilities by name, confidence
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/93618951b784e928af3d3547f077bb49bff4d5da). [The code after it](https://github.com/rahuldave/babykev/tree/93618951b784e928af3d3547f077bb49bff4d5da).
+
+## 3.4 A request names no model {#tut-03.4}
+
+The field `model` named the model for kev's server to run. babykev has one model, so a request names none.
+
+A patch to [`src/babykev/api.py`](#tut-03.4-src-babykev-api.py-2ea65f).
+
+In `src/babykev/api.py`, `SystemOneRequest` ends with the line `questions`.
+
+```bash
+uv run python -c "from babykev.api import SystemOneRequest; print(sorted(SystemOneRequest.model_fields))"
+```
+
+`model_fields` lists the fields of a pydantic model. The command prints `['questions', 'state']`.
+
+### What changed {#tut-03.4-what-changed-182c57}
+
+- <a id="tut-03.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a request has two fields, `state` and `questions`. 0 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/5cce9c9e5025336d501298d244389b64c696737c/src/babykev/api.py).
+  - look at `    questions: dict[str, Question] = Field(min_length=1)`
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -39,7 +39,6 @@ Question = Union[Noul, Choice, Score]
+ 
+ class SystemOneRequest(BaseModel):
+     state: JSONContent
+-    model: str = "kev-latest"
+     questions: dict[str, Question] = Field(min_length=1)
+ 
+ 
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/5cce9c9e5025336d501298d244389b64c696737c). [The code after it](https://github.com/rahuldave/babykev/tree/5cce9c9e5025336d501298d244389b64c696737c).
+
+## 3.5 output_tokens goes {#tut-03.5}
+
+`output_tokens` counted the tokens of an answer for a bill, and needs the tokenizer of a model. babykev bills nothing.
+
+A patch to [`src/babykev/api.py`](#tut-03.5-src-babykev-api.py-2ea65f).
+
+`src/babykev/api.py` now ends with `to_answers`.
+
+```bash
+wc -l src/babykev/api.py
+just test
+```
+
+`wc -l` counts 104 lines. `just test` prints `5 passed`, and the total is 11%, 8 of 74 statements.
+
+### What changed {#tut-03.5-what-changed-182c57}
+
+- <a id="tut-03.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the function goes. 0 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/43b7ea4eda990f90abd605920e2fb1d9b376378d/src/babykev/api.py).
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -102,9 +102,3 @@ def to_answers(probs: list[list[float]], meta: list[dict]) -> dict[str, Any]:
+             score = sum(i * pi for i, pi in enumerate(p))
+             out[m["id"]] = {"type": "score", "score": r2(score), "legend": m["legend"], "probabilities": {str(i): r2(v) for i, v in enumerate(p)}, "confidence": r2(score_confidence(p))}
+     return out
+-
+-
+-def output_tokens(tok, answers: dict) -> int:
+-    """Billing-style figure: tokens of the serialised answers. Not a measure of generation (there is none)."""
+-    import json
+-    return len(tok(json.dumps(answers), add_special_tokens=False).input_ids)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/43b7ea4eda990f90abd605920e2fb1d9b376378d). [The code after it](https://github.com/rahuldave/babykev/tree/43b7ea4eda990f90abd605920e2fb1d9b376378d).

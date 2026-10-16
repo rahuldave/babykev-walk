@@ -1,0 +1,428 @@
+---
+title: "8 Lint"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Read the tutorial.** [Build it yourself](../build/tut-08.qmd) is the other way to read this part.
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 15 packages`.
+
+The formatter changes how the code looks, and leaves a wrong line wrong. A linter reads the code against rules,
+and reports what breaks them, from an import that nobody uses to a `zip` that drops items silently. ruff is the
+linter too, and the families of rules come first. The linter finds 8 problems in `api.py`, and each rule then gets
+a fix of its own. ruff makes the last fix itself.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/84b3ac0ce858d907d8d59ffdc9c9096ab8cb2ac4). [The code after it](https://github.com/rahuldave/babykev/tree/7cdb1ba696a32050cba1c335892fccb68bb4fd24).
+
+## 8.1 The rules of the linter {#tut-08.1}
+
+ruff has more than 900 rules. The table `[tool.ruff.lint]` chooses which to check, with `select`. Each family of
+rules has a prefix, such as `E` or `B`. The list has one family on each line, with a comment that says what it
+finds.
+
+A patch to [`pyproject.toml`](#tut-08.1-pyproject.toml-5d07e7).
+
+At the end of `pyproject.toml`, the new table `[tool.ruff.lint]` starts at line 51. `select = [` on line 53 lists
+nine families of rules, from `E` to `N`.
+
+```bash
+uv run ruff check --statistics
+```
+
+`ruff check` is the linter. `--statistics` prints one line for each code, with the number of problems. ruff finds 52
+problems, and ends with exit code 1. 44 of them are `S101`, an `assert`. Python skips every `assert` when it runs with
+`python -O`, so a check in the package must not rely on one. Each of the 44 is in the tests, where pytest checks
+with `assert`. The other 8 are in `api.py`.
+
+### What changed {#tut-08.1-what-changed-182c57}
+
+- <a id="tut-08.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: a family of rules on each line. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/1a067ec6d90256e2f0142390db307c537909c047/pyproject.toml).
+  - look at `    "B",   # bugbear: code that is likely a bug, such as a zip that drops items silently`
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -47,3 +47,17 @@ indent-style = "space"            # four spaces, never tabs
+ skip-magic-trailing-comma = false # a trailing comma keeps one item on each line
+ line-ending = "auto"              # the line endings that the file already has
+ docstring-code-format = false     # code in a docstring stays as it was written
++
++[tool.ruff.lint]
++# What the linter checks: a family of rules on each line, and why it is on
++select = [
++    "E",   # pycodestyle errors: the basics, from indentation to the length of a line
++    "W",   # pycodestyle warnings: stray whitespace and the like
++    "F",   # pyflakes: names that are unused, undefined or defined twice
++    "I",   # isort: imports in one order, the standard library first
++    "B",   # bugbear: code that is likely a bug, such as a zip that drops items silently
++    "UP",  # pyupgrade: older syntax that this Python has a newer form for
++    "SIM", # simplify: code that can be said in fewer words
++    "S",   # bandit: security, from `assert` in the package to `eval`
++    "N",   # pep8-naming: classes in CamelCase, functions and variables in lower_case
++]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/1a067ec6d90256e2f0142390db307c537909c047). [The code after it](https://github.com/rahuldave/babykev/tree/1a067ec6d90256e2f0142390db307c537909c047).
+
+## 8.2 The tests may use assert {#tut-08.2}
+
+The 44 `S101` hide the 8 problems of `api.py`. A test is written with `assert`, and the tests never run with
+`python -O`. The table `[tool.ruff.lint.per-file-ignores]` lets the files under `tests/` break `S101`. The package
+still may not use `assert`.
+
+A patch to [`pyproject.toml`](#tut-08.2-pyproject.toml-5d07e7).
+
+At the end of `pyproject.toml`, the new table `[tool.ruff.lint.per-file-ignores]` is on lines 65 to 67. It names
+`S101` for `"tests/**"`.
+
+```bash
+uv run ruff check --statistics
+```
+
+ruff finds 8 problems, and ends with exit code 1. `N806`, `UP007` and `B905` come twice each, and `E501` and `I001`
+once each. The last line says that `--fix` can fix one, and that 2 unsafe fixes are available.
+
+### What changed {#tut-08.2-what-changed-182c57}
+
+- <a id="tut-08.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the tests may use `assert`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/a6325da466f16c6379613b62554e1e4cf2144e7e/pyproject.toml).
+  - look at `"tests/**" = ["S101"]`
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -61,3 +61,7 @@ select = [
+     "S",   # bandit: security, from `assert` in the package to `eval`
+     "N",   # pep8-naming: classes in CamelCase, functions and variables in lower_case
+ ]
++
++[tool.ruff.lint.per-file-ignores]
++# A test is written with assert
++"tests/**" = ["S101"]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a6325da466f16c6379613b62554e1e4cf2144e7e). [The code after it](https://github.com/rahuldave/babykev/tree/a6325da466f16c6379613b62554e1e4cf2144e7e).
+
+## 8.3 The recipe lint {#tut-08.3}
+
+The command that runs the linter is `uv run ruff check`. The recipe `lint` runs it, and gives it every word after
+`lint`, as `fmt` does.
+
+A patch to [`justfile`](#tut-08.3-justfile-424f0b).
+
+In `justfile`, the recipe `lint` is on lines 34 to 38, between `fmt` and `test`. It runs `uv run ruff check "$@"`.
+
+```bash
+just --show lint
+just lint
+just help lint
+```
+
+`just --show lint` prints the recipe. `just lint`, with no words, prints each problem with the lines around it, and
+ends with `Found 8 errors.` and exit code 1. All 8 are in `src/babykev/api.py`. Each one starts with its code, and
+a `help:` line says what would fix it.
+
+- `E501` is line 5, of 103 characters, in the docstring. The formatter does not split the text of a docstring.
+- `I001` is on line 8. The imports need a blank line between the standard library and pydantic. Its `[*]` says
+  that ruff can fix it.
+- `UP007` is on lines 11 and 39, `Union[...]`, where Python 3.10 and later write `X | Y`.
+- `N806` is on lines 94 and 104, `K` and `L`, variables in capitals.
+- `B905` is on lines 121 and 125, a `zip` with no `strict=`. ruff shows a fix, `strict=False`, with the note
+  `This is an unsafe fix and may change runtime behavior`.
+
+`uv run ruff rule CODE` explains any code, for example `uv run ruff rule B905`. `just help lint` prints the line of
+the recipe. The next parts fix the problems one code at a time, by hand. ruff fixes the last two.
+
+### What changed {#tut-08.3-what-changed-182c57}
+
+- <a id="tut-08.3-justfile-424f0b"></a>`justfile`: the recipe `lint`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/58d6ece95cf464e01996ad8dbed1d98e92bcc502/justfile).
+  - look at `lint *args:`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -31,6 +31,12 @@ setup *args:
+ fmt *args:
+     @{{ if args == "help" { "just help fmt" } else { 'uv run ruff format "$@"' } }}
+ 
++# Check the code against the rules in pyproject.toml. Extra words go to ruff: just lint --statistics
++[group('quality')]
++[no-exit-message]
++lint *args:
++    @{{ if args == "help" { "just help lint" } else { 'uv run ruff check "$@"' } }}
++
+ # Run the tests. Extra words go to pytest: just test -k render
+ [group('quality')]
+ [no-exit-message]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/58d6ece95cf464e01996ad8dbed1d98e92bcc502). [The code after it](https://github.com/rahuldave/babykev/tree/58d6ece95cf464e01996ad8dbed1d98e92bcc502).
+
+## 8.4 The docstring of api.py fits in 100 characters {#tut-08.4}
+
+`E501`: line 5 of `api.py` has 103 characters. The docstring is a small table, with the three types of question in
+lines 3 to 5, and `answer =` lined up in one column. Line 5 is the longest, and sets the column. "The levels, in
+order" takes the place of "ordered level descriptions", and says the same in fewer characters. The three lines
+line up again, at column 43.
+
+A patch to [`src/babykev/api.py`](#tut-08.4-src-babykev-api.py-2ea65f).
+
+In `src/babykev/api.py`, lines 3 to 5 now have `answer =` at column 43. Line 5 has 97 characters.
+
+```bash
+just lint --statistics
+just fmt --check
+```
+
+`just lint --statistics` prints 7 problems, and no `E501`. `just fmt --check` prints `6 files already formatted`.
+The formatter leaves the text of a docstring as it is.
+
+### What changed {#tut-08.4-what-changed-182c57}
+
+- <a id="tut-08.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the table of the docstring, in 97 characters. 3 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/4a25204449af75e24305189a1395c418ec0295d3/src/babykev/api.py).
+  - look at `Score  -> options = the levels, in order; answer = expected level, legend, probabilities by index`
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -1,8 +1,8 @@
+ """The contract: request and answer shapes, mapped onto the single pointer primitive.
+ 
+-Noul   -> 2 options [false, true];            answer = p(true)
+-Choice -> options 'name' or 'name: desc';      answer = argmax, probabilities by name, confidence
+-Score  -> options = ordered level descriptions; answer = expected level, legend, probabilities by index
++Noul   -> 2 options [false, true];        answer = p(true)
++Choice -> options 'name' or 'name: desc'; answer = argmax, probabilities by name, confidence
++Score  -> options = the levels, in order; answer = expected level, legend, probabilities by index
+ """
+ 
+ from typing import Any, Literal, Union
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/4a25204449af75e24305189a1395c418ec0295d3). [The code after it](https://github.com/rahuldave/babykev/tree/4a25204449af75e24305189a1395c418ec0295d3).
+
+## 8.5 X | Y in place of Union {#tut-08.5}
+
+`UP007`: since Python 3.10, `str | None` is a union of two types, and `Union[str, None]` is the old way to write it.
+babykev needs Python 3.13. `JSONContent` on line 11 and `Question` on line 39 become `X | Y`. ruff has no fix for
+these two lines, so a person writes them.
+
+A patch to [`src/babykev/api.py`](#tut-08.5-src-babykev-api.py-2ea65f).
+
+In `src/babykev/api.py`, line 11 is now `JSONContent = str | dict | list | int | float | bool | None`, and line 39
+is `Question = Noul | Choice | Score`.
+
+`Union` is no longer used, and its import on line 8 is now a problem of its own.
+
+```bash
+just lint --statistics
+just test
+```
+
+`just lint --statistics` prints 6 problems. `UP007` is gone, and `F401`, `unused-import`, is new, with a `[*]`.
+ruff can remove the import itself, and the last part of this section lets it. `just test` prints `53 passed`.
+pydantic reads `X | Y` as it read `Union`.
+
+### What changed {#tut-08.5-what-changed-182c57}
+
+- <a id="tut-08.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: two unions, written with `|`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/01c4956b31ad768bd11dc5da0c13128a7a3ab0fc/src/babykev/api.py).
+  - look at `JSONContent = str | dict | list | int | float | bool | None`
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -8,7 +8,7 @@ Score  -> options = the levels, in order; answer = expected level, legend, proba
+ from typing import Any, Literal, Union
+ from pydantic import BaseModel, Field, model_validator
+ 
+-JSONContent = Union[str, dict, list, int, float, bool, None]
++JSONContent = str | dict | list | int | float | bool | None
+ MAX_OPTIONS = 255
+ 
+ 
+@@ -36,7 +36,7 @@ class Score(BaseModel):
+     criteria: list[JSONContent] = Field(min_length=2, max_length=MAX_OPTIONS)
+ 
+ 
+-Question = Union[Noul, Choice, Score]
++Question = Noul | Choice | Score
+ 
+ 
+ class SystemOneRequest(BaseModel):
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/01c4956b31ad768bd11dc5da0c13128a7a3ab0fc). [The code after it](https://github.com/rahuldave/babykev/tree/01c4956b31ad768bd11dc5da0c13128a7a3ab0fc).
+
+## 8.6 K and n, in lower case {#tut-08.6}
+
+`N806`: a variable inside a function is in lower case, and a capital marks a constant, such as `MAX_OPTIONS`. `K` in
+`choice_confidence` is the number of options, and becomes `k`. `L` in `score_confidence` is the number of levels.
+`l` would break another rule, `E741`, because `l` looks like `1` and `I` in many fonts. So `L` becomes `n`.
+
+A patch to [`src/babykev/api.py`](#tut-08.6-src-babykev-api.py-2ea65f).
+
+In `src/babykev/api.py`, `k = len(p)` is on line 94, and `n = len(p)` on line 104. Each use of the two names
+changes with them.
+
+```bash
+just lint --statistics
+just test -k confidence
+```
+
+`just lint --statistics` prints 4 problems, and no `N806`. `just test -k confidence` runs the 9 tests of the two
+functions, and prints `9 passed, 44 deselected`. A new name changes nothing that runs.
+
+### What changed {#tut-08.6-what-changed-182c57}
+
+- <a id="tut-08.6-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: two names, in lower case. 6 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/37fed4d2a9bff48f0a928851c8eb640736c7e313/src/babykev/api.py).
+  - look at `    n = len(p)`
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -91,8 +91,8 @@ def to_record(req: SystemOneRequest):
+ 
+ 
+ def choice_confidence(p: list[float]) -> float:
+-    K = len(p)
+-    return 1.0 if K == 1 else (max(p) - 1 / K) / (1 - 1 / K)
++    k = len(p)
++    return 1.0 if k == 1 else (max(p) - 1 / k) / (1 - 1 / k)
+ 
+ 
+ def score_confidence(p: list[float]) -> float:
+@@ -101,12 +101,12 @@ def score_confidence(p: list[float]) -> float:
+     `spread` is the expected distance from the most likely level. `guess` is the spread of a guess,
+     equal probability on every level, around the middle. Anything as spread out as a guess gets 0.
+     """
+-    L = len(p)
+-    if L == 1:
++    n = len(p)
++    if n == 1:
+         return 1.0
+-    mode = max(range(L), key=lambda i: p[i])
++    mode = max(range(n), key=lambda i: p[i])
+     spread = sum(pi * abs(i - mode) for i, pi in enumerate(p))
+-    guess = sum(abs(i - (L - 1) / 2) for i in range(L)) / L
++    guess = sum(abs(i - (n - 1) / 2) for i in range(n)) / n
+     return max(0.0, 1.0 - spread / guess)
+ 
+ 
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/37fed4d2a9bff48f0a928851c8eb640736c7e313). [The code after it](https://github.com/rahuldave/babykev/tree/37fed4d2a9bff48f0a928851c8eb640736c7e313).
+
+## 8.7 Zip with strict=True {#tut-08.7}
+
+`B905`: `zip` pairs the items of two lists, and stops at the end of the shorter one. The rest is dropped, and
+nothing says so. `to_answers` pairs the probabilities with the questions on line 121, and the keys of a choice with
+its probabilities on line 125. Each pair of lists must have the same length. A difference is a bug, and it should
+stop the program.
+
+ruff's own fix writes `strict=False`, which keeps the silent drop and says so. ruff calls it unsafe, and leaves the
+choice to a person. `strict=True` makes `zip` raise a `ValueError` when the lengths differ.
+
+A patch to [`src/babykev/api.py`](#tut-08.7-src-babykev-api.py-2ea65f).
+
+In `src/babykev/api.py`, line 121 is now `for p, m in zip(probs, meta, strict=True):`, and line 125 ends with
+`zip(m["keys"], p, strict=True)}`.
+
+```bash
+just lint --statistics
+just test -k answer
+```
+
+`just lint --statistics` prints 2 problems, `I001` and `F401`, each with a `[*]`. `just test -k answer` runs the 4
+tests of the answers, which call `to_answers`, and prints `4 passed, 49 deselected`. Their lists have the same
+lengths, so nothing raises.
+
+### What changed {#tut-08.7-what-changed-182c57}
+
+- <a id="tut-08.7-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: two calls of `zip`, with `strict=True`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/ca9cfc3b70b7a0c926c9407336c217e3f04c73aa/src/babykev/api.py).
+  - look at `    for p, m in zip(probs, meta, strict=True):`
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -118,11 +118,11 @@ def round_prob(x: float) -> float:
+ 
+ def to_answers(probs: list[list[float]], meta: list[dict]) -> dict[str, Any]:
+     out = {}
+-    for p, m in zip(probs, meta):
++    for p, m in zip(probs, meta, strict=True):
+         if m["type"] == "noul":
+             out[m["id"]] = {"type": "noul", "noul": round_prob(p[1])}
+         elif m["type"] == "choice":
+-            dist = {k: round_prob(v) for k, v in zip(m["keys"], p)}
++            dist = {k: round_prob(v) for k, v in zip(m["keys"], p, strict=True)}
+             out[m["id"]] = {
+                 "type": "choice",
+                 "choice": m["keys"][max(range(len(p)), key=lambda i: p[i])],
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ca9cfc3b70b7a0c926c9407336c217e3f04c73aa). [The code after it](https://github.com/rahuldave/babykev/tree/ca9cfc3b70b7a0c926c9407336c217e3f04c73aa).
+
+## 8.8 Just lint --fix sorts the imports {#tut-08.8}
+
+The last two problems are on lines 8 and 9 of `api.py`, in the imports, and ruff can fix both safely. `--fix` makes
+only the fixes that ruff counts as safe.
+
+This change came from running `just lint --fix`.
+
+`just lint --fix` prints `Found 2 errors (2 fixed, 0 remaining).`, and ends with exit code 0. It removed `Union`
+from the import of `typing` (`F401`). It put a blank line between the standard library and pydantic, which is
+installed (`I001`).
+
+At the top of `src/babykev/api.py`, line 8 is now `from typing import Any, Literal`, and a blank line comes before
+`from pydantic import BaseModel, Field, model_validator`, on line 10.
+
+```bash
+just lint
+just fmt --check
+just test
+```
+
+`just lint` prints `All checks passed!`. `just fmt --check` prints `6 files already formatted`, and `just test`
+prints `53 passed`.
+
+### What changed {#tut-08.8-what-changed-182c57}
+
+- <a id="tut-08.8-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the imports, sorted. 2 lines added, 1 removed. It comes from `just lint --fix`. [The file](https://github.com/rahuldave/babykev/blob/7cdb1ba696a32050cba1c335892fccb68bb4fd24/src/babykev/api.py).
+  - look at `from typing import Any, Literal`
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -5,7 +5,8 @@ Choice -> options 'name' or 'name: desc'; answer = argmax, probabilities by name
+ Score  -> options = the levels, in order; answer = expected level, legend, probabilities by index
+ """
+ 
+-from typing import Any, Literal, Union
++from typing import Any, Literal
++
+ from pydantic import BaseModel, Field, model_validator
+ 
+ JSONContent = str | dict | list | int | float | bool | None
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7cdb1ba696a32050cba1c335892fccb68bb4fd24). [The code after it](https://github.com/rahuldave/babykev/tree/7cdb1ba696a32050cba1c335892fccb68bb4fd24).

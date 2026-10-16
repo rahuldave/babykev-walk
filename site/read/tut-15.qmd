@@ -18,7 +18,7 @@ torch computes with tensors, on the CPU or on a GPU. transformers loads a base m
 from the Hugging Face Hub. peft adds a LoRA adapter to the base model. safetensors is the format of the weights on the
 Hub. Each package comes in by its own `uv add`, and torch comes first, from an index of its own.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/86c948e639d637a674b3d073de74e3f2c0a6cd6a). [The code after it](https://github.com/rahuldave/babykev/tree/c8e050183058bbee970a1d8ed702de0e3e7f773b).
+[The code before this part](https://github.com/rahuldave/babykev/tree/e1efb48492d7223fd0442906d2e55a83e0db481e). [The code after it](https://github.com/rahuldave/babykev/tree/c7037ec460963acd41edf1f63a6a03d2e52e5bae).
 
 ## 15.1 The index of PyTorch's builds for the CPU {#tut-15.1}
 
@@ -43,7 +43,7 @@ lockfile does not change.
 
 ### What changed {#tut-15.1-what-changed-182c57}
 
-- <a id="tut-15.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the index of PyTorch. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/6d8e76834355d207a1e1696053bb27ab84008708/pyproject.toml).
+- <a id="tut-15.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the index of PyTorch. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/b44da7cc2f35c24f23c9f056eb9ec6681a3111e0/pyproject.toml).
   - look at `url = "https://download.pytorch.org/whl/cpu"`
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
@@ -67,7 +67,7 @@ lockfile does not change.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/6d8e76834355d207a1e1696053bb27ab84008708). [The code after it](https://github.com/rahuldave/babykev/tree/6d8e76834355d207a1e1696053bb27ab84008708).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b44da7cc2f35c24f23c9f056eb9ec6681a3111e0). [The code after it](https://github.com/rahuldave/babykev/tree/b44da7cc2f35c24f23c9f056eb9ec6681a3111e0).
 
 ## 15.2 torch, from the index of PyTorch {#tut-15.2}
 
@@ -95,7 +95,7 @@ exit code 1. `pyproject.toml` names torch, and `uv.lock` does not have it. `just
 
 ### What changed {#tut-15.2-what-changed-182c57}
 
-- <a id="tut-15.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: torch, in the dependencies, and its source. 4 lines added. It comes from `uv add torch --index pytorch-cpu --frozen`. [The file](https://github.com/rahuldave/babykev/blob/21fdb6aae553fde949a2a8509de5274bd6aacab4/pyproject.toml).
+- <a id="tut-15.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: torch, in the dependencies, and its source. 4 lines added. It comes from `uv add torch --index pytorch-cpu --frozen`. [The file](https://github.com/rahuldave/babykev/blob/a263314ef270d756122972876e80270ed4cde130/pyproject.toml).
   - look at `torch = { index = "pytorch-cpu" }`
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
@@ -123,7 +123,7 @@ exit code 1. `pyproject.toml` names torch, and `uv.lock` does not have it. `just
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/21fdb6aae553fde949a2a8509de5274bd6aacab4). [The code after it](https://github.com/rahuldave/babykev/tree/21fdb6aae553fde949a2a8509de5274bd6aacab4).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a263314ef270d756122972876e80270ed4cde130). [The code after it](https://github.com/rahuldave/babykev/tree/a263314ef270d756122972876e80270ed4cde130).
 
 ## 15.3 uv lock takes torch from its index {#tut-15.3}
 
@@ -161,9 +161,9 @@ too.
 
 ### What changed {#tut-15.3-what-changed-182c57}
 
-- <a id="tut-15.3-uv.lock-8356d8"></a>`uv.lock`: torch, from the index of PyTorch, and the seven packages that it needs, from PyPI. 230 lines added, 1 removed. It comes from `uv lock`. [The file](https://github.com/rahuldave/babykev/blob/1625437d490f284722fd4c9ff4a1a322eb108799/uv.lock).
+- <a id="tut-15.3-uv.lock-8356d8"></a>`uv.lock`: torch, from the index of PyTorch, and the seven packages that it needs, from PyPI. 230 lines added, 1 removed. It comes from `uv lock`. [The file](https://github.com/rahuldave/babykev/blob/92e81476ed9ccd19ab2da210dfacb5886dac1712/uv.lock).
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/1625437d490f284722fd4c9ff4a1a322eb108799). [The code after it](https://github.com/rahuldave/babykev/tree/1625437d490f284722fd4c9ff4a1a322eb108799).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/92e81476ed9ccd19ab2da210dfacb5886dac1712). [The code after it](https://github.com/rahuldave/babykev/tree/92e81476ed9ccd19ab2da210dfacb5886dac1712).
 
 ## 15.4 transformers {#tut-15.4}
 
@@ -185,9 +185,9 @@ It prints `5.20.0`, and no warning. numpy came with transformers, so torch no lo
 
 ### What changed {#tut-15.4-what-changed-182c57}
 
-- <a id="tut-15.4-pyproject.toml-5d07e7"></a>`pyproject.toml`: transformers, in the dependencies. 1 line added. It comes from `uv add transformers`. [The file](https://github.com/rahuldave/babykev/blob/2c8c0d5c94539e3ff01c9be202f282557beee4be/pyproject.toml).
+- <a id="tut-15.4-pyproject.toml-5d07e7"></a>`pyproject.toml`: transformers, in the dependencies. 1 line added. It comes from `uv add transformers`. [The file](https://github.com/rahuldave/babykev/blob/92f659c4e74206cfb776c114d474c2be2501be81/pyproject.toml).
   - look at `"transformers>=5.20.0",`
-- <a id="tut-15.4-uv.lock-8356d8"></a>`uv.lock`: the exact version of transformers, and of the packages that it needs. 419 lines added. It comes from `uv add transformers`. [The file](https://github.com/rahuldave/babykev/blob/2c8c0d5c94539e3ff01c9be202f282557beee4be/uv.lock).
+- <a id="tut-15.4-uv.lock-8356d8"></a>`uv.lock`: the exact version of transformers, and of the packages that it needs. 419 lines added. It comes from `uv add transformers`. [The file](https://github.com/rahuldave/babykev/blob/92f659c4e74206cfb776c114d474c2be2501be81/uv.lock).
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -204,7 +204,7 @@ It prints `5.20.0`, and no warning. numpy came with transformers, so torch no lo
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/2c8c0d5c94539e3ff01c9be202f282557beee4be). [The code after it](https://github.com/rahuldave/babykev/tree/2c8c0d5c94539e3ff01c9be202f282557beee4be).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/92f659c4e74206cfb776c114d474c2be2501be81). [The code after it](https://github.com/rahuldave/babykev/tree/92f659c4e74206cfb776c114d474c2be2501be81).
 
 ## 15.5 peft {#tut-15.5}
 
@@ -231,9 +231,9 @@ first, from its index.
 
 ### What changed {#tut-15.5-what-changed-182c57}
 
-- <a id="tut-15.5-pyproject.toml-5d07e7"></a>`pyproject.toml`: peft, in the dependencies. 1 line added. It comes from `uv add peft`. [The file](https://github.com/rahuldave/babykev/blob/f28d37b6e7bf188fc0311f1a2caffeb2cb2adbd5/pyproject.toml).
+- <a id="tut-15.5-pyproject.toml-5d07e7"></a>`pyproject.toml`: peft, in the dependencies. 1 line added. It comes from `uv add peft`. [The file](https://github.com/rahuldave/babykev/blob/4b43f5a9f99a891891ac42cb03e3927957e9116c/pyproject.toml).
   - look at `"peft>=0.21.2",`
-- <a id="tut-15.5-uv.lock-8356d8"></a>`uv.lock`: the exact version of peft, and of the packages that it needs. 71 lines added. It comes from `uv add peft`. [The file](https://github.com/rahuldave/babykev/blob/f28d37b6e7bf188fc0311f1a2caffeb2cb2adbd5/uv.lock).
+- <a id="tut-15.5-uv.lock-8356d8"></a>`uv.lock`: the exact version of peft, and of the packages that it needs. 71 lines added. It comes from `uv add peft`. [The file](https://github.com/rahuldave/babykev/blob/4b43f5a9f99a891891ac42cb03e3927957e9116c/uv.lock).
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -250,7 +250,7 @@ first, from its index.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/f28d37b6e7bf188fc0311f1a2caffeb2cb2adbd5). [The code after it](https://github.com/rahuldave/babykev/tree/f28d37b6e7bf188fc0311f1a2caffeb2cb2adbd5).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/4b43f5a9f99a891891ac42cb03e3927957e9116c). [The code after it](https://github.com/rahuldave/babykev/tree/4b43f5a9f99a891891ac42cb03e3927957e9116c).
 
 ## 15.6 safetensors {#tut-15.6}
 
@@ -275,9 +275,9 @@ no `babykev`.
 
 ### What changed {#tut-15.6-what-changed-182c57}
 
-- <a id="tut-15.6-pyproject.toml-5d07e7"></a>`pyproject.toml`: safetensors, in the dependencies. 1 line added. It comes from `uv add safetensors`. [The file](https://github.com/rahuldave/babykev/blob/99f4bd13e1e7a8b99a503b30a0ecc0c2db5bfab7/pyproject.toml).
+- <a id="tut-15.6-pyproject.toml-5d07e7"></a>`pyproject.toml`: safetensors, in the dependencies. 1 line added. It comes from `uv add safetensors`. [The file](https://github.com/rahuldave/babykev/blob/8176ced7157929f551e3722149016dbc31d42601/pyproject.toml).
   - look at `"safetensors>=0.8.0",`
-- <a id="tut-15.6-uv.lock-8356d8"></a>`uv.lock`: safetensors, as a dependency of babykev. 2 lines added. It comes from `uv add safetensors`. [The file](https://github.com/rahuldave/babykev/blob/99f4bd13e1e7a8b99a503b30a0ecc0c2db5bfab7/uv.lock).
+- <a id="tut-15.6-uv.lock-8356d8"></a>`uv.lock`: safetensors, as a dependency of babykev. 2 lines added. It comes from `uv add safetensors`. [The file](https://github.com/rahuldave/babykev/blob/8176ced7157929f551e3722149016dbc31d42601/uv.lock).
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -294,7 +294,7 @@ no `babykev`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/99f4bd13e1e7a8b99a503b30a0ecc0c2db5bfab7). [The code after it](https://github.com/rahuldave/babykev/tree/99f4bd13e1e7a8b99a503b30a0ecc0c2db5bfab7).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/8176ced7157929f551e3722149016dbc31d42601). [The code after it](https://github.com/rahuldave/babykev/tree/8176ced7157929f551e3722149016dbc31d42601).
 
 ## 15.7 The README names the packages of the model {#tut-15.7}
 
@@ -315,7 +315,7 @@ du -sh .venv .venv/lib/python3.13/site-packages/torch
 
 ### What changed {#tut-15.7-what-changed-182c57}
 
-- <a id="tut-15.7-README.md-8ec9a0"></a>`README.md`: a paragraph on the packages of the model. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/c8e050183058bbee970a1d8ed702de0e3e7f773b/README.md).
+- <a id="tut-15.7-README.md-8ec9a0"></a>`README.md`: a paragraph on the packages of the model. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/c7037ec460963acd41edf1f63a6a03d2e52e5bae/README.md).
   - look at `The model needs four packages, torch, transformers, peft and safetensors. torch is the build for the CPU,`
 
 <details><summary>The diff of <code>README.md</code></summary>
@@ -336,4 +336,4 @@ du -sh .venv .venv/lib/python3.13/site-packages/torch
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/c8e050183058bbee970a1d8ed702de0e3e7f773b). [The code after it](https://github.com/rahuldave/babykev/tree/c8e050183058bbee970a1d8ed702de0e3e7f773b).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/c7037ec460963acd41edf1f63a6a03d2e52e5bae). [The code after it](https://github.com/rahuldave/babykev/tree/c7037ec460963acd41edf1f63a6a03d2e52e5bae).

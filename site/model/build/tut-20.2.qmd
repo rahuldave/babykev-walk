@@ -1,0 +1,101 @@
+---
+title: "20.2 Positions that start again after the state"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Build it yourself.** [Read the tutorial](../read/tut-20.2.qmd) is the other way to read this part.
+
+If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
+
+```bash
+git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 6d2401817f1b --staged --worktree -- :/
+```
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 67 packages`. A plain decoder gives token n the position n. `encode` gives each question
+the positions right after the state, on line 132.
+
+```bash
+uv run python -c "from tests.tiny import tiny_tokenizer; from babykev.model import encode; t = tiny_tokenizer(); q = {'instr': 'x?', 'options': ['n', 'y'], 'label': 1}; e = encode(t, {'state': 'ab', 'questions': [q, q]}); print(e['seg']); print(e['pos'])"
+```
+
+The first list is the segment of each token, and the second is its position. The state has the positions 0 to 2.
+Question 1 has 3 to 12, and question 2 has 3 to 12 again, where a plain decoder would give it 13 to 22.
+
+So question 2 has the same tokens and the same positions as question 1. If it also sees the same tokens, the state
+and itself, the decoder computes the same numbers for it. A question then gets the same answer wherever it sits in
+the request, and the same answer as in a request of its own. The positions do half of that work, and the mask does
+the other half, in the last part of this walk.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/6d2401817f1bc2d56de4f3021cfceaa80d5b80f9). [The code after it](https://github.com/rahuldave/babykev/tree/e947449de17438d3aa5ee006bfc98db3944d4457).
+
+## 20.2 Positions restart after the state {#tut-20.2}
+
+The positions of each question begin right after the state, so a question looks the same wherever it comes.
+
+Apply the patch to [`tests/unit/test_model.py`](#tut-20.2-tests-unit-test_model.py-583145), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/e947449de17438d3aa5ee006bfc98db3944d4457.diff | git apply --include=tests/unit/test_model.py
+```
+
+The patch adds the test at the end of the file.
+
+```bash
+just test -k positions_restart
+```
+
+pytest prints `1 passed, 55 deselected`.
+
+```bash
+sed -n '38,47p' tests/unit/test_model.py
+```
+
+The test packs the record of the fixture, which has three questions. Line 44 counts the tokens of the state. Lines 45
+to 47 check that the positions of each question run from that count upward.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check e947449de174
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 6d2401817f1b --staged -- :/ && git restore --source e947449de174 --staged --worktree -- :/
+```
+
+### What changed {#tut-20.2-what-changed-182c57}
+
+- <a id="tut-20.2-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the positions of each question. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/e947449de17438d3aa5ee006bfc98db3944d4457/tests/unit/test_model.py).
+  - look at `def test_positions_restart_after_the_state(`
+
+<details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
+
+```diff
+@@ -33,3 +33,15 @@ def test_packing_marks_every_part_with_its_delimiter(
+     assert enc["decide_idx"] == [12]
+     assert enc["opt_idx"] == [[8, 11]]
+     assert enc["labels"] == [1]
++
++
++def test_positions_restart_after_the_state(
++    tok: PreTrainedTokenizerFast,  # The tiny tokenizer
++    record: dict[str, Any],  # A record with three questions
++) -> None:
++    """Every question starts at the position right after the state, wherever it comes."""
++    enc = encode(tok, record)
++    state_length = enc["seg"].count(0)
++    for k in (1, 2, 3):
++        positions = [p for p, s in zip(enc["pos"], enc["seg"], strict=True) if s == k]
++        assert positions == list(range(state_length, state_length + len(positions)))
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e947449de17438d3aa5ee006bfc98db3944d4457). [The code after it](https://github.com/rahuldave/babykev/tree/e947449de17438d3aa5ee006bfc98db3944d4457).

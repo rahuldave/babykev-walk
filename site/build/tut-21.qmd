@@ -9,7 +9,7 @@ title: "21 Integration tests, and the floor"
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
 
 ```bash
-git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 469bdd447146 --staged --worktree -- :/
+git rm -rq --cached --ignore-unmatch -- :/ && git restore --source ebfa2a8cee25 --staged --worktree -- :/
 ```
 
 ```bash
@@ -22,7 +22,7 @@ An integration test runs several of our parts together. On the tiny model, it ne
 make it fail, so it is hermetic. The tests here check what trains, a pass over records of different lengths,
 and the whole smoke. Then the coverage is over 90%, and `just check` gets a floor.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/469bdd44714662d663ee77391d4c21774dea7fd0). [The code after it](https://github.com/rahuldave/babykev/tree/7be9407f2747077002f882085c9c043eb35d6c35).
+[The code before this part](https://github.com/rahuldave/babykev/tree/ebfa2a8cee251782b3709a379c35af77c80c6170). [The code after it](https://github.com/rahuldave/babykev/tree/922d6ba2495756622ad215301da7c48f2ec33fa9).
 
 ## 21.1 With an adapter, only the adapter and the head train {#tut-21.1}
 
@@ -33,7 +33,7 @@ adapter of rank 4, and takes one backward pass. Then it names every parameter th
 Apply the patch to [`tests/unit/test_model.py`](#tut-21.1-tests-unit-test_model.py-583145), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/e920479c0f4f4bd5335423e25766ddc07b879516.diff | git apply --include=tests/unit/test_model.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/0be44c1de17b8acb4e18a964a782584eb26fee97.diff | git apply --include=tests/unit/test_model.py
 ```
 
 The patch adds the import of `tiny_backbone`, and the test at the end of the file.
@@ -57,18 +57,18 @@ coverage of 90% not reached. Total coverage: 83.52%`, and ends with exit code 1.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check e920479c0f4f
+git check 0be44c1de17b
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 469bdd447146 --staged -- :/ && git restore --source e920479c0f4f --staged --worktree -- :/
+git restore --source ebfa2a8cee25 --staged -- :/ && git restore --source 0be44c1de17b --staged --worktree -- :/
 ```
 
 ### What changed {#tut-21.1-what-changed-182c57}
 
-- <a id="tut-21.1-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: one backward pass with an adapter. 22 lines added. [The file](https://github.com/rahuldave/babykev/blob/e920479c0f4f4bd5335423e25766ddc07b879516/tests/unit/test_model.py).
+- <a id="tut-21.1-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: one backward pass with an adapter. 22 lines added. [The file](https://github.com/rahuldave/babykev/blob/0be44c1de17b8acb4e18a964a782584eb26fee97/tests/unit/test_model.py).
   - look at `def test_with_an_adapter_only_the_adapter_and_the_head_train(`
 
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
@@ -111,7 +111,7 @@ git restore --source 469bdd447146 --staged -- :/ && git restore --source e920479
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e920479c0f4f4bd5335423e25766ddc07b879516). [The code after it](https://github.com/rahuldave/babykev/tree/e920479c0f4f4bd5335423e25766ddc07b879516).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0be44c1de17b8acb4e18a964a782584eb26fee97). [The code after it](https://github.com/rahuldave/babykev/tree/0be44c1de17b8acb4e18a964a782584eb26fee97).
 
 ## 21.2 Records of different lengths answer in one pass as alone {#tut-21.2}
 
@@ -121,7 +121,7 @@ record of the fixture and a shorter record, and runs them in one pass. It compar
 Apply the patch to [`tests/unit/test_model.py`](#tut-21.2-tests-unit-test_model.py-583145), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/aca79826fc8596b347c064699744e03d4cdc69f6.diff | git apply --include=tests/unit/test_model.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac.diff | git apply --include=tests/unit/test_model.py
 ```
 
 The patch adds the test at the end of the file.
@@ -143,18 +143,18 @@ still fails.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check aca79826fc85
+git check e6248c7e2cf3
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source e920479c0f4f --staged -- :/ && git restore --source aca79826fc85 --staged --worktree -- :/
+git restore --source 0be44c1de17b --staged -- :/ && git restore --source e6248c7e2cf3 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-21.2-what-changed-182c57}
 
-- <a id="tut-21.2-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a padded pass. 16 lines added. [The file](https://github.com/rahuldave/babykev/blob/aca79826fc8596b347c064699744e03d4cdc69f6/tests/unit/test_model.py).
+- <a id="tut-21.2-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a padded pass. 16 lines added. [The file](https://github.com/rahuldave/babykev/blob/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac/tests/unit/test_model.py).
   - look at `def test_records_of_different_lengths_answer_in_one_pass_as_alone(`
 
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
@@ -184,7 +184,7 @@ git restore --source e920479c0f4f --staged -- :/ && git restore --source aca7982
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/aca79826fc8596b347c064699744e03d4cdc69f6). [The code after it](https://github.com/rahuldave/babykev/tree/aca79826fc8596b347c064699744e03d4cdc69f6).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac). [The code after it](https://github.com/rahuldave/babykev/tree/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac).
 
 ## 21.3 The smoke reports on every question, on the tiny model {#tut-21.3}
 
@@ -195,7 +195,7 @@ each of the fifteen questions, and the count.
 Apply the patch to [`tests/unit/test_smoke.py`](#tut-21.3-tests-unit-test_smoke.py-89db04), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/cf86cdcfd5d6ecca2cd4fd799ad5219b51f5ca43.diff | git apply --include=tests/unit/test_smoke.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/08acf0a3770d58ab7fc3ac85eebf5cf9ed0bad0e.diff | git apply --include=tests/unit/test_smoke.py
 ```
 
 The patch adds the imports that the test needs, and the test at the end of the file.
@@ -218,18 +218,18 @@ need the Hub or a GPU of NVIDIA. They are `63, 72-75, 204-207` of `model.py`, an
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check cf86cdcfd5d6
+git check 08acf0a3770d
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source aca79826fc85 --staged -- :/ && git restore --source cf86cdcfd5d6 --staged --worktree -- :/
+git restore --source e6248c7e2cf3 --staged -- :/ && git restore --source 08acf0a3770d --staged --worktree -- :/
 ```
 
 ### What changed {#tut-21.3-what-changed-182c57}
 
-- <a id="tut-21.3-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: the whole smoke, on the tiny model. 17 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/cf86cdcfd5d6ecca2cd4fd799ad5219b51f5ca43/tests/unit/test_smoke.py).
+- <a id="tut-21.3-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: the whole smoke, on the tiny model. 17 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/08acf0a3770d58ab7fc3ac85eebf5cf9ed0bad0e/tests/unit/test_smoke.py).
   - look at `def test_smoke_reports_on_every_question_of_the_sample(`
 
 <details open><summary>The patch to <code>tests/unit/test_smoke.py</code></summary>
@@ -267,7 +267,7 @@ git restore --source aca79826fc85 --staged -- :/ && git restore --source cf86cdc
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/cf86cdcfd5d6ecca2cd4fd799ad5219b51f5ca43). [The code after it](https://github.com/rahuldave/babykev/tree/cf86cdcfd5d6ecca2cd4fd799ad5219b51f5ca43).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/08acf0a3770d58ab7fc3ac85eebf5cf9ed0bad0e). [The code after it](https://github.com/rahuldave/babykev/tree/08acf0a3770d58ab7fc3ac85eebf5cf9ed0bad0e).
 
 ## 21.4 The gate has a floor of 90% {#tut-21.4}
 
@@ -277,7 +277,7 @@ git restore --source aca79826fc85 --staged -- :/ && git restore --source cf86cdc
 Apply the patch to [`justfile`](#tut-21.4-justfile-424f0b), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/37f71350d1b200db594ac4e4eca09d6fd9a96764.diff | git apply --include=justfile
+curl -fsSL https://github.com/rahuldave/babykev/commit/57604134d9590c16b1c4db0b1d1a11509a65345b.diff | git apply --include=justfile
 ```
 
 In the recipe `check`, the patch adds `--cov-fail-under=90` to `just test -q`, and names the coverage in the comment
@@ -294,18 +294,18 @@ exit code 0.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 37f71350d1b2
+git check 57604134d959
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source cf86cdcfd5d6 --staged -- :/ && git restore --source 37f71350d1b2 --staged --worktree -- :/
+git restore --source 08acf0a3770d --staged -- :/ && git restore --source 57604134d959 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-21.4-what-changed-182c57}
 
-- <a id="tut-21.4-justfile-424f0b"></a>`justfile`: the floor, in the gate. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/37f71350d1b200db594ac4e4eca09d6fd9a96764/justfile).
+- <a id="tut-21.4-justfile-424f0b"></a>`justfile`: the floor, in the gate. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/57604134d9590c16b1c4db0b1d1a11509a65345b/justfile).
   - look at `    just test -q --cov-fail-under=90`
 
 <details open><summary>The patch to <code>justfile</code></summary>
@@ -333,7 +333,7 @@ git restore --source cf86cdcfd5d6 --staged -- :/ && git restore --source 37f7135
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/37f71350d1b200db594ac4e4eca09d6fd9a96764). [The code after it](https://github.com/rahuldave/babykev/tree/37f71350d1b200db594ac4e4eca09d6fd9a96764).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/57604134d9590c16b1c4db0b1d1a11509a65345b). [The code after it](https://github.com/rahuldave/babykev/tree/57604134d9590c16b1c4db0b1d1a11509a65345b).
 
 ## 21.5 The README names the floor {#tut-21.5}
 
@@ -342,7 +342,7 @@ The README says that one of the checks of `just check` is the floor.
 Apply the patch to [`README.md`](#tut-21.5-README.md-8ec9a0), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/7be9407f2747077002f882085c9c043eb35d6c35.diff | git apply --include=README.md
+curl -fsSL https://github.com/rahuldave/babykev/commit/922d6ba2495756622ad215301da7c48f2ec33fa9.diff | git apply --include=README.md
 ```
 
 The patch changes the last two lines of the paragraph on `just hook`, which say what `just check` does.
@@ -356,18 +356,18 @@ grep -n '90%' README.md
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 7be9407f2747
+git check 922d6ba24957
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 37f71350d1b2 --staged -- :/ && git restore --source 7be9407f2747 --staged --worktree -- :/
+git restore --source 57604134d959 --staged -- :/ && git restore --source 922d6ba24957 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-21.5-what-changed-182c57}
 
-- <a id="tut-21.5-README.md-8ec9a0"></a>`README.md`: the floor of 90%, in the lines on `just check`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/7be9407f2747077002f882085c9c043eb35d6c35/README.md).
+- <a id="tut-21.5-README.md-8ec9a0"></a>`README.md`: the floor of 90%, in the lines on `just check`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/922d6ba2495756622ad215301da7c48f2ec33fa9/README.md).
   - look at ``The tests must run at least 90% of the code. You can run `just check` yourself at any time.``
 
 <details open><summary>The patch to <code>README.md</code></summary>
@@ -388,4 +388,4 @@ git restore --source 37f71350d1b2 --staged -- :/ && git restore --source 7be9407
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/7be9407f2747077002f882085c9c043eb35d6c35). [The code after it](https://github.com/rahuldave/babykev/tree/7be9407f2747077002f882085c9c043eb35d6c35).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/922d6ba2495756622ad215301da7c48f2ec33fa9). [The code after it](https://github.com/rahuldave/babykev/tree/922d6ba2495756622ad215301da7c48f2ec33fa9).

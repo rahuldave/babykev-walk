@@ -9,7 +9,7 @@ title: "24 The model, explained"
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
 
 ```bash
-git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 89de4845180a --staged --worktree -- :/
+git rm -rq --cached --ignore-unmatch -- :/ && git restore --source d9df8f2a02ed --staged --worktree -- :/
 ```
 
 ```bash
@@ -22,7 +22,7 @@ The reference pages of the site give the signature and the docstring of each fun
 why the model is built as it is. Two pages of a guide say it, in prose. The first gives the four ideas of the model,
 and the second draws the mask as a grid. smalldocs runs no code, so a page holds its grids as text.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/89de4845180ac0ad80a2fa810d8d0cb58366c720). [The code after it](https://github.com/rahuldave/babykev/tree/495a6cd9b395c1479a3b711641a5d25ca2fd9226).
+[The code before this part](https://github.com/rahuldave/babykev/tree/d9df8f2a02ed7a7780325aebf281d6107317f9d9). [The code after it](https://github.com/rahuldave/babykev/tree/41d24729682119b9bbb828187c5e9684a2921308).
 
 ## 24.1 A page of the guide on the model {#tut-24.1}
 
@@ -32,7 +32,7 @@ backticks, such as `encode()`, links to its entry in the reference, as on the fr
 Apply the patch to [`docs/guide/model.qmd`](#tut-24.1-docs-guide-model.qmd-3d8904), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/b047680d9ecce794ea5ec14efd40d9f27e33f86d.diff | git apply --include=docs/guide/model.qmd
+curl -fsSL https://github.com/rahuldave/babykev/commit/b23fa492cea947fd91a783a6ef8c19ee1d4f38eb.diff | git apply --include=docs/guide/model.qmd
 ```
 
 The patch makes the file, in a new folder `docs/guide`. Read the headings, then the part on the mask.
@@ -48,18 +48,18 @@ the eight links of the page into the reference of `model.py`, `encode` twice. Th
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check b047680d9ecc
+git check b23fa492cea9
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 89de4845180a --staged -- :/ && git restore --source b047680d9ecc --staged --worktree -- :/
+git restore --source d9df8f2a02ed --staged -- :/ && git restore --source b23fa492cea9 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-24.1-what-changed-182c57}
 
-- <a id="tut-24.1-docs-guide-model.qmd-3d8904"></a>`docs/guide/model.qmd`: the four ideas of the model. New, 61 lines. [The file](https://github.com/rahuldave/babykev/blob/b047680d9ecce794ea5ec14efd40d9f27e33f86d/docs/guide/model.qmd).
+- <a id="tut-24.1-docs-guide-model.qmd-3d8904"></a>`docs/guide/model.qmd`: the four ideas of the model. New, 61 lines. [The file](https://github.com/rahuldave/babykev/blob/b23fa492cea947fd91a783a6ef8c19ee1d4f38eb/docs/guide/model.qmd).
   - look at `## Packing`
 
 <details open><summary>The patch to <code>docs/guide/model.qmd</code></summary>
@@ -131,7 +131,7 @@ git restore --source 89de4845180a --staged -- :/ && git restore --source b047680
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/b047680d9ecce794ea5ec14efd40d9f27e33f86d). [The code after it](https://github.com/rahuldave/babykev/tree/b047680d9ecce794ea5ec14efd40d9f27e33f86d).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b23fa492cea947fd91a783a6ef8c19ee1d4f38eb). [The code after it](https://github.com/rahuldave/babykev/tree/b23fa492cea947fd91a783a6ef8c19ee1d4f38eb).
 
 ## 24.2 A page of the guide on the mask {#tut-24.2}
 
@@ -141,7 +141,7 @@ request. The first grid is the picture of the test, so `just test` keeps it true
 Apply the patch to [`docs/guide/mask.qmd`](#tut-24.2-docs-guide-mask.qmd-5cd81a), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/3d72060d0be1a8576d43945a249cb1e593b78a16.diff | git apply --include=docs/guide/mask.qmd
+curl -fsSL https://github.com/rahuldave/babykev/commit/872a008d4a67bfd58f67b5db28198f4293cc34f5.diff | git apply --include=docs/guide/mask.qmd
 ```
 
 The patch makes the file. Read the two grids.
@@ -155,18 +155,18 @@ just docs
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 3d72060d0be1
+git check 872a008d4a67
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source b047680d9ecc --staged -- :/ && git restore --source 3d72060d0be1 --staged --worktree -- :/
+git restore --source b23fa492cea9 --staged -- :/ && git restore --source 872a008d4a67 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-24.2-what-changed-182c57}
 
-- <a id="tut-24.2-docs-guide-mask.qmd-5cd81a"></a>`docs/guide/mask.qmd`: the mask, as a grid. New, 52 lines. [The file](https://github.com/rahuldave/babykev/blob/3d72060d0be1a8576d43945a249cb1e593b78a16/docs/guide/mask.qmd).
+- <a id="tut-24.2-docs-guide-mask.qmd-5cd81a"></a>`docs/guide/mask.qmd`: the mask, as a grid. New, 52 lines. [The file](https://github.com/rahuldave/babykev/blob/872a008d4a67bfd58f67b5db28198f4293cc34f5/docs/guide/mask.qmd).
   - look at `## A plain causal mask`
 
 <details open><summary>The patch to <code>docs/guide/mask.qmd</code></summary>
@@ -229,7 +229,7 @@ git restore --source b047680d9ecc --staged -- :/ && git restore --source 3d72060
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/3d72060d0be1a8576d43945a249cb1e593b78a16). [The code after it](https://github.com/rahuldave/babykev/tree/3d72060d0be1a8576d43945a249cb1e593b78a16).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/872a008d4a67bfd58f67b5db28198f4293cc34f5). [The code after it](https://github.com/rahuldave/babykev/tree/872a008d4a67bfd58f67b5db28198f4293cc34f5).
 
 ## 24.3 The guide in the sidebar {#tut-24.3}
 
@@ -240,7 +240,7 @@ names.
 Apply the patch to [`docs/_smalldocs.yml`](#tut-24.3-docs-_smalldocs.yml-4b0b48), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/50b2b3c88126db60e6cc8d9cc47a5ae6892cfa54.diff | git apply --include=docs/_smalldocs.yml
+curl -fsSL https://github.com/rahuldave/babykev/commit/f19e99afaa9f11778658710d44ef1785dbc40ed0.diff | git apply --include=docs/_smalldocs.yml
 ```
 
 The patch adds the section `Guide` under `index.qmd`, in the list `contents` of the sidebar.
@@ -256,18 +256,18 @@ grep -o 'href="guide/[^"]*"' docs/_site/index.html
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 50b2b3c88126
+git check f19e99afaa9f
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 3d72060d0be1 --staged -- :/ && git restore --source 50b2b3c88126 --staged --worktree -- :/
+git restore --source 872a008d4a67 --staged -- :/ && git restore --source f19e99afaa9f --staged --worktree -- :/
 ```
 
 ### What changed {#tut-24.3-what-changed-182c57}
 
-- <a id="tut-24.3-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the section `Guide`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/50b2b3c88126db60e6cc8d9cc47a5ae6892cfa54/docs/_smalldocs.yml).
+- <a id="tut-24.3-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the section `Guide`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/f19e99afaa9f11778658710d44ef1785dbc40ed0/docs/_smalldocs.yml).
   - look at `      - section: Guide`
 
 <details open><summary>The patch to <code>docs/_smalldocs.yml</code></summary>
@@ -288,7 +288,7 @@ git restore --source 3d72060d0be1 --staged -- :/ && git restore --source 50b2b3c
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/50b2b3c88126db60e6cc8d9cc47a5ae6892cfa54). [The code after it](https://github.com/rahuldave/babykev/tree/50b2b3c88126db60e6cc8d9cc47a5ae6892cfa54).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/f19e99afaa9f11778658710d44ef1785dbc40ed0). [The code after it](https://github.com/rahuldave/babykev/tree/f19e99afaa9f11778658710d44ef1785dbc40ed0).
 
 ## 24.4 The front page names the guide {#tut-24.4}
 
@@ -297,7 +297,7 @@ A paragraph of the front page links to the two pages.
 Apply the patch to [`docs/index.qmd`](#tut-24.4-docs-index.qmd-d6d880), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/e5434a2ff54beb0e7262d3ff40abb569de422dc9.diff | git apply --include=docs/index.qmd
+curl -fsSL https://github.com/rahuldave/babykev/commit/62f48f0b9de6c97825153cd50a7f131a5c07b0c7.diff | git apply --include=docs/index.qmd
 ```
 
 The patch adds a paragraph under the list of the modules.
@@ -313,18 +313,18 @@ paragraph.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check e5434a2ff54b
+git check 62f48f0b9de6
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 50b2b3c88126 --staged -- :/ && git restore --source e5434a2ff54b --staged --worktree -- :/
+git restore --source f19e99afaa9f --staged -- :/ && git restore --source 62f48f0b9de6 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-24.4-what-changed-182c57}
 
-- <a id="tut-24.4-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the links to the guide. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/e5434a2ff54beb0e7262d3ff40abb569de422dc9/docs/index.qmd).
+- <a id="tut-24.4-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the links to the guide. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/62f48f0b9de6c97825153cd50a7f131a5c07b0c7/docs/index.qmd).
   - look at ``The pages under Guide explain the model. [The model](guide/model.qmd) gives the four ideas of `model.py`, and``
 
 <details open><summary>The patch to <code>docs/index.qmd</code></summary>
@@ -344,7 +344,7 @@ git restore --source 50b2b3c88126 --staged -- :/ && git restore --source e5434a2
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e5434a2ff54beb0e7262d3ff40abb569de422dc9). [The code after it](https://github.com/rahuldave/babykev/tree/e5434a2ff54beb0e7262d3ff40abb569de422dc9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/62f48f0b9de6c97825153cd50a7f131a5c07b0c7). [The code after it](https://github.com/rahuldave/babykev/tree/62f48f0b9de6c97825153cd50a7f131a5c07b0c7).
 
 ## 24.5 The README names the guide {#tut-24.5}
 
@@ -353,7 +353,7 @@ The row of `docs/` in the table of the README names the two pages.
 Apply the patch to [`README.md`](#tut-24.5-README.md-8ec9a0), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/495a6cd9b395c1479a3b711641a5d25ca2fd9226.diff | git apply --include=README.md
+curl -fsSL https://github.com/rahuldave/babykev/commit/41d24729682119b9bbb828187c5e9684a2921308.diff | git apply --include=README.md
 ```
 
 The patch changes the row of `docs/` in the table.
@@ -368,18 +368,18 @@ just check
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 495a6cd9b395
+git check 41d247296821
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source e5434a2ff54b --staged -- :/ && git restore --source 495a6cd9b395 --staged --worktree -- :/
+git restore --source 62f48f0b9de6 --staged -- :/ && git restore --source 41d247296821 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-24.5-what-changed-182c57}
 
-- <a id="tut-24.5-README.md-8ec9a0"></a>`README.md`: the guide, in the row of `docs/`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/495a6cd9b395c1479a3b711641a5d25ca2fd9226/README.md).
+- <a id="tut-24.5-README.md-8ec9a0"></a>`README.md`: the guide, in the row of `docs/`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/41d24729682119b9bbb828187c5e9684a2921308/README.md).
   - look at ``The two pages of `docs/guide/` explain the model and its mask |``
 
 <details open><summary>The patch to <code>README.md</code></summary>
@@ -398,4 +398,4 @@ git restore --source e5434a2ff54b --staged -- :/ && git restore --source 495a6cd
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/495a6cd9b395c1479a3b711641a5d25ca2fd9226). [The code after it](https://github.com/rahuldave/babykev/tree/495a6cd9b395c1479a3b711641a5d25ca2fd9226).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/41d24729682119b9bbb828187c5e9684a2921308). [The code after it](https://github.com/rahuldave/babykev/tree/41d24729682119b9bbb828187c5e9684a2921308).

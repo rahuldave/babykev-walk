@@ -1,0 +1,126 @@
+---
+title: "1.3 to 1.5 The settings of the project"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Read the tutorial.** [Build it yourself](../build/tut-01.3-to-tut-01.5.qmd) is the other way to read this part.
+
+`pyproject.toml` still has the words of uv. Three settings say what babykev is, under which licence others may use
+it, and who wrote it. None of them is a dependency, so the lockfile stays as it was.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/489f27fad816149652a8d608b162fa98c37563f5). [The code after it](https://github.com/rahuldave/babykev/tree/7f38877e597f5404208fdca2eabb176077d95a8e).
+
+## 1.3 The description of babykev {#tut-01.3}
+
+`pyproject.toml` still has the words of uv. Its description is a placeholder, `Add your description here`. The patch
+puts in what babykev is.
+
+A patch to [`pyproject.toml`](#tut-01.3-pyproject.toml-5d07e7).
+
+In `pyproject.toml`, the line `description` now says what babykev is.
+
+```bash
+grep -n description pyproject.toml
+```
+
+`grep` prints the new description, with its line number.
+
+### What changed {#tut-01.3-what-changed-182c57}
+
+- <a id="tut-01.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: the description. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/0497c0dc9d3772df47e79361aa4165e5de8e227d/pyproject.toml).
+  - look at `description = "A small decision model: one state, typed questions, a probability for every answer"`
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -1,7 +1,7 @@
+ [project]
+ name = "babykev"
+ version = "0.1.0"
+-description = "Add your description here"
++description = "A small decision model: one state, typed questions, a probability for every answer"
+ readme = "README.md"
+ requires-python = ">=3.13"
+ dependencies = []
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0497c0dc9d3772df47e79361aa4165e5de8e227d). [The code after it](https://github.com/rahuldave/babykev/tree/0497c0dc9d3772df47e79361aa4165e5de8e227d).
+
+## 1.4 The licence of babykev {#tut-01.4}
+
+A package says under which licence others may use it. babykev's licence is kev's, the Apache License 2.0.
+`license` names it, and `license-files` names the two files that a package of babykev carries with it.
+
+A patch to [`pyproject.toml`](#tut-01.4-pyproject.toml-5d07e7).
+
+In `pyproject.toml`, `license` and `license-files` now stand under `readme`.
+
+```bash
+grep -n license pyproject.toml
+```
+
+`grep` prints the two lines, with their numbers. The Build it yourself page sets them with a command, which can put
+them at the end of `[project]`, so the numbers can differ.
+
+### What changed {#tut-01.4-what-changed-182c57}
+
+- <a id="tut-01.4-pyproject.toml-5d07e7"></a>`pyproject.toml`: the licence, and the files a package carries. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/414874463b887dedf65c5c74caeac8a064b0e876/pyproject.toml).
+  - look at `license-files = ["LICENSE", "NOTICE"]`
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -3,6 +3,8 @@ name = "babykev"
+ version = "0.1.0"
+ description = "A small decision model: one state, typed questions, a probability for every answer"
+ readme = "README.md"
++license = "Apache-2.0"
++license-files = ["LICENSE", "NOTICE"]
+ requires-python = ">=3.13"
+ dependencies = []
+ 
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/414874463b887dedf65c5c74caeac8a064b0e876). [The code after it](https://github.com/rahuldave/babykev/tree/414874463b887dedf65c5c74caeac8a064b0e876).
+
+## 1.5 The author of babykev {#tut-01.5}
+
+A package names who wrote it. `authors` names Rahul Dave.
+
+A patch to [`pyproject.toml`](#tut-01.5-pyproject.toml-5d07e7).
+
+In `pyproject.toml`, `authors` now stands under `license-files`.
+
+```bash
+uv lock --check
+```
+
+`uv lock --check` says whether `uv.lock` still matches `pyproject.toml`. It prints `Resolved 1 package`, and ends with
+exit code 0. The words of the three moves change no dependency, so `uv.lock` stays as it was.
+
+### What changed {#tut-01.5-what-changed-182c57}
+
+- <a id="tut-01.5-pyproject.toml-5d07e7"></a>`pyproject.toml`: the author. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/7f38877e597f5404208fdca2eabb176077d95a8e/pyproject.toml).
+  - look at `authors = [{ name = "Rahul Dave" }]`
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -5,6 +5,7 @@ description = "A small decision model: one state, typed questions, a probability
+ readme = "README.md"
+ license = "Apache-2.0"
+ license-files = ["LICENSE", "NOTICE"]
++authors = [{ name = "Rahul Dave" }]
+ requires-python = ">=3.13"
+ dependencies = []
+ 
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7f38877e597f5404208fdca2eabb176077d95a8e). [The code after it](https://github.com/rahuldave/babykev/tree/7f38877e597f5404208fdca2eabb176077d95a8e).

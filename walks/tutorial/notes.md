@@ -3443,10 +3443,37 @@ $ just setup
 
 The reference exists only as Markdown that `just docs module` prints in a terminal. A reader wants a site, with a
 front page that says what babykev is, and a page of reference for each module. smalldocs builds that site from the
-same docstrings and docments. The build writes its files into `docs/`, and git must not track them. Then the site gets
-its settings and its front page, and the README names it.
+same docstrings and docments. Git first learns to ignore the files that a build writes into `docs/`. Then the recipe
+`docs` builds the site, the site gets its settings and its front page, and the README names it.
 
-### tut-14.1 Just docs, alone, builds the site
+### tut-14.1 Git ignores what a build of the docs makes
+
+smalldocs builds the site, and the build writes three things into `docs/`. `docs/_site/` is the site, as HTML.
+`docs/api/` holds the reference pages, as Markdown, and `docs/_symbols.json` holds the names that a link can point
+to. A build makes all three again from the code, so they do not belong in git. `.gitignore` names the files that git
+does not track, and three lines at its end name these, before the first build. A `/` at the start of a line means
+the root of the repository, so `/docs/api/` is only that folder.
+
+patch$ .gitignore
+
+::: do
+The patch adds a comment and three lines at the end of `.gitignore`.
+:::
+
+::: watch
+At the end of `.gitignore`, the comment is on line 222, and `/docs/_site/`, `/docs/api/` and `/docs/_symbols.json` on
+lines 223 to 225.
+:::
+
+$ tail -n 4 .gitignore
+
+`tail -n 4 .gitignore` prints the comment and the three lines.
+
+files:
+- diff `.gitignore`: the files that a build of the docs makes.
+  show: `/docs/_site/`
+
+### tut-14.2 Just docs, alone, builds the site
 
 `smalldocs render docs` builds the site from the folder `docs`. It writes the reference pages from the code, then
 the HTML of every page into `docs/_site`. With no words, the recipe `docs` now runs it. With words, it runs
@@ -3467,46 +3494,18 @@ In the `justfile`, the recipe `docs` starts at line 79, with its comment. Line 8
 $ uv run smalldocs render docs
 $ just --show docs
 $ just docs
-$ git status --short
+$ git status --short --ignored docs
 
 `smalldocs render docs` prints `wrote 2 page(s) to docs/_site`. The two pages are the reference of `api.py` and of
 `cli.py`, because `docs/` has no page of its own yet. `just --show docs` prints the recipe, and `just docs` prints the
 same line as the command.
 
-`git status --short` lists three new paths, each marked `??`, untracked. `docs/_site/` is the site, and
-`docs/_symbols.json` holds the names that a link can point to. `docs/api/` holds the reference pages, as Markdown. A
-build makes all three again from the code, so they do not belong in git. In do mode, `git status` also lists the
-change of the `justfile`.
+`git status --short --ignored docs` lists the three paths that the build made, each marked `!!`, ignored. The lines
+of `.gitignore` from the move before keep them out of git.
 
 files:
 - diff `justfile`: with no words, `docs` builds the site.
   show: `    if [ "$#" -eq 0 ]; then exec uv run smalldocs render docs; fi`
-
-### tut-14.2 Git ignores what a build of the docs makes
-
-`.gitignore` names the files that git does not track. Three lines at its end name what a build of the docs makes.
-A `/` at the start of a line means the root of the repository, so `/docs/api/` is only that folder.
-
-patch$ .gitignore
-
-::: do
-The patch adds a comment and three lines at the end of `.gitignore`.
-:::
-
-::: watch
-At the end of `.gitignore`, the comment is on line 222, and `/docs/_site/`, `/docs/api/` and `/docs/_symbols.json` on
-lines 223 to 225.
-:::
-
-$ just docs
-$ git status --short --ignored docs
-
-`just docs` prints `wrote 2 page(s) to docs/_site`. `git status --short --ignored docs` lists the three paths with
-`!!`, ignored, in place of `??`.
-
-files:
-- diff `.gitignore`: the files that a build of the docs makes.
-  show: `/docs/_site/`
 
 ### tut-14.3 The settings of the site
 

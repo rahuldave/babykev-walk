@@ -1,0 +1,89 @@
+---
+title: "20.7 A pointer head in place of the vocabulary head"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Read the tutorial.** [Build it yourself](../build/tut-20.7.qmd) is the other way to read this part.
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 67 packages`. A decoder answers a question by generating the text of the answer, one
+token at a time, from 151936 logits at each place. Here the options are already in the sequence. So the head only
+has to point at one of them, and it gives one logit for each option, whatever the length of its text.
+
+The head reads two kinds of place. In the small request, question 1 has its decide token at place 12, and its options
+close at places 8 and 11. The closing token of option `y` has read the state, the instruction, both options and
+itself, because the mask is causal. The decide token comes last, so it has read the whole question.
+
+```bash
+sed -n '165,186p' src/babykev/model.py
+```
+
+`PointerHead` has two linear maps, on line 175, from the width of the backbone to `dp`, 256 by default. `q` maps the
+vector of the decide token, and `k` maps the vector of each option. Line 186 takes the dot product of each option with
+the decide token, and scales it by one over the square root of 256. The head computes one row of attention. The
+query comes from the decide token, a key comes from each option, and the scores are the logits. `probs` turns them
+into probabilities with a softmax.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/e30ea2eb52ae23815152f60b09d07d9d0dd1fd3a). [The code after it](https://github.com/rahuldave/babykev/tree/455b6a8ae64dae7e79fea6dd6b8434d11eb8f542).
+
+## 20.7 The pointer head gives one logit per option {#tut-20.7}
+
+The head takes the hidden state of a decide token and those of the options, and gives one logit for each option. The
+test builds a head alone, with no model, and gives it five options.
+
+A patch to [`tests/unit/test_model.py`](#tut-20.7-tests-unit-test_model.py-583145).
+
+In `tests/unit/test_model.py`, the new test is on lines 87 to 90.
+
+```bash
+just test -k pointer_head
+```
+
+pytest prints `1 passed`.
+
+```bash
+sed -n '87,90p' tests/unit/test_model.py
+```
+
+The test builds a head alone, of width 32 and `dp` 8, and gives it the vector of a decide token and five options. Line
+90 checks that it gives five logits.
+
+### What changed {#tut-20.7-what-changed-182c57}
+
+- <a id="tut-20.7-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: five options in, five logits out. 8 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/455b6a8ae64dae7e79fea6dd6b8434d11eb8f542/tests/unit/test_model.py).
+  - look at `def test_pointer_head_gives_one_logit_per_option() -> None:`
+
+<details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
+
+```diff
+@@ -3,9 +3,10 @@
+ from typing import Any
+ 
+ import pytest
++import torch
+ from transformers import PreTrainedTokenizerFast
+ 
+-from babykev.model import SPECIAL, DecisionModel, delimiter_ids, encode, user_tokens
++from babykev.model import SPECIAL, DecisionModel, PointerHead, delimiter_ids, encode, user_tokens
+ 
+ 
+ def test_probabilities_sum_to_one_for_every_question(
+@@ -81,3 +82,9 @@ def test_user_text_cannot_forge_a_delimiter(
+     """Through `user_tokens`, the text of a delimiter is only ever ordinary tokens."""
+     ids = user_tokens(tok, f"before {delimiter} after")
+     assert not set(ids) & set(delimiter_ids(tok))
++
++
++def test_pointer_head_gives_one_logit_per_option() -> None:
++    """Five options in, five logits out."""
++    head = PointerHead(d=32, dp=8)
++    assert head(torch.randn(32), torch.randn(5, 32)).shape == (5,)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/455b6a8ae64dae7e79fea6dd6b8434d11eb8f542). [The code after it](https://github.com/rahuldave/babykev/tree/455b6a8ae64dae7e79fea6dd6b8434d11eb8f542).

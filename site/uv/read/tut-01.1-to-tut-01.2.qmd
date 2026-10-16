@@ -1,0 +1,121 @@
+---
+title: "1.1 to 1.2 The project, and its lockfile"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Read the tutorial.** [Build it yourself](../build/tut-01.1-to-tut-01.2.qmd) is the other way to read this part.
+
+The folder has a README, a licence and `.gitignore`, and nothing that Python can build or run. `uv init` makes the
+project, and `uv lock` writes its lockfile. There is no justfile yet, so these two sections run no `just`.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/70ac5b0a0a1d927dfc4da6f8b7b92344917e4a33). [The code after it](https://github.com/rahuldave/babykev/tree/489f27fad816149652a8d608b162fa98c37563f5).
+
+## 1.1 uv makes the project {#tut-01.1}
+
+The folder has words and a licence, but nothing that Python can build or run. `uv init` makes the files of a Python
+project. `--package` makes a package in `src/babykev/`, with a command that runs its function `main`.
+`--name babykev` names the project, and `--python 3.13` sets the version of Python.
+
+This change came from running `uv init --package --name babykev --python 3.13`.
+
+`uv init` leaves the README alone, because the project has one.
+
+The command made three files. `pyproject.toml` names the project, its Python and its command.
+`src/babykev/__init__.py` holds `main`, which prints a greeting. `.python-version` says `3.13`.
+
+```bash
+cat pyproject.toml
+```
+
+`[project.scripts]` makes a command, `babykev`, and names the function that it runs, `main` of the package
+`babykev`. `[build-system]` names `uv_build`, the tool that builds the package. `dependencies` is an empty list.
+
+`uv init` also writes your version of uv into the line `requires` of `[build-system]`. So your `pyproject.toml` can
+differ there. The check compares `pyproject.toml` by the names of its packages, without the versions, so your files
+still match.
+
+```bash
+git status --short
+```
+
+`git status --short` prints nothing, because git already holds the new files.
+
+### What changed {#tut-01.1-what-changed-182c57}
+
+- <a id="tut-01.1-.python-version-7696e9"></a>`.python-version`: `3.13`, the version of Python that uv installs for the project. New, 1 line. It comes from `uv init --package --name babykev --python 3.13`. [The file](https://github.com/rahuldave/babykev/blob/eac75e0becc78c9a872e734ea715ac3903947844/.python-version).
+- <a id="tut-01.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: `[project.scripts]` makes a command `babykev` that runs `main` of the package `babykev`. `[build-system]` names `uv_build`, the tool that builds the package. New, 14 lines. It comes from `uv init --package --name babykev --python 3.13`. [The file](https://github.com/rahuldave/babykev/blob/eac75e0becc78c9a872e734ea715ac3903947844/pyproject.toml).
+  - look at `babykev = "babykev:main"`
+- <a id="tut-01.1-src-babykev-__init__.py-a40393"></a>`src/babykev/__init__.py`: the function that the command runs. It prints a greeting. New, 2 lines. It comes from `uv init --package --name babykev --python 3.13`. [The file](https://github.com/rahuldave/babykev/blob/eac75e0becc78c9a872e734ea715ac3903947844/src/babykev/__init__.py).
+  - look at `print("Hello from babykev!")`
+
+<details><summary>The diff of <code>.python-version</code></summary>
+
+```diff
+@@ -0,0 +1 @@
++3.13
+```
+
+</details>
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -0,0 +1,14 @@
++[project]
++name = "babykev"
++version = "0.1.0"
++description = "Add your description here"
++readme = "README.md"
++requires-python = ">=3.13"
++dependencies = []
++
++[project.scripts]
++babykev = "babykev:main"
++
++[build-system]
++requires = ["uv_build>=0.12.13,<0.13.0"]
++build-backend = "uv_build"
+```
+
+</details>
+
+<details><summary>The diff of <code>src/babykev/__init__.py</code></summary>
+
+```diff
+@@ -0,0 +1,2 @@
++def main() -> None:
++    print("Hello from babykev!")
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/eac75e0becc78c9a872e734ea715ac3903947844). [The code after it](https://github.com/rahuldave/babykev/tree/eac75e0becc78c9a872e734ea715ac3903947844).
+
+## 1.2 uv lock writes the lockfile {#tut-01.2}
+
+Two machines can install different versions of the same package, and the project then behaves differently on each.
+`uv lock` writes `uv.lock`, the exact versions of every package that the project needs. The project needs no package
+yet, so `uv.lock` lists babykev alone. `uv lock` prints the Python that it found, and `Resolved 1 package`.
+
+This change came from running `uv lock`.
+
+The new file `uv.lock` has one package, babykev, from this folder.
+
+```bash
+uv run babykev
+```
+
+`uv run` makes `.venv`, the environment of the project. It builds babykev, installs it into `.venv`, and runs the
+command. It prints `Using CPython 3.13.3`, `Creating virtual environment at: .venv`, `Building babykev`,
+`Built babykev` and `Installed 1 package`. Then comes the greeting, `Hello from babykev!`.
+
+The version of Python on your machine can differ. If you ran a later part before, `.venv` is there already. `uv run`
+then changes the packages of `.venv` to match, and does not print `Creating virtual environment`.
+
+### What changed {#tut-01.2-what-changed-182c57}
+
+- <a id="tut-01.2-uv.lock-8356d8"></a>`uv.lock`: babykev itself, installed from this folder. `editable` means that a change to the code shows at the next run, with no new install. New, 8 lines. It comes from `uv lock`. [The file](https://github.com/rahuldave/babykev/blob/489f27fad816149652a8d608b162fa98c37563f5/uv.lock).
+  - look at `source = { editable = "." }`
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/489f27fad816149652a8d608b162fa98c37563f5). [The code after it](https://github.com/rahuldave/babykev/tree/489f27fad816149652a8d608b162fa98c37563f5).

@@ -1,0 +1,256 @@
+---
+title: "3.1 to 3.2 The contract, in pydantic"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Build it yourself.** [Read the tutorial](../read/tut-03.1-to-tut-03.2.qmd) is the other way to read this part.
+
+This part does not start where the part before it ends, because the walk skips some changes. This command puts the files that this part starts from in place of yours. Run it, and then go on:
+
+```bash
+git restore --source 70ac5b0a0a1d --staged -- :/ && git restore --source 4640589d80e4 --staged --worktree -- :/
+```
+
+If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
+
+```bash
+git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 4640589d80e4 --staged --worktree -- :/
+```
+
+```bash
+just setup
+```
+
+The whole tutorial first made babykev a Python project with uv. It gave babykev a command, `babykev`, in
+`src/babykev/cli.py`. It also added a justfile, a file of short named commands called recipes, with the recipes
+`setup` and `help`. Then it added pytest, a tool that runs tests, and coverage, which shows the lines of code that the
+tests run. The recipe `just test` runs them both, and five tests check the command. The project has no contract yet.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/4640589d80e4f224a4b2c1fd9567e952f564f102). [The code after it](https://github.com/rahuldave/babykev/tree/e8e2e72adad9364a58be21dadf6d757e84436b97).
+
+## 3.1 Pydantic, the first dependency {#tut-03.1}
+
+The contract is written with pydantic, and babykev does not have it yet. pydantic checks that data has the shape that
+a class describes. `uv add` writes the package into `dependencies`, because a package of babykev needs it to run.
+
+```bash
+uv add pydantic
+```
+
+`uv add pydantic` prints `Resolved 14 packages`, and lists what it installed. It installed pydantic and the four
+packages that pydantic needs, `annotated-types`, `pydantic-core`, `typing-extensions` and `typing-inspection`.
+
+If a newer pydantic is out, `uv add` writes its version as the lower bound. Only the versions differ from the ones
+here.
+
+```bash
+uv tree --depth 1
+```
+
+`uv tree` prints the dependencies as a tree. `--depth 1` keeps the packages that babykev names itself. It prints
+`pydantic v2.14.1`, and the group `test` with pytest and pytest-cov.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 96502df0a92f
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 4640589d80e4 --staged -- :/ && git restore --source 96502df0a92f --staged --worktree -- :/
+```
+
+### What changed {#tut-03.1-what-changed-182c57}
+
+- <a id="tut-03.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the first dependency. `>=2.14.1` is the version that `uv add` found, as the lowest version to accept. 3 lines added, 1 removed. It comes from `uv add pydantic`. [The file](https://github.com/rahuldave/babykev/blob/96502df0a92f6f7090d6f624cda901a271dac9a7/pyproject.toml).
+  - look at `"pydantic>=2.14.1",`
+- <a id="tut-03.1-uv.lock-8356d8"></a>`uv.lock`: pydantic and the four packages it needs, each with its exact version. 136 lines added. It comes from `uv add pydantic`. [The file](https://github.com/rahuldave/babykev/blob/96502df0a92f6f7090d6f624cda901a271dac9a7/uv.lock).
+
+<details><summary>The diff that <code>uv add pydantic</code> makes in <code>pyproject.toml</code></summary>
+
+```diff
+@@ -7,7 +7,9 @@ license = "Apache-2.0"
+ license-files = ["LICENSE", "NOTICE"]
+ authors = [{ name = "Rahul Dave" }]
+ requires-python = ">=3.13"
+-dependencies = []
++dependencies = [
++    "pydantic>=2.14.1",
++]
+ 
+ [project.scripts]
+ babykev = "babykev.cli:main"
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/96502df0a92f6f7090d6f624cda901a271dac9a7). [The code after it](https://github.com/rahuldave/babykev/tree/96502df0a92f6f7090d6f624cda901a271dac9a7).
+
+## 3.2 api.py, the contract {#tut-03.2}
+
+babykev has no contract yet. `api.py`, from kev, says what a request is and what an answer is. It comes in whole,
+all 111 lines, and we read it before we change it.
+
+Apply the patch to [`src/babykev/api.py`](#tut-03.2-src-babykev-api.py-2ea65f), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/e8e2e72adad9364a58be21dadf6d757e84436b97.diff | git apply --include=src/babykev/api.py
+```
+
+Read lines 14 to 43 first. They are the classes of a request and its questions.
+
+```bash
+sed -n '14,43p' src/babykev/api.py
+```
+
+Each class says what its data must look like. `Literal["score"]` accepts only the text `score`.
+`Field(min_length=2, max_length=MAX_OPTIONS)` asks a score for 2 to 255 levels. A `Choice` checks its number of options
+in its own validator, `_check`, on lines 25 to 28.
+
+```bash
+just test
+```
+
+The 5 tests pass, and coverage falls. `api.py` has 70 statements, and no test runs any of them. The total is 10%, 8 of
+78 statements. A file that no test reaches counts against the total.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check e8e2e72adad9
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 96502df0a92f --staged -- :/ && git restore --source e8e2e72adad9 --staged --worktree -- :/
+```
+
+### What changed {#tut-03.2-what-changed-182c57}
+
+- <a id="tut-03.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a request has a state and its questions by name. Each question is a `Noul`, a `Choice` or a `Score`, and its field `type` says which. New, 111 lines. [The file](https://github.com/rahuldave/babykev/blob/e8e2e72adad9364a58be21dadf6d757e84436b97/src/babykev/api.py).
+  - look at `class SystemOneRequest(BaseModel):`
+
+<details open><summary>The patch to <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -0,0 +1,111 @@
++"""TypeSafe-compatible request/response shapes (POST /v1/systemone) mapped onto the single pointer primitive.
++
++Noul   -> 2 options [false, true];            answer = p(true)
++Choice -> options 'name' or 'name: desc';      answer = argmax, probabilities by name, confidence
++Score  -> options = ordered level descriptions; answer = expected level, legend, probabilities by index
++"""
++from typing import Any, Literal, Union
++from pydantic import BaseModel, Field, model_validator
++
++JSONContent = Union[str, dict, list, int, float, bool, None]
++MAX_OPTIONS = 255
++
++
++class Noul(BaseModel):
++    type: Literal["noul"]
++    instructions: JSONContent
++    criteria: dict[str, JSONContent] | None = None
++
++
++class Choice(BaseModel):
++    type: Literal["choice"]
++    instructions: JSONContent
++    criteria: dict[str, JSONContent]
++
++    @model_validator(mode="after")
++    def _check(self):
++        if not 1 <= len(self.criteria) <= MAX_OPTIONS: raise ValueError(f"criteria must have 1..{MAX_OPTIONS} options")
++        return self
++
++
++class Score(BaseModel):
++    type: Literal["score"]
++    instructions: JSONContent
++    criteria: list[JSONContent] = Field(min_length=2, max_length=MAX_OPTIONS)
++
++
++Question = Union[Noul, Choice, Score]
++
++
++class SystemOneRequest(BaseModel):
++    state: JSONContent
++    model: str = "kev-latest"
++    questions: dict[str, Question] = Field(min_length=1)
++
++
++def render(v: JSONContent, indent: int = 0) -> str:
++    """Flatten str | object | array into text the model sees. Field names are kept as labels."""
++    pad = "  " * indent
++    if v is None: return ""
++    if isinstance(v, (str, int, float, bool)): return str(v)
++    if isinstance(v, list): return "\n".join(f"{pad}- {render(x, indent + 1).lstrip()}" for x in v)
++    return "\n".join(f"{pad}{k}:\n{render(x, indent + 1)}" if isinstance(x, (dict, list)) else f"{pad}{k}: {render(x)}" for k, x in v.items())
++
++
++def option_text(name: str, desc: JSONContent) -> str:
++    return name if desc is None or desc == "" else f"{name}: {render(desc)}"
++
++
++def to_record(req: SystemOneRequest):
++    """-> internal record for encode(), plus per-question metadata to map probabilities back."""
++    qs, meta = [], []
++    for qid, q in req.questions.items():
++        instr = render(q.instructions)
++        if q.type == "noul":
++            c = q.criteria or {}
++            opts = [option_text("no", c.get("false")), option_text("yes", c.get("true"))]
++            meta.append({"id": qid, "type": "noul"})
++        elif q.type == "choice":
++            opts = [option_text(k, v) for k, v in q.criteria.items()]
++            meta.append({"id": qid, "type": "choice", "keys": list(q.criteria.keys())})
++        else:
++            opts = [render(x) for x in q.criteria]
++            meta.append({"id": qid, "type": "score", "legend": {str(i): render(x) for i, x in enumerate(q.criteria)}})
++        qs.append({"instr": instr, "options": opts, "label": 0})
++    return {"state": render(req.state), "questions": qs}, meta
++
++
++def choice_confidence(p: list[float]) -> float:
++    K = len(p)
++    return 1.0 if K == 1 else (max(p) - 1 / K) / (1 - 1 / K)
++
++
++def score_confidence(p: list[float]) -> float:
++    """Approximation of TypeSafe's 'distance from the modal level' statistic (exact formula unpublished):
++    1 - E|level - mode| / (L - 1)."""
++    L = len(p); mode = max(range(L), key=lambda i: p[i])
++    return 1.0 - sum(pi * abs(i - mode) for i, pi in enumerate(p)) / (L - 1)
++
++
++def r2(x: float) -> float:
++    return round(float(x), 2)
++
++
++def to_answers(probs: list[list[float]], meta: list[dict]) -> dict[str, Any]:
++    out = {}
++    for p, m in zip(probs, meta):
++        if m["type"] == "noul":
++            out[m["id"]] = {"type": "noul", "noul": r2(p[1])}
++        elif m["type"] == "choice":
++            dist = {k: r2(v) for k, v in zip(m["keys"], p)}
++            out[m["id"]] = {"type": "choice", "choice": m["keys"][max(range(len(p)), key=lambda i: p[i])], "confidence": r2(choice_confidence(p)), "probabilities": dist}
++        else:
++            score = sum(i * pi for i, pi in enumerate(p))
++            out[m["id"]] = {"type": "score", "score": r2(score), "legend": m["legend"], "probabilities": {str(i): r2(v) for i, v in enumerate(p)}, "confidence": r2(score_confidence(p))}
++    return out
++
++
++def output_tokens(tok, answers: dict) -> int:
++    """Billing-style figure: tokens of the serialised answers. Not a measure of generation (there is none)."""
++    import json
++    return len(tok(json.dumps(answers), add_special_tokens=False).input_ids)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e8e2e72adad9364a58be21dadf6d757e84436b97). [The code after it](https://github.com/rahuldave/babykev/tree/e8e2e72adad9364a58be21dadf6d757e84436b97).

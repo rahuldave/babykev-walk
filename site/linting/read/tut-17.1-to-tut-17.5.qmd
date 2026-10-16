@@ -1,0 +1,279 @@
+---
+title: "17.1 to 17.5 The type checker"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Read the tutorial.** [Build it yourself](../build/tut-17.1-to-tut-17.5.qmd) is the other way to read this part.
+
+```bash
+just setup
+```
+
+The whole tutorial then documents the code. smalldocs, in a third dependency group, `docs`, reads the docstrings
+and the docments, the comments beside each parameter. `just docs check` lists what has no documentation, and the
+gate runs it. `just docs` builds a site from the docs.
+
+Then come the four packages of the model, torch, transformers, peft and safetensors. torch is the build for the CPU,
+from PyTorch's own index. Last, `src/babykev/model.py` comes in, the model, 274 lines. It passes the format, the
+linter and the docs check. No test runs it yet, so the coverage falls to 43%.
+
+`just setup` prints `Resolved 66 packages`. `model.py` has a type on every parameter and every return, because the
+linter asks for them. Nothing checks that the types are right. ty reads the code, and compares each call and each
+value with the types that the code and its libraries declare.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/056fe2ced73ff8568dfc329555795524c2465eb1). [The code after it](https://github.com/rahuldave/babykev/tree/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9).
+
+## 17.1 ty, in the group lint {#tut-17.1}
+
+ty is for working on babykev, so it goes in the group `lint`.
+
+This change came from running `uv add --group lint ty`.
+
+`uv add` prints `Resolved 67 packages`, and installs `ty==0.0.88`, which needs no other package.
+
+In `pyproject.toml`, the group `lint` has `"ty>=0.0.88",` on line 46, under ruff. `uv.lock` has its exact version.
+
+```bash
+uv run ty --version
+```
+
+It prints `ty 0.0.88`, or a newer version. A newer ty can find more, or less, than these notes show.
+
+### What changed {#tut-17.1-what-changed-182c57}
+
+- <a id="tut-17.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: ty, in the group `lint`. 1 line added. It comes from `uv add --group lint ty`. [The file](https://github.com/rahuldave/babykev/blob/aaa8fe6d7d1dfbca863fe23dc0d660dd10d36c2b/pyproject.toml).
+  - look at `"ty>=0.0.88",`
+- <a id="tut-17.1-uv.lock-8356d8"></a>`uv.lock`: the exact version of ty. 27 lines added. It comes from `uv add --group lint ty`. [The file](https://github.com/rahuldave/babykev/blob/aaa8fe6d7d1dfbca863fe23dc0d660dd10d36c2b/uv.lock).
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -43,6 +43,7 @@ docs = [
+ lint = [
+     "pre-commit>=4.7.0",
+     "ruff>=0.17.1",
++    "ty>=0.0.88",
+     "validate-pyproject>=0.26",
+     "yamllint>=1.38.0",
+ ]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/aaa8fe6d7d1dfbca863fe23dc0d660dd10d36c2b). [The code after it](https://github.com/rahuldave/babykev/tree/aaa8fe6d7d1dfbca863fe23dc0d660dd10d36c2b).
+
+## 17.2 The recipe types {#tut-17.2}
+
+`ty check` checks every Python file of the project. The recipe `types` runs it, and gives it any extra words.
+
+A patch to [`justfile`](#tut-17.2-justfile-424f0b).
+
+In the `justfile`, the recipe `types` is on lines 60 to 64. Line 64 runs `uv run ty check "$@"`.
+
+The command behind the recipe comes first.
+
+```bash
+uv run ty check
+```
+
+`ty check` prints two diagnostics, and ends with exit code 1. Both are `error[invalid-mutable-override]`, `Invalid
+override of attribute forward`, at `src/babykev/model.py:178:9` and at `src/babykev/model.py:257:9`. The two lines
+are the methods `forward` of `PointerHead` and of `DecisionModel`. Under each, ty says `Override does not accept writes of type
+(...) -> Any`. The last line is `Found 2 diagnostics`.
+
+```bash
+just --show types
+just types
+just help types
+```
+
+`just --show types` prints the recipe. `just types` prints the same two diagnostics, and ends with exit code 1. `just
+help types` prints the line of the recipe.
+
+```bash
+uv run ty explain rule invalid-mutable-override
+```
+
+`ty explain rule` prints what a rule checks. A subclass must accept every value that its base class lets code write
+into an attribute. Its example has a `value: int` in a base class and a `value: bool` in a subclass. Code that writes
+`42` through the base class breaks the subclass. The next move reads what torch declares.
+
+### What changed {#tut-17.2-what-changed-182c57}
+
+- <a id="tut-17.2-justfile-424f0b"></a>`justfile`: the recipe `types`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/7866ef7f88d528e2e7ee04d55c68e56ce461cff1/justfile).
+  - look at `types *args:`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -57,6 +57,12 @@ lint-config *args:
+     just --fmt --check --unstable
+     uv run yamllint --strict .
+ 
++# Check the types, by reading the code and not running it. Extra words go to ty: just types src
++[group('quality')]
++[no-exit-message]
++types *args:
++    @{{ if args == "help" { "just help types" } else { 'uv run ty check "$@"' } }}
++
+ # Run the tests. Extra words go to pytest: just test -k render
+ [group('quality')]
+ [no-exit-message]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7866ef7f88d528e2e7ee04d55c68e56ce461cff1). [The code after it](https://github.com/rahuldave/babykev/tree/7866ef7f88d528e2e7ee04d55c68e56ce461cff1).
+
+## 17.3 PointerHead.forward, past ty {#tut-17.3}
+
+torch declares `forward` in its base class of every model, `nn.Module`.
+
+```bash
+grep -n '= _forward_unimplemented' .venv/lib/python3.13/site-packages/torch/nn/modules/module.py
+```
+
+`grep` prints line 526 of `module.py`, `forward: Callable[..., Any] = _forward_unimplemented`. `forward` is an
+attribute that may hold any function, with any arguments. `PointerHead` puts a method there that takes two tensors.
+Code could write any function into `forward` of an `nn.Module`, and the method accepts fewer calls. The rule refuses
+this narrowing.
+
+Every model of torch defines `forward` as a method. torch only calls it, from `__call__`, and never writes it. So the
+rule is right in general, and does not fit here.
+
+A comment `# ty: ignore[invalid-mutable-override]` on the line of a diagnostic turns off that one rule on that one
+line. Each other rule still checks the line. A comment above the method says why.
+
+A patch to [`src/babykev/model.py`](#tut-17.3-src-babykev-model.py-a86a0b).
+
+In `src/babykev/model.py`, the reason is on lines 178 and 179, and line 180 is
+`def forward(  # ty: ignore[invalid-mutable-override]`.
+
+```bash
+just types
+just docs check
+```
+
+`just types` prints one diagnostic, at `src/babykev/model.py:259:9`, the `forward` of `DecisionModel`, two lines lower
+than before. It ends with `Found 1 diagnostic`, and exit code 1. `just docs check` prints the note of torch and
+`60 of 60`. The comment on the line `def forward(` is not a docment, because a docment is on the line of a parameter
+or of the return type.
+
+### What changed {#tut-17.3-what-changed-182c57}
+
+- <a id="tut-17.3-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the rule off on the `forward` of `PointerHead`, with the reason. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/d5312a3ec2ed265ca4dbf5c7dd2492c686024696/src/babykev/model.py).
+  - look at `    # tensors accepts fewer calls, so ty refuses it. torch only calls forward, and never sets it`
+
+<details><summary>The diff of <code>src/babykev/model.py</code></summary>
+
+```diff
+@@ -175,7 +175,9 @@ class PointerHead(nn.Module):
+         self.q, self.k = nn.Linear(d, dp), nn.Linear(d, dp)
+         self.scale = 1 / math.sqrt(dp)
+ 
+-    def forward(
++    # nn.Module declares forward as an attribute that may hold any function. A method with two
++    # tensors accepts fewer calls, so ty refuses it. torch only calls forward, and never sets it
++    def forward(  # ty: ignore[invalid-mutable-override]
+         self,
+         h_decide: torch.Tensor,  # The hidden state at the decide token, shape [d]
+         h_opts: torch.Tensor,  # The hidden states at the K options' closing tokens, shape [K, d]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d5312a3ec2ed265ca4dbf5c7dd2492c686024696). [The code after it](https://github.com/rahuldave/babykev/tree/d5312a3ec2ed265ca4dbf5c7dd2492c686024696).
+
+## 17.4 DecisionModel.forward, past ty {#tut-17.4}
+
+The `forward` of `DecisionModel` is the same case. It gets the same comment, and one line of reason that points to
+the first.
+
+A patch to [`src/babykev/model.py`](#tut-17.4-src-babykev-model.py-a86a0b).
+
+In `src/babykev/model.py`, the reason is on line 259, and line 260 is
+`def forward(  # ty: ignore[invalid-mutable-override]`.
+
+```bash
+just types
+```
+
+`just types` prints `All checks passed!`, and ends with exit code 0.
+
+### What changed {#tut-17.4-what-changed-182c57}
+
+- <a id="tut-17.4-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the rule off on the `forward` of `DecisionModel`, with the reason. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/f14349138824af0b107742451814b1234e72b34a/src/babykev/model.py).
+  - look at `    # As in PointerHead, nn.Module declares forward as an attribute, and torch never sets it`
+
+<details><summary>The diff of <code>src/babykev/model.py</code></summary>
+
+```diff
+@@ -256,7 +256,8 @@ class DecisionModel(nn.Module):
+             for b, enc in enumerate(encs)
+         ]
+ 
+-    def forward(
++    # As in PointerHead, nn.Module declares forward as an attribute, and torch never sets it
++    def forward(  # ty: ignore[invalid-mutable-override]
+         self,
+         enc: Encoded,  # A packed record
+     ) -> list[torch.Tensor]:  # For each question, one logit per option
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/f14349138824af0b107742451814b1234e72b34a). [The code after it](https://github.com/rahuldave/babykev/tree/f14349138824af0b107742451814b1234e72b34a).
+
+## 17.5 The gate checks the types {#tut-17.5}
+
+`just types` passes, and nothing runs it before `git commit`. As a line of `check`, it runs before each `git commit`,
+through the hook. It goes after the linter, and before the tests.
+
+A patch to [`justfile`](#tut-17.5-justfile-424f0b).
+
+In the `justfile`, `just types` is line 81, between `just lint` and `just test -q`. The comment on line 72 names the
+types.
+
+```bash
+just --show check
+just check
+```
+
+`just --show check` prints the recipe, with six checks. `just check` prints `All checks passed!` twice, once for the
+linter and once for ty. Then come `53 passed`, the total of 43%, `60 of 60` and the config files, and it ends with
+exit code 0. A call that does not match the types now stops `git commit`.
+
+This tutorial ends here. After it, the whole tutorial runs the model and gives it tests, and the gate gets a floor
+on the coverage. The [whole tutorial](https://github.com/rahuldave/babykev/tree/tutorial) has every change.
+
+### What changed {#tut-17.5-what-changed-182c57}
+
+- <a id="tut-17.5-justfile-424f0b"></a>`justfile`: ty, in the gate. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9/justfile).
+  - look at `    just types`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -69,7 +69,7 @@ types *args:
+ test *args:
+     @{{ if args == "help" { "just help test" } else { 'uv run pytest "$@"' } }}
+ 
+-# Run the checks one after another, and stop at the first that fails: the format, the linter, the tests, the docs, the config files
++# Run the checks one after another, and stop at the first that fails: the format, the linter, the types, the tests, the docs, the config files
+ [group('quality')]
+ [no-exit-message]
+ check *args:
+@@ -78,6 +78,7 @@ check *args:
+     if [ "$*" = help ]; then just help check; exit 0; fi
+     just fmt --check
+     just lint
++    just types
+     just test -q
+     just docs check
+     just lint-config
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9). [The code after it](https://github.com/rahuldave/babykev/tree/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9).

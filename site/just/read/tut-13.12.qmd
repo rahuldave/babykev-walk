@@ -1,0 +1,69 @@
+---
+title: "13.12 The docs check joins `just check`"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Read the tutorial.** [Build it yourself](../build/tut-13.12.qmd) is the other way to read this part.
+
+```bash
+just setup
+```
+
+The code now has its documentation. A docment is a comment beside a parameter or a return type. Every function of
+`api.py` and of the tests has docments, and every field of a request has a description. One docment was too long on purpose,
+`just fmt` wrapped its line, and a shorter docment took its place.
+
+`just check` does not run the docs check yet. One line in `check` runs it.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/861142a50356963bb5e371fe8226ba73b87eef93). [The code after it](https://github.com/rahuldave/babykev/tree/005b87bdfa2e70c6ceca52dc07197c69702f00be).
+
+## 13.12 The gate checks the docs {#tut-13.12}
+
+`just check` passed with a docment lost. As a line of `check`, `just docs check` runs before each `git commit`,
+through the hook. It goes after the tests, and before the config files.
+
+A patch to [`justfile`](#tut-13.12-justfile-424f0b).
+
+In the `justfile`, `just docs check` is line 76, between `just test -q` and `just lint-config`. The comment on line 66
+names the docs.
+
+```bash
+just --show check
+just check
+```
+
+`just --show check` prints the recipe, with five checks. `just check` prints the output of each, with `45 of 45`
+after the tests, and ends with exit code 0. A function, a parameter or a field with no documentation now stops
+`git commit`.
+
+### What changed {#tut-13.12-what-changed-182c57}
+
+- <a id="tut-13.12-justfile-424f0b"></a>`justfile`: the docs check, in the gate. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/005b87bdfa2e70c6ceca52dc07197c69702f00be/justfile).
+  - look at `    just docs check`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -63,7 +63,7 @@ lint-config *args:
+ test *args:
+     @{{ if args == "help" { "just help test" } else { 'uv run pytest "$@"' } }}
+ 
+-# Run the checks one after another, and stop at the first that fails: the format, the linter, the tests, the config files
++# Run the checks one after another, and stop at the first that fails: the format, the linter, the tests, the docs, the config files
+ [group('quality')]
+ [no-exit-message]
+ check *args:
+@@ -73,6 +73,7 @@ check *args:
+     just fmt --check
+     just lint
+     just test -q
++    just docs check
+     just lint-config
+ 
+ # The reference of the code, by smalldocs. Words go to smalldocs api: just docs check, just docs module api
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/005b87bdfa2e70c6ceca52dc07197c69702f00be). [The code after it](https://github.com/rahuldave/babykev/tree/005b87bdfa2e70c6ceca52dc07197c69702f00be).

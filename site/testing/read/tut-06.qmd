@@ -1,0 +1,497 @@
+---
+title: "6 Tests of rounding and confidence"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Read the tutorial.** [Build it yourself](../build/tut-06.qmd) is the other way to read this part.
+
+The whole tutorial then adds eleven more tests of `api.py`. They check how a request becomes the text that the model
+reads, and how the probabilities of the model become answers. After them, `just test` prints `43 passed`, and every
+line of `api.py` runs.
+
+Every line runs, and two of them are wrong. The tests here find them.
+
+```bash
+just setup
+```
+
+Every line of the contract runs in a test, and two of them are wrong. A test of rounding finds the first. The tests of
+confidence find the second. Each test fails, and the move after it fixes the code.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f). [The code after it](https://github.com/rahuldave/babykev/tree/910716f0cec79c3f31afb34cf3a2593f0cd51315).
+
+## 6.1 A test of rounding, which fails {#tut-06.1}
+
+The probabilities of an answer must sum to 1. The test makes a choice of 77 options with the same probability, 1/77
+each. `pytest.approx(1, abs=0.02)` accepts any number from 0.98 to 1.02. The test fails on purpose, because it finds
+a bug of kev.
+
+A patch to [`tests/unit/test_api.py`](#tut-06.1-tests-unit-test_api.py-58d97c).
+
+At the end of `tests/unit/test_api.py`, the new test sums the probabilities of 77 equal options.
+
+```bash
+just test -k sum_to_one
+```
+
+pytest prints `F` for the failed test, and `assert 0.77 == 1 ± 0.02`. It ends with `1 failed, 43 deselected`, and exit
+code 1.
+
+```bash
+sed -n '89,90p' src/babykev/api.py
+```
+
+Lines 89 and 90 are `r2`, which rounds to two decimals. 1/77 is about 0.013, and `r2` makes it 0.01. 77 times 0.01 is
+0.77. The test is right, and the code is wrong.
+
+### What changed {#tut-06.1-what-changed-182c57}
+
+- <a id="tut-06.1-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the sum of the rounded probabilities. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/9012b28ceacd0bcc3971154a5df2f822e551443d/tests/unit/test_api.py).
+  - look at `    assert sum(answer["probabilities"].values()) == pytest.approx(1, abs=0.02)`
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -243,3 +243,12 @@ def test_every_question_gets_an_answer_of_its_own_type():
+         "milk": "choice",
+         "firmness": "score",
+     }
++
++
++def test_rounded_probabilities_still_sum_to_one():
++    """Rounding for output must not lose probability, even with many options."""
++    keys = [f"intent{i}" for i in range(77)]
++    answer = to_answers([[1 / 77] * 77], [{"id": "intent", "type": "choice", "keys": keys}])[
++        "intent"
++    ]
++    assert sum(answer["probabilities"].values()) == pytest.approx(1, abs=0.02)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9012b28ceacd0bcc3971154a5df2f822e551443d). [The code after it](https://github.com/rahuldave/babykev/tree/9012b28ceacd0bcc3971154a5df2f822e551443d).
+
+## 6.2 Probabilities rounded to four decimals {#tut-06.2}
+
+Two decimals lose too much, and 77 equal options sum to 0.77. `round_prob` takes the place of `r2`, and rounds to four
+decimals. Each 1/77 becomes 0.013, and the 77 probabilities sum to 1.001, within 0.02 of 1.
+
+A patch to [`src/babykev/api.py`](#tut-06.2-src-babykev-api.py-2ea65f).
+
+In `src/babykev/api.py`, `round_prob` stands where `r2` was, and `to_answers` calls it.
+
+```bash
+just test -k sum_to_one
+just test
+```
+
+`just test -k sum_to_one` prints `1 passed`. The test did not change, and the code did. `just test` prints `44 passed`.
+
+### What changed {#tut-06.2-what-changed-182c57}
+
+- <a id="tut-06.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: four decimals. 8 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/27e93dd7ee76e609084a1d8a1c1cfbb4f7811da4/src/babykev/api.py).
+  - look at `    return round(float(x), 4)`
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -86,19 +86,21 @@ def score_confidence(p: list[float]) -> float:
+     return 1.0 - sum(pi * abs(i - mode) for i, pi in enumerate(p)) / (L - 1)
+ 
+ 
+-def r2(x: float) -> float:
+-    return round(float(x), 2)
++def round_prob(x: float) -> float:
++    """Round a number for output. Four decimals keep the sum of a distribution within 0.02 of 1,
++    even with MAX_OPTIONS options. Two decimals did not: 77 equal options summed to 0.77."""
++    return round(float(x), 4)
+ 
+ 
+ def to_answers(probs: list[list[float]], meta: list[dict]) -> dict[str, Any]:
+     out = {}
+     for p, m in zip(probs, meta):
+         if m["type"] == "noul":
+-            out[m["id"]] = {"type": "noul", "noul": r2(p[1])}
++            out[m["id"]] = {"type": "noul", "noul": round_prob(p[1])}
+         elif m["type"] == "choice":
+-            dist = {k: r2(v) for k, v in zip(m["keys"], p)}
+-            out[m["id"]] = {"type": "choice", "choice": m["keys"][max(range(len(p)), key=lambda i: p[i])], "confidence": r2(choice_confidence(p)), "probabilities": dist}
++            dist = {k: round_prob(v) for k, v in zip(m["keys"], p)}
++            out[m["id"]] = {"type": "choice", "choice": m["keys"][max(range(len(p)), key=lambda i: p[i])], "confidence": round_prob(choice_confidence(p)), "probabilities": dist}
+         else:
+             score = sum(i * pi for i, pi in enumerate(p))
+-            out[m["id"]] = {"type": "score", "score": r2(score), "legend": m["legend"], "probabilities": {str(i): r2(v) for i, v in enumerate(p)}, "confidence": r2(score_confidence(p))}
++            out[m["id"]] = {"type": "score", "score": round_prob(score), "legend": m["legend"], "probabilities": {str(i): round_prob(v) for i, v in enumerate(p)}, "confidence": round_prob(score_confidence(p))}
+     return out
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/27e93dd7ee76e609084a1d8a1c1cfbb4f7811da4). [The code after it](https://github.com/rahuldave/babykev/tree/27e93dd7ee76e609084a1d8a1c1cfbb4f7811da4).
+
+## 6.3 A guess between options has confidence 0 {#tut-06.3}
+
+Confidence runs from 1, when the model is sure, to 0, when it knows nothing. A choice that gives every option the same
+probability is a guess.
+
+A patch to [`tests/unit/test_api.py`](#tut-06.3-tests-unit-test_api.py-58d97c).
+
+At the end of `tests/unit/test_api.py`, the test gives `choice_confidence` four equal probabilities.
+
+```bash
+just test -k confidence
+```
+
+pytest prints `1 passed`.
+
+### What changed {#tut-06.3-what-changed-182c57}
+
+- <a id="tut-06.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a guess between four options. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/27f1f23cc392446dd80918636dfc7a3c52692aae/tests/unit/test_api.py).
+  - look at `assert choice_confidence([0.25] * 4) == pytest.approx(0)`
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -12,6 +12,7 @@ from babykev.api import (
+     Noul,
+     Score,
+     SystemOneRequest,
++    choice_confidence,
+     option_text,
+     render,
+     to_answers,
+@@ -252,3 +253,11 @@ def test_rounded_probabilities_still_sum_to_one():
+         "intent"
+     ]
+     assert sum(answer["probabilities"].values()) == pytest.approx(1, abs=0.02)
++
++
++# Confidence
++
++
++def test_choice_confidence_is_zero_for_a_guess():
++    """Equal probabilities are a guess, whatever the number of options."""
++    assert choice_confidence([0.25] * 4) == pytest.approx(0)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/27f1f23cc392446dd80918636dfc7a3c52692aae). [The code after it](https://github.com/rahuldave/babykev/tree/27f1f23cc392446dd80918636dfc7a3c52692aae).
+
+## 6.4 A certain choice has confidence 1 {#tut-06.4}
+
+All the probability on one option is certainty, with three options or with one.
+
+A patch to [`tests/unit/test_api.py`](#tut-06.4-tests-unit-test_api.py-58d97c).
+
+At the end of `tests/unit/test_api.py`, the test checks `[0, 1, 0]` and `[1.0]`.
+
+```bash
+just test -k confidence
+```
+
+pytest prints `2 passed`.
+
+### What changed {#tut-06.4-what-changed-182c57}
+
+- <a id="tut-06.4-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: certainty. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/9ded0b3177719bb849eda76972daa2f5368af069/tests/unit/test_api.py).
+  - look at `assert choice_confidence([0, 1, 0]) == pytest.approx(1)`
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -261,3 +261,9 @@ def test_rounded_probabilities_still_sum_to_one():
+ def test_choice_confidence_is_zero_for_a_guess():
+     """Equal probabilities are a guess, whatever the number of options."""
+     assert choice_confidence([0.25] * 4) == pytest.approx(0)
++
++
++def test_choice_confidence_is_one_when_certain():
++    """All the probability on one option is certainty."""
++    assert choice_confidence([0, 1, 0]) == pytest.approx(1)
++    assert choice_confidence([1.0]) == 1.0
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9ded0b3177719bb849eda76972daa2f5368af069). [The code after it](https://github.com/rahuldave/babykev/tree/9ded0b3177719bb849eda76972daa2f5368af069).
+
+## 6.5 The confidence of a choice grows with its winner {#tut-06.5}
+
+Between a guess and certainty, confidence follows the probability of the most likely option. `[0.5, 0.25, 0.25]` gets
+0.25.
+
+A patch to [`tests/unit/test_api.py`](#tut-06.5-tests-unit-test_api.py-58d97c).
+
+At the end of `tests/unit/test_api.py`, the test expects 0.25 for `[0.5, 0.25, 0.25]`.
+
+```bash
+just test -k confidence
+```
+
+pytest prints `3 passed`.
+
+### What changed {#tut-06.5-what-changed-182c57}
+
+- <a id="tut-06.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a confidence between 0 and 1. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/890fbe0900f6a0f59232ca9d94ce4cc439e21dde/tests/unit/test_api.py).
+  - look at `assert choice_confidence([0.5, 0.25, 0.25]) == pytest.approx(0.25)`
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -267,3 +267,8 @@ def test_choice_confidence_is_one_when_certain():
+     """All the probability on one option is certainty."""
+     assert choice_confidence([0, 1, 0]) == pytest.approx(1)
+     assert choice_confidence([1.0]) == 1.0
++
++
++def test_choice_confidence_grows_with_the_winner():
++    """Between a guess and certainty, confidence follows the winning probability."""
++    assert choice_confidence([0.5, 0.25, 0.25]) == pytest.approx(0.25)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/890fbe0900f6a0f59232ca9d94ce4cc439e21dde). [The code after it](https://github.com/rahuldave/babykev/tree/890fbe0900f6a0f59232ca9d94ce4cc439e21dde).
+
+## 6.6 A certain score has confidence 1 {#tut-06.6}
+
+A score has its own confidence, which measures how close the probabilities sit to the most likely level. All the
+probability on one level is certainty, wherever the level is. The test runs for each of three levels.
+
+A patch to [`tests/unit/test_api.py`](#tut-06.6-tests-unit-test_api.py-58d97c).
+
+At the end of `tests/unit/test_api.py`, the parametrized test puts 1.0 on level 0, 1 and 2 in turn.
+
+```bash
+just test -k confidence
+```
+
+pytest prints `6 passed`.
+
+### What changed {#tut-06.6-what-changed-182c57}
+
+- <a id="tut-06.6-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: certainty, on each level. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/d2564e48ae134802f1d48cc079cfe3b92db14639/tests/unit/test_api.py).
+  - look at `def test_score_confidence_is_one_when_certain(level):`
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -15,6 +15,7 @@ from babykev.api import (
+     choice_confidence,
+     option_text,
+     render,
++    score_confidence,
+     to_answers,
+     to_record,
+ )
+@@ -272,3 +273,11 @@ def test_choice_confidence_is_one_when_certain():
+ def test_choice_confidence_grows_with_the_winner():
+     """Between a guess and certainty, confidence follows the winning probability."""
+     assert choice_confidence([0.5, 0.25, 0.25]) == pytest.approx(0.25)
++
++
++@pytest.mark.parametrize("level", [0, 1, 2])
++def test_score_confidence_is_one_when_certain(level):
++    """All the probability on one level is certainty, wherever the level is."""
++    p = [0.0, 0.0, 0.0]
++    p[level] = 1.0
++    assert score_confidence(p) == pytest.approx(1)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d2564e48ae134802f1d48cc079cfe3b92db14639). [The code after it](https://github.com/rahuldave/babykev/tree/d2564e48ae134802f1d48cc079cfe3b92db14639).
+
+## 6.7 A score prefers neighbouring levels {#tut-06.7}
+
+Doubt between two neighbouring levels is closer to certain than doubt between the two ends of the scale.
+
+A patch to [`tests/unit/test_api.py`](#tut-06.7-tests-unit-test_api.py-58d97c).
+
+At the end of `tests/unit/test_api.py`, the test compares `[0.5, 0.5, 0, 0]` with `[0.5, 0, 0, 0.5]`.
+
+```bash
+just test -k confidence
+```
+
+pytest prints `7 passed`.
+
+### What changed {#tut-06.7-what-changed-182c57}
+
+- <a id="tut-06.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: near is better than far. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/795356b136ab4b1b1c22c8e63b8175a1a6f6d6de/tests/unit/test_api.py).
+  - look at `assert score_confidence([0.5, 0.5, 0, 0]) > score_confidence([0.5, 0, 0, 0.5])`
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -281,3 +281,8 @@ def test_score_confidence_is_one_when_certain(level):
+     p = [0.0, 0.0, 0.0]
+     p[level] = 1.0
+     assert score_confidence(p) == pytest.approx(1)
++
++
++def test_score_confidence_prefers_neighbouring_levels():
++    """Doubt between adjacent levels is more confident than doubt between the two ends."""
++    assert score_confidence([0.5, 0.5, 0, 0]) > score_confidence([0.5, 0, 0, 0.5])
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/795356b136ab4b1b1c22c8e63b8175a1a6f6d6de). [The code after it](https://github.com/rahuldave/babykev/tree/795356b136ab4b1b1c22c8e63b8175a1a6f6d6de).
+
+## 6.8 A guess between levels has confidence 0, and the test fails {#tut-06.8}
+
+A score that gives every level the same probability is a guess, as it is for a choice, and its confidence must be 0.
+The test fails on purpose, because it finds the second bug of kev.
+
+A patch to [`tests/unit/test_api.py`](#tut-06.8-tests-unit-test_api.py-58d97c).
+
+At the end of `tests/unit/test_api.py`, the test gives `score_confidence` three equal probabilities.
+
+```bash
+just test -k confidence
+```
+
+pytest prints `1 failed, 7 passed`. The test that failed is `test_score_confidence_is_zero_for_a_guess`, with
+`assert 0.5 == 0 ± 1.0e-12`. A guess over three levels has confidence 0.5. So the score says it is half sure when it
+knows nothing.
+
+```bash
+sed -n '82,86p' src/babykev/api.py
+```
+
+Lines 82 to 86 are `score_confidence`. `mode` is the most likely level. The sum is the spread around `mode`, the
+expected distance of a level from `mode`. The code divides it by `L - 1`, the length of the scale.
+
+For the guess, all levels are equally likely, and `max` takes the first, level 0, as `mode`. The levels are 0, 1 and 2
+places from it, so the spread is 1/3 × 0 + 1/3 × 1 + 1/3 × 2 = 1 place. The length is 2 places, so the confidence is
+1 − 1/2 = 0.5.
+
+### What changed {#tut-06.8-what-changed-182c57}
+
+- <a id="tut-06.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a guess between three levels. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/72a00ec85ae4b6f3b591cf06fc65903a56f1f7fa/tests/unit/test_api.py).
+  - look at `assert score_confidence([1 / 3] * 3) == pytest.approx(0)`
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -286,3 +286,8 @@ def test_score_confidence_is_one_when_certain(level):
+ def test_score_confidence_prefers_neighbouring_levels():
+     """Doubt between adjacent levels is more confident than doubt between the two ends."""
+     assert score_confidence([0.5, 0.5, 0, 0]) > score_confidence([0.5, 0, 0, 0.5])
++
++
++def test_score_confidence_is_zero_for_a_guess():
++    """Equal probabilities over the levels are a guess, as they are for a choice."""
++    assert score_confidence([1 / 3] * 3) == pytest.approx(0)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/72a00ec85ae4b6f3b591cf06fc65903a56f1f7fa). [The code after it](https://github.com/rahuldave/babykev/tree/72a00ec85ae4b6f3b591cf06fc65903a56f1f7fa).
+
+## 6.9 The confidence of a score measures against a guess {#tut-06.9}
+
+A guess gets confidence 0.5, because the code measures the spread against the length of the scale. The fix measures it
+against the spread of a guess around the middle level.
+
+A patch to [`src/babykev/api.py`](#tut-06.9-src-babykev-api.py-2ea65f).
+
+In `src/babykev/api.py`, `score_confidence` now computes `spread` and `guess`, and divides one by the other.
+
+`guess` is the spread of a guess around the middle level. For three levels, the middle is level 1, and the levels are
+1, 0 and 1 places from it. So `guess` is 1/3 × 1 + 1/3 × 0 + 1/3 × 1 = 2/3 of a place. For the guess itself, `spread`
+around `mode` is 1 place, as before. So 1 − 1 ÷ (2/3) = 1 − 1.5 = −0.5, and `max(0.0, ...)` counts a value below 0 as
+0. A guess has confidence 0.
+
+```bash
+uv run python -c "from babykev.api import score_confidence as s; print([round(s(p), 2) for p in ([1/3]*3, [0.5, 0.25, 0.25], [0.6, 0.3, 0.1], [0.8, 0.1, 0.1])])"
+```
+
+The command prints the confidences of the guess and of three answers, `[0.0, 0.0, 0.25, 0.55]`. `[0.5, 0.25, 0.25]`
+is as spread out as a guess, and also gets 0.
+
+```bash
+just test
+```
+
+`just test` prints `52 passed`, and `api.py` is at 99%. `Missing` gives line 90, `return 1.0`. The new function
+divides by `guess`, which is 0 for a scale of one level, so line 90 answers 1 before the division. A request cannot
+hold a scale of one level, so no test reaches it.
+
+### What changed {#tut-06.9-what-changed-182c57}
+
+- <a id="tut-06.9-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the spread of a guess, as the measure. 12 lines added, 4 removed. [The file](https://github.com/rahuldave/babykev/blob/e97355545c4001a361257c532330f8784aa51b79/src/babykev/api.py).
+  - look at `    guess = sum(abs(i - (L - 1) / 2) for i in range(L)) / L`
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -80,10 +80,18 @@ def choice_confidence(p: list[float]) -> float:
+ 
+ 
+ def score_confidence(p: list[float]) -> float:
+-    """Approximation of TypeSafe's 'distance from the modal level' statistic (exact formula unpublished):
+-    1 - E|level - mode| / (L - 1)."""
+-    L = len(p); mode = max(range(L), key=lambda i: p[i])
+-    return 1.0 - sum(pi * abs(i - mode) for i, pi in enumerate(p)) / (L - 1)
++    """How closely the probabilities sit around the most likely level: 1 if certain, 0 for a guess.
++
++    `spread` is the expected distance from the most likely level. `guess` is the spread of a guess,
++    equal probability on every level, around the middle. Anything as spread out as a guess gets 0.
++    """
++    L = len(p)
++    if L == 1:
++        return 1.0
++    mode = max(range(L), key=lambda i: p[i])
++    spread = sum(pi * abs(i - mode) for i, pi in enumerate(p))
++    guess = sum(abs(i - (L - 1) / 2) for i in range(L)) / L
++    return max(0.0, 1.0 - spread / guess)
+ 
+ 
+ def round_prob(x: float) -> float:
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e97355545c4001a361257c532330f8784aa51b79). [The code after it](https://github.com/rahuldave/babykev/tree/e97355545c4001a361257c532330f8784aa51b79).
+
+## 6.10 A test of a scale with one level {#tut-06.10}
+
+Line 90 runs in no test. A scale of one level leaves nothing to doubt, so its confidence is 1, and a test that calls
+`score_confidence` itself can say so.
+
+A patch to [`tests/unit/test_api.py`](#tut-06.10-tests-unit-test_api.py-58d97c).
+
+At the end of `tests/unit/test_api.py`, the new test calls `score_confidence([1.0])`.
+
+```bash
+just test
+```
+
+`just test` prints `53 passed`, and the total is 100%, 79 of 79 statements.
+
+### What changed {#tut-06.10-what-changed-182c57}
+
+- <a id="tut-06.10-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the test calls the function itself. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/910716f0cec79c3f31afb34cf3a2593f0cd51315/tests/unit/test_api.py).
+  - look at `    assert score_confidence([1.0]) == 1.0`
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -291,3 +291,8 @@ def test_score_confidence_prefers_neighbouring_levels():
+ def test_score_confidence_is_zero_for_a_guess():
+     """Equal probabilities over the levels are a guess, as they are for a choice."""
+     assert score_confidence([1 / 3] * 3) == pytest.approx(0)
++
++
++def test_score_confidence_is_one_for_a_single_level():
++    """One level leaves nothing to doubt. A request cannot have one, but the function answers it."""
++    assert score_confidence([1.0]) == 1.0
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/910716f0cec79c3f31afb34cf3a2593f0cd51315). [The code after it](https://github.com/rahuldave/babykev/tree/910716f0cec79c3f31afb34cf3a2593f0cd51315).

@@ -1,0 +1,732 @@
+---
+title: "12 The config files, checked"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Build it yourself.** [Read the tutorial](../read/tut-12.qmd) is the other way to read this part.
+
+If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
+
+```bash
+git rm -rq --cached --ignore-unmatch -- :/ && git restore --source cab87c139ebd --staged --worktree -- :/
+```
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 25 packages`.
+
+The gate checks the Python of the project. The files that are not Python, the config files, have no check. A
+misspelt key in `pyproject.toml`, a lockfile that no longer matches it, or a YAML file that pre-commit cannot read
+passes the gate. A recipe `lint-config` checks each kind of config file, with one checker per move. One checker
+fails on its defaults, for real, and its settings fix it. Then the gate runs `lint-config` too.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/cab87c139ebd3b72771ed6db08b02dd7646c7d02). [The code after it](https://github.com/rahuldave/babykev/tree/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac).
+
+## 12.1 Validate-pyproject, in the group lint {#tut-12.1}
+
+`pyproject.toml` has a standard, which says which tables it has, which keys each table may hold, and what each value
+is. validate-pyproject checks the file against the standard. It goes in the group `lint`.
+
+```bash
+uv add --group lint validate-pyproject
+```
+
+`uv add` prints `Resolved 27 packages`, and installs `validate-pyproject==0.26` and `fastjsonschema`, which it needs.
+
+```bash
+uv run validate-pyproject --version
+```
+
+It prints `validate_pyproject 0.26`, or a newer version. Nothing runs it yet.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 7506fb7a39f8
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source cab87c139ebd --staged -- :/ && git restore --source 7506fb7a39f8 --staged --worktree -- :/
+```
+
+### What changed {#tut-12.1-what-changed-182c57}
+
+- <a id="tut-12.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: validate-pyproject, in the group `lint`. 1 line added. It comes from `uv add --group lint validate-pyproject`. [The file](https://github.com/rahuldave/babykev/blob/7506fb7a39f80397361a8e97ceb816f4b6931cd1/pyproject.toml).
+  - look at `"validate-pyproject>=0.26",`
+- <a id="tut-12.1-uv.lock-8356d8"></a>`uv.lock`: the exact version of validate-pyproject, and of `fastjsonschema`. 23 lines added. It comes from `uv add --group lint validate-pyproject`. [The file](https://github.com/rahuldave/babykev/blob/7506fb7a39f80397361a8e97ceb816f4b6931cd1/uv.lock).
+
+<details><summary>The diff that <code>uv add --group lint validate-pyproject</code> makes in <code>pyproject.toml</code></summary>
+
+```diff
+@@ -26,6 +26,7 @@ default-groups = "all"
+ lint = [
+     "pre-commit>=4.7.0",
+     "ruff>=0.17.1",
++    "validate-pyproject>=0.26",
+ ]
+ test = [
+     "pytest>=9.1.1",
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7506fb7a39f80397361a8e97ceb816f4b6931cd1). [The code after it](https://github.com/rahuldave/babykev/tree/7506fb7a39f80397361a8e97ceb816f4b6931cd1).
+
+## 12.2 The recipe lint-config, with validate-pyproject {#tut-12.2}
+
+A recipe `lint-config` will run a check for each kind of config file. Its first check is validate-pyproject on
+`pyproject.toml`. Its body is a script, with `set -e`, as in `check`, so that the next checks can come one line at a
+time.
+
+Apply the patch to [`justfile`](#tut-12.2-justfile-424f0b), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/64b71c6c0bdb792769aeef413b2ccead2be00ac4.diff | git apply --include=justfile
+```
+
+The patch adds the recipe `lint-config` under the recipe `lint`, above `test`.
+
+```bash
+uv run validate-pyproject pyproject.toml
+just --show lint-config
+just lint-config
+just help lint-config
+```
+
+`validate-pyproject` prints `Valid file: pyproject.toml`, and ends with exit code 0. A misspelt key fails. With
+`requires_python` in place of `requires-python`, it prints
+``[ERROR] `project` must not contain {'requires_python'} properties``. Then it prints
+`Invalid file: pyproject.toml`, and ends with exit code 1.
+
+`just --show lint-config` prints the recipe, and `just lint-config` prints the same line as the command.
+`just help lint-config` prints the line of the recipe.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 64b71c6c0bdb
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 7506fb7a39f8 --staged -- :/ && git restore --source 64b71c6c0bdb --staged --worktree -- :/
+```
+
+### What changed {#tut-12.2-what-changed-182c57}
+
+- <a id="tut-12.2-justfile-424f0b"></a>`justfile`: the recipe `lint-config`, with its first check. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/64b71c6c0bdb792769aeef413b2ccead2be00ac4/justfile).
+  - look at `lint-config *args:`
+
+<details open><summary>The patch to <code>justfile</code></summary>
+
+```diff
+@@ -42,6 +42,15 @@ fmt *args:
+ lint *args:
+     @{{ if args == "help" { "just help lint" } else { 'uv run ruff check "$@"' } }}
+ 
++# Check the config files: pyproject.toml against the standard
++[group('quality')]
++[no-exit-message]
++lint-config *args:
++    #!/usr/bin/env sh
++    set -e
++    if [ "$*" = help ]; then just help lint-config; exit 0; fi
++    uv run validate-pyproject pyproject.toml
++
+ # Run the tests. Extra words go to pytest: just test -k render
+ [group('quality')]
+ [no-exit-message]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/64b71c6c0bdb792769aeef413b2ccead2be00ac4). [The code after it](https://github.com/rahuldave/babykev/tree/64b71c6c0bdb792769aeef413b2ccead2be00ac4).
+
+## 12.3 Lint-config checks the lockfile {#tut-12.3}
+
+`uv.lock` must match `pyproject.toml`. When a person changes a dependency in `pyproject.toml` and does not run
+`uv lock`, they disagree. `uv lock --check` resolves the dependencies again, compares the result with `uv.lock`, and
+fails if they differ. It changes no file.
+
+Apply the patch to [`justfile`](#tut-12.3-justfile-424f0b), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/4308e46ddc44bbe18fb2ec528e4573e956219a16.diff | git apply --include=justfile
+```
+
+In the recipe `lint-config`, the patch adds `uv lock --check` under the line of validate-pyproject, and names the
+lockfile in the comment above the recipe.
+
+```bash
+uv lock --check
+just lint-config
+```
+
+`uv lock --check` prints `Resolved 27 packages`, and ends with exit code 0. `just lint-config` prints
+`Valid file: pyproject.toml`, then the same line.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 4308e46ddc44
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 64b71c6c0bdb --staged -- :/ && git restore --source 4308e46ddc44 --staged --worktree -- :/
+```
+
+### What changed {#tut-12.3-what-changed-182c57}
+
+- <a id="tut-12.3-justfile-424f0b"></a>`justfile`: the check of the lockfile. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/4308e46ddc44bbe18fb2ec528e4573e956219a16/justfile).
+  - look at `    uv lock --check`
+
+<details open><summary>The patch to <code>justfile</code></summary>
+
+```diff
+@@ -42,7 +42,7 @@ fmt *args:
+ lint *args:
+     @{{ if args == "help" { "just help lint" } else { 'uv run ruff check "$@"' } }}
+ 
+-# Check the config files: pyproject.toml against the standard
++# Check the config files: pyproject.toml against the standard, and the lockfile against it
+ [group('quality')]
+ [no-exit-message]
+ lint-config *args:
+@@ -50,6 +50,7 @@ lint-config *args:
+     set -e
+     if [ "$*" = help ]; then just help lint-config; exit 0; fi
+     uv run validate-pyproject pyproject.toml
++    uv lock --check
+ 
+ # Run the tests. Extra words go to pytest: just test -k render
+ [group('quality')]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/4308e46ddc44bbe18fb2ec528e4573e956219a16). [The code after it](https://github.com/rahuldave/babykev/tree/4308e46ddc44bbe18fb2ec528e4573e956219a16).
+
+## 12.4 Recipes refuse an old lockfile {#tut-12.4}
+
+When `pyproject.toml` changes and `uv.lock` does not, `uv run` writes a new `uv.lock` itself, and says nothing. Any
+recipe can then change the lockfile, and the person who ran it does not see the change. The variable `UV_LOCKED` makes
+every `uv run` refuse a lockfile that is out of date, in place of writing it. The `justfile` exports it to every
+recipe.
+
+Apply the patch to [`justfile`](#tut-12.4-justfile-424f0b), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/9f70971667e9a2fc6cbc1767fe58061ad9f26e22.diff | git apply --include=justfile
+```
+
+The patch adds `export UV_LOCKED := "1"` under the line `set positional-arguments`, with a comment above it.
+
+```bash
+just --evaluate UV_LOCKED
+```
+
+It prints `1`. `just` puts the variable in the environment of each command of each recipe, so every `uv run` of a
+recipe sees it.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 9f70971667e9
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 4308e46ddc44 --staged -- :/ && git restore --source 9f70971667e9 --staged --worktree -- :/
+```
+
+### What changed {#tut-12.4-what-changed-182c57}
+
+- <a id="tut-12.4-justfile-424f0b"></a>`justfile`: one line, which exports `UV_LOCKED` to every recipe. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/9f70971667e9a2fc6cbc1767fe58061ad9f26e22/justfile).
+  - look at `export UV_LOCKED := "1"`
+
+<details open><summary>The patch to <code>justfile</code></summary>
+
+```diff
+@@ -5,6 +5,9 @@ program := "babykev"
+ # Each word after a recipe's name reaches its commands whole, as "$1", "$2" and so on; "$@" is all of them
+ set positional-arguments
+ 
++# Every uv run in a recipe refuses a lockfile that is out of date, in place of writing a new one
++export UV_LOCKED := "1"
++
+ [private]
+ default:
+     @just --list --unsorted
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9f70971667e9a2fc6cbc1767fe58061ad9f26e22). [The code after it](https://github.com/rahuldave/babykev/tree/9f70971667e9a2fc6cbc1767fe58061ad9f26e22).
+
+## 12.5 Lint-config checks the justfile {#tut-12.5}
+
+The `justfile` is a config file too. just has a formatter of its own, `just --fmt`. With `--check`, it writes nothing,
+and fails if the file is not in its format. just still calls the formatter unstable, so it needs `--unstable`.
+
+Apply the patch to [`justfile`](#tut-12.5-justfile-424f0b), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/284e4b7e241387e68463cb96fde80f81603f99c3.diff | git apply --include=justfile
+```
+
+In the recipe `lint-config`, the patch adds `just --fmt --check --unstable` under `uv lock --check`, and names the
+`justfile` in the comment above the recipe.
+
+```bash
+just --fmt --check --unstable
+just lint-config
+```
+
+`just --fmt --check --unstable` prints nothing, and ends with exit code 0. We wrote the recipes of this tutorial
+in the format of just. `just lint-config` prints the same two lines as before.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 284e4b7e2413
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 9f70971667e9 --staged -- :/ && git restore --source 284e4b7e2413 --staged --worktree -- :/
+```
+
+### What changed {#tut-12.5-what-changed-182c57}
+
+- <a id="tut-12.5-justfile-424f0b"></a>`justfile`: the check of the `justfile`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/284e4b7e241387e68463cb96fde80f81603f99c3/justfile).
+  - look at `    just --fmt --check --unstable`
+
+<details open><summary>The patch to <code>justfile</code></summary>
+
+```diff
+@@ -45,7 +45,7 @@ fmt *args:
+ lint *args:
+     @{{ if args == "help" { "just help lint" } else { 'uv run ruff check "$@"' } }}
+ 
+-# Check the config files: pyproject.toml against the standard, and the lockfile against it
++# Check the config files: pyproject.toml against the standard, the lockfile against it, and this justfile
+ [group('quality')]
+ [no-exit-message]
+ lint-config *args:
+@@ -54,6 +54,7 @@ lint-config *args:
+     if [ "$*" = help ]; then just help lint-config; exit 0; fi
+     uv run validate-pyproject pyproject.toml
+     uv lock --check
++    just --fmt --check --unstable
+ 
+ # Run the tests. Extra words go to pytest: just test -k render
+ [group('quality')]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/284e4b7e241387e68463cb96fde80f81603f99c3). [The code after it](https://github.com/rahuldave/babykev/tree/284e4b7e241387e68463cb96fde80f81603f99c3).
+
+## 12.6 Yamllint, in the group lint {#tut-12.6}
+
+`.pre-commit-config.yaml` is YAML. A mistake of indentation there breaks the hook, and with it every `git commit`. yamllint
+checks YAML files, for their syntax and for their style. It goes in the group `lint`.
+
+```bash
+uv add --group lint yamllint
+```
+
+`uv add` prints `Resolved 29 packages`, and installs `yamllint==1.38.0` and `pathspec`, which it needs.
+
+```bash
+uv run yamllint --version
+```
+
+It prints `yamllint 1.38.0`, or a newer version.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 304e0a2564dd
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 284e4b7e2413 --staged -- :/ && git restore --source 304e0a2564dd --staged --worktree -- :/
+```
+
+### What changed {#tut-12.6-what-changed-182c57}
+
+- <a id="tut-12.6-pyproject.toml-5d07e7"></a>`pyproject.toml`: yamllint, in the group `lint`. 1 line added. It comes from `uv add --group lint yamllint`. [The file](https://github.com/rahuldave/babykev/blob/304e0a2564ddf8d95a9b3964d6b5b8536032d79d/pyproject.toml).
+  - look at `"yamllint>=1.38.0",`
+- <a id="tut-12.6-uv.lock-8356d8"></a>`uv.lock`: the exact version of yamllint, and of `pathspec`. 24 lines added. It comes from `uv add --group lint yamllint`. [The file](https://github.com/rahuldave/babykev/blob/304e0a2564ddf8d95a9b3964d6b5b8536032d79d/uv.lock).
+
+<details><summary>The diff that <code>uv add --group lint yamllint</code> makes in <code>pyproject.toml</code></summary>
+
+```diff
+@@ -27,6 +27,7 @@ lint = [
+     "pre-commit>=4.7.0",
+     "ruff>=0.17.1",
+     "validate-pyproject>=0.26",
++    "yamllint>=1.38.0",
+ ]
+ test = [
+     "pytest>=9.1.1",
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/304e0a2564ddf8d95a9b3964d6b5b8536032d79d). [The code after it](https://github.com/rahuldave/babykev/tree/304e0a2564ddf8d95a9b3964d6b5b8536032d79d).
+
+## 12.7 Lint-config runs yamllint, and fails {#tut-12.7}
+
+`yamllint --strict .` checks every YAML file under the folder. `--strict` makes a warning fail, as an error does. It is the fourth check of `lint-config`. yamllint has no settings yet, and it fails on its defaults. The next
+moves give it settings.
+
+Apply the patch to [`justfile`](#tut-12.7-justfile-424f0b), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/8786cb9f3dd685412d3c315e4b25d7023dc0ad15.diff | git apply --include=justfile
+```
+
+In the recipe `lint-config`, the patch adds `uv run yamllint --strict .` under the line of `just --fmt`, and the
+comment above the recipe names every YAML file.
+
+```bash
+uv run yamllint --strict .
+just lint-config
+```
+
+yamllint finds problems in three files, and ends with exit code 1. In `.pre-commit-config.yaml`, lines 1, 4 and 17
+are errors, `line too long`, of 98, 100 and 95 characters. By default, a line of YAML has at most 80 characters. Line
+6 is a warning, `missing document start "---"`.
+
+The other two files are in `.venv`, inside the package pre-commit, `empty_template_pubspec.yaml` and
+`empty_template_environment.yml`. Each has the same warning. yamllint reads every folder, `.venv` too, and those
+files are not ours.
+
+`just lint-config` passes its first three checks, and then fails with the same findings. `just check` does not run
+`lint-config` yet, so the gate still passes.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 8786cb9f3dd6
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 304e0a2564dd --staged -- :/ && git restore --source 8786cb9f3dd6 --staged --worktree -- :/
+```
+
+### What changed {#tut-12.7-what-changed-182c57}
+
+- <a id="tut-12.7-justfile-424f0b"></a>`justfile`: yamllint, the fourth check. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/8786cb9f3dd685412d3c315e4b25d7023dc0ad15/justfile).
+  - look at `    uv run yamllint --strict .`
+
+<details open><summary>The patch to <code>justfile</code></summary>
+
+```diff
+@@ -45,7 +45,7 @@ fmt *args:
+ lint *args:
+     @{{ if args == "help" { "just help lint" } else { 'uv run ruff check "$@"' } }}
+ 
+-# Check the config files: pyproject.toml against the standard, the lockfile against it, and this justfile
++# Check the config files: pyproject.toml, the lockfile, this justfile, and every YAML file
+ [group('quality')]
+ [no-exit-message]
+ lint-config *args:
+@@ -55,6 +55,7 @@ lint-config *args:
+     uv run validate-pyproject pyproject.toml
+     uv lock --check
+     just --fmt --check --unstable
++    uv run yamllint --strict .
+ 
+ # Run the tests. Extra words go to pytest: just test -k render
+ [group('quality')]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/8786cb9f3dd685412d3c315e4b25d7023dc0ad15). [The code after it](https://github.com/rahuldave/babykev/tree/8786cb9f3dd685412d3c315e4b25d7023dc0ad15).
+
+## 12.8 Yamllint skips what git ignores {#tut-12.8}
+
+yamllint reads its settings from a file `.yamllint`. `extends: default` keeps its default rules.
+`ignore-from-file: .gitignore` skips each file that git ignores, `.venv` among them. The file is new, and comes
+whole, as a patch.
+
+Apply the patch to [`.yamllint`](#tut-12.8-.yamllint-dfe50a), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/aee8ff779a7d2889f24a61ab979558405a9c3007.diff | git apply --include=.yamllint
+```
+
+Read the two settings under the comment.
+
+```bash
+uv run yamllint --strict .
+```
+
+yamllint now finds problems in two files, and ends with exit code 1. The two files in `.venv` are gone. The four
+findings of `.pre-commit-config.yaml` stay. `.yamllint` is YAML too, and yamllint checks it. Line 2 has the warning
+`missing document start "---"`, and line 3 has 87 characters.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check aee8ff779a7d
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 8786cb9f3dd6 --staged -- :/ && git restore --source aee8ff779a7d --staged --worktree -- :/
+```
+
+### What changed {#tut-12.8-what-changed-182c57}
+
+- <a id="tut-12.8-.yamllint-dfe50a"></a>`.yamllint`: the settings of yamllint. New, 3 lines. [The file](https://github.com/rahuldave/babykev/blob/aee8ff779a7d2889f24a61ab979558405a9c3007/.yamllint).
+  - look at `ignore-from-file: .gitignore  # the files that git ignores, such as everything in .venv`
+
+<details open><summary>The patch to <code>.yamllint</code></summary>
+
+```diff
+@@ -0,0 +1,3 @@
++# The settings of yamllint, which checks every YAML file of the project
++extends: default
++ignore-from-file: .gitignore  # the files that git ignores, such as everything in .venv
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/aee8ff779a7d2889f24a61ab979558405a9c3007). [The code after it](https://github.com/rahuldave/babykev/tree/aee8ff779a7d2889f24a61ab979558405a9c3007).
+
+## 12.9 A YAML file need not start with three dashes {#tut-12.9}
+
+A line `---` marks the start of a document, in a YAML file that holds several. Our files hold one each, and pre-commit
+does not ask for the line. The rule `document-start` goes off.
+
+Apply the patch to [`.yamllint`](#tut-12.9-.yamllint-dfe50a), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/44f6865153ebeff1c321b4da65ace21285161796.diff | git apply --include=.yamllint
+```
+
+The patch adds the table `rules:` at the end of `.yamllint`, with the line of `document-start`.
+
+```bash
+uv run yamllint --strict .
+```
+
+yamllint finds four problems, and ends with exit code 1. The four are the lines too long, lines 1, 4 and 17 of
+`.pre-commit-config.yaml`, and line 3 of `.yamllint`. The warnings are gone.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 44f6865153eb
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source aee8ff779a7d --staged -- :/ && git restore --source 44f6865153eb --staged --worktree -- :/
+```
+
+### What changed {#tut-12.9-what-changed-182c57}
+
+- <a id="tut-12.9-.yamllint-dfe50a"></a>`.yamllint`: the rule `document-start`, off. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/44f6865153ebeff1c321b4da65ace21285161796/.yamllint).
+  - look at `  document-start: disable  # a file need not start with a line of three dashes`
+
+<details open><summary>The patch to <code>.yamllint</code></summary>
+
+```diff
+@@ -1,3 +1,5 @@
+ # The settings of yamllint, which checks every YAML file of the project
+ extends: default
+ ignore-from-file: .gitignore  # the files that git ignores, such as everything in .venv
++rules:
++  document-start: disable  # a file need not start with a line of three dashes
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/44f6865153ebeff1c321b4da65ace21285161796). [The code after it](https://github.com/rahuldave/babykev/tree/44f6865153ebeff1c321b4da65ace21285161796).
+
+## 12.10 Lines of up to 100 characters in YAML {#tut-12.10}
+
+The Python of the project has lines of up to 100 characters, and the comments of the YAML files follow it. The rule
+`line-length` lets a line have 100 characters, as `line-length = 100` in `[tool.ruff]` does for ruff.
+
+Apply the patch to [`.yamllint`](#tut-12.10-.yamllint-dfe50a), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/063c1a9ec17bea160da66c14711bb87eb1f54ddb.diff | git apply --include=.yamllint
+```
+
+The patch adds the line of `line-length` under the line of `document-start`.
+
+```bash
+just lint-config
+```
+
+yamllint prints nothing, and `just lint-config` passes. It prints `Valid file: pyproject.toml` and
+`Resolved 29 packages`, and ends with exit code 0.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 063c1a9ec17b
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 44f6865153eb --staged -- :/ && git restore --source 063c1a9ec17b --staged --worktree -- :/
+```
+
+### What changed {#tut-12.10-what-changed-182c57}
+
+- <a id="tut-12.10-.yamllint-dfe50a"></a>`.yamllint`: lines of up to 100 characters. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/063c1a9ec17bea160da66c14711bb87eb1f54ddb/.yamllint).
+  - look at `  line-length: {max: 100}  # as long as a line of the Python code`
+
+<details open><summary>The patch to <code>.yamllint</code></summary>
+
+```diff
+@@ -3,3 +3,4 @@ extends: default
+ ignore-from-file: .gitignore  # the files that git ignores, such as everything in .venv
+ rules:
+   document-start: disable  # a file need not start with a line of three dashes
++  line-length: {max: 100}  # as long as a line of the Python code
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/063c1a9ec17bea160da66c14711bb87eb1f54ddb). [The code after it](https://github.com/rahuldave/babykev/tree/063c1a9ec17bea160da66c14711bb87eb1f54ddb).
+
+## 12.11 The gate checks the config files {#tut-12.11}
+
+`just lint-config` passes, but only when a person runs it. As the last line of `check`, it runs before each
+`git commit`, through the hook.
+
+Apply the patch to [`justfile`](#tut-12.11-justfile-424f0b), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/a7699bdb248aa3ff3816137433e5d4482424f3ed.diff | git apply --include=justfile
+```
+
+In the recipe `check`, the patch adds `just lint-config` under `just test -q`, and names the config files in the comment
+above the recipe.
+
+```bash
+just --show check
+just check
+```
+
+`just --show check` prints the recipe, with four checks. `just check` prints the output of the format, the linter and
+the tests, as before, then `Valid file: pyproject.toml` and `Resolved 29 packages`. It ends with exit code 0.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check a7699bdb248a
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 063c1a9ec17b --staged -- :/ && git restore --source a7699bdb248a --staged --worktree -- :/
+```
+
+### What changed {#tut-12.11-what-changed-182c57}
+
+- <a id="tut-12.11-justfile-424f0b"></a>`justfile`: `lint-config`, the last check of the gate. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a7699bdb248aa3ff3816137433e5d4482424f3ed/justfile).
+  - look at `    just lint-config`
+
+<details open><summary>The patch to <code>justfile</code></summary>
+
+```diff
+@@ -63,7 +63,7 @@ lint-config *args:
+ test *args:
+     @{{ if args == "help" { "just help test" } else { 'uv run pytest "$@"' } }}
+ 
+-# Run the checks one after another, and stop at the first that fails: the format, the linter, the tests
++# Run the checks one after another, and stop at the first that fails: the format, the linter, the tests, the config files
+ [group('quality')]
+ [no-exit-message]
+ check *args:
+@@ -73,3 +73,4 @@ check *args:
+     just fmt --check
+     just lint
+     just test -q
++    just lint-config
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a7699bdb248aa3ff3816137433e5d4482424f3ed). [The code after it](https://github.com/rahuldave/babykev/tree/a7699bdb248aa3ff3816137433e5d4482424f3ed).
+
+## 12.12 The README names .yamllint {#tut-12.12}
+
+The table of the README names every config file of the project. `.yamllint` gets a row.
+
+Apply the patch to [`README.md`](#tut-12.12-README.md-8ec9a0), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac.diff | git apply --include=README.md
+```
+
+The patch adds a row for `.yamllint` at the end of the table of files.
+
+```bash
+grep -n yamllint README.md
+```
+
+`grep` prints line 80, the new row.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check cbbf9bedfc2b
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source a7699bdb248a --staged -- :/ && git restore --source cbbf9bedfc2b --staged --worktree -- :/
+```
+
+### What changed {#tut-12.12-what-changed-182c57}
+
+- <a id="tut-12.12-README.md-8ec9a0"></a>`README.md`: a row for `.yamllint`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac/README.md).
+  - look at ``| `.yamllint` | The settings of yamllint, which `just lint-config` runs on every YAML file |``
+
+<details open><summary>The patch to <code>README.md</code></summary>
+
+```diff
+@@ -77,6 +77,7 @@ yourself at any time.
+ | `.python-version` | The version of Python that the project uses |
+ | `.gitignore` | The files that git does not track, for example `.venv` |
+ | `.pre-commit-config.yaml` | The hooks that git runs before each commit, once `just hook` installs them. The last runs `just check` |
++| `.yamllint` | The settings of yamllint, which `just lint-config` runs on every YAML file |
+ 
+ ## How the history is organised
+ 
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac). [The code after it](https://github.com/rahuldave/babykev/tree/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac).

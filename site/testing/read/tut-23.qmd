@@ -1,0 +1,274 @@
+---
+title: "23 The system test"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Read the tutorial.** [Build it yourself](../build/tut-23.qmd) is the other way to read this part.
+
+Every test so far needs nothing but our code. The last test runs the smoke on the real model.
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 69 packages`.
+
+Every test so far needs nothing but our code. The tiny model is built in memory, so no download, no network and no
+device can make a test fail. Such a test is hermetic, and the hook can run it before each `git commit`. The smoke on the
+real model is a test too, of the whole program with its real parts. It needs the Hub or its cache, and it is the
+system test of the table of the kinds of tests. Here it becomes a test, an experiment shows that it is not
+hermetic, and keeps it out of `just test` and the gate.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/9bfadf5448a5951580b313a781b277f343aa6e30). [The code after it](https://github.com/rahuldave/babykev/tree/d9df8f2a02ed7a7780325aebf281d6107317f9d9).
+
+## 23.1 The smoke on the real model, as a test {#tut-23.1}
+
+The test runs `main` of `smoke.py`, as `babykev smoke` does. It checks what holds on any device, which is the exit
+code 0, fifteen verdicts, and the count of the right ones. It does not check the count itself, because an untrained model
+guesses.
+
+A patch to [`tests/system/test_real_model.py`](#tut-23.1-tests-system-test_real_model.py-df0b9d).
+
+The new file `tests/system/test_real_model.py` has the docstring on lines 1 to 7, and the test on lines 14 to 24.
+
+```bash
+sed -n '14,24p' tests/system/test_real_model.py
+just test
+```
+
+`capsys`, on line 15, is the fixture of pytest that catches what the test prints. `just test` prints `83 passed`. The
+test loads the real model, so the run takes a few seconds more. `smoke.py` goes to 100%, and the total to 99%. Only
+lines 63 and 74 of `model.py` are left, the branch of CUDA and the check of a tokenizer.
+
+A test that needs the network fails without it. `HF_HUB_OFFLINE=1` tells the library of the Hub to make no request,
+and `HF_HOME` points its cache at an empty folder. The two together are a machine with no network and no download.
+
+```bash
+HF_HUB_OFFLINE=1 HF_HOME="$(mktemp -d)" just test -k real_model
+```
+
+The test fails, with `OSError: We couldn't connect to 'https://huggingface.co' to load the files, and couldn't find
+them in the cached files.` Nothing in our code changed. So the test is not hermetic.
+
+```bash
+HF_HUB_OFFLINE=1 just test -k real_model
+```
+
+With the cache of this machine and still no network, the test passes. It passes because the model is in the cache,
+and not because it is hermetic.
+
+### What changed {#tut-23.1-what-changed-182c57}
+
+- <a id="tut-23.1-tests-system-test_real_model.py-df0b9d"></a>`tests/system/test_real_model.py`: the smoke on the real model, as a test. New, 24 lines. [The file](https://github.com/rahuldave/babykev/blob/e8d250399661741adb430b0ab9020fb869279074/tests/system/test_real_model.py).
+  - look at `def test_the_real_model_answers_every_sample_question(`
+
+<details><summary>The diff of <code>tests/system/test_real_model.py</code></summary>
+
+```diff
+@@ -0,0 +1,24 @@
++"""The smoke on the real model, the one test here that is not hermetic.
++
++The tests under `tests/unit/` need nothing but our code: the tiny model is built in memory. This
++test loads Qwen2.5-0.5B from the Hugging Face Hub, about 1 GB the first time and from the cache
++after that, onto the best device of the machine. The network, the download and the device can
++each make it fail.
++"""
++
++import pytest
++
++from babykev.smoke import main
++
++
++def test_the_real_model_answers_every_sample_question(
++    capsys: pytest.CaptureFixture[str],  # What the smoke prints
++) -> None:
++    """Five requests of three questions: fifteen verdicts, the count of those right, exit 0."""
++    assert main([]) == 0
++    printed = capsys.readouterr().out.splitlines()
++    assert printed[0].startswith("babykev smoke: Qwen/Qwen2.5-0.5B on ")
++    verdicts = [line for line in printed if line.startswith(("  ok", "  --"))]
++    assert len(verdicts) == 15
++    right = sum(line.startswith("  ok") for line in verdicts)
++    assert f"{right} of 15 right" in "\n".join(printed)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e8d250399661741adb430b0ab9020fb869279074). [The code after it](https://github.com/rahuldave/babykev/tree/e8d250399661741adb430b0ab9020fb869279074).
+
+## 23.2 The test of the real model is marked system {#tut-23.2}
+
+A marker is a name that a test carries. `pytestmark` puts a marker on every test of a file. This file gets the marker
+`system`.
+
+A patch to [`tests/system/test_real_model.py`](#tut-23.2-tests-system-test_real_model.py-df0b9d).
+
+In `tests/system/test_real_model.py`, the comment is on line 13, and `pytestmark` on line 14.
+
+```bash
+just test -k real_model
+```
+
+pytest prints `1 passed`, and a warning, `PytestUnknownMarkWarning: Unknown pytest.mark.system - is this a typo?`.
+pytest knows only the markers that it is told about. A marker with a typo in its name would choose no test, with no
+error.
+
+### What changed {#tut-23.2-what-changed-182c57}
+
+- <a id="tut-23.2-tests-system-test_real_model.py-df0b9d"></a>`tests/system/test_real_model.py`: the marker `system`. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/14e3ab70450cd154b85d49f1b9a694de35a18557/tests/system/test_real_model.py).
+  - look at `pytestmark = pytest.mark.system`
+
+<details><summary>The diff of <code>tests/system/test_real_model.py</code></summary>
+
+```diff
+@@ -10,6 +10,9 @@ import pytest
+ 
+ from babykev.smoke import main
+ 
++# Every test of this file needs the network, the real weights and a device
++pytestmark = pytest.mark.system
++
+ 
+ def test_the_real_model_answers_every_sample_question(
+     capsys: pytest.CaptureFixture[str],  # What the smoke prints
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/14e3ab70450cd154b85d49f1b9a694de35a18557). [The code after it](https://github.com/rahuldave/babykev/tree/14e3ab70450cd154b85d49f1b9a694de35a18557).
+
+## 23.3 pytest knows the marker system {#tut-23.3}
+
+`markers` in `pyproject.toml` declares each marker, with what it means.
+
+A patch to [`pyproject.toml`](#tut-23.3-pyproject.toml-5d07e7).
+
+In `pyproject.toml`, the comment is on line 62, and `markers` on line 63.
+
+```bash
+just test -k real_model
+just test --markers
+```
+
+The test passes with no warning. `just test --markers` lists every marker, and the first line is
+`@pytest.mark.system: needs the network, the real model or a device`.
+
+### What changed {#tut-23.3-what-changed-182c57}
+
+- <a id="tut-23.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: the marker `system`, declared. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/e194931f1402c90fe5d4d59d5ac3e5c5846b8ac1/pyproject.toml).
+  - look at `markers = ["system: needs the network, the real model or a device"]`
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -59,6 +59,8 @@ testpaths = ["tests"]
+ pythonpath = ["."]
+ # Every run measures how much of src/babykev the tests run, and lists the lines they do not
+ addopts = "--cov=babykev --cov-report=term-missing"
++# A marker is a name that a test can carry, and -m chooses the tests by it
++markers = ["system: needs the network, the real model or a device"]
+ 
+ [tool.ruff]
+ # The formatter and the linter share this setting. ruff's own default is 88, and this project uses 100
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e194931f1402c90fe5d4d59d5ac3e5c5846b8ac1). [The code after it](https://github.com/rahuldave/babykev/tree/e194931f1402c90fe5d4d59d5ac3e5c5846b8ac1).
+
+## 23.4 just test leaves out the tests marked system {#tut-23.4}
+
+`-m` chooses the tests by their markers. `-m 'not system'` in `addopts` leaves out every test marked `system` from
+every run. A `-m` on the command line comes after `addopts`, and wins.
+
+A patch to [`pyproject.toml`](#tut-23.4-pyproject.toml-5d07e7).
+
+In `pyproject.toml`, the comment is on lines 60 and 61, and line 62 is
+`addopts = "--cov=babykev --cov-report=term-missing -m 'not system'"`.
+
+```bash
+just test
+just test -m system
+```
+
+`just test` prints `82 passed, 1 deselected`, and the total of 92%, as before the test of the real model. `just check` runs
+the same tests, so the gate and the hook never need the network. `just test -m system` runs the one test, and prints
+`1 passed, 82 deselected`.
+
+### What changed {#tut-23.4-what-changed-182c57}
+
+- <a id="tut-23.4-pyproject.toml-5d07e7"></a>`pyproject.toml`: the tests marked `system` stay out of every run that does not ask for them. 3 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/12e34ad11cf268f667238c3362902c25b462225c/pyproject.toml).
+  - look at `addopts = "--cov=babykev --cov-report=term-missing -m 'not system'"`
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -57,8 +57,9 @@ test = [
+ testpaths = ["tests"]
+ # A test can import its helpers from the folder tests, for example tests.tiny
+ pythonpath = ["."]
+-# Every run measures how much of src/babykev the tests run, and lists the lines they do not
+-addopts = "--cov=babykev --cov-report=term-missing"
++# Every run measures how much of src/babykev the tests run, and lists the lines they do not. A run
++# leaves out the tests marked system, unless it asks for them: just test -m system
++addopts = "--cov=babykev --cov-report=term-missing -m 'not system'"
+ # A marker is a name that a test can carry, and -m chooses the tests by it
+ markers = ["system: needs the network, the real model or a device"]
+ 
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/12e34ad11cf268f667238c3362902c25b462225c). [The code after it](https://github.com/rahuldave/babykev/tree/12e34ad11cf268f667238c3362902c25b462225c).
+
+## 23.5 The README names the test of the real model {#tut-23.5}
+
+The README says what `just test` runs, and how to run the test of the real model. The table gets a row for
+`tests/system/`.
+
+A patch to [`README.md`](#tut-23.5-README.md-8ec9a0).
+
+In `README.md`, the new paragraph is on lines 69 to 71, and the row of `tests/system/` on line 88.
+
+```bash
+just check
+```
+
+`just check` passes. The tests print `82 passed, 1 deselected`, and `Total coverage: 91.76%`. `just docs check` prints
+`98 of 98`, with the test of the real model.
+
+The project now has all four kinds of tests in the table of the intro.
+
+### What changed {#tut-23.5-what-changed-182c57}
+
+- <a id="tut-23.5-README.md-8ec9a0"></a>`README.md`: `just test -m system`, and the row of `tests/system/`. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/d9df8f2a02ed7a7780325aebf281d6107317f9d9/README.md).
+  - look at ``| `tests/system/` | The test of the real model, marked `system`. `just test -m system` runs it |``
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+```diff
+@@ -66,6 +66,10 @@ too. With them, `.venv` takes about 750 MB, and torch is most of it.
+ downloads the base model from the Hugging Face Hub, about 1 GB. It answers the five sample requests,
+ untrained, and prints each answer beside its label.
+ 
++`just test` runs every test that needs nothing but our code. The test in `tests/system/` loads the
++real model, as the smoke does, so it needs the Hub or its cache. It has the marker `system`, and only
++`just test -m system` runs it.
++
+ Run `just hook` once in each clone. It installs a git hook, which runs `just check` before each commit.
+ `just check` runs every check of the project, and if one fails, git makes no commit. One check is a floor.
+ The tests must run at least 90% of the code. You can run `just check` yourself at any time.
+@@ -81,6 +85,7 @@ The tests must run at least 90% of the code. You can run `just check` yourself a
+ | `src/babykev/smoke.py` | The smoke run, which asks the real model the sample requests on this machine |
+ | `data/cheese/sample.jsonl` | Five requests about cheese, one on each line. Every question has a `label`, the right answer |
+ | `tests/unit/` | The tests of the contract, of the command, of the model, of its mask and of the smoke. One test checks every line of the sample data against the contract. hypothesis tries the rules of the mask on many shapes of request |
++| `tests/system/` | The test of the real model, marked `system`. `just test -m system` runs it |
+ | `tests/conftest.py` | The fixtures that every test can ask for: the tiny tokenizer, a tiny model and a record |
+ | `tests/tiny.py` | A small tokenizer and backbone, built in memory, in place of the real ones |
+ | `docs/` | The docs site. `just docs` builds it into `docs/_site`, with the reference made from the code |
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d9df8f2a02ed7a7780325aebf281d6107317f9d9). [The code after it](https://github.com/rahuldave/babykev/tree/d9df8f2a02ed7a7780325aebf281d6107317f9d9).

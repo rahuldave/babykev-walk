@@ -1,0 +1,208 @@
+---
+title: "26.5 to 26.6 The docs on GitHub Pages"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Build it yourself.** [Read the tutorial](../read/tut-26.5-to-tut-26.6.qmd) is the other way to read this part.
+
+This part does not start where the part before it ends, because the walk skips some changes. This command puts the files that this part starts from in place of yours. Run it, and then go on:
+
+```bash
+git restore --source 41d247296821 --staged -- :/ && git restore --source eb0acd148867 --staged --worktree -- :/
+```
+
+If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
+
+```bash
+git rm -rq --cached --ignore-unmatch -- :/ && git restore --source eb0acd148867 --staged --worktree -- :/
+```
+
+```bash
+just setup
+```
+
+The whole tutorial then adds a `Dockerfile`, which builds two images. An image of Docker is a Linux machine that one
+file describes. The run image starts `babykev`, and the dev image holds the whole project and the tools to work on
+it. The recipe `just image` builds them, and `just lint-config` now runs hadolint, a linter of the `Dockerfile`.
+
+The site is only on the machine that builds it. GitHub runs workflows on its own machines. A workflow is a file of
+YAML in `.github/workflows/`, and its key `on` names the events that start it. The first workflow, `check.yaml`, runs
+`just setup` and `just check` after every push. yamllint refused the key `on`, because YAML 1.1 reads the word `on`
+as the value true. Its settings now let a key be such a word.
+
+The project adds actionlint, a linter of the workflows of GitHub, to its other linters, and `just lint-config` runs
+it. The second workflow builds the site and publishes it.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/eb0acd148867bdbc6292660b7268b656074fb727). [The code after it](https://github.com/rahuldave/babykev/tree/88854e32ebcb4647672742cc4ef709eefc5fde0c).
+
+## 26.5 GitHub Pages publishes the docs {#tut-26.5}
+
+The workflow `docs.yaml` has two jobs. The job `build` installs the package and the group `docs`, and no other group.
+It runs `smalldocs render docs`, the command behind `just docs`, and gives the folder `docs/_site` to Pages. The job
+`deploy` publishes it. The workflow runs after a push to `main`, and a person can also run it from the tab Actions.
+
+Apply the patch to [`.github/workflows/docs.yaml`](#tut-26.5-.github-workflows-docs.yaml-ce7835), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/606da22657c965404206b25f8fbcccffbe3f2756.diff | git apply --include=.github/workflows/docs.yaml
+```
+
+The patch makes the file. Read the key `on`, the lines under `permissions`, and the line that renders the site.
+
+```bash
+uv run actionlint
+uv run --isolated --locked --no-default-groups --group docs smalldocs render docs
+```
+
+actionlint prints nothing. `--no-default-groups --group docs` installs the package and the group `docs`, as the job
+does. `--isolated` runs the command in a temporary environment, and leaves `.venv` as it is. It prints `wrote 7
+page(s) to docs/_site`.
+
+The workflows run only where two settings on GitHub allow them. A fork runs no workflow until its owner turns the
+workflows on, on the tab **Actions**. Pages publishes from a workflow when **Settings**, then **Pages**, has the source
+**GitHub Actions**. The README says so in the next move.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 606da22657c9
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source eb0acd148867 --staged -- :/ && git restore --source 606da22657c9 --staged --worktree -- :/
+```
+
+### What changed {#tut-26.5-what-changed-182c57}
+
+- <a id="tut-26.5-.github-workflows-docs.yaml-ce7835"></a>`.github/workflows/docs.yaml`: the docs site, built with the group `docs` alone, then published. New, 40 lines. [The file](https://github.com/rahuldave/babykev/blob/606da22657c965404206b25f8fbcccffbe3f2756/.github/workflows/docs.yaml).
+  - look at `      - run: uv run --locked --no-default-groups --group docs smalldocs render docs`
+
+<details open><summary>The patch to <code>.github/workflows/docs.yaml</code></summary>
+
+```diff
+@@ -0,0 +1,40 @@
++# The docs site, on GitHub Pages. After every push to main, smalldocs builds the site, and GitHub
++# Pages publishes it at https://OWNER.github.io/babykev/, with the name of the owner of the
++# repository. The job installs the package and the group docs, and no other group.
++name: Docs
++
++on:
++  push:
++    branches: [main]
++  workflow_dispatch:  # a person can also run it from the tab Actions
++
++permissions:
++  contents: read
++  pages: write     # to publish the site
++  id-token: write  # to show Pages that this workflow publishes it
++
++concurrency:
++  group: pages
++  cancel-in-progress: true  # a newer push replaces a publish that has not finished
++
++jobs:
++  build:
++    runs-on: ubuntu-latest
++    steps:
++      - uses: actions/checkout@v7
++      - uses: astral-sh/setup-uv@v10.2.0
++      - run: uv run --locked --no-default-groups --group docs smalldocs render docs
++      - uses: actions/configure-pages@v6
++      - uses: actions/upload-pages-artifact@v5
++        with:
++          path: docs/_site
++
++  deploy:
++    needs: build
++    runs-on: ubuntu-latest
++    environment:
++      name: github-pages
++      url: ${{ steps.deployment.outputs.page_url }}
++    steps:
++      - id: deployment
++        uses: actions/deploy-pages@v5
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/606da22657c965404206b25f8fbcccffbe3f2756). [The code after it](https://github.com/rahuldave/babykev/tree/606da22657c965404206b25f8fbcccffbe3f2756).
+
+## 26.6 The README names the workflows {#tut-26.6}
+
+The README gets a section on GitHub, with the two settings that a fork needs. The table gets a row for
+`.github/workflows/`.
+
+Apply the patch to [`README.md`](#tut-26.6-README.md-8ec9a0), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/88854e32ebcb4647672742cc4ef709eefc5fde0c.diff | git apply --include=README.md
+```
+
+The patch adds the section `On GitHub` above `What is here`, and the row of `.github/workflows/` above the row of
+`.yamllint`.
+
+```bash
+just check
+```
+
+`just check` passes. The tests print `82 passed, 1 deselected`, and `Total coverage: 91.76%`. The last lines of
+`lint-config` print nothing, because yamllint, hadolint and actionlint find nothing.
+
+This tutorial ends here. The [whole tutorial](https://rahuldave.com/babykev-walk/) has every change.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 88854e32ebcb
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 606da22657c9 --staged -- :/ && git restore --source 88854e32ebcb --staged --worktree -- :/
+```
+
+### What changed {#tut-26.6-what-changed-182c57}
+
+- <a id="tut-26.6-README.md-8ec9a0"></a>`README.md`: the section on GitHub, and the row of the workflows. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/88854e32ebcb4647672742cc4ef709eefc5fde0c/README.md).
+  - look at `## On GitHub`
+
+<details open><summary>The patch to <code>README.md</code></summary>
+
+```diff
+@@ -97,6 +97,19 @@ Both images mount the cache of the Hugging Face Hub of this machine at `/hf`, so
+ downloaded once. An image holds the packages of the lockfile at the time of its build, so build it again
+ after a change to `uv.lock`.
+ 
++## On GitHub
++
++Two workflows in `.github/workflows/` run on the machines of GitHub. `check.yaml` runs `just check`
++after every push to a branch and on every pull request. `docs.yaml` builds the docs site after every
++push to `main`, and GitHub Pages publishes it.
++
++A fork runs no workflow until its owner allows it. Make these two settings on the website of GitHub:
++
++1. Open the tab **Actions** of the fork, and turn the workflows on.
++2. Open **Settings**, then **Pages**. Under **Source**, choose **GitHub Actions**.
++
++The site is then at `https://OWNER.github.io/babykev/`, with the name of the account in place of OWNER.
++
+ ## What is here
+ 
+ | Path | What it is |
+@@ -119,6 +132,7 @@ after a change to `uv.lock`.
+ | `.python-version` | The version of Python that the project uses |
+ | `.gitignore` | The files that git does not track, for example `.venv` |
+ | `.pre-commit-config.yaml` | The hooks that git runs before each commit, once `just hook` installs them. The last runs `just check` |
++| `.github/workflows/` | The two workflows of GitHub: the gate after every push, and the docs site on GitHub Pages |
+ | `.yamllint` | The settings of yamllint, which `just lint-config` runs on every YAML file |
+ 
+ ## How the history is organised
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/88854e32ebcb4647672742cc4ef709eefc5fde0c). [The code after it](https://github.com/rahuldave/babykev/tree/88854e32ebcb4647672742cc4ef709eefc5fde0c).

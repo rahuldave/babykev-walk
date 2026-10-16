@@ -1,0 +1,65 @@
+---
+title: "8.8 The words after `just lint`"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Read the tutorial.** [Build it yourself](../build/tut-08.8.qmd) is the other way to read this part.
+
+```bash
+just setup
+```
+
+The code now has the fixes of four of the problems, made by hand. The docstring of `api.py` fits in 100 characters,
+and `X | Y` takes the place of `Union`. `k` and `n` are in lower case, and each `zip` has `strict=True`.
+
+Every word after `lint` goes to ruff, so `just lint --fix` runs `uv run ruff check --fix`.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/ca9cfc3b70b7a0c926c9407336c217e3f04c73aa). [The code after it](https://github.com/rahuldave/babykev/tree/7cdb1ba696a32050cba1c335892fccb68bb4fd24).
+
+## 8.8 Just lint --fix sorts the imports {#tut-08.8}
+
+The last two problems are on lines 8 and 9 of `api.py`, in the imports, and ruff can fix both safely. `--fix` makes
+only the fixes that ruff counts as safe.
+
+This change came from running `just lint --fix`.
+
+`just lint --fix` prints `Found 2 errors (2 fixed, 0 remaining).`, and ends with exit code 0. It removed `Union`
+from the import of `typing` (`F401`). It put a blank line between the standard library and pydantic, which is
+installed (`I001`).
+
+At the top of `src/babykev/api.py`, line 8 is now `from typing import Any, Literal`, and a blank line comes before
+`from pydantic import BaseModel, Field, model_validator`, on line 10.
+
+```bash
+just lint
+just fmt --check
+just test
+```
+
+`just lint` prints `All checks passed!`. `just fmt --check` prints `6 files already formatted`, and `just test`
+prints `53 passed`.
+
+### What changed {#tut-08.8-what-changed-182c57}
+
+- <a id="tut-08.8-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the imports, sorted. 2 lines added, 1 removed. It comes from `just lint --fix`. [The file](https://github.com/rahuldave/babykev/blob/7cdb1ba696a32050cba1c335892fccb68bb4fd24/src/babykev/api.py).
+  - look at `from typing import Any, Literal`
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -5,7 +5,8 @@ Choice -> options 'name' or 'name: desc'; answer = argmax, probabilities by name
+ Score  -> options = the levels, in order; answer = expected level, legend, probabilities by index
+ """
+ 
+-from typing import Any, Literal, Union
++from typing import Any, Literal
++
+ from pydantic import BaseModel, Field, model_validator
+ 
+ JSONContent = str | dict | list | int | float | bool | None
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7cdb1ba696a32050cba1c335892fccb68bb4fd24). [The code after it](https://github.com/rahuldave/babykev/tree/7cdb1ba696a32050cba1c335892fccb68bb4fd24).

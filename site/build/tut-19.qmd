@@ -9,7 +9,7 @@ title: "19 Fixtures and the tiny model"
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
 
 ```bash
-git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 6c2937bcf7ba --staged --worktree -- :/
+git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 3edcb80f6814 --staged --worktree -- :/
 ```
 
 ```bash
@@ -23,7 +23,7 @@ GPU. A test of the model checks something exact, such as which token is where, h
 which weights get a gradient. That holds for any weights, trained or random. So the tests get a tiny model, built in memory with random
 weights. A fixture of pytest gives it to each test that asks for it.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/6c2937bcf7bac5b94fcbc0b06269a14d36b8d97f). [The code after it](https://github.com/rahuldave/babykev/tree/5ec98e80e89547dd837bfde958b11e0fd7e4ec63).
+[The code before this part](https://github.com/rahuldave/babykev/tree/3edcb80f6814f9e0afe70942db6fce959799d9c5). [The code after it](https://github.com/rahuldave/babykev/tree/88b3a9e08db851ce891ecfcfcf26d18892beea90).
 
 ## 19.1 tests/tiny.py, with the tiny tokenizer {#tut-19.1}
 
@@ -34,7 +34,7 @@ tests, and not a test, so pytest does not collect it.
 Apply the patch to [`tests/tiny.py`](#tut-19.1-tests-tiny.py-70c1c9), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/f37a7b0beb1cd67a4d07369908f12b64548a89ed.diff | git apply --include=tests/tiny.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/b57593b2f1c324a6349f0f5b58a75754f7f261dc.diff | git apply --include=tests/tiny.py
 ```
 
 The patch makes the file. Read `tiny_tokenizer`.
@@ -65,18 +65,18 @@ token, and no secret. The next move answers it.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check f37a7b0beb1c
+git check b57593b2f1c3
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 6c2937bcf7ba --staged -- :/ && git restore --source f37a7b0beb1c --staged --worktree -- :/
+git restore --source 3edcb80f6814 --staged -- :/ && git restore --source b57593b2f1c3 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-19.1-what-changed-182c57}
 
-- <a id="tut-19.1-tests-tiny.py-70c1c9"></a>`tests/tiny.py`: the tiny tokenizer. New, 23 lines. [The file](https://github.com/rahuldave/babykev/blob/f37a7b0beb1cd67a4d07369908f12b64548a89ed/tests/tiny.py).
+- <a id="tut-19.1-tests-tiny.py-70c1c9"></a>`tests/tiny.py`: the tiny tokenizer. New, 23 lines. [The file](https://github.com/rahuldave/babykev/blob/b57593b2f1c324a6349f0f5b58a75754f7f261dc/tests/tiny.py).
   - look at `def tiny_tokenizer() -> PreTrainedTokenizerFast:  # A tokenizer with one token per character`
 
 <details open><summary>The patch to <code>tests/tiny.py</code></summary>
@@ -110,7 +110,7 @@ git restore --source 6c2937bcf7ba --staged -- :/ && git restore --source f37a7b0
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/f37a7b0beb1cd67a4d07369908f12b64548a89ed). [The code after it](https://github.com/rahuldave/babykev/tree/f37a7b0beb1cd67a4d07369908f12b64548a89ed).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b57593b2f1c324a6349f0f5b58a75754f7f261dc). [The code after it](https://github.com/rahuldave/babykev/tree/b57593b2f1c324a6349f0f5b58a75754f7f261dc).
 
 ## 19.2 The tests may pass a literal to unk_token {#tut-19.2}
 
@@ -158,18 +158,18 @@ just lint
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check bda24c0a2dad
+git check 2daaf5f25751
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source f37a7b0beb1c --staged -- :/ && git restore --source bda24c0a2dad --staged --worktree -- :/
+git restore --source b57593b2f1c3 --staged -- :/ && git restore --source 2daaf5f25751 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-19.2-what-changed-182c57}
 
-- <a id="tut-19.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the tests may break `S106`. 3 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/bda24c0a2dad5fbe5332fc4479785035ffcf8233/pyproject.toml).
+- <a id="tut-19.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the tests may break `S106`. 3 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/2daaf5f257514e391edb5ad5183c2d2288965de3/pyproject.toml).
   - look at `"tests/**" = ["S101", "S106"]`
 
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
@@ -188,7 +188,7 @@ git restore --source f37a7b0beb1c --staged -- :/ && git restore --source bda24c0
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/bda24c0a2dad5fbe5332fc4479785035ffcf8233). [The code after it](https://github.com/rahuldave/babykev/tree/bda24c0a2dad5fbe5332fc4479785035ffcf8233).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/2daaf5f257514e391edb5ad5183c2d2288965de3). [The code after it](https://github.com/rahuldave/babykev/tree/2daaf5f257514e391edb5ad5183c2d2288965de3).
 
 ## 19.3 The tiny backbone {#tut-19.3}
 
@@ -199,7 +199,7 @@ same at every run.
 Apply the patch to [`tests/tiny.py`](#tut-19.3-tests-tiny.py-70c1c9), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/45415d9b4fa2c15329920a0c4f4893a0dbc2cf99.diff | git apply --include=tests/tiny.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/a6e3905ee0316fdd0b2e0d3baab9f4a65d0588b5.diff | git apply --include=tests/tiny.py
 ```
 
 The patch adds `torch`, `Qwen2Config` and `Qwen2Model` to the imports, and `tiny_backbone` at the end of the file.
@@ -213,18 +213,18 @@ It prints `24224`, the parameters of the tiny backbone. The backbone of Qwen2.5-
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 45415d9b4fa2
+git check a6e3905ee031
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source bda24c0a2dad --staged -- :/ && git restore --source 45415d9b4fa2 --staged --worktree -- :/
+git restore --source 2daaf5f25751 --staged -- :/ && git restore --source a6e3905ee031 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-19.3-what-changed-182c57}
 
-- <a id="tut-19.3-tests-tiny.py-70c1c9"></a>`tests/tiny.py`: the tiny backbone. 20 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/45415d9b4fa2c15329920a0c4f4893a0dbc2cf99/tests/tiny.py).
+- <a id="tut-19.3-tests-tiny.py-70c1c9"></a>`tests/tiny.py`: the tiny backbone. 20 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a6e3905ee0316fdd0b2e0d3baab9f4a65d0588b5/tests/tiny.py).
   - look at `def tiny_backbone(`
 
 <details open><summary>The patch to <code>tests/tiny.py</code></summary>
@@ -267,7 +267,7 @@ git restore --source bda24c0a2dad --staged -- :/ && git restore --source 45415d9
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/45415d9b4fa2c15329920a0c4f4893a0dbc2cf99). [The code after it](https://github.com/rahuldave/babykev/tree/45415d9b4fa2c15329920a0c4f4893a0dbc2cf99).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a6e3905ee0316fdd0b2e0d3baab9f4a65d0588b5). [The code after it](https://github.com/rahuldave/babykev/tree/a6e3905ee0316fdd0b2e0d3baab9f4a65d0588b5).
 
 ## 19.4 conftest.py, with the fixture tok {#tut-19.4}
 
@@ -279,7 +279,7 @@ tokenizer. `scope="session"` builds it once for the whole run.
 Apply the patch to [`tests/conftest.py`](#tut-19.4-tests-conftest.py-626af3), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/1afb598b7814efa32b2ac5ecaf769525448b377f.diff | git apply --include=tests/conftest.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/14585bbd144a55ac28ff0473f3d3f2c23c03d314.diff | git apply --include=tests/conftest.py
 ```
 
 The patch makes the file, with the fixture `tok`.
@@ -295,18 +295,18 @@ Python, and not the root of the project. So `tests.tiny` cannot be found. The ne
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 1afb598b7814
+git check 14585bbd144a
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 45415d9b4fa2 --staged -- :/ && git restore --source 1afb598b7814 --staged --worktree -- :/
+git restore --source a6e3905ee031 --staged -- :/ && git restore --source 14585bbd144a --staged --worktree -- :/
 ```
 
 ### What changed {#tut-19.4-what-changed-182c57}
 
-- <a id="tut-19.4-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `tok`. New, 16 lines. [The file](https://github.com/rahuldave/babykev/blob/1afb598b7814efa32b2ac5ecaf769525448b377f/tests/conftest.py).
+- <a id="tut-19.4-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `tok`. New, 16 lines. [The file](https://github.com/rahuldave/babykev/blob/14585bbd144a55ac28ff0473f3d3f2c23c03d314/tests/conftest.py).
   - look at `@pytest.fixture(scope="session")`
 
 <details open><summary>The patch to <code>tests/conftest.py</code></summary>
@@ -333,7 +333,7 @@ git restore --source 45415d9b4fa2 --staged -- :/ && git restore --source 1afb598
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/1afb598b7814efa32b2ac5ecaf769525448b377f). [The code after it](https://github.com/rahuldave/babykev/tree/1afb598b7814efa32b2ac5ecaf769525448b377f).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/14585bbd144a55ac28ff0473f3d3f2c23c03d314). [The code after it](https://github.com/rahuldave/babykev/tree/14585bbd144a55ac28ff0473f3d3f2c23c03d314).
 
 ## 19.5 pytest can import tests.tiny {#tut-19.5}
 
@@ -389,18 +389,18 @@ just test --fixtures
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 0bc09955947f
+git check b458ae1df223
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 1afb598b7814 --staged -- :/ && git restore --source 0bc09955947f --staged --worktree -- :/
+git restore --source 14585bbd144a --staged -- :/ && git restore --source b458ae1df223 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-19.5-what-changed-182c57}
 
-- <a id="tut-19.5-pyproject.toml-5d07e7"></a>`pyproject.toml`: the root of the project, on the path of pytest. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/0bc09955947f76b06118a4083b4fd66515c15068/pyproject.toml).
+- <a id="tut-19.5-pyproject.toml-5d07e7"></a>`pyproject.toml`: the root of the project, on the path of pytest. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/b458ae1df2239c8645f7a4eb35832fd2dddc1114/pyproject.toml).
   - look at `pythonpath = ["."]`
 
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
@@ -419,7 +419,7 @@ git restore --source 1afb598b7814 --staged -- :/ && git restore --source 0bc0995
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/0bc09955947f76b06118a4083b4fd66515c15068). [The code after it](https://github.com/rahuldave/babykev/tree/0bc09955947f76b06118a4083b4fd66515c15068).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b458ae1df2239c8645f7a4eb35832fd2dddc1114). [The code after it](https://github.com/rahuldave/babykev/tree/b458ae1df2239c8645f7a4eb35832fd2dddc1114).
 
 ## 19.6 The fixture model {#tut-19.6}
 
@@ -430,7 +430,7 @@ so pytest builds it again for each test, and no test can spoil it for the next.
 Apply the patch to [`tests/conftest.py`](#tut-19.6-tests-conftest.py-626af3), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/4f4d6a1c287c64965e692ccc3f6ce83d8e297165.diff | git apply --include=tests/conftest.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/0806a218722ba7438f265928d3cfbc0b5f0e723e.diff | git apply --include=tests/conftest.py
 ```
 
 The patch adds the imports of `DecisionModel` and `tiny_backbone`, and the fixture `model` at the end of the file.
@@ -445,18 +445,18 @@ new import.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 4f4d6a1c287c
+git check 0806a218722b
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 0bc09955947f --staged -- :/ && git restore --source 4f4d6a1c287c --staged --worktree -- :/
+git restore --source b458ae1df223 --staged -- :/ && git restore --source 0806a218722b --staged --worktree -- :/
 ```
 
 ### What changed {#tut-19.6-what-changed-182c57}
 
-- <a id="tut-19.6-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `model`. 10 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/4f4d6a1c287c64965e692ccc3f6ce83d8e297165/tests/conftest.py).
+- <a id="tut-19.6-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `model`. 10 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/0806a218722ba7438f265928d3cfbc0b5f0e723e/tests/conftest.py).
   - look at `    return DecisionModel("tiny", "cpu", backbone=tiny_backbone(len(tok))).eval()`
 
 <details open><summary>The patch to <code>tests/conftest.py</code></summary>
@@ -487,7 +487,7 @@ git restore --source 0bc09955947f --staged -- :/ && git restore --source 4f4d6a1
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/4f4d6a1c287c64965e692ccc3f6ce83d8e297165). [The code after it](https://github.com/rahuldave/babykev/tree/4f4d6a1c287c64965e692ccc3f6ce83d8e297165).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0806a218722ba7438f265928d3cfbc0b5f0e723e). [The code after it](https://github.com/rahuldave/babykev/tree/0806a218722ba7438f265928d3cfbc0b5f0e723e).
 
 ## 19.7 The fixture record {#tut-19.7}
 
@@ -497,7 +497,7 @@ questions of 2, 3 and 3 options.
 Apply the patch to [`tests/conftest.py`](#tut-19.7-tests-conftest.py-626af3), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/6b750cd8fa121d4801f6e6b4413ada347e5a4f3d.diff | git apply --include=tests/conftest.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/b4bf2491e8505697eaa015738f93178c6bd7f3fc.diff | git apply --include=tests/conftest.py
 ```
 
 The patch adds `Any` to the imports, and the fixture `record` at the end of the file.
@@ -512,18 +512,18 @@ docstring.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 6b750cd8fa12
+git check b4bf2491e850
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 4f4d6a1c287c --staged -- :/ && git restore --source 6b750cd8fa12 --staged --worktree -- :/
+git restore --source 0806a218722b --staged -- :/ && git restore --source b4bf2491e850 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-19.7-what-changed-182c57}
 
-- <a id="tut-19.7-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `record`. 15 lines added. [The file](https://github.com/rahuldave/babykev/blob/6b750cd8fa121d4801f6e6b4413ada347e5a4f3d/tests/conftest.py).
+- <a id="tut-19.7-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `record`. 15 lines added. [The file](https://github.com/rahuldave/babykev/blob/b4bf2491e8505697eaa015738f93178c6bd7f3fc/tests/conftest.py).
   - look at `        "state": "Roquefort. A blue cheese from France, made from sheep's milk.",`
 
 <details open><summary>The patch to <code>tests/conftest.py</code></summary>
@@ -559,7 +559,7 @@ git restore --source 4f4d6a1c287c --staged -- :/ && git restore --source 6b750cd
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/6b750cd8fa121d4801f6e6b4413ada347e5a4f3d). [The code after it](https://github.com/rahuldave/babykev/tree/6b750cd8fa121d4801f6e6b4413ada347e5a4f3d).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b4bf2491e8505697eaa015738f93178c6bd7f3fc). [The code after it](https://github.com/rahuldave/babykev/tree/b4bf2491e8505697eaa015738f93178c6bd7f3fc).
 
 ## 19.8 The first test of the model {#tut-19.8}
 
@@ -570,7 +570,7 @@ mean nothing. The test checks what is true of any probabilities.
 Apply the patch to [`tests/unit/test_model.py`](#tut-19.8-tests-unit-test_model.py-583145), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/b34baedd8e8ce49475d07b177417b6a1a58456f6.diff | git apply --include=tests/unit/test_model.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/321a8df2c597e0c46d06c9b36c711f0fe270900a.diff | git apply --include=tests/unit/test_model.py
 ```
 
 The patch makes the file. Read the test.
@@ -602,18 +602,18 @@ runs the packing, the mask, the backbone and the head.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check b34baedd8e8c
+git check 321a8df2c597
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 6b750cd8fa12 --staged -- :/ && git restore --source b34baedd8e8c --staged --worktree -- :/
+git restore --source b4bf2491e850 --staged -- :/ && git restore --source 321a8df2c597 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-19.8-what-changed-182c57}
 
-- <a id="tut-19.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the first test of the model, on the tiny model. New, 20 lines. [The file](https://github.com/rahuldave/babykev/blob/b34baedd8e8ce49475d07b177417b6a1a58456f6/tests/unit/test_model.py).
+- <a id="tut-19.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the first test of the model, on the tiny model. New, 20 lines. [The file](https://github.com/rahuldave/babykev/blob/321a8df2c597e0c46d06c9b36c711f0fe270900a/tests/unit/test_model.py).
   - look at `def test_probabilities_sum_to_one_for_every_question(`
 
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
@@ -644,7 +644,7 @@ git restore --source 6b750cd8fa12 --staged -- :/ && git restore --source b34baed
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/b34baedd8e8ce49475d07b177417b6a1a58456f6). [The code after it](https://github.com/rahuldave/babykev/tree/b34baedd8e8ce49475d07b177417b6a1a58456f6).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/321a8df2c597e0c46d06c9b36c711f0fe270900a). [The code after it](https://github.com/rahuldave/babykev/tree/321a8df2c597e0c46d06c9b36c711f0fe270900a).
 
 ## 19.9 The README names the fixtures and the tiny model {#tut-19.9}
 
@@ -654,7 +654,7 @@ model.
 Apply the patch to [`README.md`](#tut-19.9-README.md-8ec9a0), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/5ec98e80e89547dd837bfde958b11e0fd7e4ec63.diff | git apply --include=README.md
+curl -fsSL https://github.com/rahuldave/babykev/commit/88b3a9e08db851ce891ecfcfcf26d18892beea90.diff | git apply --include=README.md
 ```
 
 The patch changes the row of `tests/unit/`, and adds the rows of `tests/conftest.py` and `tests/tiny.py` under it.
@@ -669,18 +669,18 @@ helpers and the fixtures in it.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 5ec98e80e895
+git check 88b3a9e08db8
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source b34baedd8e8c --staged -- :/ && git restore --source 5ec98e80e895 --staged --worktree -- :/
+git restore --source 321a8df2c597 --staged -- :/ && git restore --source 88b3a9e08db8 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-19.9-what-changed-182c57}
 
-- <a id="tut-19.9-README.md-8ec9a0"></a>`README.md`: the rows of the fixtures and of the tiny model. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/5ec98e80e89547dd837bfde958b11e0fd7e4ec63/README.md).
+- <a id="tut-19.9-README.md-8ec9a0"></a>`README.md`: the rows of the fixtures and of the tiny model. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/88b3a9e08db851ce891ecfcfcf26d18892beea90/README.md).
   - look at ``| `tests/tiny.py` | A small tokenizer and backbone, built in memory, in place of the real ones |``
 
 <details open><summary>The patch to <code>README.md</code></summary>
@@ -701,4 +701,4 @@ git restore --source b34baedd8e8c --staged -- :/ && git restore --source 5ec98e8
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/5ec98e80e89547dd837bfde958b11e0fd7e4ec63). [The code after it](https://github.com/rahuldave/babykev/tree/5ec98e80e89547dd837bfde958b11e0fd7e4ec63).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/88b3a9e08db851ce891ecfcfcf26d18892beea90). [The code after it](https://github.com/rahuldave/babykev/tree/88b3a9e08db851ce891ecfcfcf26d18892beea90).

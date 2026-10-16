@@ -1,0 +1,137 @@
+---
+title: "25.1 The run image installs no group"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Build it yourself.** [Read the tutorial](../read/tut-25.1.qmd) is the other way to read this part.
+
+This part does not start where the part before it ends, because the walk skips some changes. This command puts the files that this part starts from in place of yours. Run it, and then go on:
+
+```bash
+git restore --source c7037ec46096 --staged -- :/ && git restore --source 41d247296821 --staged --worktree -- :/
+```
+
+If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
+
+```bash
+git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 41d247296821 --staged --worktree -- :/
+```
+
+```bash
+just setup
+```
+
+The whole tutorial then writes the model, and its tests. ty, which checks the types, joins the group `lint`.
+hypothesis, which draws many inputs for one test, joins the group `test`. The run image is babykev as a user runs
+it. It needs the dependencies of the project, and no group.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/41d24729682119b9bbb828187c5e9684a2921308). [The code after it](https://github.com/rahuldave/babykev/tree/570bb2134f032a64a34d14852c82fa1a199f69f6).
+
+## 25.1 The Dockerfile, with the run image {#tut-25.1}
+
+A `Dockerfile` builds an image in stages, and each `FROM` starts one. The stage `uv` is the image of uv itself. The
+stage `build` installs the environment into `/opt/venv`, with no group of the developers. The packages of `uv.lock`
+come first, and the code after. Docker keeps each instruction of a build in its cache, so a change to the code installs one
+package again, and not torch.
+
+The stage `run` starts from a fresh Python, and takes only the finished environment and the sample data. uv stays in
+the stage `build`.
+
+Apply the patch to [`Dockerfile`](#tut-25.1-Dockerfile-6651dd), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/570bb2134f032a64a34d14852c82fa1a199f69f6.diff | git apply --include=Dockerfile
+```
+
+The patch makes the file. Read the three stages, from each `FROM`.
+
+```bash
+docker build --target run --tag babykev-run .
+docker run --rm babykev-run
+```
+
+`--target run` builds the stage `run` and the stages that it needs, and `--tag` names the image. `docker run --rm`
+starts the image and removes the container when it stops. With no word, the image runs `babykev help`, from
+`ENTRYPOINT` and `CMD` on lines 35 and 36, and prints the help.
+
+```bash
+docker image ls babykev-run:latest
+```
+
+The image takes about 1.1 GB, and torch is most of it.
+
+```bash
+docker run --rm -v ~/.cache/huggingface:/hf babykev-run smoke
+```
+
+`-v` mounts the cache of the Hugging Face Hub of this Mac at `/hf`, where `HF_HOME` on line 33 sends the library. So
+the base model is not downloaded again. The smoke says `on cpu`. A container on a Mac runs Linux in a virtual
+machine, and sees no GPU of Apple. It prints `4 of 15 right`, and the fifteen answers are those of `just smoke` on
+`mps`, with the same two decimals. Each request takes about 3 seconds, where it took about 220 ms on `mps`.
+
+The stage `build` runs `uv sync --locked --no-default-groups`. `--no-default-groups` overrides
+`default-groups = "all"`, so `/opt/venv` gets the dependencies of the project, and no group.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 570bb2134f03
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 41d247296821 --staged -- :/ && git restore --source 570bb2134f03 --staged --worktree -- :/
+```
+
+### What changed {#tut-25.1-what-changed-182c57}
+
+- <a id="tut-25.1-Dockerfile-6651dd"></a>`Dockerfile`: the stages `uv`, `build` and `run`. New, 36 lines. [The file](https://github.com/rahuldave/babykev/blob/570bb2134f032a64a34d14852c82fa1a199f69f6/Dockerfile).
+  - look at `FROM python:3.13-slim-trixie AS run`
+
+<details open><summary>The patch to <code>Dockerfile</code></summary>
+
+```diff
+@@ -0,0 +1,36 @@
++# The images of babykev, built from uv.lock, so that they hold the versions that the lockfile names.
++#
++#   docker build --target run --tag babykev-run .
++#       the program and what it needs, and no tool of the developers. It starts babykev
++#
++# The environment is in /opt/venv, and never in the folder of the project.
++
++# uv, copied from its own image, at the version that wrote the lockfile
++FROM ghcr.io/astral-sh/uv:0.12.13 AS uv
++
++# The environment, with no group of the developers. The packages come first and the code after, so a
++# change to the code installs one package again, and not torch
++FROM python:3.13-slim-trixie AS build
++COPY --from=uv /uv /usr/local/bin/uv
++ENV UV_PROJECT_ENVIRONMENT=/opt/venv \
++    UV_PYTHON_DOWNLOADS=never \
++    UV_COMPILE_BYTECODE=1 \
++    UV_LINK_MODE=copy \
++    UV_NO_CACHE=1
++WORKDIR /app
++COPY pyproject.toml uv.lock .python-version ./
++RUN uv sync --locked --no-default-groups --no-install-project
++COPY README.md LICENSE NOTICE ./
++COPY src ./src
++RUN uv sync --locked --no-default-groups --no-editable
++
++# The run image: Python, the environment, the program and its sample data. It has no uv
++FROM python:3.13-slim-trixie AS run
++COPY --from=build /opt/venv /opt/venv
++WORKDIR /app
++COPY data ./data
++ENV PATH=/opt/venv/bin:$PATH \
++    HF_HOME=/hf \
++    PYTHONUNBUFFERED=1
++ENTRYPOINT ["babykev"]
++CMD ["help"]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/570bb2134f032a64a34d14852c82fa1a199f69f6). [The code after it](https://github.com/rahuldave/babykev/tree/570bb2134f032a64a34d14852c82fa1a199f69f6).
