@@ -1,19 +1,21 @@
-# babykev-walk, the tutorial
+# The walk through babykev
 
-This repository is a timewalk tutorial through the project babykev, on its branch `tutorial`. `toc.toml` names two
-walks over the same commits, the tags `tut-*` of babykev. The walk `tutorial` starts in watch mode, and the walk
-`tutorial-do` starts in do mode. In do mode, the learner makes each move. In watch mode, timewalk checks out each
-move.
+This repository is a walk for timewalk. It replays the steps of the project rahuldave/babykev. A student
+forks it, runs `just present`, and opens the address that timewalk prints.
 
-The notes are in `walks/tutorial/notes.md`, with a `## tut-NN` section for each step and a `### tut-NN.k` section
-for each move, in the order of the commits. `walks/tutorial/TUTORIAL-watch.md`, `walks/tutorial/TUTORIAL-do.md`
-and `site/` are copies that timewalk-export makes from the notes. Do not edit them by hand.
-
-- `just present tutorial-do` or `just present` opens the tutorial. `just check` checks the notes against the
-  project.
-- `repo/` is the clone of babykev of the learner. `worktree/` is the replay copy of timewalk, a clone of `repo/` on
-  the branch `timewalk/replay`. Git tracks neither. timewalk never writes to `repo/`.
-- A move keeps the edits and commits of the learner in `worktree/`, on a branch `timewalk/saved/<place>`, and does
-  not ask. The moves of a step go in order. To go back, use **Restart step**, and then run `just setup`.
-- The class material of the teacher makes these files. Do not change the justfile, `toc.toml` or `.gitignore`
-  for the needs of one learner. A learner can edit the notes and commit them to a fork.
+- `walk.md`, or the notes that `toc.toml` names, holds the notes of every step. With several walks, `toc.toml` lists
+  them, and says where the notes of each one are. `slides/` holds the slides. The student edits the notes on the
+  page, or in an editor.
+- `repo/` is a clone of the project, and `worktree/` is timewalk's replay copy, a clone of `repo/` on the branch
+  `timewalk/replay`. Git ignores both. timewalk never writes to `repo/`. A `worktree/` from an older timewalk is a
+  git worktree, which keeps its records in `repo/.git/worktrees`.
+- Work in `repo/` on `main`, and push to the student's own fork of the project. A move between steps keeps the
+  edits and commits in `worktree/` on a branch `timewalk/saved/<step>` there, and does not ask. A `worktree/`
+  from an older timewalk is a git worktree, where a move with edits asks and stashes them. Keep what the student
+  needs from it, delete it, and run `git -C repo worktree prune`. The next `just present` makes a clone.
+- In a tutorial, a step has moves, the small commits between two tags. The moves go in order. To go back, use
+  **Restart step**, and then `just setup`.
+- `walks/` and `site/` hold the pages to read without timewalk, and `.github/workflows/pages.yml`
+  publishes the website. The teacher's `just walk-update` makes them from the notes. Do not edit them by hand.
+- `just pdf` makes `build/walk.pdf`, the slides, one page each. The notes are not in it. Git ignores it.
+- Do not change `justfile` or `.gitignore` for one student's needs. The teacher's class material makes them.

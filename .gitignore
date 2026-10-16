@@ -1,5 +1,8 @@
+# Made on this machine, never part of this repository: the clone of the project (just setup), and the replay copy
+# that timewalk moves from step to step.
 /repo/
 /worktree/
+# Your own PDF, made by `just pdf`, goes into build/. The PDF that this repository ships is babykev.pdf, beside this file.
 /build/
+# The website as just site builds it, to look at on this machine. The Pages workflow builds its own.
 /site/_site/
-/sites/*/_site/

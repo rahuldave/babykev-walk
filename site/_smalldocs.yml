@@ -2660,7 +2660,8 @@ website:
                 - text: "10.3 The docstrings of the four classes of a request"
                   href: contract/build/tut-10.3.qmd#tut-10.3
 
-theme: cosmo
+metadata-files: ["_settings.yml"]   # the class's own settings
+theme: "ac215"
 css: styles.css
 toc: true
 toc-depth: 2

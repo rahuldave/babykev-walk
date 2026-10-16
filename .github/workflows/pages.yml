@@ -1,5 +1,5 @@
-# The website of the walk: on every push to tutorial, smalldocs builds site/, and GitHub Pages publishes it. site/ is
-# one smalldocs project: the first walk at its top, each other walk in site/ID/. The walk skill's walk-update writes
+# The website of the walks: on every push to tutorial, smalldocs builds site/, and GitHub Pages publishes it. site/ is one
+# project: the first walk's pages at the top, and each other walk's in site/ID/. The walk skill's walk-update writes
 # site/ from the notes. In the repository's settings on GitHub, under Pages, set the source to GitHub Actions once.
 name: Pages
 
@@ -32,7 +32,7 @@ jobs:
         uses: astral-sh/setup-uv@v10.2.0
       - if: steps.site.outputs.pages == 'yes'
         run: |
-          uvx --from 'smalldocs>=0.1.5' smalldocs render site
+          uvx --from 'smalldocs>=0.3.3' smalldocs render site
       - if: steps.site.outputs.pages == 'yes'
         uses: actions/configure-pages@v6
       - if: steps.site.outputs.pages == 'yes'

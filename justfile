@@ -1,9 +1,8 @@
-# The tutorial through babykev, in timewalk. Run `just` to see the list.
+# The walk through babykev: replay the class with timewalk. Run `just` to see the list.
 #
 # This file names the project and the upstream owner here. `just setup` clones the project into repo/, and
-# timewalk puts its replay copy in worktree/. Both folders are in .gitignore. toc.toml lists three walks. tutorial
-# (watch mode, the first) and tutorial-do (do mode) share the notes of the tags tut-* of babykev. narrative is the
-# first lecture, on the tags step-*. Made from the walk skill's template, with `site` added, by the class material.
+# timewalk puts its replay copy in worktree/. Both folders are in .gitignore. The walk is walk.md and slides/, or
+# several walks, listed in toc.toml.
 
 project := "babykev"
 upstream := "rahuldave"
@@ -38,25 +37,30 @@ setup url="":
     set -euo pipefail
     export GIT_TERMINAL_PROMPT=0
     upstream_url="https://github.com/{{ upstream }}/{{ project }}.git"
+    fresh=0
     if [ ! -d repo/.git ]; then
+        fresh=1
         url="$1"
         if [ -z "$url" ]; then
             url="$upstream_url"
-            owner="$(git remote get-url origin 2>/dev/null | sed -nE 's#.*github\.com[:/]([^/]+)/.*#\1#p')" || owner=""  # no origin: a download, or a new git init
+            owner="$(git remote get-url origin 2>/dev/null | sed -nE 's#.*github\.com[:/]([^/]+)/.*#\1#p')"
             mine="https://github.com/$owner/{{ project }}.git"
             if [ -n "$owner" ] && [ "$owner" != "{{ upstream }}" ] && git ls-remote --exit-code "$mine" HEAD >/dev/null 2>&1; then
                 url="$mine"
             fi
         fi
         echo "setup: cloning $url into repo/"
-        git clone --quiet "$url" repo
+        git clone --quiet "$url" repo || { echo "setup: could not clone $url. Check the network, and run just setup again" >&2; exit 1; }
     fi
     if ! git -C repo remote get-url upstream >/dev/null 2>&1; then
         git -C repo remote add upstream "$upstream_url"
     fi
-    git -C repo fetch --quiet --tags --force upstream 2>/dev/null \
-        || echo "setup: could not fetch the tags from {{ upstream }}/{{ project }}; using the ones repo/ has"
-    echo "setup: repo/ is $(git -C repo remote get-url origin), with $(git -C repo tag -l 'tut-*' | wc -l | tr -d ' ') steps of the tutorial"
+    # With no network, a repo/ that is already here keeps the tags it has, and just present still opens it
+    if ! git -C repo fetch --quiet --tags --force upstream; then
+        if [ "$fresh" = 1 ]; then echo "setup: could not fetch the tags of the steps from GitHub. Check the network, and run just setup again" >&2; exit 1; fi
+        echo "setup: could not fetch from GitHub; using the tags you have" >&2
+    fi
+    echo "setup: repo/ is $(git -C repo remote get-url origin), with $(git -C repo tag -l 'step-*' | wc -l | tr -d ' ') steps from {{ upstream }}/{{ project }}"
 
 # Make build/walk.pdf, or build/walk-ID.pdf for just pdf ID: the slides, one page each. BRAND=DIR gives it a brand
 pdf id="":
@@ -89,20 +93,6 @@ pdf id="":
     if [ -n "${BRAND:-}" ]; then test -e "$BRAND" || { echo "pdf: BRAND=$BRAND does not exist" >&2; exit 1; }; brand=(--brand "$BRAND"); fi
     uvx --refresh-package timewalk --from {{ quote(timewalk) }} timewalk-pdf "${source[@]}" ${brand[@]+"${brand[@]}"} -o "build/$name.pdf"
 
-# Check the notes and slides of every walk against the steps and moves of the project
-check: setup
-    uvx --refresh-package timewalk --from {{ quote(timewalk) }} timewalk-check repo --replay worktree --toc toc.toml
-
-# Build the websites into site/_site with smalldocs, as GitHub Pages does: open site/_site/index.html
-site:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    uvx --from 'smalldocs>=0.1.5' smalldocs render site
-    # Each small walk's site, from sites/ID, goes into site/_site/ID
-    for small in sites/*/; do
-        [ -d "$small" ] || continue  # no small walk: the glob stays as written
-        id=$(basename "$small")
-        uvx --from 'smalldocs>=0.1.5' smalldocs render "sites/$id"
-        mkdir -p "site/_site/$id"
-        cp -R "sites/$id/_site/." "site/_site/$id/"
-    done
+# Build the website in site/ with smalldocs, serve it on this machine, and rebuild it on every change. The theme is in site/_extensions/
+site *args:
+    uvx --from 'smalldocs>=0.3.3' smalldocs preview site "$@"

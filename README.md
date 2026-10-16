@@ -1,122 +1,98 @@
-# babykev, one move at a time
+# The walk through babykev
 
-This tutorial builds [babykev](https://github.com/rahuldave/babykev/tree/tutorial), a small decision model, and
-the engineering around it. babykev reads a document and a set of typed questions, and gives a probability for
-every answer. Its model comes from the first commit of [kev](https://github.com/jaredpalmer/kev), by Jared Palmer.
-The tutorial adds the rest:
+babykev grew in steps, with one commit and one tag for each step. This repository replays the class with
+[timewalk](https://rahuldave.com/timewalk/). At every step, the page shows the files as they were and what
+the step changed. It also has terminals in the repository at that step, and the notes of the step with
+their commands.
 
-- packages and dependencies with uv, and one interface for every task with `just`
-- tests, a formatter, a linter, types, a git hook and CI
-- documentation made from the code, with smalldocs
-- the model, and its tests
+## Read it without timewalk
 
-babykev grows in **steps**, on its branch `tutorial`. Each step is a tag, `tut-00`, `tut-01` and so on. The small
-commits between two tags are the **moves**. Each move does one thing, and ends with a command that shows what it
-did. The tutorial has three forms, with the same text:
+If this repository has a `toc.toml`, each walk is also a set of pages, to read on GitHub or on its website. There are two ways to
+read a tutorial. **Read the tutorial** explains each change, with the code to look at. **Build it yourself** gives
+every command to run and every patch to apply, so that you make the project yourself. Each part of the pages ends
+with **What changed**. It lists every file of the change, with a link to the file and its whole diff.
 
-- **[The website](https://rahuldave.com/babykev-walk/)** has a page for each step in each mode, with a list of
-  the steps beside it and a search box.
-- **To read on GitHub,** [walks/tutorial/TUTORIAL-watch.md](walks/tutorial/TUTORIAL-watch.md) explains each move,
-  and [walks/tutorial/TUTORIAL-do.md](walks/tutorial/TUTORIAL-do.md) gives every line to type. Both have the
-  commands in code blocks, and a link to the code at every step and to the commit of every move.
-- **[walks/tutorial/notes.md](walks/tutorial/notes.md)** has the notes that timewalk reads. timewalk-export makes
-  the website and the two Markdown files from these notes.
+Build it yourself needs no timewalk. You make a new clone of babykev for it, and the pages
+give every command to run in it. They also show how to add a command to that clone, `git check`, which tells
+you after each change whether your files match the project's.
 
-The slides are in [walks/tutorial/slides/](walks/tutorial/slides/). The notes and the slides of the first lecture are in [walks/narrative/](walks/narrative/).
-
-## The steps and moves
-
-Each link opens its section of TUTORIAL-watch.md.
-
-- [tut-00](walks/tutorial/TUTORIAL-watch.md#tut-00-where-we-start) **Where we start**
-- [tut-01](walks/tutorial/TUTORIAL-watch.md#tut-01-the-project) **The project**
-  - [tut-01.1](walks/tutorial/TUTORIAL-watch.md#tut-011-uv-makes-the-project) uv makes the project
-  - [tut-01.2](walks/tutorial/TUTORIAL-watch.md#tut-012-the-description-the-licence-and-the-author) The description, the licence and the author
-  - [tut-01.3](walks/tutorial/TUTORIAL-watch.md#tut-013-the-command-babykev-with-help) The command babykev, with help
-  - [tut-01.4](walks/tutorial/TUTORIAL-watch.md#tut-014-a-justfile-with-the-recipe-setup) A justfile with the recipe setup
-  - [tut-01.5](walks/tutorial/TUTORIAL-watch.md#tut-015-the-recipe-help) The recipe help
-  - [tut-01.6](walks/tutorial/TUTORIAL-watch.md#tut-016-the-readme-says-how-to-start-and-what-each-file-is) The README says how to start, and what each file is
-- [tut-02](walks/tutorial/TUTORIAL-watch.md#tut-02-the-contract-and-its-unit-tests) **The contract, and its unit tests**
-  - [tut-02.1](walks/tutorial/TUTORIAL-watch.md#tut-021-pydantic-the-first-dependency) Pydantic, the first dependency
-  - [tut-02.2](walks/tutorial/TUTORIAL-watch.md#tut-022-apipy-of-kev-as-he-wrote-it) api.py of kev, as he wrote it
-  - [tut-02.3](walks/tutorial/TUTORIAL-watch.md#tut-023-apipy-loses-the-parts-of-the-server-of-kev) api.py loses the parts of the server of kev
-  - [tut-02.4](walks/tutorial/TUTORIAL-watch.md#tut-024-five-requests-about-cheese-as-sample-data) Five requests about cheese, as sample data
-  - [tut-02.5](walks/tutorial/TUTORIAL-watch.md#tut-025-pytest-in-the-group-test) Pytest, in the group test
-  - [tut-02.6](walks/tutorial/TUTORIAL-watch.md#tut-026-the-recipe-test) The recipe test
-  - [tut-02.7](walks/tutorial/TUTORIAL-watch.md#tut-027-the-tests-of-the-command) The tests of the command
-  - [tut-02.8](walks/tutorial/TUTORIAL-watch.md#tut-028-coverage-on-every-run-of-the-tests) Coverage on every run of the tests
-  - [tut-02.9](walks/tutorial/TUTORIAL-watch.md#tut-029-the-tests-of-the-request) The tests of the request
-  - [tut-02.10](walks/tutorial/TUTORIAL-watch.md#tut-0210-the-tests-of-the-mapping) The tests of the mapping
-  - [tut-02.11](walks/tutorial/TUTORIAL-watch.md#tut-0211-a-test-of-rounding-which-fails) A test of rounding, which fails
-  - [tut-02.12](walks/tutorial/TUTORIAL-watch.md#tut-0212-probabilities-rounded-to-four-decimals) Probabilities rounded to four decimals
-  - [tut-02.13](walks/tutorial/TUTORIAL-watch.md#tut-0213-the-tests-of-confidence-and-one-fails) The tests of confidence, and one fails
-  - [tut-02.14](walks/tutorial/TUTORIAL-watch.md#tut-0214-the-confidence-of-a-score-measures-against-a-guess) The confidence of a score measures against a guess
-  - [tut-02.15](walks/tutorial/TUTORIAL-watch.md#tut-0215-a-test-of-a-scale-with-one-level) A test of a scale with one level
-  - [tut-02.16](walks/tutorial/TUTORIAL-watch.md#tut-0216-the-readme-names-the-contract-the-data-and-the-tests) The README names the contract, the data and the tests
-
-## Two ways to take it
-
-The tutorial runs in [timewalk](https://rahuldave.com/timewalk/), a page in the browser with the files, the
-notes, the slides, and terminals in the project at each step.
-
-| Mode | What you do |
-|---|---|
-| **Do** | You make each move yourself, from its notes. Type the code, run the command in the grey block, run the command at the end of the move, and press **Done**. **Your files match** says when your files are the same as the commit of the move. Use **Apply** or **Catch me up** if you are stuck |
-| **Watch** | **Show** checks out the commit of each move, and the notes explain what changed. The teacher shows the class in this mode |
-
-The switch **Do / Watch** beside the name of the walk changes the mode at any time. Every step starts from the code
-of the step before. The moves of a step go in order. To go back, press **Restart step**, and then run
-`just setup`. Before tut-01.4, the project has no justfile, so `just setup` there runs the recipe of this
-repository. The notes of tut-00 and tut-01 say so.
-
-**A move keeps your work.** Before a move, timewalk puts your edits and commits in `worktree/`, on a branch
-`timewalk/saved/<place>`, for example `timewalk/saved/tut-01.3`. It does not ask. The page names the branch, and
-gives the command that brings a file back.
+[The pages on GitHub](walks/README.md) list each walk with its two ways of reading. The same pages are a website,
+[rahuldave.github.io/babykev-walk](https://rahuldave.github.io/babykev-walk/).
 
 ## What you need
 
-- [uv](https://docs.astral.sh/uv/), which also runs timewalk
-- [git](https://git-scm.com/) and [just](https://just.systems/)
+- [uv](https://docs.astral.sh/uv/), which also runs timewalk from GitHub
+- [git](https://git-scm.com/)
+- [just](https://just.systems/), which runs the recipes of this repository
 - Chrome, Edge or another recent browser
 
 ## Start
 
-Fork this repository on GitHub first, so that you can keep your own notes. When you fork it, untick **Copy the
-`main` branch only**, because the tutorial is on the branch `tutorial`. You can also clone
-`rahuldave/babykev-walk` itself in place of a fork.
+1. Fork this repository on GitHub, so that you can save your own notes. Then clone your fork.
+2. In its folder, run `just present`.
+3. Open the address that timewalk prints.
 
 ```
-git clone -b tutorial https://github.com/<you>/babykev-walk
+git clone https://github.com/<you>/babykev-walk
 cd babykev-walk
-just present tutorial-do   # do mode: you make the moves
-just present               # watch mode: the moves are shown
+just present
 ```
 
-`just present` opens the first walk, `tutorial`, and `just present tutorial-do` opens the walk `tutorial-do`.
-`just present narrative` opens the first lecture, the steps `step-00` to `step-05b` on the branch `main` of
-babykev. `just present` runs `just setup` first. `just setup` clones babykev into `repo/`, or your fork of
-babykev if you have one, and fetches the tags of the steps. To clone from another address, run `just setup <address>` before the first
-`just present`.
+`just present` runs `just setup` first. The first time, `just setup` clones babykev into `repo/`. If you
+also forked babykev, it clones your fork, so that you can push your own work. Otherwise it clones
+`rahuldave/babykev`. Every time, it fetches the tags of the steps from `rahuldave/babykev`. With no network, a `repo/`
+that is already there keeps the tags that it has, and `just present` still opens the walk.
 
 timewalk then puts its replay copy in `worktree/`. The replay copy is a clone of `repo/` on the branch
-`timewalk/replay`, and timewalk moves it from step to step and from move to move. timewalk never writes to
-`repo/`. Git ignores both folders.
-
-`just check` checks the notes and the slides of every walk against its steps and moves. `just pdf` makes
-`build/walk.pdf`, the slides of the tutorial, and `just pdf narrative` makes `build/walk-narrative.pdf`, the
-slides of the first lecture.
+`timewalk/replay`, which timewalk moves from step to step. timewalk never writes to `repo/`. A `worktree/` that
+an older timewalk made is a git worktree, which keeps its records in `repo/.git/worktrees`. Git ignores both
+folders, so they never enter your fork. To clone from another address, run `just setup <address>` before the
+first `just present`.
 
 ## The folders
 
 ```
 babykev-walk/
-├── toc.toml                      the walks: tutorial and tutorial-do, over the same commits, and narrative
-├── walks/tutorial/notes.md       the notes of every step and move, for timewalk
-├── walks/tutorial/TUTORIAL-*.md  the tutorial to read on GitHub, in watch mode and in do mode
-├── walks/tutorial/slides/        the slides, and slides.toml, which step or move shows which
-├── walks/narrative/              the notes and the slides of the first lecture, on the tags step-*
-├── site/                         the website, made from notes.md; GitHub publishes it on every push
-├── justfile                      present, setup, check, pdf, site
-├── repo/                         ignored: your clone of babykev
-└── worktree/                     ignored: the replay copy, at the step on show
+├── walk.md        the notes of every step, tracked in your fork. With toc.toml, the notes that it names
+├── toc.toml       only with several walks: the list of walks, and where the notes of each are
+├── walks/         the pages of each walk to read on GitHub, walks/ID/read.md and walks/ID/build.md
+├── site/          the same pages as a website, which the Pages workflow publishes
+├── slides/        the slides, and slides.toml, which says which slides show at which step
+├── justfile       the recipes: present, setup, pdf
+├── repo/          ignored: your clone of babykev
+└── worktree/      ignored: the replay copy
 ```
+
+## Several walks
+
+If this repository has a `toc.toml`, it has several walks. `just present` opens the first, and
+`just present ID` opens the walk with that id. The menu at the left of the step bar changes the walk.
+
+A walk is a narrative or a tutorial. A narrative goes from step to step. A tutorial also has moves, the
+small commits between two steps.
+
+In do mode, you make each move by hand from its notes, run the command at
+its end, and press **Done**. A patch in the notes has a button, **Apply patch**, that applies it to your file. **Catch me up** sets the code to the end of the move. In watch mode, **Show**
+checks out each move. The moves of a step go in order. To go back, press **Restart step**, and then run
+`just setup`.
+
+## The page
+
+- **The notes column** on the right shows the notes of the step. A click on a command types it into its
+  terminal. Read the command, and then press Enter to run it. To run a command with one click, turn on
+  **run on click**.
+- **Edit** at the top of the notes column changes the notes of the step. They are in `walk.md`, or in the notes
+  that `toc.toml` names. Commit that file to your fork to keep your notes.
+- **At this step** and **Runs** are terminals in `worktree/`, at the step. The notes of each step start
+  with `$ just setup`. The command runs the project's own recipe, at the step, and makes the environment
+  of the step. It is not the `just setup` of this repository.
+- **A move keeps your work.** Before a move to another step, timewalk keeps your edits and commits in
+  `worktree/` on a branch `timewalk/saved/<step>`, and does not ask. The page names the branch, and gives
+  the command that brings a file back. A `worktree/` from an older timewalk is a git worktree, and there a move
+  with edits asks and stashes them. To change it, keep what you need from `worktree/`, delete the folder, run
+  `git -C repo worktree prune`, and run `just present` again.
+- **Main** is a terminal in `repo/`, your clone of babykev. A move never touches it. Work there on
+  `main`, commit, and push to your own fork.
+- **PDF** makes a PDF of the slides, one page each. The notes are not in it. They are for this page. `just pdf`
+  makes the same file, `build/walk.pdf`. Git ignores `build/`, so your own PDF never changes your fork. This
+  repository may also ship `babykev.pdf`, the PDF of the walk as written.
