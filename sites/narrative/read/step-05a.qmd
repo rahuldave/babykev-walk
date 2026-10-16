@@ -1,0 +1,901 @@
+---
+title: "5a The tests that could tell"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Init.** `just setup` changes nothing in `.venv`: no new package. 0.5 s.
+
+```bash
+just setup
+```
+
+**What is new:** seven tests that see the mask, of nine new tests: `tests/unit/test_mask.py`, five tests of the mask's rule, three of which fail on step 05's mask, and four isolation tests in `test_model.py`, which all fail on it; the fix, one line of `branch_mask`; the two guards ty asked for, `delimiter_ids` and a check in `load_tokenizer`; `just types` as a line of `check`; two pages of the docs site, `docs/guide/00_model.qmd` (the four ideas) and `docs/guide/01_mask.ipynb` (the mask as a grid, with the mask of step 05 beside it), and a test that re-runs the notebook. Clean: 103 tests, 154 of 154, green.
+
+**We had two problems left over from step 05.** The slide names them; both are lines of step 05's `model.py`, which this step changes, so there is nothing to print here. The first is a type problem. `just types` printed six findings at step 05. Five come from one line, line 97, `tok.convert_tokens_to_ids(SPECIAL)`, which gives back a list of five numbers that the line splits into five names; the library says it may give back one number, which ty cannot see past. The sixth is `load_tokenizer`, which may give back `None`. The second is a mask problem. `branch_mask` lets question 2 look at question 1, line 140 of step 05's file, and every check passed, because no test checks the function that builds the mask. Step 05a deals with both: the tests that see the mask, the one-line fix, and the two guards for ty.
+
+**The tiny model, again.** Step 05 built a tiny tokenizer and a tiny model in memory, in `tests/tiny.py`: 106 tokens, 2 layers of 32 numbers, 24,224 parameters, measured at step 05; neither `tiny.py` nor `conftest.py` changed in this step. A test gets them as fixtures. The first `sed` line prints `tests/conftest.py`, lines 16 to 27: `tok`, built once for the whole run (`scope="session"`), returns `tiny_tokenizer()`; `model`, built fresh for each test, returns a decision model on `tiny_backbone(len(tok))`, on the CPU, without an adapter. A test builds nothing. It names `model` and `tok` as arguments, and pytest passes in what the two functions return; the tests of this step do that. The second `sed` line prints lines 30 to 40, the `record` fixture: one request about Roquefort, with a state and three questions, `Is this a blue cheese?` with 2 options, `Which milk?` with 3, `How firm?` with 3.
+
+```bash
+sed -n '16,27p' tests/conftest.py
+sed -n '30,40p' tests/conftest.py
+```
+
+**A. Test properties, not examples.** Four properties, for any request: change question 2 and question 1's answer must not move; three questions in one pass give the numbers of three passes; the order of the questions does not matter; and the mask's rule, no token sees a later one and no question sees another. They are true for any weights, so the tiny model is enough. `just test`: 103 passed, the 92 of step 05 and 11 new: nine tests of the mask and of isolation, and two notebook tests.
+
+```bash
+just test
+```
+
+**B. A picture checks one size.** At the end of step 05, five lines of plain Python drew the right mask for a request of six tokens next to the one `branch_mask` built, and rows 5 and 6 were WRONG. The mask is fixed in this step, and the same five lines print `ok` six times. In `test_mask.py` the same comparison is the test `test_mask_of_a_small_request`, lines 28 to 39. Suppose someone fixed the mask like this instead: a token may look at the state, at its own question, and at any question more than one before it, so only the question right before is blocked. The first `perl` line writes that wrong fix into line 151 of `branch_mask`. The first here document, the six-token request of the end of step 05, still prints `ok` six times: its picture has only two questions, so it cannot tell. The second here document has a different size: one state token and three questions of one token each, parts `[0, 1, 2, 3]`, four tokens, with a picture drawn by hand. Rows 1 to 3 print `ok`. Row 4 prints `#..# ##.# WRONG`: question 3 looks at question 1. The `git restore` line puts the fix back: every paragraph from here puts in what it needs, and restores it, so each runs on its own. We have no function that draws the right mask for any size, and the hypothesis tests of the next paragraphs do not draw pictures: they state the rule. A request can have 1 to 6 state tokens, then 0 to 4 questions of 1 to 5 tokens each, 6 times 781, which is 4,686 shapes, and each would need its own picture.
+
+```bash
+perl -pi -e 's/^    same = \(s\[None, :\] == s\[:, None\]\) \| \(s\[None, :\] == 0\)$/    same = (s[None, :] == s[:, None]) | (s[None, :] == 0) | (s[None, :] < s[:, None] - 1)/' src/babykev/model.py
+uv run python - <<'EOF'
+from babykev.model import branch_mask
+picture = ["#.....", "##....", "###...", "####..", "##..#.", "##..##"]
+mask = branch_mask([0, 0, 1, 1, 2, 2], "cpu")[0, 0] == 0
+rows = ["".join("#" if ok else "." for ok in row) for row in mask]
+for want, got in zip(picture, rows, strict=True): print(want, got, "ok" if want == got else "WRONG")
+EOF
+uv run python - <<'EOF'
+from babykev.model import branch_mask
+picture = ["#...", "##..", "#.#.", "#..#"]
+mask = branch_mask([0, 1, 2, 3], "cpu")[0, 0] == 0
+rows = ["".join("#" if ok else "." for ok in row) for row in mask]
+for want, got in zip(picture, rows, strict=True): print(want, got, "ok" if want == got else "WRONG")
+EOF
+git restore src/babykev/model.py
+```
+
+**C. hypothesis: state the rule, the computer tries the shapes.** `hypothesis` is a Python library for tests; `just setup` installed it with the model's stack at step 05. The `sed` line prints three lines of `test_mask.py`. Line 10, `shapes`, says what a request may look like: a state of 1 to 6 tokens, then a list of up to 4 questions of 1 to 5 tokens each. `@given(shapes)` on line 58 runs the test below it again and again, each time with a shape drawn at random from the 4,686: by default, up to 100 times. When a shape breaks the rule, hypothesis shrinks it, trying smaller shapes until none smaller breaks, and shows that one. hypothesis also allows each run 200 ms by default. The first run that uses torch can take longer than that on a slow or busy machine: in a rehearsal in the dev container, one example of the rule test took 1180 ms, the run failed with `DeadlineExceeded`, and the same test passed on another run. The second `sed` line prints lines 43 to 51 of `tests/conftest.py`, which turn the deadline off for the whole run, with a comment that says why; the import sits below the fixtures so that they keep lines 16 to 40.
+
+```bash
+sed -n '10p;58,59p' tests/unit/test_mask.py
+sed -n '43,51p' tests/conftest.py
+```
+
+**D. hypothesis finds the size for us.** The `perl` line writes the wrong fix of paragraph B in again, so that this paragraph runs on its own. The `sed` line prints one rule test, lines 58 to 65 of `test_mask.py`, kind: unit: `segments` gives the part of each token, 0 for the state and k for question k; `siblings` is yes for two tokens in two different questions; `allowed` is the mask read as yes or no; the test says no pair is both. `just test -k no_question_sees_another` runs it alone. hypothesis tries shapes until the rule breaks, and shrinks the failure to `shape = (1, [1, 1, 1])`: one state token and three questions of one token each, parts `[0, 1, 2, 3]`, the request we drew by hand in paragraph B. We chose that size; hypothesis found it on its own. The output prints `allowed` and `siblings` as tensors of `True` and `False`; written as `#` and `.`, `allowed` is `# . . .`, `# # . .`, `# . # .`, `# # . #`, and `siblings` is `. . . .`, `. . # #`, `. # . #`, `. # # .`. Row 4, column 2 is yes in both: token 4, in question 3, looks at token 2, in question 1. The `git restore` line puts the fix back.
+
+```bash
+perl -pi -e 's/^    same = \(s\[None, :\] == s\[:, None\]\) \| \(s\[None, :\] == 0\)$/    same = (s[None, :] == s[:, None]) | (s[None, :] == 0) | (s[None, :] < s[:, None] - 1)/' src/babykev/model.py
+sed -n '58,65p' tests/unit/test_mask.py
+just test -k no_question_sees_another
+git restore src/babykev/model.py
+```
+
+**E. How we tested isolation.** The `perl` line writes step 05's mask line back into `branch_mask`: a plain causal mask, every token sees everything before it. The isolation test needs that mask: with the wrong fix of paragraph B it passes, because question 3 cannot see question 2, so rewriting question 2 changes nothing. `test_a_question_cannot_see_its_sibling`, lines 145 to 157 of `test_model.py`, kind: integration, on the tiny model. It takes the fixtures `model`, `tok` and `record`, from `conftest.py`. `logits_of` packs a request and gives, for each question, one score for each of its options. The test scores the request, rewrites question 2 (`Where from?`, two options in place of three), and scores again. Questions 1 and 3 must get exactly the same scores, `torch.equal`, and question 2 must get a different number of scores. With step 05's mask the line for question 3 fails: before, `tensor([-0.2301, -0.2331, -0.2340])`; after, `tensor([-0.2266, -0.2302, -0.2312])`. Question 3 could look at question 2, so rewriting question 2 moved its scores. The line for question 1 passes: question 1 comes first and cannot look at what follows. The `git restore` line puts the fix back. The same idea for any request is `test_packed_equals_separate_for_any_record`, lines 184 to 194, which hypothesis feeds: one pass over all the questions must give what one pass for each question alone gives. It builds its own tiny model, at line 190, in place of taking the `model` fixture: hypothesis runs the test body many times, and refuses a test that takes a function-scoped fixture. Tried in a scratch copy, a `@given` test with `model` as an argument fails with `FailedHealthCheck: ... uses a function-scoped fixture 'model'`.
+
+```bash
+perl -pi -e 's/^    same = \(s\[None, :\] == s\[:, None\]\) \| \(s\[None, :\] == 0\)$/    same = torch.ones_like(causal) | (s[None, :] == 0)/' src/babykev/model.py
+sed -n '145,157p' tests/unit/test_model.py
+just test -k a_question_cannot_see_its_sibling
+git restore src/babykev/model.py
+```
+
+**F. The tests see it, and the one-line fix.** The `perl` line writes step 05's mask line back, as in the last paragraph. `just test`: 8 failed, 95 passed, in about 20 seconds, because hypothesis shrinks each failing case to its smallest. Three of the five tests of `test_mask.py` fail: the picture test and two of the three rules. The two that pass check the mask's shape and that no token sees a later token. The four isolation tests fail, and the notebook test, because the grid the notebook stored no longer matches what the code prints. The commit hook, installed at step 03, runs `just check`, and `just check` runs these tests, so this commit would now be refused, at the tests, with the same eight names. ty passes here: the two guards of paragraph H are already in the files, and only the mask line is wrong. We saw a refused commit at steps 03 and 04b, so we do not make one here. The `git restore` line puts the fix back, because everything after this needs it. The last `sed` line prints line 151, the fix: a token may look at the state, or at its own question. Step 05 had `torch.ones_like(causal)` where the first part is.
+
+```bash
+perl -pi -e 's/^    same = \(s\[None, :\] == s\[:, None\]\) \| \(s\[None, :\] == 0\)$/    same = torch.ones_like(causal) | (s[None, :] == 0)/' src/babykev/model.py
+just test
+git restore src/babykev/model.py
+sed -n '151p' src/babykev/model.py
+```
+
+**G. The smoke run on Qwen, again.** `just smoke local` on the right mask: 4 of 15 right, about 300 ms a request (242 ms at one run, 327 at another). It was 6 at step 05, and several answers changed: the first cheese's milk went from buffalo to cow. A pure guess on these fifteen questions expects 4.75 right: the sample has five yes-or-no questions, a guess right once in 2, five choice questions of 5 options, once in 5, and five score questions of 4 levels, once in 4, which is 2.5 + 1 + 1.25.
+
+```bash
+just smoke local
+```
+
+**H. The type problem: two guards.** The `sed` line prints lines 64 to 80: `load_tokenizer` checks what came back, and stops with an error if it is not a tokenizer, so it never gives back `None`; `delimiter_ids` is the one place that calls `convert_tokens_to_ids`, and turns one number into a list of one, so it always gives back a list. `encode`, line 108, and the tests, lines 57, 108, 119 and 128 of `test_model.py`, call it in place of the five calls ty complained about. `just types`: All checks passed!
+
+```bash
+sed -n '64,80p' src/babykev/model.py
+just types
+```
+
+**I. ty joins `just check`.** `just --show check`: six commands now, `types` between `lint` and the tests. `just check`: green, 20 seconds. The commit hook runs `just check`, so a commit with a type problem is now refused, at ty, before the tests run: a type error added to `model.py` in a scratch copy stopped `just check` there, with `Found 1 diagnostic`. At step 05 we could commit with six ty findings. From now on we cannot.
+
+```bash
+just --show check
+just check
+```
+
+**J. The model, explained.** `just docs` renders eight pages now, with a Guide section. 11 seconds.
+
+```bash
+just docs
+```
+
+The first guide page is the four ideas, in prose, where every name in backticks links to its reference entry. The second is the mask as a grid, a notebook committed with its outputs, with the mask of step 05 beside the right one.
+
+```bash
+open docs/_site/guide/00_model.html
+open docs/_site/guide/01_mask.html
+```
+
+`just test -k notebook` re-runs the notebook's cells and checks the stored outputs are still what the code prints: 2 passed.
+
+```bash
+just test -k notebook
+```
+
+**What the next step does.** 05b puts the project in two images, so it runs the same on any system with Docker, and is ready for the platforms.
+
+## What changed {#step-05a-what-changed-182c57}
+
+- <a id="step-05a-README.md-8ec9a0"></a>`README.md`: 6 lines added, 4 removed. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/README.md).
+- <a id="step-05a-docs-_quarto.yml-ee884f"></a>`docs/_quarto.yml`: 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/docs/_quarto.yml).
+- <a id="step-05a-docs-guide-00_model.qmd-42835e"></a>`docs/guide/00_model.qmd`: New, 55 lines. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/docs/guide/00_model.qmd).
+- <a id="step-05a-docs-guide-01_mask.ipynb-f6e9ba"></a>`docs/guide/01_mask.ipynb`: New, 265 lines. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/docs/guide/01_mask.ipynb).
+- <a id="step-05a-justfile-424f0b"></a>`justfile`: 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/justfile).
+- <a id="step-05a-pyproject.toml-5d07e7"></a>`pyproject.toml`: 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/pyproject.toml).
+- <a id="step-05a-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: adds `delimiter_ids`; changes `branch_mask`, `encode`. 14 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/src/babykev/model.py).
+- <a id="step-05a-tests-conftest.py-626af3"></a>`tests/conftest.py`: changes `record`. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/tests/conftest.py).
+- <a id="step-05a-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: adds `allowed`, `segments`, `test_every_token_sees_the_state_before_it_and_its_own_question`, `test_mask_has_a_shape_the_model_can_add_to_its_attention`, `test_mask_of_a_small_request`, `test_no_question_sees_another_question`, `test_no_token_sees_a_later_token`. New, 78 lines. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/tests/unit/test_mask.py).
+- <a id="step-05a-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: adds `test_a_question_cannot_see_its_sibling`, `test_packed_equals_separate_for_any_record`, `test_packed_questions_answer_as_they_would_alone`, `test_the_order_of_questions_does_not_matter`; changes `test_a_packed_record_has_exactly_the_delimiters_its_shape_needs`, `test_a_tokenizer_alone_would_let_text_forge_a_delimiter`, `test_packing_marks_every_part_with_its_delimiter`, `test_user_text_cannot_forge_a_delimiter`. 69 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/tests/unit/test_model.py).
+- <a id="step-05a-tests-unit-test_notebooks.py-057539"></a>`tests/unit/test_notebooks.py`: adds `printed`, `test_notebook_prints_what_its_stored_outputs_show`, `test_there_is_a_notebook_to_check`. New, 42 lines. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/tests/unit/test_notebooks.py).
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+```diff
+@@ -58,7 +58,9 @@ babykev help` is the program's own help. Extra arguments go to the tool behind a
+ render` runs only the tests whose name contains `render`.
+ 
+ The documentation comes from the code. `just docs` builds the site into `docs/_site/`; open
+-`docs/_site/index.html`. The same text is there at the terminal as plain Markdown, for people and for
++`docs/_site/index.html`. Under Guide, two pages explain the model: the four ideas, and the mask as a
++grid (a notebook, committed with its outputs; a test re-runs its cells and checks the outputs are still
++true). The same text is there at the terminal as plain Markdown, for people and for
+ agents: `just docs list` names every module, class and function with its summary, `just docs module api`
+ prints one module, and `just docs check` counts what is typed and documented and lists every gap. The
+ convention: every function is typed, has a docstring, and carries a docment, a comment beside each
+@@ -75,8 +77,8 @@ what the run shows is that the pieces fit. The first run downloads the base mode
+ Hub, about 1 GB, into its cache; later runs read it from there. The platform is a word of the recipe, and
+ only `local` exists so far.
+ 
+-`just types` is ty, the type checker: it reads every call against what the called function declares.
+-It is not part of `just check` yet.
++`just types` is ty, the type checker: it reads every call against what the called function declares,
++and it is one of the lines of `just check`, so the hook runs it on every commit.
+ 
+ ## What is here
+ 
+@@ -88,7 +90,7 @@ It is not part of `just check` yet.
+ | `src/babykev/model.py` | The model: packing a context and its questions into one sequence, the mask that keeps questions apart, the pointer head that scores options, and the class that puts them on a language model |
+ | `src/babykev/smoke.py` | The smoke run behind `just smoke` |
+ | `src/babykev/docs.py` | What the code says about itself, as plain Markdown: `babykev docs list`, `docs module NAME`, `docs check` |
+-| `docs/` | The docs site: `_quarto.yml`, the front page `index.qmd`, `apidocs.py` (writes the reference pages from `babykev docs` before every render) and `linkify.lua` (a name in backticks becomes a link). The built site in `_site/` is not committed |
++| `docs/` | The docs site: `_quarto.yml`, the front page `index.qmd`, the guide pages under `guide/`, `apidocs.py` (writes the reference pages from `babykev docs` before every render) and `linkify.lua` (a name in backticks becomes a link). The built site in `_site/` is not committed |
+ | `data/cheese/sample.jsonl` | Five lines of data. Each is a request about a cheese with a `label` on every question: the right answer |
+ | `tests/unit/` | Unit tests of the contract, of the command, of the documentation, of the model and of the smoke. One test checks every line of the sample data against the contract |
+ | `tests/tiny.py`, `tests/conftest.py` | A tokenizer with one token per character and a two-layer backbone with random weights, built in memory: the model's tests need no download and no GPU |
+```
+
+</details>
+
+<details><summary>The diff of <code>docs/_quarto.yml</code></summary>
+
+```diff
+@@ -8,6 +8,8 @@ website:
+   sidebar:
+     contents:
+       - index.qmd
++      - section: Guide
++        contents: guide/*
+       - section: Reference
+         contents: api/*
+ 
+```
+
+</details>
+
+<details><summary>The diff of <code>docs/guide/00_model.qmd</code></summary>
+
+```diff
+@@ -0,0 +1,55 @@
++---
++title: "The model"
++---
++
++babykev is a language model that has been taught to point instead of to speak. Four ideas make that
++work, and each is one piece of `model.py`. The reference pages hold the signatures; this page holds the
++reasons.
++
++## 1. Packing
++
++A request is one context and several questions. `encode` writes all of it into a single sequence of
++tokens, in this order: a delimiter and the context, then for each question a delimiter, the instruction,
++each option between an opening and a closing delimiter, and a decide delimiter where the question ends.
++The five delimiters are special tokens the base model already has and rarely uses, listed in `SPECIAL`,
++so no embedding has to be added or trained: the adapter learns their new meaning.
++
++Text that comes from a caller goes through `user_tokens` first, which rewrites anything that looks like
++a special token before tokenizing it. Without that, a context containing the text of the closing
++delimiter could close an option early. The tests put the delimiters' text into every field and count
++the delimiters that come out.
++
++`encode` returns an `Encoded`: the ids, and three things the model needs to read them correctly: the
++segment of each token (0 for the context, *k* for question *k*), the position of each token, and where
++each question's decide token and option tokens are.
++
++## 2. The mask
++
++The questions share one reading of the context, and nothing else. `branch_mask` builds the attention
++mask that makes this true: token *i* may attend to token *j* only when *j* is not after *i*, and *j* is
++in the context or in the same question as *i*. The mask is added to the attention scores, so a blocked
++pair gets the most negative number the number type can hold.
++
++Because of this mask, three questions packed into one request get exactly the answers they would get
++in three separate requests, and the tests check that to the last decimal. The next page shows the mask
++as a grid.
++
++## 3. Positions restart
++
++Every question's positions begin right after the context. To the model, a question looks the same
++wherever it comes in the request, and the tests check that reversing the order of the questions
++changes nothing.
++
++## 4. Pointing
++
++`PointerHead` is two small projections. At each question's decide token it takes the hidden state and
++projects it; at each option's closing token it takes the hidden state and projects it; the scaled dot
++product of the two is the option's score. One pass gives every question its scores at once. The base
++model's vocabulary head is dropped: `DecisionModel` keeps only the transformer, wraps it in a LoRA
++adapter when asked, and adds the head. The model has no way to generate text.
++
++## What trains
++
++With an adapter, the backbone is frozen. Gradients reach the adapter's matrices and the pointer head
++and nothing else; `trainable_parameters` lists exactly those. The smoke run reports how many
++parameters that is: about 9 million of 503 million.
+```
+
+</details>
+
+<details><summary>The diff of <code>docs/guide/01_mask.ipynb</code></summary>
+
+````diff
+@@ -0,0 +1,265 @@
++{
++ "cells": [
++  {
++   "cell_type": "markdown",
++   "id": "cell-0",
++   "metadata": {},
++   "source": [
++    "# The mask\n",
++    "\n",
++    "A request asks several questions about one context. The model reads the context once and answers every\n",
++    "question in the same pass, and yet no question can influence another. What makes that possible is the\n",
++    "attention mask, built by `branch_mask`.\n",
++    "\n",
++    "This page is a notebook. The reference entry below is pulled from the source, and the grids are what the\n",
++    "code printed when the notebook was last run."
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "cell-1",
++   "metadata": {
++    "execution": {
++     "iopub.execute_input": "2026-10-05T04:48:47.932699Z",
++     "iopub.status.busy": "2026-10-05T04:48:47.932312Z",
++     "iopub.status.idle": "2026-10-05T04:48:52.500370Z",
++     "shell.execute_reply": "2026-10-05T04:48:52.499652Z"
++    }
++   },
++   "outputs": [
++    {
++     "data": {
++      "text/markdown": [
++       "```python\n",
++       "def branch_mask(\n",
++       "    seg:list[int], # The segment of each token: 0 for the state, k for question k\n",
++       "    device:str, # Where to build the mask\n",
++       "    dtype:torch.dtype=torch.float32, # The number type of the model's attention scores\n",
++       ")->torch.Tensor: # Shape [1, 1, n, n]: 0 where i may attend to j, very negative elsewhere\n",
++       "```\n",
++       "\n",
++       "*Build the block-causal mask: a token sees the state and its own question, never a sibling.*\n",
++       "\n",
++       "Token i may attend to token j when j is not after i, and j is in the state or in the same\n",
++       "question as i. The mask is added to the attention scores, so a blocked pair gets the most\n",
++       "negative number the type can hold."
++      ],
++      "text/plain": [
++       "def branch_mask(\n",
++       "    seg:list[int], # The segment of each token: 0 for the state, k for question k\n",
++       "    device:str, # Where to build the mask\n",
++       "    dtype:torch.dtype=torch.float32, # The number type of the model's attention scores\n",
++       ")->torch.Tensor: # Shape [1, 1, n, n]: 0 where i may attend to j, very negative elsewhere\"\"\"Build the block-causal mask: a token sees the state and its own question, never a sibling.\n",
++       "\n",
++       "Token i may attend to token j when j is not after i, and j is in the state or in the same\n",
++       "question as i. The mask is added to the attention scores, so a blocked pair gets the most\n",
++       "negative number the type can hold.\"\"\""
++      ]
++     },
++     "execution_count": null,
++     "metadata": {},
++     "output_type": "execute_result"
++    }
++   ],
++   "source": [
++    "#| echo: false\n",
++    "from fastcore.docments import MarkdownRenderer as show_doc\n",
++    "\n",
++    "from babykev.model import branch_mask\n",
++    "\n",
++    "show_doc(branch_mask)"
++   ]
++  },
++  {
++   "cell_type": "markdown",
++   "id": "cell-2",
++   "metadata": {},
++   "source": [
++    "## A small request\n",
++    "\n",
++    "Take three context tokens, then two questions of two tokens each. `encode` gives every token a segment:\n",
++    "0 for the context, 1 for the first question, 2 for the second. In the grid, each row is a token, and a\n",
++    "filled cell means it may attend to the token in that column."
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "cell-3",
++   "metadata": {
++    "execution": {
++     "iopub.execute_input": "2026-10-05T04:48:52.501975Z",
++     "iopub.status.busy": "2026-10-05T04:48:52.501737Z",
++     "iopub.status.idle": "2026-10-05T04:48:52.523683Z",
++     "shell.execute_reply": "2026-10-05T04:48:52.522904Z"
++    }
++   },
++   "outputs": [
++    {
++     "name": "stdout",
++     "output_type": "stream",
++     "text": [
++      "   0 0 0 1 1 2 2\n",
++      "0  # . . . . . .\n",
++      "0  # # . . . . .\n",
++      "0  # # # . . . .\n",
++      "1  # # # # . . .\n",
++      "1  # # # # # . .\n",
++      "2  # # # . . # .\n",
++      "2  # # # . . # #\n"
++     ]
++    }
++   ],
++   "source": [
++    "def show(seg, mask=branch_mask):\n",
++    "    allow = mask(seg, \"cpu\")[0, 0] == 0\n",
++    "    print(\"   \" + \" \".join(str(s) for s in seg))\n",
++    "    for s, row in zip(seg, allow, strict=True):\n",
++    "        print(f\"{s}  \" + \" \".join(\"#\" if ok else \".\" for ok in row))\n",
++    "\n",
++    "\n",
++    "show([0, 0, 0, 1, 1, 2, 2])"
++   ]
++  },
++  {
++   "cell_type": "markdown",
++   "id": "cell-4",
++   "metadata": {},
++   "source": [
++    "Read the last two rows. The second question sees the three context tokens and itself. The two columns\n",
++    "of the first question are empty: to the second question, the first one is not there.\n",
++    "\n",
++    "## The rule\n",
++    "\n",
++    "Token *i* may attend to token *j* when *j* is not later than *i*, and *j* is in the context or in the\n",
++    "same question as *i*. Nothing else. A longer request shows the same blocks:"
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "cell-5",
++   "metadata": {
++    "execution": {
++     "iopub.execute_input": "2026-10-05T04:48:52.525230Z",
++     "iopub.status.busy": "2026-10-05T04:48:52.525102Z",
++     "iopub.status.idle": "2026-10-05T04:48:52.528362Z",
++     "shell.execute_reply": "2026-10-05T04:48:52.527657Z"
++    }
++   },
++   "outputs": [
++    {
++     "name": "stdout",
++     "output_type": "stream",
++     "text": [
++      "   0 0 1 1 1 2 3 3\n",
++      "0  # . . . . . . .\n",
++      "0  # # . . . . . .\n",
++      "1  # # # . . . . .\n",
++      "1  # # # # . . . .\n",
++      "1  # # # # # . . .\n",
++      "2  # # . . . # . .\n",
++      "3  # # . . . . # .\n",
++      "3  # # . . . . # #\n"
++     ]
++    }
++   ],
++   "source": [
++    "show([0, 0, 1, 1, 1, 2, 3, 3])"
++   ]
++  },
++  {
++   "cell_type": "markdown",
++   "id": "cell-6",
++   "metadata": {},
++   "source": [
++    "## The mask as it was at step 05\n",
++    "\n",
++    "The model arrived with a plain causal mask, the usual one for a language model: every token sees\n",
++    "everything before it. Here is the same request under that mask. The second question's rows now have\n",
++    "the first question's columns filled: it reads the first question as if it were part of the context.\n",
++    "Nothing crashes, the model still returns probabilities, and the answers to one question depend on\n",
++    "which questions were asked before it. Only a test of the rule above can tell."
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "cell-7",
++   "metadata": {
++    "execution": {
++     "iopub.execute_input": "2026-10-05T04:48:52.529728Z",
++     "iopub.status.busy": "2026-10-05T04:48:52.529589Z",
++     "iopub.status.idle": "2026-10-05T04:48:52.533448Z",
++     "shell.execute_reply": "2026-10-05T04:48:52.532772Z"
++    }
++   },
++   "outputs": [
++    {
++     "name": "stdout",
++     "output_type": "stream",
++     "text": [
++      "   0 0 0 1 1 2 2\n",
++      "0  # . . . . . .\n",
++      "0  # # . . . . .\n",
++      "0  # # # . . . .\n",
++      "1  # # # # . . .\n",
++      "1  # # # # # . .\n",
++      "2  # # # # # # .\n",
++      "2  # # # # # # #\n"
++     ]
++    }
++   ],
++   "source": [
++    "import torch\n",
++    "\n",
++    "\n",
++    "def plain_causal_mask(seg, device, dtype=torch.float32):\n",
++    "    n = len(seg)\n",
++    "    causal = torch.tril(torch.ones(n, n, dtype=torch.bool, device=device))\n",
++    "    blocked = torch.finfo(dtype).min\n",
++    "    return torch.zeros(n, n, dtype=dtype, device=device).masked_fill(~causal, blocked)[None, None]\n",
++    "\n",
++    "\n",
++    "show([0, 0, 0, 1, 1, 2, 2], plain_causal_mask)"
++   ]
++  },
++  {
++   "cell_type": "markdown",
++   "id": "cell-8",
++   "metadata": {},
++   "source": [
++    "## Why it matters\n",
++    "\n",
++    "Because of this mask, three questions packed into one request get exactly the answers they would get\n",
++    "in three separate requests. That is a property of the mask and not of the weights, so the tests check\n",
++    "it on a tiny model with random weights. The other half of the trick is in `encode`: each question's\n",
++    "positions restart right after the context, so a question looks the same to the model whether it comes\n",
++    "first or last. `PointerHead` then reads the answer off the question's own tokens, and `DecisionModel`\n",
++    "puts the pieces together."
++   ]
++  }
++ ],
++ "metadata": {
++  "kernelspec": {
++   "display_name": "Python 3",
++   "language": "python",
++   "name": "python3"
++  },
++  "language_info": {
++   "codemirror_mode": {
++    "name": "ipython",
++    "version": 3
++   },
++   "file_extension": ".py",
++   "mimetype": "text/x-python",
++   "name": "python",
++   "nbconvert_exporter": "python",
++   "pygments_lexer": "ipython3",
++   "version": "3.13.3"
++  }
++ },
++ "nbformat": 4,
++ "nbformat_minor": 5
++}
+````
+
+</details>
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -69,7 +69,7 @@ types *args:
+ test *args:
+     {{ if args == "help" { "just help test" } else { 'uv run pytest "$@"' } }}
+ 
+-# Everything a commit must pass: format, lint, the tests over the coverage floor, the docs, the config files
++# Everything a commit must pass: format, lint, types, the tests over the coverage floor, the docs, the config files
+ [group('quality')]
+ [no-exit-message]
+ check *args:
+@@ -78,6 +78,7 @@ check *args:
+     if [ "$*" = help ]; then just help check; exit 0; fi
+     just fmt --check
+     just lint
++    just types
+     just test -q --cov-fail-under=90
+     just docs check
+     just lint-config
+```
+
+</details>
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -89,6 +89,9 @@ ignore = ["S311"]
+ [tool.ruff.lint.per-file-ignores]
+ # A test is written with assert. S106 mistakes the tokenizer argument `unk_token` for a password
+ "tests/**" = ["S101", "S106"]
++# A notebook imports the renderer under the name nbdev users know it by, and its helper functions
++# are part of the story it tells, not of the code
++"docs/guide/*.ipynb" = ["N813", "ANN", "D1"]
+ 
+ [tool.uv.sources]
+ torch = { index = "pytorch-cpu" } # the CPU build, from the index above
+```
+
+</details>
+
+<details><summary>The diff of <code>src/babykev/model.py</code></summary>
+
+```diff
+@@ -65,7 +65,18 @@ def load_tokenizer(
+     name: str,  # A model name on the Hugging Face Hub, or a local folder
+ ) -> PreTrainedTokenizerBase:  # Its tokenizer
+     """Load the tokenizer that belongs to a base model."""
+-    return AutoTokenizer.from_pretrained(name)
++    tok = AutoTokenizer.from_pretrained(name)
++    if not isinstance(tok, PreTrainedTokenizerBase):
++        raise TypeError(f"{name} has no tokenizer this model can use")
++    return tok
++
++
++def delimiter_ids(
++    tok: PreTrainedTokenizerBase,  # The base model's tokenizer
++) -> list[int]:  # The ids of the five delimiters, in the order of `SPECIAL`
++    """Look up the token ids of the delimiters."""
++    ids = tok.convert_tokens_to_ids(SPECIAL)
++    return ids if isinstance(ids, list) else [ids]
+ 
+ 
+ def user_tokens(
+@@ -94,7 +105,7 @@ def encode(
+     instruction, each option between its two delimiters, and the decide delimiter. Raises
+     `ValueError` when a branch does not fit in `max_branch`.
+     """
+-    s_id, q_id, o_id, c_id, d_id = tok.convert_tokens_to_ids(SPECIAL)
++    s_id, q_id, o_id, c_id, d_id = delimiter_ids(tok)
+     state = [s_id] + user_tokens(tok, rec["state"])[: max_state - 1]
+     ids, seg, pos = list(state), [0] * len(state), list(range(len(state)))
+     decide_idx, opt_idx = [], []
+@@ -137,7 +148,7 @@ def branch_mask(
+     s = torch.tensor(seg, device=device)
+     n = len(seg)
+     causal = torch.tril(torch.ones(n, n, dtype=torch.bool, device=device))
+-    same = torch.ones_like(causal) | (s[None, :] == 0)
++    same = (s[None, :] == s[:, None]) | (s[None, :] == 0)
+     allow = causal & same
+     blocked = torch.finfo(dtype).min
+     return torch.zeros(n, n, dtype=dtype, device=device).masked_fill(~allow, blocked)[None, None]
+```
+
+</details>
+
+<details><summary>The diff of <code>tests/conftest.py</code></summary>
+
+```diff
+@@ -38,3 +38,14 @@ def record() -> dict[str, Any]:  # A record with a state and three questions
+             {"instr": "How firm?", "options": ["Soft", "Semi-soft", "Hard"], "label": 1},
+         ],
+     }
++
++
++# hypothesis runs a test again and again, and by default allows each run 200 ms. The first run
++# that uses torch can take longer than that on a slow or busy machine, for example inside a
++# container, and the test then fails by chance: `DeadlineExceeded`, reported as `FlakyFailure`.
++# The tests that hypothesis feeds check a rule and not a speed, so the deadline is off for the
++# whole run. The import sits here, below the fixtures, so that they keep their places in the file.
++from hypothesis import settings  # noqa: E402
++
++settings.register_profile("babykev", deadline=None)
++settings.load_profile("babykev")
+```
+
+</details>
+
+<details><summary>The diff of <code>tests/unit/test_mask.py</code></summary>
+
+```diff
+@@ -0,0 +1,78 @@
++"""Tests of the block-causal mask. They state its rule as properties that hold for any request."""
++
++import torch
++from hypothesis import given
++from hypothesis import strategies as st
++
++from babykev.model import branch_mask
++
++# A request of any shape: a state of 1 to 6 tokens, then up to 4 questions of 1 to 5 tokens each.
++shapes = st.tuples(st.integers(1, 6), st.lists(st.integers(1, 5), max_size=4))
++
++
++def segments(
++    state: int,  # How many tokens the state has
++    questions: list[int],  # How many tokens each question has
++) -> list[int]:  # The segment of each token: 0 for the state, k for question k
++    """Lay out a request as `encode` does: the state, then each question in turn."""
++    return [0] * state + [k for k, n in enumerate(questions, start=1) for _ in range(n)]
++
++
++def allowed(
++    seg: list[int],  # The segment of each token
++) -> torch.Tensor:  # Shape [n, n]: True where token i may attend to token j
++    """Read the mask back as yes or no."""
++    return branch_mask(seg, "cpu")[0, 0] == 0
++
++
++def test_mask_of_a_small_request() -> None:
++    """Two state tokens and two questions of two tokens: the picture to keep in mind."""
++    picture = [
++        "#.....",
++        "##....",
++        "###...",
++        "####..",
++        "##..#.",
++        "##..##",
++    ]
++    rows = ["".join("#" if ok else "." for ok in row) for row in allowed([0, 0, 1, 1, 2, 2])]
++    assert rows == picture
++
++
++def test_mask_has_a_shape_the_model_can_add_to_its_attention() -> None:
++    """One batch, one head, a square of the sequence length; 0 allows, very negative blocks."""
++    mask = branch_mask([0, 0, 1, 2], "cpu")
++    assert mask.shape == (1, 1, 4, 4)
++    assert set(mask.unique().tolist()) == {0.0, torch.finfo(torch.float32).min}
++
++
++@given(shapes)
++def test_no_token_sees_a_later_token(
++    shape: tuple[int, list[int]],  # The lengths of a state and of its questions
++) -> None:
++    """The mask is causal: nothing above the diagonal is allowed."""
++    allow = allowed(segments(*shape))
++    assert not torch.triu(allow, diagonal=1).any()
++
++
++@given(shapes)
++def test_no_question_sees_another_question(
++    shape: tuple[int, list[int]],  # The lengths of a state and of its questions
++) -> None:
++    """A token of one question never attends to a token of another."""
++    seg = torch.tensor(segments(*shape))
++    siblings = (seg[:, None] != seg[None, :]) & (seg[:, None] > 0) & (seg[None, :] > 0)
++    assert not (allowed(seg.tolist()) & siblings).any()
++
++
++@given(shapes)
++def test_every_token_sees_the_state_before_it_and_its_own_question(
++    shape: tuple[int, list[int]],  # The lengths of a state and of its questions
++) -> None:
++    """What is allowed is exactly: not later, and in the state or in the same question."""
++    seg = segments(*shape)
++    rule = [
++        [j <= i and (seg[j] == 0 or seg[j] == seg[i]) for j in range(len(seg))]
++        for i in range(len(seg))
++    ]
++    assert allowed(seg).tolist() == rule
+```
+
+</details>
+
+<details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
+
+```diff
+@@ -4,11 +4,19 @@ from typing import Any
+ 
+ import pytest
+ import torch
+-from hypothesis import given
++from hypothesis import given, settings
+ from hypothesis import strategies as st
+ from transformers import PreTrainedTokenizerFast
+ 
+-from babykev.model import SPECIAL, DecisionModel, PointerHead, encode, pick_device, user_tokens
++from babykev.model import (
++    SPECIAL,
++    DecisionModel,
++    PointerHead,
++    delimiter_ids,
++    encode,
++    pick_device,
++    user_tokens,
++)
+ from tests.tiny import tiny_backbone, tiny_tokenizer
+ 
+ TOK = tiny_tokenizer()
+@@ -46,7 +54,7 @@ def test_packing_marks_every_part_with_its_delimiter(
+     tok: PreTrainedTokenizerFast,  # The tiny tokenizer
+ ) -> None:
+     """A packed record is the state, then each question with its options and its decide token."""
+-    s, q, o, c, d = tok.convert_tokens_to_ids(SPECIAL)
++    s, q, o, c, d = delimiter_ids(tok)
+     record = {"state": "ab", "questions": [{"instr": "x?", "options": ["n", "y"], "label": 1}]}
+     enc = encode(tok, record)
+     a, b, x, mark, n, y = (tok.convert_tokens_to_ids(ch) for ch in "abx?ny")
+@@ -97,7 +105,7 @@ def test_a_tokenizer_alone_would_let_text_forge_a_delimiter(
+     tok: PreTrainedTokenizerFast,  # The tiny tokenizer
+ ) -> None:
+     """The danger is real: tokenized directly, the text of a delimiter becomes that delimiter."""
+-    decide = tok.convert_tokens_to_ids(SPECIAL)[4]
++    decide = delimiter_ids(tok)[4]
+     assert decide in tok(f"yes{SPECIAL[4]}", add_special_tokens=False).input_ids
+ 
+ 
+@@ -108,7 +116,7 @@ def test_user_text_cannot_forge_a_delimiter(
+ ) -> None:
+     """Through `user_tokens`, the text of a delimiter is only ever ordinary tokens."""
+     ids = user_tokens(tok, f"before {delimiter} after")
+-    assert not set(ids) & set(tok.convert_tokens_to_ids(SPECIAL))
++    assert not set(ids) & set(delimiter_ids(tok))
+ 
+ 
+ @given(records)
+@@ -117,7 +125,7 @@ def test_a_packed_record_has_exactly_the_delimiters_its_shape_needs(
+ ) -> None:
+     """No text can add a delimiter: their number depends only on how many questions and options."""
+     enc = encode(TOK, record)
+-    s, q, o, c, d = TOK.convert_tokens_to_ids(SPECIAL)
++    s, q, o, c, d = delimiter_ids(TOK)
+     options = sum(len(question["options"]) for question in record["questions"])
+     expected = {
+         s: 1,
+@@ -131,6 +139,61 @@ def test_a_packed_record_has_exactly_the_delimiters_its_shape_needs(
+     assert all(enc["ids"][i] == c for oi in enc["opt_idx"] for i in oi)
+ 
+ 
++# Isolation
++
++
++def test_a_question_cannot_see_its_sibling(
++    model: DecisionModel,  # The tiny model
++    tok: PreTrainedTokenizerFast,  # Its tokenizer
++    record: dict[str, Any],  # A record with three questions
++) -> None:
++    """Rewriting one question leaves the answers to the others exactly as they were."""
++    before = logits_of(model, tok, record)
++    changed = {**record, "questions": list(record["questions"])}
++    changed["questions"][1] = {"instr": "Where from?", "options": ["Spain", "Italy"], "label": 0}
++    after = logits_of(model, tok, changed)
++    assert torch.equal(before[0], after[0])
++    assert torch.equal(before[2], after[2])
++    assert before[1].shape != after[1].shape
++
++
++def test_packed_questions_answer_as_they_would_alone(
++    model: DecisionModel,  # The tiny model
++    tok: PreTrainedTokenizerFast,  # Its tokenizer
++    record: dict[str, Any],  # A record with three questions
++) -> None:
++    """One pass over three questions gives what three passes over one question each would give."""
++    packed = logits_of(model, tok, record)
++    for together, question in zip(packed, record["questions"], strict=True):
++        alone = logits_of(model, tok, {"state": record["state"], "questions": [question]})[0]
++        assert torch.allclose(together, alone, atol=1e-5)
++
++
++def test_the_order_of_questions_does_not_matter(
++    model: DecisionModel,  # The tiny model
++    tok: PreTrainedTokenizerFast,  # Its tokenizer
++    record: dict[str, Any],  # A record with three questions
++) -> None:
++    """Because positions restart, a question gets the same answer first or last."""
++    forward = logits_of(model, tok, record)
++    backward = logits_of(model, tok, {**record, "questions": record["questions"][::-1]})
++    for a, b in zip(forward, backward[::-1], strict=True):
++        assert torch.allclose(a, b, atol=1e-5)
++
++
++@settings(max_examples=20, deadline=None)
++@given(records)
++def test_packed_equals_separate_for_any_record(
++    record: dict[str, Any],  # Any record, with any text in it
++) -> None:
++    """The isolation of questions is a property of the mask, so it holds for any request."""
++    model = DecisionModel("tiny", "cpu", backbone=tiny_backbone(len(TOK))).eval()
++    packed = logits_of(model, TOK, record)
++    for together, question in zip(packed, record["questions"], strict=True):
++        alone = logits_of(model, TOK, {"state": record["state"], "questions": [question]})[0]
++        assert torch.allclose(together, alone, atol=1e-5)
++
++
+ # Answers
+ 
+ 
+```
+
+</details>
+
+<details><summary>The diff of <code>tests/unit/test_notebooks.py</code></summary>
+
+```diff
+@@ -0,0 +1,42 @@
++"""The guide notebooks: their code must still run, and print what their stored outputs show."""
++
++import contextlib
++import io
++import json
++from pathlib import Path
++from typing import Any
++
++import pytest
++
++GUIDE = Path(__file__).parents[2] / "docs" / "guide"
++NOTEBOOKS = sorted(GUIDE.glob("*.ipynb"))
++
++
++def printed(
++    cell: dict[str, Any],  # A code cell of a notebook
++) -> str:  # What the cell printed when the notebook was last run and saved
++    """Read the text a cell's stored outputs show on standard output."""
++    streams = [o for o in cell["outputs"] if o["output_type"] == "stream" and o["name"] == "stdout"]
++    return "".join("".join(o["text"]) for o in streams)
++
++
++@pytest.mark.parametrize("notebook", NOTEBOOKS, ids=lambda path: path.name)
++def test_notebook_prints_what_its_stored_outputs_show(
++    notebook: Path,  # A notebook of the guide
++) -> None:
++    """Run the code cells in order, as plain Python, and compare what each prints with its output.
++
++    The docs site shows the stored outputs without running anything. This test keeps them true.
++    """
++    cells = json.loads(notebook.read_text(encoding="utf-8"))["cells"]
++    namespace: dict[str, Any] = {}
++    for cell in (c for c in cells if c["cell_type"] == "code"):
++        out = io.StringIO()
++        with contextlib.redirect_stdout(out):
++            exec("".join(cell["source"]), namespace)  # noqa: S102 - running the notebook is the test
++        assert out.getvalue() == printed(cell)
++
++
++def test_there_is_a_notebook_to_check() -> None:
++    """The guide has at least one notebook, so the test above is not vacuous."""
++    assert NOTEBOOKS
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/compare/46cf8625a031e10049355df4c37abcb7af58d847...c954af4beae61eaab89bcb2d4724eea4f2706703). [The code after it](https://github.com/rahuldave/babykev/tree/c954af4beae61eaab89bcb2d4724eea4f2706703).

@@ -1,3 +1,21 @@
+# The walk through babykev, step by step
+
+This file holds the notes of every step of a walk. timewalk shows the notes of the current step in the column on the
+right of the page.
+
+- **A command** is a line that starts with `$ `. A click on it types the command into the terminal of the
+  step, and you press Enter to run it. With **run on click** on, a click also runs it.
+- **Other tabs:** a line that starts with `runs$ ` goes to the **Runs** tab, for a command that takes a
+  while. A line that starts with `main$ ` goes to the **Main** tab, in `repo/`.
+- **A cue** is a line that starts with `> `. The notes column shows it shaded.
+- **Edit** at the top of the column changes the notes of the step, and **Save** writes them into
+  this file. Commit it to your fork to keep your notes.
+- **`$ just setup` starts every step.** It is the project's own recipe, at the step. It makes the environment
+  of the step, and what the step needs.
+- **A move keeps your work.** Before a move, timewalk keeps your edits and commits in `worktree/` on a branch
+  `timewalk/saved/<step>`, and the page says how to get them back. In a `worktree/` that an older timewalk made, a
+  move with edits asks first, and stashes them.
+
 ## step-00 Where we start
 
 **The first three slides.** No commands. The title, SOFTWARE DEVELOPMENT FOR MACHINE LEARNING, with Rahul Dave's name under it. Then the worried Pavlos, the cartoon, with a hand raised: he is worried about this lecture. Then a picture of Rahul, in a T-shirt that says "You're Absolutely Right!". After them the first slide of the talk, "What goes into a machine-learning project?". The pictures are `walks/narrative/slides/pictures/pavlos-worried.png` and `walks/narrative/slides/pictures/rahul.jpg`.
@@ -32,64 +50,179 @@ $ cat pyproject.toml
 
 ## step-01 The contract, and its tests
 
-**Init.** `just setup` adds 13 packages: pydantic and pydantic-core, pytest, pytest-cov and coverage, and their dependencies. `.venv` goes from 1 package to 14.
-
 $ just setup
 
-**What is new:** `src/babykev/api.py`, kev's file as it was, less its serving parts (the request's `model` field, `output_tokens`); five labelled requests in `data/cheese/sample.jsonl`; `tests/unit/test_api.py` and `test_cli.py`; pydantic, pytest and pytest-cov; the `test` recipe.
+babykev will answer questions about a text, and it has no model yet. So we first fix what the model takes in and
+what it gives back. This agreement is the contract. A request has a state, the text, and typed questions about
+it. An answer has a probability for every option of every question.
 
-**Start from the data.** One line is a request about a cheese, with a `label` on every question. The five lines are test data, kept in the repository so the tests can read them; they are not the students' data, which comes with training.
+The contract is code, so we can test it now,
+while it is small. When the model arrives, the tests already say what a good request and a good answer are.
+
+The contract needs pydantic, and the tests need pytest. `just setup` installs them from the lockfile. It prints
+`Resolved 14 packages`, and installs pydantic, pydantic-core, pytest, pytest-cov, coverage and their dependencies.
+`.venv` grows from 1 package to 14.
+
+**The contract.** kev's file `src/babykev/api.py` comes in as kev wrote it, less two parts for serving, the
+`model` field of a request and `output_tokens`.
+
+pydantic is a library that checks data against a class. Lines 14
+to 42 are its classes, one for each type of question (`Noul`, `Choice`, `Score`), and `SystemOneRequest` for the
+whole request. pydantic refuses a request that breaks a rule of these classes. For example,
+`Field(min_length=1)` on line 42 refuses a request with no questions.
+
+Lines 58 to 74, `to_record`, turn a request
+into the text and the options that the model reads. Lines 77 to 104 turn the model's probabilities back into
+answers. `pyproject.toml` now lists pydantic as a dependency of babykev.
+
+$ sed -n '40,42p' src/babykev/api.py
+
+**The data.** `data/cheese/sample.jsonl` holds five requests about cheese, one on each line. Each question has a
+`label`, the right answer. The tests read these five lines. They are not the data of training, which comes later.
+
+The first line describes Coquetdale, an English soft-ripened cheese, and asks three questions. `vegetarian` is a
+noul, a question of yes or no, and its label is `true`. `intensity` is a score over four levels, and its label is
+1, the second level. `milk` is a choice of five, and its label is `cow`.
 
 $ head -n 1 data/cheese/sample.jsonl | python3 -m json.tool
 
+**A place for the tests.** pytest and pytest-cov are in a group of their own, `test`, under
+`[dependency-groups]` in `pyproject.toml`. A user of babykev does not need them. The group `dev` includes the
+group `test`, and `just setup` installs `dev`. The table `[tool.pytest.ini_options]` tells pytest to look in
+`tests/`.
+
+The justfile has a new recipe, `test`. `just` lists it under `[quality]`, and `just help test` prints
+its comment.
 
 $ just
 $ just help test
 
-**The tests.** `uv run pytest` runs them. `uv run` runs a command inside `.venv`, syncing it first if it has to; `pytest` reads `[tool.pytest.ini_options]` in `pyproject.toml`, looks under `tests/`, and runs every function whose name starts with `test_`. The first lines say so: `configfile: pyproject.toml`, `testpaths: tests`, `plugins: cov-7.1.0`. 52 runs, two fail, and the tests are right. A guess over three score levels gets confidence 0.5, not 0. Confidence runs from 1, when the model is sure, down to 0, when it knows nothing. A model that gives every level the same chance knows nothing. Rounding to two decimals makes 77 equal options sum to 0.77. Two real bugs in code that works (`sundry/the-two-bugs.md`). Under the summary, the coverage table: every statement of `api.py` and `cli.py` is touched. From now on the table says which lines are not. The `grep` line shows where the table comes from: `addopts` in `pyproject.toml` adds `--cov=babykev --cov-report=term-missing` to every run, so nobody has to remember the flags.
+**The tests run.** `uv run pytest` runs the tests. `uv run` runs a command inside `.venv`. pytest reads
+`[tool.pytest.ini_options]` in `pyproject.toml`, and runs every function in `tests/` whose name starts with
+`test_`. Its first lines say so, `configfile: pyproject.toml`, `testpaths: tests` and `plugins: cov-7.1.0`.
+
+52
+tests run, and two of them fail. The tests are right, and kev's code is wrong.
 
 $ uv run pytest
+
+The first failure is in rounding. An answer rounds each probability to two decimals. With 77 options of equal
+probability, each one is 1/77, about 0.013, and it rounds to 0.01. The 77 rounded numbers sum to 0.77, not to 1.
+
+The second failure is in the confidence of a score. Confidence runs from 1, when the model is sure, down to 0,
+when it knows nothing. A model that gives every level the same probability knows nothing. kev's formula, on line
+86, is 1 minus the expected distance from the most likely level, divided by the number of levels less one.
+
+Take
+three levels with 1/3 each. The most likely level is the first, level 0. The expected distance is
+(0 + 1 + 2) ÷ 3 = 1, and 1 ÷ 2 = 0.5. So the confidence is 1 − 0.5 = 0.5, and it should be 0. Next, we fix both
+bugs, with the formatter and the linter.
+
+Under the summary is the table of coverage. It says which statements of `src/babykev` the tests ran. Here they
+ran all of them, 66 in `api.py` and 8 in `cli.py`, so each line reads 100%.
+
+From now on, the column `Missing`
+names the lines that no test runs. The table comes with every run, because of one line in `pyproject.toml`.
+`addopts` adds `--cov=babykev --cov-report=term-missing` to each run of pytest, so nobody has to remember the
+flags.
+
 $ grep -n -B1 addopts pyproject.toml
 
-**The recipe.** `just --show test` prints the recipe: its comment, two attributes, its name, and a body of one line, `uv run pytest "$@"`, inside an `if` that answers `help`. `"$@"` is every word after `just test`, each one whole. So `just test -k name` runs `uv run pytest -k name`, and in `just test -k "score_confidence_is_zero or rounded_probabilities"` pytest gets two words, `-k` and the whole pattern: 2 tests selected, both failing. Before it runs, just prints the line as it is written, `uv run pytest "$@"`, not your words. The shell fills them in after.
+**The recipe.** `just --show test` prints the recipe. It has a comment, two attributes, its name, and a body of
+one line. The body is `uv run pytest "$@"`, inside an `if` that answers `help`. `"$@"` is every word after
+`just test`, each word whole.
+
+So `just test -k name` runs `uv run pytest -k name`. In
+`just test -k "score_confidence_is_zero or rounded_probabilities"`, pytest gets two words, `-k` and the whole
+pattern. It selects 2 tests, the two that fail. Before it runs, just prints the line as it is written,
+`uv run pytest "$@"`, and not your words. The shell fills them in after.
 
 $ just --show test
 $ just test -k "score_confidence_is_zero or rounded_probabilities"
 
-**The command's tests** (`tests/unit/test_cli.py`, lines 8 to 18). `run` sets `sys.argv`, the list of words a program was started with, and calls `main()`, as if `babykev` had been typed at a terminal. `monkeypatch` and `capsys` are two of pytest's built-in fixtures: pytest sees their names among the test's arguments and passes them in. The project's own fixtures arrive with the model. `monkeypatch.setattr` changes `sys.argv` for this test only and puts it back afterwards; `capsys` catches what the program printed, and the test compares it with `HELP`. `@pytest.mark.parametrize` on line 14 runs the function once for each value in its list: one function, four tests, one for each way of asking for help (`babykev`, `babykev help`, `--help`, `-h`). With `-v`, pytest prints each on its own line, `[words0]` to `[words3]`, all passed: `4 passed, 48 deselected`.
+**The tests of the command.** Lines 8 to 18 of `tests/unit/test_cli.py` test the help of `babykev`. `run` sets
+`sys.argv`, the list of words that a program was started with, and calls `main()`, as if `babykev` had been
+typed at a terminal. `monkeypatch` and `capsys` are two fixtures that come with pytest. pytest sees their
+names among the arguments of a test, and passes them in. babykev's own fixtures come with the model.
+
+`monkeypatch.setattr` changes `sys.argv` for this test only, and puts it back afterwards. `capsys` catches what
+the program printed, and the test compares it with `HELP`.
+
+`@pytest.mark.parametrize` on line 14 runs the
+function once for each value in its list. So one function makes four tests, one for each way of asking for help,
+`babykev`, `babykev help`, `--help` and `-h`. With `-v`, pytest prints each test on its own line, from
+`[words0]` to `[words3]`. All four pass, and the summary says `4 passed, 48 deselected`.
 
 $ sed -n '8,18p' tests/unit/test_cli.py
 $ just test -k help_is_printed -v
 
-**Four tests of the contract.** Every test at this step is a unit test: it runs one function, alone. The other kinds, where several parts or the whole program run together, come with the model at step 05. Every test in `test_api.py` has a name that reads as a sentence and a docstring that states the rule, and the file is in sections, `# Validation`, `# Rendering`, `# From a request to a record`, `# From probabilities to answers`, `# Confidence`. Two of the four tests are small and two carry weight. For each, the `sed` line prints it and the `just test -k` line runs it alone.
+**Four tests of the contract.** Every test so far is a unit test, which runs one function alone. The other kinds
+run several parts together, and they come with the model. Each test in `tests/unit/test_api.py` has a name that
+reads as a sentence, and a docstring that states the rule. The file has sections, `# Validation`,
+`# Rendering`, `# From a request to a record`, `# From probabilities to answers` and `# Confidence`.
 
-**Test 1, small: a request must ask at least one question** (lines 81 to 86). Three lines. `pytest.raises` says "this must fail". The contract refuses bad input, and the test pins the rule so nobody loosens it by accident. One passed.
+Two of the
+four tests below are small, and two carry weight. For each test, the `sed` line prints it, and the `just test -k`
+line runs it alone.
+
+**Test 1, small: a request must ask at least one question** (lines 81 to 86). The test has three lines.
+`pytest.raises` says that the call must fail. The contract refuses bad input, and the test keeps the rule, so
+that nobody loosens it by accident. It passes.
 
 $ sed -n '81,86p' tests/unit/test_api.py
 $ just test -k without_questions
 
-**Test 2, small: the limit on options is exact** (lines 105 to 114). 255 options are accepted, 256 are refused. The classic boundary test: the bug that is off by one lives exactly here, so the test stands exactly here. One passed.
+**Test 2, small: the limit on options is exact** (lines 105 to 114). A choice takes 255 options, and refuses 256.
+A bug that is off by one lives at such a limit, so the test checks the limit itself. It passes.
 
 $ sed -n '105,114p' tests/unit/test_api.py
 $ just test -k largest_number
 
-**Test 3, weighty: every line of the sample data fits the contract** (lines 47 to 56). `@pytest.mark.parametrize` again, now over the data: one function, five tests, one per line of the sample. It is a test of the data against the code: every line validates, every question becomes one record question, every question has at least two options. When the real data arrives at training, this is the test that grows. Five passed.
+**Test 3, weighty: every line of the sample data fits the contract** (lines 47 to 56). `@pytest.mark.parametrize`
+runs it over the data, so one function makes five tests, one for each line. It tests the data against the code.
+
+Every line must be a valid request, every question must become one question of the record, and every question
+must have at least two options. When the data of training arrives, this test grows with it. All five pass.
 
 $ sed -n '47,56p' tests/unit/test_api.py
 $ just test -k sample_line_fits
 
-**Test 4, weighty: rounded probabilities still sum to one** (lines 250 to 258). A property, not a value: whatever the probabilities are, they must sum to 1. And the extreme case: 77 options, not three. `pytest.approx(1, abs=0.02)` is how a float is compared. This one fails here, 0.77, and it is the proof that code that "works" had a bug. One failed.
+**Test 4, weighty: rounded probabilities still sum to one** (lines 250 to 258). The test checks a property, and
+not one value. Whatever the probabilities are, their sum must be 1. It takes the hard case of 77 options.
+`pytest.approx(1, abs=0.02)` compares two floats, and lets them differ by 0.02. The test fails, with
+0.77, so code that seems to work has a bug.
 
 $ sed -n '250,258p' tests/unit/test_api.py
 $ just test -k rounded_probabilities
 
-**A subset.** Eight tests run; the coverage drops to 49%, because the table is about the tests that ran. The number that matters is the whole suite's.
+**A subset.** `-k confidence` runs 8 tests. The coverage of `api.py` drops to 50%, and the total to 49%, because
+the table counts only the tests that ran. Read the coverage of the whole suite, and not of a subset.
 
 $ just test -k confidence
 
-**A break.** The `sed` line changes the noul option `"no"` to `"NO"` in `api.py`, and `just test` then fails four. Nothing to put back: the move to the next step drops the edit. (Changing `MAX_OPTIONS` breaks nothing: the test imports the constant.)
+**A break.** The `sed` line changes the noul option `"no"` to `"NO"` in `api.py`. Then `just test` fails four
+tests, the two noul tests and the two bugs. `git checkout src/babykev/api.py` undoes the edit. A change of
+`MAX_OPTIONS` breaks nothing, because the test imports the constant.
 
 $ sed -i '' 's/option_text("no", c.get("false"))/option_text("NO", c.get("false"))/' src/babykev/api.py && just test
+
+files:
+- file `src/babykev/api.py`: kev's contract, less the request's `model` and `output_tokens`. The classes are on
+  lines 14 to 42, and the two bugs on lines 77 to 104.
+  show: `questions: dict[str, Question] = Field(min_length=1)`
+- file `data/cheese/sample.jsonl`: five requests about cheese, with the right answer to each question.
+- file `tests/unit/test_api.py`: 47 tests of the contract, in five sections. Two of them fail.
+  show: `assert sum(answer["probabilities"].values()) == pytest.approx(1, abs=0.02)`
+- file `tests/unit/test_cli.py`: five tests of the command, four of them from one function.
+  show: `@pytest.mark.parametrize("words", [(), ("help",), ("--help",), ("-h",)])`
+- diff `pyproject.toml`: pydantic, the group `test`, and the settings of pytest.
+  show: `addopts = "--cov=babykev --cov-report=term-missing"`
+- diff `justfile`: the recipe `test`, which passes its words to pytest.
+  show: `test *args:`
+- diff `uv.lock`: the exact versions of pydantic, pytest, pytest-cov and their dependencies.
+  show: `name = "pydantic"`
+- diff `README.md`: the `state` of a request, `just test` beside `just setup`, and rows for the contract, the data
+  and the tests.
 
 ## step-02 Format and lint arrive
 

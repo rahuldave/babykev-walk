@@ -6,7 +6,7 @@
 [[walk]]
 id = "tutorial"
 title = "babykev, shown one move at a time"
-description = "Watch babykev and the engineering around it grow, one commit at a time: uv, just, tests, format, lint, docs, the model and its tests."
+description = "Watch babykev and the engineering around it grow, one move at a time. uv, just, tests, format, lint, docs, the model and its tests."
 kind = "tutorial"
 tags = "tut-*"
 loose = ["pyproject.toml", "uv.lock"]   # compared without the versions: a later uv add writes newer ones

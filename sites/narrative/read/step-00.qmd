@@ -1,0 +1,536 @@
+---
+title: "0 Where we start"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**The first three slides.** No commands. The title, SOFTWARE DEVELOPMENT FOR MACHINE LEARNING, with Rahul Dave's name under it. Then the worried Pavlos, the cartoon, with a hand raised: he is worried about this lecture. Then a picture of Rahul, in a T-shirt that says "You're Absolutely Right!". After them the first slide of the talk, "What goes into a machine-learning project?". The pictures are `walks/narrative/slides/pictures/pavlos-worried.png` and `walks/narrative/slides/pictures/rahul.jpg`.
+
+**Init.** The environment is made by uv, before any recipe. `uv sync --locked` reads `pyproject.toml` and `uv.lock` and makes `.venv` with exactly what the lockfile says: Python 3.13 from `.python-version`, and babykev alone, editable. It prints `Resolved 1 package` and what it installed (or `Checked 1 package` when the venv already matches). `--locked` means: refuse if the lockfile is out of date with `pyproject.toml`, never re-lock on the quiet.
+
+```bash
+uv sync --locked
+```
+
+**The recipe.** `just --show setup` prints the recipe behind the word: one line, `uv sync --locked`, inside an `if` that answers `help`. That is the whole trick of the justfile: a verb on the left, the command on the right, and `just` lists the verbs. `just setup` runs it again and prints `Checked 1 package`: nothing to do, because it was just done. From now on, `just setup`.
+
+```bash
+just --show setup
+just setup
+```
+
+**What is here.** A README, the licence and its notice, `pyproject.toml` with no dependencies, a justfile with `setup` and `help`, and a `babykev` command whose only word is `help`. No code of kev's yet. kev's code comes in one file at a time, at the step that needs it, and we rebuild each file as it arrives.
+
+**The justfile is the interface.** `just` lists every task; `just help VERB` or `just VERB help` explains one; a recipe wraps one command.
+
+```bash
+just
+just help setup
+```
+
+**How a recipe gets its words.** In `just help setup`, `setup` is a word for the recipe `help`. Line 6 of the justfile, `set positional-arguments`, makes just give each word to the recipe's commands whole: the first as `"$1"`, the second as `"$2"`, all of them as `"$@"`. `help` uses `"$1"`: `just help setup` runs `just --show "$1"` with `$1` set to `setup`. A word is never pasted into a command as text, so a space, a quote or a `*` inside it stays part of the word.
+
+```bash
+sed -n '5,6p' justfile
+```
+
+**The command.** `babykev help` prints the help; any other word is refused with exit code 2. The two lines under `[project.scripts]` in `pyproject.toml` are what make `babykev` a command: a name on the left, a function on the right.
+
+```bash
+uv run babykev help
+uv run babykev train
+cat pyproject.toml
+```
+
+**`.gitignore`** is complete from the first commit: nothing a run writes will ever show up as a stray file.
+
+## What changed {#step-00-what-changed-182c57}
+
+- <a id="step-00-.gitignore-a5cc29"></a>`.gitignore`: New, 57 lines. [The file](https://github.com/rahuldave/babykev/blob/ee96429002cd04cb95e86e9a77e9c3d02a0e9497/.gitignore).
+- <a id="step-00-.python-version-7696e9"></a>`.python-version`: New, 1 line. [The file](https://github.com/rahuldave/babykev/blob/ee96429002cd04cb95e86e9a77e9c3d02a0e9497/.python-version).
+- <a id="step-00-LICENSE-0398cc"></a>`LICENSE`: New, 202 lines. [The file](https://github.com/rahuldave/babykev/blob/ee96429002cd04cb95e86e9a77e9c3d02a0e9497/LICENSE).
+- <a id="step-00-NOTICE-fe7187"></a>`NOTICE`: New, 8 lines. [The file](https://github.com/rahuldave/babykev/blob/ee96429002cd04cb95e86e9a77e9c3d02a0e9497/NOTICE).
+- <a id="step-00-README.md-8ec9a0"></a>`README.md`: New, 80 lines. [The file](https://github.com/rahuldave/babykev/blob/ee96429002cd04cb95e86e9a77e9c3d02a0e9497/README.md).
+- <a id="step-00-justfile-424f0b"></a>`justfile`: adds `recipe default`, `recipe help`, `recipe setup`. New, 26 lines. [The file](https://github.com/rahuldave/babykev/blob/ee96429002cd04cb95e86e9a77e9c3d02a0e9497/justfile).
+- <a id="step-00-pyproject.toml-5d07e7"></a>`pyproject.toml`: New, 17 lines. [The file](https://github.com/rahuldave/babykev/blob/ee96429002cd04cb95e86e9a77e9c3d02a0e9497/pyproject.toml).
+- <a id="step-00-src-babykev-__init__.py-a40393"></a>`src/babykev/__init__.py`: New, 0 lines. [The file](https://github.com/rahuldave/babykev/blob/ee96429002cd04cb95e86e9a77e9c3d02a0e9497/src/babykev/__init__.py).
+- <a id="step-00-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: adds `main`. New, 21 lines. [The file](https://github.com/rahuldave/babykev/blob/ee96429002cd04cb95e86e9a77e9c3d02a0e9497/src/babykev/cli.py).
+- <a id="step-00-uv.lock-8356d8"></a>`uv.lock`: New, 8 lines. [The file](https://github.com/rahuldave/babykev/blob/ee96429002cd04cb95e86e9a77e9c3d02a0e9497/uv.lock).
+
+<details><summary>The diff of <code>.gitignore</code></summary>
+
+```diff
+@@ -0,0 +1,57 @@
++# Nothing a run produces is tracked. This list is complete from the first commit, so a run's output
++# never shows up as a stray file, whichever step of the history is checked out.
++
++# Experiment tracking: the MLflow store and its artifacts
++mlflow.db
++mlflow.db-*
++mlartifacts/
++mlruns/
++
++# The general training data and the later batches, when they are built here: made from datasets
++# with their own licences
++/data/general/
++/data/later/
++
++# Checkpoints, predictions and reports
++/runs/
++/checkpoints/
++/predictions/
++/reports/
++*.safetensors
++*.ckpt
++*.pt
++
++# Settings for one machine. .env.example is the committed list of them
++.env
++.env.*
++!.env.example
++
++# The built docs site and its generated reference pages
++/docs/_site/
++/docs/.quarto/
++/docs/api/
++/docs/_symbols.json
++/.quarto/
++
++# Python
++__pycache__/
++*.py[cod]
++.venv/
++*.egg-info/
++/build/
++/dist/
++
++# Tool caches
++.ruff_cache/
++.pytest_cache/
++.hypothesis/
++.coverage
++.coverage.*
++htmlcov/
++.ipynb_checkpoints/
++
++# Logs, operating systems, editors
++*.log
++.DS_Store
++.idea/
++.vscode/
+```
+
+</details>
+
+<details><summary>The diff of <code>.python-version</code></summary>
+
+```diff
+@@ -0,0 +1 @@
++3.13
+```
+
+</details>
+
+<details><summary>The diff of <code>LICENSE</code></summary>
+
+```diff
+@@ -0,0 +1,202 @@
++
++                                 Apache License
++                           Version 2.0, January 2004
++                        http://www.apache.org/licenses/
++
++   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
++
++   1. Definitions.
++
++      "License" shall mean the terms and conditions for use, reproduction,
++      and distribution as defined by Sections 1 through 9 of this document.
++
++      "Licensor" shall mean the copyright owner or entity authorized by
++      the copyright owner that is granting the License.
++
++      "Legal Entity" shall mean the union of the acting entity and all
++      other entities that control, are controlled by, or are under common
++      control with that entity. For the purposes of this definition,
++      "control" means (i) the power, direct or indirect, to cause the
++      direction or management of such entity, whether by contract or
++      otherwise, or (ii) ownership of fifty percent (50%) or more of the
++      outstanding shares, or (iii) beneficial ownership of such entity.
++
++      "You" (or "Your") shall mean an individual or Legal Entity
++      exercising permissions granted by this License.
++
++      "Source" form shall mean the preferred form for making modifications,
++      including but not limited to software source code, documentation
++      source, and configuration files.
++
++      "Object" form shall mean any form resulting from mechanical
++      transformation or translation of a Source form, including but
++      not limited to compiled object code, generated documentation,
++      and conversions to other media types.
++
++      "Work" shall mean the work of authorship, whether in Source or
++      Object form, made available under the License, as indicated by a
++      copyright notice that is included in or attached to the work
++      (an example is provided in the Appendix below).
++
++      "Derivative Works" shall mean any work, whether in Source or Object
++      form, that is based on (or derived from) the Work and for which the
++      editorial revisions, annotations, elaborations, or other modifications
++      represent, as a whole, an original work of authorship. For the purposes
++      of this License, Derivative Works shall not include works that remain
++      separable from, or merely link (or bind by name) to the interfaces of,
++      the Work and Derivative Works thereof.
++
++      "Contribution" shall mean any work of authorship, including
++      the original version of the Work and any modifications or additions
++      to that Work or Derivative Works thereof, that is intentionally
++      submitted to Licensor for inclusion in the Work by the copyright owner
++      or by an individual or Legal Entity authorized to submit on behalf of
++      the copyright owner. For the purposes of this definition, "submitted"
++      means any form of electronic, verbal, or written communication sent
++      to the Licensor or its representatives, including but not limited to
++      communication on electronic mailing lists, source code control systems,
++      and issue tracking systems that are managed by, or on behalf of, the
++      Licensor for the purpose of discussing and improving the Work, but
++      excluding communication that is conspicuously marked or otherwise
++      designated in writing by the copyright owner as "Not a Contribution."
++
++      "Contributor" shall mean Licensor and any individual or Legal Entity
++      on behalf of whom a Contribution has been received by Licensor and
++      subsequently incorporated within the Work.
++
++   2. Grant of Copyright License. Subject to the terms and conditions of
++      this License, each Contributor hereby grants to You a perpetual,
++      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
++      copyright license to reproduce, prepare Derivative Works of,
++      publicly display, publicly perform, sublicense, and distribute the
++      Work and such Derivative Works in Source or Object form.
++
++   3. Grant of Patent License. Subject to the terms and conditions of
++      this License, each Contributor hereby grants to You a perpetual,
++      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
++      (except as stated in this section) patent license to make, have made,
++      use, offer to sell, sell, import, and otherwise transfer the Work,
++      where such license applies only to those patent claims licensable
++      by such Contributor that are necessarily infringed by their
++      Contribution(s) alone or by combination of their Contribution(s)
++      with the Work to which such Contribution(s) was submitted. If You
++      institute patent litigation against any entity (including a
++      cross-claim or counterclaim in a lawsuit) alleging that the Work
++      or a Contribution incorporated within the Work constitutes direct
++      or contributory patent infringement, then any patent licenses
++      granted to You under this License for that Work shall terminate
++      as of the date such litigation is filed.
++
++   4. Redistribution. You may reproduce and distribute copies of the
++      Work or Derivative Works thereof in any medium, with or without
++      modifications, and in Source or Object form, provided that You
++      meet the following conditions:
++
++      (a) You must give any other recipients of the Work or
++          Derivative Works a copy of this License; and
++
++      (b) You must cause any modified files to carry prominent notices
++          stating that You changed the files; and
++
++      (c) You must retain, in the Source form of any Derivative Works
++          that You distribute, all copyright, patent, trademark, and
++          attribution notices from the Source form of the Work,
++          excluding those notices that do not pertain to any part of
++          the Derivative Works; and
++
++      (d) If the Work includes a "NOTICE" text file as part of its
++          distribution, then any Derivative Works that You distribute must
++          include a readable copy of the attribution notices contained
++          within such NOTICE file, excluding those notices that do not
++          pertain to any part of the Derivative Works, in at least one
++          of the following places: within a NOTICE text file distributed
++          as part of the Derivative Works; within the Source form or
++          documentation, if provided along with the Derivative Works; or,
++          within a display generated by the Derivative Works, if and
++          wherever such third-party notices normally appear. The contents
++          of the NOTICE file are for informational purposes only and
++          do not modify the License. You may add Your own attribution
++          notices within Derivative Works that You distribute, alongside
++          or as an addendum to the NOTICE text from the Work, provided
++          that such additional attribution notices cannot be construed
++          as modifying the License.
++
++      You may add Your own copyright statement to Your modifications and
++      may provide additional or different license terms and conditions
++      for use, reproduction, or distribution of Your modifications, or
++      for any such Derivative Works as a whole, provided Your use,
++      reproduction, and distribution of the Work otherwise complies with
++      the conditions stated in this License.
++
++   5. Submission of Contributions. Unless You explicitly state otherwise,
++      any Contribution intentionally submitted for inclusion in the Work
++      by You to the Licensor shall be under the terms and conditions of
++      this License, without any additional terms or conditions.
++      Notwithstanding the above, nothing herein shall supersede or modify
++      the terms of any separate license agreement you may have executed
++      with Licensor regarding such Contributions.
++
++   6. Trademarks. This License does not grant permission to use the trade
++      names, trademarks, service marks, or product names of the Licensor,
++      except as required for reasonable and customary use in describing the
++      origin of the Work and reproducing the content of the NOTICE file.
++
++   7. Disclaimer of Warranty. Unless required by applicable law or
++      agreed to in writing, Licensor provides the Work (and each
++      Contributor provides its Contributions) on an "AS IS" BASIS,
++      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
++      implied, including, without limitation, any warranties or conditions
++      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
++      PARTICULAR PURPOSE. You are solely responsible for determining the
++      appropriateness of using or redistributing the Work and assume any
++      risks associated with Your exercise of permissions under this License.
++
++   8. Limitation of Liability. In no event and under no legal theory,
++      whether in tort (including negligence), contract, or otherwise,
++      unless required by applicable law (such as deliberate and grossly
++      negligent acts) or agreed to in writing, shall any Contributor be
++      liable to You for damages, including any direct, indirect, special,
++      incidental, or consequential damages of any character arising as a
++      result of this License or out of the use or inability to use the
++      Work (including but not limited to damages for loss of goodwill,
++      work stoppage, computer failure or malfunction, or any and all
++      other commercial damages or losses), even if such Contributor
++      has been advised of the possibility of such damages.
++
++   9. Accepting Warranty or Additional Liability. While redistributing
++      the Work or Derivative Works thereof, You may choose to offer,
++      and charge a fee for, acceptance of support, warranty, indemnity,
++      or other liability obligations and/or rights consistent with this
++      License. However, in accepting such obligations, You may act only
++      on Your own behalf and on Your sole responsibility, not on behalf
++      of any other Contributor, and only if You agree to indemnify,
++      defend, and hold each Contributor harmless for any liability
++      incurred by, or claims asserted against, such Contributor by reason
++      of your accepting any such warranty or additional liability.
++
++   END OF TERMS AND CONDITIONS
++
++   APPENDIX: How to apply the Apache License to your work.
++
++      To apply the Apache License to your work, attach the following
++      boilerplate notice, with the fields enclosed by brackets "[]"
++      replaced with your own identifying information. (Don't include
++      the brackets!)  The text should be enclosed in the appropriate
++      comment syntax for the file format. We also recommend that a
++      file or class name and description of purpose be included on the
++      same "printed page" as the copyright notice for easier
++      identification within third-party archives.
++
++   Copyright [yyyy] [name of copyright owner]
++
++   Licensed under the Apache License, Version 2.0 (the "License");
++   you may not use this file except in compliance with the License.
++   You may obtain a copy of the License at
++
++       http://www.apache.org/licenses/LICENSE-2.0
++
++   Unless required by applicable law or agreed to in writing, software
++   distributed under the License is distributed on an "AS IS" BASIS,
++   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++   See the License for the specific language governing permissions and
++   limitations under the License.
+```
+
+</details>
+
+<details><summary>The diff of <code>NOTICE</code></summary>
+
+```diff
+@@ -0,0 +1,8 @@
++babykev
++Copyright 2026 Rahul Dave
++
++This product is derived from kev (https://github.com/jaredpalmer/kev),
++Copyright 2026 Jared Palmer, licensed under the Apache License, Version 2.0.
++
++Code in this repository that is derived from kev's first commit,
++d0e2b1fc4f9e410137b6b4ab7f7153fc52868a16, has been changed from the original.
+```
+
+</details>
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+````diff
+@@ -0,0 +1,80 @@
++# babykev
++
++babykev is a small decision model. You send it one document, the *context*, and a set of typed questions about it. It returns a probability for every possible answer to every question, in one forward pass. It generates no text.
++
++A request looks like this:
++
++```json
++{
++  "state": "Ardsallagh smoked cheese. Carrigtwohill. Natural rind. Smooth. White. Taste: mild, nutty, smokey and sweet.",
++  "questions": {
++    "has_rind": {"type": "noul", "instructions": "Is there a rind on this cheese?"},
++    "milk": {
++      "type": "choice",
++      "instructions": "What kind of milk goes into this cheese?",
++      "criteria": {"cow": null, "goat": null, "sheep": null, "buffalo": null, "mixed": "More than one kind of milk"}
++    },
++    "firmness": {
++      "type": "score",
++      "instructions": "Where does this cheese sit between soft and hard?",
++      "criteria": ["Soft", "Semi-soft", "Semi-hard", "Hard"]
++    }
++  }
++}
++```
++
++There are three types of question:
++
++| Type | Asks for | The answer holds |
++|---|---|---|
++| `noul` | Yes or no | The probability of yes |
++| `choice` | One of several named options | The chosen option, a probability for each option, and a confidence |
++| `score` | A level on an ordered scale | The expected level, a probability for each level, and a confidence |
++
++## Where it comes from
++
++babykev is derived from the first commit of [kev](https://github.com/jaredpalmer/kev/tree/d0e2b1fc4f9e410137b6b4ab7f7153fc52868a16)
++by Jared Palmer. That commit is about 830 lines of Python around one idea: a small language model
++(Qwen2.5-0.5B with a LoRA adapter) reads the state and the questions as one sequence, an attention mask
++keeps each question from seeing the others, and a pointer head scores every option.
++
++This is an educational repo. The repo `babykev` keeps the original model but rebuilds the engineering around it: packaging, tests, types, docs, training, experiment tracking, and simple inference on the command line. The idea is to expose to a student the infrastructural and software development aspects of, for now, training a model.
++
++## What you need
++
++Three tools on the machine. This project installs everything else itself.
++
++| Tool | What it is for |
++|---|---|
++| [uv](https://docs.astral.sh/uv/) | Python itself, the dependencies, and running the program |
++| [just](https://just.systems/) | The project's tasks. `just` lists them |
++| [Quarto](https://quarto.org/) | The docs site |
++
++Then `just setup`. `just` lists the tasks, `just help VERB` explains one, and `uv run babykev help` is
++the program's own help.
++
++## What is here
++
++| Path | What it is |
++|---|---|
++| `pyproject.toml`, `uv.lock` | The project: its name, its Python, its dependencies, and the exact versions installed |
++| `src/babykev/` | The code. `cli.py` is the `babykev` command |
++| `justfile` | Every task of the project, one recipe each. `just help` explains them |
++| `LICENSE`, `NOTICE` | The licence, and the credit to kev |
++| `.python-version` | The Python version the project uses |
++| `.gitignore` | Everything a training run will write, ignored from the first commit on |
++
++## How the history is organised
++
++The project is built in steps. Each step is one commit on `main` with a tag, `step-00`, `step-01` and so
++on, and the tag's message says what the step adds.
++
++```
++git tag -n1 --list 'step-*'     # the steps, one line each
++git show step-00                # a step's full note, and what it changed
++git switch --detach step-00     # the project as it was at that step
++```
++
++## Licence
++
++Apache-2.0: see [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE). The original project kev's first commit carried no licence file; kev became Apache-2.0 three commits later.
+````
+
+</details>
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -0,0 +1,26 @@
++# babykev: every task is a recipe here. `just` lists them; `just help VERB` explains one.
++
++program := "babykev"
++
++# Each word after a recipe's name reaches its commands whole, as "$1", "$2" and so on; "$@" is all of them
++set positional-arguments
++
++[private]
++default:
++    @just --list --unsorted
++
++# Explain a verb: its line, and the program's flags where the program has them. Alone, the list
++[no-exit-message]
++help *verb:
++    #!/usr/bin/env sh
++    if [ "$#" -eq 0 ]; then just --list --unsorted; exit 0; fi
++    shown=$(just --show "$1") || exit 1
++    printf '%s\n' "$shown" | head -1 | sed 's/^# //'
++    if printf '%s\n' "$shown" | grep -qF '{{ "{{ program }}" }} '"$1"; then
++        uv run {{ program }} "$1" help
++    fi
++
++# Install Python and every dependency into .venv, exactly as the lockfile says
++[group('setup')]
++setup *args:
++    @{{ if args == "help" { "just help setup" } else { "uv sync --locked" } }}
+```
+
+</details>
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -0,0 +1,17 @@
++[project]
++name = "babykev"
++version = "0.1.0"
++description = "A small decision model: one state, typed questions, a probability for every answer"
++readme = "README.md"
++license = "Apache-2.0"
++license-files = ["LICENSE", "NOTICE"]
++authors = [{ name = "Rahul Dave" }]
++requires-python = ">=3.13"
++dependencies = []
++
++[project.scripts]
++babykev = "babykev.cli:main"
++
++[build-system]
++requires = ["uv_build>=0.12.13,<0.13.0"]
++build-backend = "uv_build"
+```
+
+</details>
+
+<details><summary>The diff of <code>src/babykev/cli.py</code></summary>
+
+```diff
+@@ -0,0 +1,21 @@
++"""The babykev command. `babykev help` says what it can do; every command arrives here."""
++
++import sys
++
++HELP = """\
++babykev: a small decision model. Context, typed questions, and a probability for every answer.
++
++usage: babykev COMMAND [FLAGS]
++       babykev help
++
++There are no commands yet.
++"""
++
++
++def main() -> None:
++    """Print the help, or refuse a command that does not exist yet."""
++    words = sys.argv[1:]
++    if words and words[0] not in ("help", "--help", "-h"):
++        print(f"babykev: no command named {words[0]!r}. Run `babykev help`.", file=sys.stderr)
++        raise SystemExit(2)
++    print(HELP, end="")
+```
+
+</details>
+
+[The code](https://github.com/rahuldave/babykev/tree/ee96429002cd04cb95e86e9a77e9c3d02a0e9497).

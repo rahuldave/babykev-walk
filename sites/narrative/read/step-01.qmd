@@ -1,0 +1,762 @@
+---
+title: "1 The contract, and its tests"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+```bash
+just setup
+```
+
+babykev will answer questions about a text, and it has no model yet. So we first fix what the model takes in and
+what it gives back. This agreement is the contract. A request has a state, the text, and typed questions about
+it. An answer has a probability for every option of every question.
+
+The contract is code, so we can test it now,
+while it is small. When the model arrives, the tests already say what a good request and a good answer are.
+
+The contract needs pydantic, and the tests need pytest. `just setup` installs them from the lockfile. It prints
+`Resolved 14 packages`, and installs pydantic, pydantic-core, pytest, pytest-cov, coverage and their dependencies.
+`.venv` grows from 1 package to 14.
+
+**The contract.** kev's file `src/babykev/api.py` comes in as kev wrote it, less two parts for serving, the
+`model` field of a request and `output_tokens`.
+
+pydantic is a library that checks data against a class. Lines 14
+to 42 are its classes, one for each type of question (`Noul`, `Choice`, `Score`), and `SystemOneRequest` for the
+whole request. pydantic refuses a request that breaks a rule of these classes. For example,
+`Field(min_length=1)` on line 42 refuses a request with no questions.
+
+Lines 58 to 74, `to_record`, turn a request
+into the text and the options that the model reads. Lines 77 to 104 turn the model's probabilities back into
+answers. `pyproject.toml` now lists pydantic as a dependency of babykev.
+
+```bash
+sed -n '40,42p' src/babykev/api.py
+```
+
+**The data.** `data/cheese/sample.jsonl` holds five requests about cheese, one on each line. Each question has a
+`label`, the right answer. The tests read these five lines. They are not the data of training, which comes later.
+
+The first line describes Coquetdale, an English soft-ripened cheese, and asks three questions. `vegetarian` is a
+noul, a question of yes or no, and its label is `true`. `intensity` is a score over four levels, and its label is
+1, the second level. `milk` is a choice of five, and its label is `cow`.
+
+```bash
+head -n 1 data/cheese/sample.jsonl | python3 -m json.tool
+```
+
+**A place for the tests.** pytest and pytest-cov are in a group of their own, `test`, under
+`[dependency-groups]` in `pyproject.toml`. A user of babykev does not need them. The group `dev` includes the
+group `test`, and `just setup` installs `dev`. The table `[tool.pytest.ini_options]` tells pytest to look in
+`tests/`.
+
+The justfile has a new recipe, `test`. `just` lists it under `[quality]`, and `just help test` prints
+its comment.
+
+```bash
+just
+just help test
+```
+
+**The tests run.** `uv run pytest` runs the tests. `uv run` runs a command inside `.venv`. pytest reads
+`[tool.pytest.ini_options]` in `pyproject.toml`, and runs every function in `tests/` whose name starts with
+`test_`. Its first lines say so, `configfile: pyproject.toml`, `testpaths: tests` and `plugins: cov-7.1.0`.
+
+52
+tests run, and two of them fail. The tests are right, and kev's code is wrong.
+
+```bash
+uv run pytest
+```
+
+The first failure is in rounding. An answer rounds each probability to two decimals. With 77 options of equal
+probability, each one is 1/77, about 0.013, and it rounds to 0.01. The 77 rounded numbers sum to 0.77, not to 1.
+
+The second failure is in the confidence of a score. Confidence runs from 1, when the model is sure, down to 0,
+when it knows nothing. A model that gives every level the same probability knows nothing. kev's formula, on line
+86, is 1 minus the expected distance from the most likely level, divided by the number of levels less one.
+
+Take
+three levels with 1/3 each. The most likely level is the first, level 0. The expected distance is
+(0 + 1 + 2) ÷ 3 = 1, and 1 ÷ 2 = 0.5. So the confidence is 1 − 0.5 = 0.5, and it should be 0. Next, we fix both
+bugs, with the formatter and the linter.
+
+Under the summary is the table of coverage. It says which statements of `src/babykev` the tests ran. Here they
+ran all of them, 66 in `api.py` and 8 in `cli.py`, so each line reads 100%.
+
+From now on, the column `Missing`
+names the lines that no test runs. The table comes with every run, because of one line in `pyproject.toml`.
+`addopts` adds `--cov=babykev --cov-report=term-missing` to each run of pytest, so nobody has to remember the
+flags.
+
+```bash
+grep -n -B1 addopts pyproject.toml
+```
+
+**The recipe.** `just --show test` prints the recipe. It has a comment, two attributes, its name, and a body of
+one line. The body is `uv run pytest "$@"`, inside an `if` that answers `help`. `"$@"` is every word after
+`just test`, each word whole.
+
+So `just test -k name` runs `uv run pytest -k name`. In
+`just test -k "score_confidence_is_zero or rounded_probabilities"`, pytest gets two words, `-k` and the whole
+pattern. It selects 2 tests, the two that fail. Before it runs, just prints the line as it is written,
+`uv run pytest "$@"`, and not your words. The shell fills them in after.
+
+```bash
+just --show test
+just test -k "score_confidence_is_zero or rounded_probabilities"
+```
+
+**The tests of the command.** Lines 8 to 18 of `tests/unit/test_cli.py` test the help of `babykev`. `run` sets
+`sys.argv`, the list of words that a program was started with, and calls `main()`, as if `babykev` had been
+typed at a terminal. `monkeypatch` and `capsys` are two fixtures that come with pytest. pytest sees their
+names among the arguments of a test, and passes them in. babykev's own fixtures come with the model.
+
+`monkeypatch.setattr` changes `sys.argv` for this test only, and puts it back afterwards. `capsys` catches what
+the program printed, and the test compares it with `HELP`.
+
+`@pytest.mark.parametrize` on line 14 runs the
+function once for each value in its list. So one function makes four tests, one for each way of asking for help,
+`babykev`, `babykev help`, `--help` and `-h`. With `-v`, pytest prints each test on its own line, from
+`[words0]` to `[words3]`. All four pass, and the summary says `4 passed, 48 deselected`.
+
+```bash
+sed -n '8,18p' tests/unit/test_cli.py
+just test -k help_is_printed -v
+```
+
+**Four tests of the contract.** Every test so far is a unit test, which runs one function alone. The other kinds
+run several parts together, and they come with the model. Each test in `tests/unit/test_api.py` has a name that
+reads as a sentence, and a docstring that states the rule. The file has sections, `# Validation`,
+`# Rendering`, `# From a request to a record`, `# From probabilities to answers` and `# Confidence`.
+
+Two of the
+four tests below are small, and two carry weight. For each test, the `sed` line prints it, and the `just test -k`
+line runs it alone.
+
+**Test 1, small: a request must ask at least one question** (lines 81 to 86). The test has three lines.
+`pytest.raises` says that the call must fail. The contract refuses bad input, and the test keeps the rule, so
+that nobody loosens it by accident. It passes.
+
+```bash
+sed -n '81,86p' tests/unit/test_api.py
+just test -k without_questions
+```
+
+**Test 2, small: the limit on options is exact** (lines 105 to 114). A choice takes 255 options, and refuses 256.
+A bug that is off by one lives at such a limit, so the test checks the limit itself. It passes.
+
+```bash
+sed -n '105,114p' tests/unit/test_api.py
+just test -k largest_number
+```
+
+**Test 3, weighty: every line of the sample data fits the contract** (lines 47 to 56). `@pytest.mark.parametrize`
+runs it over the data, so one function makes five tests, one for each line. It tests the data against the code.
+
+Every line must be a valid request, every question must become one question of the record, and every question
+must have at least two options. When the data of training arrives, this test grows with it. All five pass.
+
+```bash
+sed -n '47,56p' tests/unit/test_api.py
+just test -k sample_line_fits
+```
+
+**Test 4, weighty: rounded probabilities still sum to one** (lines 250 to 258). The test checks a property, and
+not one value. Whatever the probabilities are, their sum must be 1. It takes the hard case of 77 options.
+`pytest.approx(1, abs=0.02)` compares two floats, and lets them differ by 0.02. The test fails, with
+0.77, so code that seems to work has a bug.
+
+```bash
+sed -n '250,258p' tests/unit/test_api.py
+just test -k rounded_probabilities
+```
+
+**A subset.** `-k confidence` runs 8 tests. The coverage of `api.py` drops to 50%, and the total to 49%, because
+the table counts only the tests that ran. Read the coverage of the whole suite, and not of a subset.
+
+```bash
+just test -k confidence
+```
+
+**A break.** The `sed` line changes the noul option `"no"` to `"NO"` in `api.py`. Then `just test` fails four
+tests, the two noul tests and the two bugs. `git checkout src/babykev/api.py` undoes the edit. A change of
+`MAX_OPTIONS` breaks nothing, because the test imports the constant.
+
+```bash
+sed -i '' 's/option_text("no", c.get("false"))/option_text("NO", c.get("false"))/' src/babykev/api.py && just test
+```
+
+## What changed {#step-01-what-changed-182c57}
+
+- <a id="step-01-README.md-8ec9a0"></a>`README.md`: the `state` of a request, `just test` beside `just setup`, and rows for the contract, the data and the tests. 9 lines added, 5 removed. [The file](https://github.com/rahuldave/babykev/blob/9cc0343527b93a817207a11a2866752807f0013d/README.md).
+- <a id="step-01-data-cheese-sample.jsonl-79f982"></a>`data/cheese/sample.jsonl`: five requests about cheese, with the right answer to each question. New, 5 lines. [The file](https://github.com/rahuldave/babykev/blob/9cc0343527b93a817207a11a2866752807f0013d/data/cheese/sample.jsonl).
+- <a id="step-01-justfile-424f0b"></a>`justfile`: the recipe `test`, which passes its words to pytest. 7 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/9cc0343527b93a817207a11a2866752807f0013d/justfile).
+  - look at `test *args:`
+- <a id="step-01-pyproject.toml-5d07e7"></a>`pyproject.toml`: pydantic, the group `test`, and the settings of pytest. 15 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/9cc0343527b93a817207a11a2866752807f0013d/pyproject.toml).
+  - look at `addopts = "--cov=babykev --cov-report=term-missing"`
+- <a id="step-01-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: kev's contract, less the request's `model` and `output_tokens`. The classes are on lines 14 to 42, and the two bugs on lines 77 to 104. New, 104 lines. [The file](https://github.com/rahuldave/babykev/blob/9cc0343527b93a817207a11a2866752807f0013d/src/babykev/api.py).
+  - look at `questions: dict[str, Question] = Field(min_length=1)`
+- <a id="step-01-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: 47 tests of the contract, in five sections. Two of them fail. New, 293 lines. [The file](https://github.com/rahuldave/babykev/blob/9cc0343527b93a817207a11a2866752807f0013d/tests/unit/test_api.py).
+  - look at `assert sum(answer["probabilities"].values()) == pytest.approx(1, abs=0.02)`
+- <a id="step-01-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: five tests of the command, four of them from one function. New, 28 lines. [The file](https://github.com/rahuldave/babykev/blob/9cc0343527b93a817207a11a2866752807f0013d/tests/unit/test_cli.py).
+  - look at `@pytest.mark.parametrize("words", [(), ("help",), ("--help",), ("-h",)])`
+- <a id="step-01-uv.lock-8356d8"></a>`uv.lock`: the exact versions of pydantic, pytest, pytest-cov and their dependencies. 286 lines added. [The file](https://github.com/rahuldave/babykev/blob/9cc0343527b93a817207a11a2866752807f0013d/uv.lock).
+  - look at `name = "pydantic"`
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+```diff
+@@ -1,6 +1,6 @@
+ # babykev
+ 
+-babykev is a small decision model. You send it one document, the *context*, and a set of typed questions about it. It returns a probability for every possible answer to every question, in one forward pass. It generates no text.
++babykev is a small decision model. You send it one document, the *context* (the `state` field of a request), and a set of typed questions about it. It returns a probability for every possible answer to every question, in one forward pass. It generates no text.
+ 
+ A request looks like this:
+ 
+@@ -50,15 +50,19 @@ Three tools on the machine. This project installs everything else itself.
+ | [just](https://just.systems/) | The project's tasks. `just` lists them |
+ | [Quarto](https://quarto.org/) | The docs site |
+ 
+-Then `just setup`. `just` lists the tasks, `just help VERB` explains one, and `uv run babykev help` is
+-the program's own help.
++Then `just setup`, and `just test`. `just` lists the tasks, `just help VERB` explains one, and `uv run
++babykev help` is the program's own help. Extra arguments go to the tool behind a recipe: `just test -k
++render` runs only the tests whose name contains `render`.
+ 
+ ## What is here
+ 
+ | Path | What it is |
+ |---|---|
+-| `pyproject.toml`, `uv.lock` | The project: its name, its Python, its dependencies, and the exact versions installed |
+-| `src/babykev/` | The code. `cli.py` is the `babykev` command |
++| `pyproject.toml`, `uv.lock` | The project: its name, its Python, its dependencies, the settings of its tools, and the exact versions installed |
++| `src/babykev/api.py` | The contract: the request and its three question types as Pydantic models, how they become the text and options the model sees, and how probabilities become answers |
++| `src/babykev/cli.py` | The `babykev` command |
++| `data/cheese/sample.jsonl` | Five lines of data. Each is a request about a cheese with a `label` on every question: the right answer |
++| `tests/unit/` | Unit tests of the contract and of the command. One test checks every line of the sample data against the contract |
+ | `justfile` | Every task of the project, one recipe each. `just help` explains them |
+ | `LICENSE`, `NOTICE` | The licence, and the credit to kev |
+ | `.python-version` | The Python version the project uses |
+```
+
+</details>
+
+<details><summary>The diff of <code>data/cheese/sample.jsonl</code></summary>
+
+```diff
+@@ -0,0 +1,5 @@
++{"state":{"cheese":"Coquetdale","origin":"Coquet, England","style":"soft-ripened","notes":{"texture":["creamy"],"flavour":["fruity"],"aroma":["rich"]},"colour":"pale yellow"},"questions":{"vegetarian":{"type":"noul","instructions":"Would you offer this cheese to a vegetarian?","label":true,"src":"cheese/vegetarian/withheld"},"intensity":{"type":"score","instructions":"How strong is the flavour of this cheese?","criteria":["Mild: milky, buttery, gentle","Medium: nutty, fruity, earthy","Pronounced: tangy, sharp, spicy","Strong: pungent, the kind you smell first"],"label":1,"src":"cheese/intensity/stated"},"milk":{"type":"choice","instructions":"Choose the milk this cheese is made from.","criteria":{"buffalo":null,"goat":null,"mixed":"More than one kind of milk","cow":null,"sheep":null},"label":"cow","src":"cheese/milk/withheld"}}}
++{"state":"ARDSALLAGH SMOKED CHEESE. Carrigtwohill. natural rind. smooth. white. taste: mild, nutty, smokey and sweet. vegetarian.","questions":{"has_rind":{"type":"noul","instructions":"Is there a rind on this cheese?","label":true,"src":"cheese/has_rind/stated"},"milk":{"type":"choice","instructions":"What kind of milk goes into this cheese?","criteria":{"buffalo":null,"goat":null,"cow":null,"sheep":null,"mixed":"More than one kind of milk"},"label":"goat","src":"cheese/milk/withheld"},"firmness":{"type":"score","instructions":"Where does this cheese sit between soft and hard?","criteria":["Soft: spreadable or yielding","Semi-soft: supple, bends before it breaks","Semi-hard: slices cleanly","Hard: dense, for grating or breaking"],"label":2,"src":"cheese/firmness/withheld"}}}
++{"state":{"cheese":"Alisia-Victoria","milk":"cow's","notes":{"texture":["smooth"],"flavour":["buttery"],"aroma":["nutty"]},"colour":"golden yellow"},"questions":{"fresh":{"type":"noul","instructions":"Is this a fresh cheese, sold without aging?","label":false,"src":"cheese/fresh/withheld"},"origin":{"type":"choice","instructions":"Where does this cheese come from?","criteria":{"United States or Canada":null,"British Isles":"England, Scotland, Wales or Ireland","rest of the world":null,"elsewhere in Europe":null,"France":null},"label":"elsewhere in Europe","src":"cheese/origin/withheld"},"firmness":{"type":"score","instructions":"Where does this cheese sit between soft and hard?","criteria":["Soft: spreadable or yielding","Semi-soft: supple, bends before it breaks","Semi-hard: slices cleanly","Hard: dense, for grating or breaking"],"label":3,"src":"cheese/firmness/withheld"}}}
++{"state":{"cheese":"Amou","milk":"sheep's"},"questions":{"vegetarian":{"type":"noul","instructions":"Is this cheese suitable for vegetarians?","label":false,"src":"cheese/vegetarian/withheld"},"milk":{"type":"choice","instructions":"Choose the milk this cheese is made from.","criteria":{"mixed":"More than one kind of milk","goat":null,"cow":null,"sheep":null,"buffalo":null},"label":"sheep","src":"cheese/milk/stated"},"firmness":{"type":"score","instructions":"Rate the firmness of this cheese.","criteria":["Soft: spreadable or yielding","Semi-soft: supple, bends before it breaks","Semi-hard: slices cleanly","Hard: dense, for grating or breaking"],"label":3,"src":"cheese/firmness/withheld"}}}
++{"state":"LOMA ALTA. soft-ripened. mould-ripened rind. firm. white. taste: buttery and nutty. smell: rich. not vegetarian.","questions":{"origin":{"type":"choice","instructions":"Choose where this cheese originates.","criteria":{"elsewhere in Europe":null,"United States or Canada":null,"rest of the world":null,"France":null,"British Isles":"England, Scotland, Wales or Ireland"},"label":"United States or Canada","src":"cheese/origin/withheld"},"no_cow":{"type":"noul","instructions":"Is this cheese free of cow's milk?","label":false,"src":"cheese/no_cow/withheld"},"intensity":{"type":"score","instructions":"How strong is the flavour of this cheese?","criteria":["Mild: milky, buttery, gentle","Medium: nutty, fruity, earthy","Pronounced: tangy, sharp, spicy","Strong: pungent, the kind you smell first"],"label":1,"src":"cheese/intensity/stated"}}}
+```
+
+</details>
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -23,4 +23,10 @@ help *verb:
+ # Install Python and every dependency into .venv, exactly as the lockfile says
+ [group('setup')]
+ setup *args:
+-    @{{ if args == "help" { "just help setup" } else { "uv sync --locked" } }}
++    {{ if args == "help" { "just help setup" } else { "uv sync --locked" } }}
++
++# Run the tests, with coverage of src/babykev. Extra arguments go to pytest: just test -k render
++[group('quality')]
++[no-exit-message]
++test *args:
++    {{ if args == "help" { "just help test" } else { 'uv run pytest "$@"' } }}
+```
+
+</details>
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -7,7 +7,9 @@ license = "Apache-2.0"
+ license-files = ["LICENSE", "NOTICE"]
+ authors = [{ name = "Rahul Dave" }]
+ requires-python = ">=3.13"
+-dependencies = []
++dependencies = [
++    "pydantic>=2.11",
++]
+ 
+ [project.scripts]
+ babykev = "babykev.cli:main"
+@@ -15,3 +17,15 @@ babykev = "babykev.cli:main"
+ [build-system]
+ requires = ["uv_build>=0.12.13,<0.13.0"]
+ build-backend = "uv_build"
++
++[dependency-groups]
++test = [
++    "pytest>=9.1",
++    "pytest-cov>=7.1.0",
++]
++dev = [{ include-group = "test" }]
++
++[tool.pytest.ini_options]
++testpaths = ["tests"]
++# Every run measures how much of src/babykev the tests touch and lists the lines they do not
++addopts = "--cov=babykev --cov-report=term-missing"
+```
+
+</details>
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -0,0 +1,104 @@
++"""The contract: request and answer shapes, mapped onto the single pointer primitive.
++
++Noul   -> 2 options [false, true];            answer = p(true)
++Choice -> options 'name' or 'name: desc';      answer = argmax, probabilities by name, confidence
++Score  -> options = ordered level descriptions; answer = expected level, legend, probabilities by index
++"""
++from typing import Any, Literal, Union
++from pydantic import BaseModel, Field, model_validator
++
++JSONContent = Union[str, dict, list, int, float, bool, None]
++MAX_OPTIONS = 255
++
++
++class Noul(BaseModel):
++    type: Literal["noul"]
++    instructions: JSONContent
++    criteria: dict[str, JSONContent] | None = None
++
++
++class Choice(BaseModel):
++    type: Literal["choice"]
++    instructions: JSONContent
++    criteria: dict[str, JSONContent]
++
++    @model_validator(mode="after")
++    def _check(self):
++        if not 1 <= len(self.criteria) <= MAX_OPTIONS: raise ValueError(f"criteria must have 1..{MAX_OPTIONS} options")
++        return self
++
++
++class Score(BaseModel):
++    type: Literal["score"]
++    instructions: JSONContent
++    criteria: list[JSONContent] = Field(min_length=2, max_length=MAX_OPTIONS)
++
++
++Question = Union[Noul, Choice, Score]
++
++
++class SystemOneRequest(BaseModel):
++    state: JSONContent
++    questions: dict[str, Question] = Field(min_length=1)
++
++
++def render(v: JSONContent, indent: int = 0) -> str:
++    """Flatten str | object | array into text the model sees. Field names are kept as labels."""
++    pad = "  " * indent
++    if v is None: return ""
++    if isinstance(v, (str, int, float, bool)): return str(v)
++    if isinstance(v, list): return "\n".join(f"{pad}- {render(x, indent + 1).lstrip()}" for x in v)
++    return "\n".join(f"{pad}{k}:\n{render(x, indent + 1)}" if isinstance(x, (dict, list)) else f"{pad}{k}: {render(x)}" for k, x in v.items())
++
++
++def option_text(name: str, desc: JSONContent) -> str:
++    return name if desc is None or desc == "" else f"{name}: {render(desc)}"
++
++
++def to_record(req: SystemOneRequest):
++    """-> internal record for encode(), plus per-question metadata to map probabilities back."""
++    qs, meta = [], []
++    for qid, q in req.questions.items():
++        instr = render(q.instructions)
++        if q.type == "noul":
++            c = q.criteria or {}
++            opts = [option_text("no", c.get("false")), option_text("yes", c.get("true"))]
++            meta.append({"id": qid, "type": "noul"})
++        elif q.type == "choice":
++            opts = [option_text(k, v) for k, v in q.criteria.items()]
++            meta.append({"id": qid, "type": "choice", "keys": list(q.criteria.keys())})
++        else:
++            opts = [render(x) for x in q.criteria]
++            meta.append({"id": qid, "type": "score", "legend": {str(i): render(x) for i, x in enumerate(q.criteria)}})
++        qs.append({"instr": instr, "options": opts, "label": 0})
++    return {"state": render(req.state), "questions": qs}, meta
++
++
++def choice_confidence(p: list[float]) -> float:
++    K = len(p)
++    return 1.0 if K == 1 else (max(p) - 1 / K) / (1 - 1 / K)
++
++
++def score_confidence(p: list[float]) -> float:
++    """Approximation of TypeSafe's 'distance from the modal level' statistic (exact formula unpublished):
++    1 - E|level - mode| / (L - 1)."""
++    L = len(p); mode = max(range(L), key=lambda i: p[i])
++    return 1.0 - sum(pi * abs(i - mode) for i, pi in enumerate(p)) / (L - 1)
++
++
++def r2(x: float) -> float:
++    return round(float(x), 2)
++
++
++def to_answers(probs: list[list[float]], meta: list[dict]) -> dict[str, Any]:
++    out = {}
++    for p, m in zip(probs, meta):
++        if m["type"] == "noul":
++            out[m["id"]] = {"type": "noul", "noul": r2(p[1])}
++        elif m["type"] == "choice":
++            dist = {k: r2(v) for k, v in zip(m["keys"], p)}
++            out[m["id"]] = {"type": "choice", "choice": m["keys"][max(range(len(p)), key=lambda i: p[i])], "confidence": r2(choice_confidence(p)), "probabilities": dist}
++        else:
++            score = sum(i * pi for i, pi in enumerate(p))
++            out[m["id"]] = {"type": "score", "score": r2(score), "legend": m["legend"], "probabilities": {str(i): r2(v) for i, v in enumerate(p)}, "confidence": r2(score_confidence(p))}
++    return out
+```
+
+</details>
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -0,0 +1,293 @@
++"""Unit tests for the contract in `babykev.api`: validation, rendering, the mappings, the confidences."""
++
++import json
++from pathlib import Path
++
++import pytest
++from pydantic import ValidationError
++
++from babykev.api import (
++    MAX_OPTIONS,
++    Choice,
++    Noul,
++    Score,
++    SystemOneRequest,
++    choice_confidence,
++    option_text,
++    render,
++    score_confidence,
++    to_answers,
++    to_record,
++)
++
++SAMPLE = Path(__file__).parents[2] / "data" / "cheese" / "sample.jsonl"
++SAMPLE_LINES = [json.loads(line) for line in SAMPLE.read_text(encoding="utf-8").splitlines()]
++
++MILKS = {"cow": None, "goat": None, "sheep": None, "mixed": "More than one kind of milk"}
++FIRMNESS = ["Soft", "Semi-soft", "Semi-hard", "Hard"]
++
++
++def cheese_request():
++    """One request that asks a question of each type."""
++    return SystemOneRequest.model_validate(
++        {
++            "state": {"cheese": "Roquefort", "origin": "France"},
++            "questions": {
++                "blue": {"type": "noul", "instructions": "Is this a blue cheese?"},
++                "milk": {"type": "choice", "instructions": "Which milk?", "criteria": MILKS},
++                "firmness": {"type": "score", "instructions": "How firm?", "criteria": FIRMNESS},
++            },
++        }
++    )
++
++
++# The sample data
++
++
++@pytest.mark.parametrize("line", SAMPLE_LINES)
++def test_sample_line_fits_the_contract(line):
++    """Every line of the sample data is a valid request and gives one record question per question."""
++    request = SystemOneRequest.model_validate(line)
++    record, meta = to_record(request)
++    assert record["state"]
++    assert [m["id"] for m in meta] == list(line["questions"])
++    assert all(len(q["options"]) >= 2 for q in record["questions"])
++
++
++@pytest.mark.parametrize("line", SAMPLE_LINES)
++def test_sample_line_has_a_usable_label_on_every_question(line):
++    """A label is a boolean for noul, one of the option names for choice, a level index for score."""
++    for question in line["questions"].values():
++        label = question["label"]
++        if question["type"] == "noul":
++            assert isinstance(label, bool)
++        elif question["type"] == "choice":
++            assert label in question["criteria"]
++        else:
++            assert label in range(len(question["criteria"]))
++
++
++# Validation
++
++
++def test_request_holds_one_model_per_question_type():
++    """The `type` field decides which model a question becomes."""
++    questions = cheese_request().questions
++    assert isinstance(questions["blue"], Noul)
++    assert isinstance(questions["milk"], Choice)
++    assert isinstance(questions["firmness"], Score)
++
++
++def test_request_without_questions_is_rejected():
++    """A request must ask at least one question."""
++    with pytest.raises(ValidationError):
++        SystemOneRequest.model_validate({"state": "Brie", "questions": {}})
++
++
++def test_unknown_question_type_is_rejected():
++    """Only noul, choice and score exist."""
++    question = {"type": "essay", "instructions": "Describe this cheese."}
++    with pytest.raises(ValidationError):
++        SystemOneRequest.model_validate({"state": "Brie", "questions": {"q": question}})
++
++
++def test_noul_needs_no_criteria():
++    """A yes-or-no question may leave out what yes and no mean."""
++    assert Noul(type="noul", instructions="Is it blue?").criteria is None
++
++
++def test_choice_without_options_is_rejected():
++    """A choice needs at least one option."""
++    with pytest.raises(ValidationError):
++        Choice(type="choice", instructions="Which milk?", criteria={})
++
++
++def test_choice_accepts_the_largest_number_of_options_and_no_more():
++    """The limit on options is exact."""
++    at_limit = {f"option{i}": None for i in range(MAX_OPTIONS)}
++    assert (
++        len(Choice(type="choice", instructions="Which?", criteria=at_limit).criteria) == MAX_OPTIONS
++    )
++    with pytest.raises(ValidationError):
++        Choice(type="choice", instructions="Which?", criteria={**at_limit, "one_more": None})
++
++
++def test_score_with_one_level_is_rejected():
++    """A scale needs at least two levels."""
++    with pytest.raises(ValidationError):
++        Score(type="score", instructions="How firm?", criteria=["Soft"])
++
++
++# Rendering
++
++
++@pytest.mark.parametrize(
++    ("value", "text"),
++    [
++        (None, ""),
++        ("Brie", "Brie"),
++        (3, "3"),
++        (2.5, "2.5"),
++        (True, "True"),
++        (["creamy", "soft"], "- creamy\n- soft"),
++        ({"cheese": "Brie", "age": 4}, "cheese: Brie\nage: 4"),
++        (
++            {"cheese": "Brie", "notes": {"texture": ["creamy", "soft"]}},
++            "cheese: Brie\nnotes:\n  texture:\n    - creamy\n    - soft",
++        ),
++        ([{"role": "customer", "content": "hello"}], "- role: customer\n  content: hello"),
++    ],
++)
++def test_render_flattens_json_into_text(value, text):
++    """Strings, numbers, lists and objects all become the text the model reads."""
++    assert render(value) == text
++
++
++@pytest.mark.parametrize(
++    ("name", "description", "text"),
++    [
++        ("cow", None, "cow"),
++        ("cow", "", "cow"),
++        ("mixed", "More than one kind of milk", "mixed: More than one kind of milk"),
++    ],
++)
++def test_option_text_adds_a_description_only_when_there_is_one(name, description, text):
++    """An option is its name, followed by its description when it has one."""
++    assert option_text(name, description) == text
++
++
++# From a request to a record
++
++
++def test_record_keeps_the_state_and_the_order_of_questions():
++    """The state is rendered once and the questions stay in request order."""
++    record, meta = to_record(cheese_request())
++    assert record["state"] == "cheese: Roquefort\norigin: France"
++    assert [m["id"] for m in meta] == ["blue", "milk", "firmness"]
++    assert [q["instr"] for q in record["questions"]] == [
++        "Is this a blue cheese?",
++        "Which milk?",
++        "How firm?",
++    ]
++
++
++def test_noul_becomes_no_then_yes():
++    """Option 0 is no and option 1 is yes, so the answer is the probability of option 1."""
++    record, meta = to_record(cheese_request())
++    assert record["questions"][0]["options"] == ["no", "yes"]
++    assert meta[0] == {"id": "blue", "type": "noul"}
++
++
++def test_noul_criteria_describe_no_and_yes():
++    """The criteria under `false` and `true` become the descriptions of no and yes."""
++    criteria = {"true": "It has blue veins", "false": "It has none"}
++    question = {"type": "noul", "instructions": "Is it blue?", "criteria": criteria}
++    request = SystemOneRequest.model_validate({"state": "Brie", "questions": {"blue": question}})
++    record, _ = to_record(request)
++    assert record["questions"][0]["options"] == ["no: It has none", "yes: It has blue veins"]
++
++
++def test_choice_becomes_one_option_per_criterion_in_order():
++    """Options keep the order of the criteria, and the metadata remembers their names."""
++    record, meta = to_record(cheese_request())
++    assert record["questions"][1]["options"] == [
++        "cow",
++        "goat",
++        "sheep",
++        "mixed: More than one kind of milk",
++    ]
++    assert meta[1] == {"id": "milk", "type": "choice", "keys": ["cow", "goat", "sheep", "mixed"]}
++
++
++def test_score_becomes_one_option_per_level_with_a_legend():
++    """Options are the levels in order, and the legend maps each index to its level."""
++    record, meta = to_record(cheese_request())
++    assert record["questions"][2]["options"] == FIRMNESS
++    assert meta[2]["legend"] == {"0": "Soft", "1": "Semi-soft", "2": "Semi-hard", "3": "Hard"}
++
++
++# From probabilities to answers
++
++
++def test_noul_answer_is_the_probability_of_yes():
++    """The answer to a yes-or-no question is one number."""
++    answers = to_answers([[0.25, 0.75]], [{"id": "blue", "type": "noul"}])
++    assert answers == {"blue": {"type": "noul", "noul": 0.75}}
++
++
++def test_choice_answer_names_the_most_likely_option():
++    """A choice answer has the winner, a probability for each option, and a confidence."""
++    meta = [{"id": "milk", "type": "choice", "keys": ["cow", "goat", "sheep"]}]
++    answer = to_answers([[0.1, 0.7, 0.2]], meta)["milk"]
++    assert answer["choice"] == "goat"
++    assert answer["probabilities"] == {"cow": 0.1, "goat": 0.7, "sheep": 0.2}
++    assert answer["confidence"] == pytest.approx(0.55)
++
++
++def test_score_answer_is_the_expected_level():
++    """A score answer is the mean level under the probabilities, with the legend to read it by."""
++    legend = {"0": "Soft", "1": "Semi-soft", "2": "Hard"}
++    answer = to_answers([[0.1, 0.2, 0.7]], [{"id": "firmness", "type": "score", "legend": legend}])[
++        "firmness"
++    ]
++    assert answer["score"] == pytest.approx(1.6)
++    assert answer["legend"] == legend
++    assert answer["probabilities"] == {"0": 0.1, "1": 0.2, "2": 0.7}
++
++
++def test_every_question_gets_an_answer_of_its_own_type():
++    """Records and answers line up: one answer per question, under the question's id."""
++    record, meta = to_record(cheese_request())
++    uniform = [[1 / len(q["options"])] * len(q["options"]) for q in record["questions"]]
++    answers = to_answers(uniform, meta)
++    assert {qid: a["type"] for qid, a in answers.items()} == {
++        "blue": "noul",
++        "milk": "choice",
++        "firmness": "score",
++    }
++
++
++def test_rounded_probabilities_still_sum_to_one():
++    """Rounding for output must not lose probability, even with many options."""
++    keys = [f"intent{i}" for i in range(77)]
++    answer = to_answers([[1 / 77] * 77], [{"id": "intent", "type": "choice", "keys": keys}])[
++        "intent"
++    ]
++    assert sum(answer["probabilities"].values()) == pytest.approx(1, abs=0.02)
++
++
++# Confidence
++
++
++def test_choice_confidence_is_zero_for_a_guess():
++    """Equal probabilities are a guess, whatever the number of options."""
++    assert choice_confidence([0.25] * 4) == pytest.approx(0)
++
++
++def test_choice_confidence_is_one_when_certain():
++    """All the probability on one option is certainty."""
++    assert choice_confidence([0, 1, 0]) == pytest.approx(1)
++    assert choice_confidence([1.0]) == 1.0
++
++
++def test_choice_confidence_grows_with_the_winner():
++    """Between a guess and certainty, confidence follows the winning probability."""
++    assert choice_confidence([0.5, 0.25, 0.25]) == pytest.approx(0.25)
++
++
++@pytest.mark.parametrize("level", [0, 1, 2])
++def test_score_confidence_is_one_when_certain(level):
++    """All the probability on one level is certainty, wherever the level is."""
++    p = [0.0, 0.0, 0.0]
++    p[level] = 1.0
++    assert score_confidence(p) == pytest.approx(1)
++
++
++def test_score_confidence_is_zero_for_a_guess():
++    """Equal probabilities over the levels are a guess, as they are for a choice."""
++    assert score_confidence([1 / 3] * 3) == pytest.approx(0)
++
++
++def test_score_confidence_prefers_neighbouring_levels():
++    """Doubt between adjacent levels is more confident than doubt between the two ends."""
++    assert score_confidence([0.5, 0.5, 0, 0]) > score_confidence([0.5, 0, 0, 0.5])
+```
+
+</details>
+
+<details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
+
+```diff
+@@ -0,0 +1,28 @@
++"""Unit tests for the `babykev` command: `help` prints the help, any other word is refused."""
++
++import pytest
++
++from babykev.cli import HELP, main
++
++
++def run(monkeypatch, *words):
++    """Run `babykev` with these words as its command line."""
++    monkeypatch.setattr("sys.argv", ["babykev", *words])
++    main()
++
++
++@pytest.mark.parametrize("words", [(), ("help",), ("--help",), ("-h",)])
++def test_help_is_printed_for_help_and_for_no_words(monkeypatch, capsys, words):
++    """`babykev`, `babykev help`, `--help` and `-h` all print the help text, and nothing else."""
++    run(monkeypatch, *words)
++    assert capsys.readouterr().out == HELP
++
++
++def test_an_unknown_command_is_refused_with_exit_code_2(monkeypatch, capsys):
++    """A word that is not a command is named, the help is pointed to, and the exit code is 2."""
++    with pytest.raises(SystemExit) as exit_info:
++        run(monkeypatch, "train")
++    assert exit_info.value.code == 2
++    err = capsys.readouterr().err
++    assert "no command named 'train'" in err
++    assert "babykev help" in err
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/compare/ee96429002cd04cb95e86e9a77e9c3d02a0e9497...9cc0343527b93a817207a11a2866752807f0013d). [The code after it](https://github.com/rahuldave/babykev/tree/9cc0343527b93a817207a11a2866752807f0013d).

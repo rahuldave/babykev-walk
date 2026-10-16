@@ -1,0 +1,456 @@
+---
+title: "2 Tests of the command"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Read the tutorial.** [Build it yourself](../build/tut-02.qmd) is the other way to read this part.
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 1 package` and `Checked 1 package`, because `.venv` already matches `uv.lock`.
+
+We cannot tell whether `babykev` still works after a change, unless we run it by hand and read what it prints. Tests
+run it for us. pytest finds the tests and runs them, and a recipe `just test` runs pytest. The first tests are of the
+command, the only code that babykev has. Last, coverage shows which lines the tests run.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/7ad3a06605fadc9f34b5e2d8180145a3e53389a9). [The code after it](https://github.com/rahuldave/babykev/tree/4640589d80e4f224a4b2c1fd9567e952f564f102).
+
+## 2.1 uv installs every dependency group {#tut-02.1}
+
+The tests need pytest, and a package of babykev does not. A person who installs babykev should not get pytest. So the
+tools of the project go in dependency groups. A dependency group is a list of packages in `pyproject.toml` that the
+project needs while we work on it. A user of the package never gets them. The test tools go in a group `test`, and
+later the linters and the docs tools get groups of their own.
+
+uv installs only the group `dev` by default. The setting `default-groups = "all"` makes `uv sync` and `uv run`
+install every group. So each later `uv add --group` needs no other change to `pyproject.toml`. A patch adds the
+table `[tool.uv]` with this setting.
+
+A patch to [`pyproject.toml`](#tut-02.1-pyproject.toml-5d07e7).
+
+At the end of `pyproject.toml`, the new table `[tool.uv]` has the line `default-groups = "all"`, with a comment above
+it.
+
+The setting changes which groups uv installs, and not which versions. So `uv.lock` still matches `pyproject.toml`.
+
+```bash
+uv lock --check
+```
+
+uv prints `Resolved 1 package`, and no error. The project has no groups yet, so the setting changes nothing until a
+later move adds one.
+
+### What changed {#tut-02.1-what-changed-182c57}
+
+- <a id="tut-02.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the table `[tool.uv]`, so uv installs every dependency group. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/ad616a5cc1fcdf5b7c1672b79d0d2b267b72bd59/pyproject.toml).
+  - look at `default-groups = "all"`
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -15,3 +15,7 @@ babykev = "babykev.cli:main"
+ [build-system]
+ requires = ["uv_build>=0.12.13,<0.13.0"]
+ build-backend = "uv_build"
++
++[tool.uv]
++# uv sync and uv run install every dependency group, not only dev
++default-groups = "all"
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ad616a5cc1fcdf5b7c1672b79d0d2b267b72bd59). [The code after it](https://github.com/rahuldave/babykev/tree/ad616a5cc1fcdf5b7c1672b79d0d2b267b72bd59).
+
+## 2.2 Pytest, in the group test {#tut-02.2}
+
+Nothing runs tests yet. pytest finds the tests and runs them. It goes into the group `test`.
+
+This change came from running `uv add --group test pytest`.
+
+`uv add --group test` writes the group `test` in `pyproject.toml`, under `[dependency-groups]`. It prints
+`Resolved 7 packages`, and lists pytest and the four packages it needs.
+
+At the end of `pyproject.toml`, the new table `[dependency-groups]` has the group `test`, with the line
+`"pytest>=9.1.1",`. `uv.lock` has pytest and the four packages it needs.
+
+```bash
+uv run pytest
+```
+
+`uv run pytest` looks for tests and finds none. It prints `collected 0 items` and `no tests ran`, and ends with exit
+code 5. pytest uses exit code 5 to say that it found no test.
+
+### What changed {#tut-02.2-what-changed-182c57}
+
+- <a id="tut-02.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the group `test`, with pytest. 5 lines added. It comes from `uv add --group test pytest`. [The file](https://github.com/rahuldave/babykev/blob/966956d738b58505e23586af60f05cd5daceb12f/pyproject.toml).
+  - look at `"pytest>=9.1.1",`
+- <a id="tut-02.2-uv.lock-8356d8"></a>`uv.lock`: pytest and the four packages it needs. 71 lines added. It comes from `uv add --group test pytest`. [The file](https://github.com/rahuldave/babykev/blob/966956d738b58505e23586af60f05cd5daceb12f/uv.lock).
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -19,3 +19,8 @@ build-backend = "uv_build"
+ [tool.uv]
+ # uv sync and uv run install every dependency group, not only dev
+ default-groups = "all"
++
++[dependency-groups]
++test = [
++    "pytest>=9.1.1",
++]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/966956d738b58505e23586af60f05cd5daceb12f). [The code after it](https://github.com/rahuldave/babykev/tree/966956d738b58505e23586af60f05cd5daceb12f).
+
+## 2.3 The recipe test {#tut-02.3}
+
+The command that runs the tests is `uv run pytest`, and every task of the project has a recipe. A recipe `test` gives
+the command a short name.
+
+A patch to [`justfile`](#tut-02.3-justfile-424f0b).
+
+At the end of `justfile`, the recipe `test` runs `uv run pytest "$@"`. It sits under a new heading, `quality`.
+
+`test` gives every word after its name to pytest, as `"$@"`. So `just test -k help` runs `uv run pytest -k help`. The
+word `help` alone prints the line of the recipe. pytest prints what failed, so `[no-exit-message]` stops `just` from
+adding a line of its own when pytest ends with an error.
+
+```bash
+just --show test
+just test
+just help test
+```
+
+`just --show test` prints the recipe. `just test` runs pytest, which finds no test, prints `no tests ran` and ends with
+exit code 5. `just` prints no line of its own about the error. `just help test` prints the line of the recipe.
+
+### What changed {#tut-02.3-what-changed-182c57}
+
+- <a id="tut-02.3-justfile-424f0b"></a>`justfile`: the recipe `test`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/b0840709e371a548d4b922c57c679ba040dd2c1a/justfile).
+  - look at `test *args:`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -24,3 +24,9 @@ help *verb:
+ [group('setup')]
+ setup *args:
+     @{{ if args == "help" { "just help setup" } else { "uv sync --locked" } }}
++
++# Run the tests. Extra words go to pytest: just test -k render
++[group('quality')]
++[no-exit-message]
++test *args:
++    @{{ if args == "help" { "just help test" } else { 'uv run pytest "$@"' } }}
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b0840709e371a548d4b922c57c679ba040dd2c1a). [The code after it](https://github.com/rahuldave/babykev/tree/b0840709e371a548d4b922c57c679ba040dd2c1a).
+
+## 2.4 A test of the help {#tut-02.4}
+
+pytest runs, but there is nothing to run. The command is the only code of babykev, so its tests come first. A test is
+a function whose name starts with `test_`, in a file whose name starts with `test_`. A test passes when none of its
+`assert` lines fails.
+
+The first test runs `babykev` with no word, then with `help`, `--help` and `-h`, and checks that each prints the help.
+
+A patch to [`tests/unit/test_cli.py`](#tut-02.4-tests-unit-test_cli.py-44d4a0).
+
+The new file `tests/unit/test_cli.py` has the helper `run`, and the test `test_help_is_printed_for_help_and_for_no_words`.
+
+`run` sets `sys.argv`, the words of the command line, and calls `main`, as if `babykev` had been typed at a terminal.
+`monkeypatch` and `capsys` are fixtures of pytest. A test names a fixture as an argument, and pytest passes it in.
+`monkeypatch.setattr` changes `sys.argv` for this test alone, and puts it back after the test. `capsys` catches what
+the program prints. `@pytest.mark.parametrize` runs the test once for each of its four values.
+
+```bash
+just test
+```
+
+`just test` prints `collected 4 items`, then `4 passed`. One function makes four tests.
+
+### What changed {#tut-02.4-what-changed-182c57}
+
+- <a id="tut-02.4-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: one test, for four ways of asking for help. New, 18 lines. [The file](https://github.com/rahuldave/babykev/blob/72678bd1d656f5bc6e44f2d65b44a1e18b024661/tests/unit/test_cli.py).
+  - look at `@pytest.mark.parametrize("words", [(), ("help",), ("--help",), ("-h",)])`
+
+<details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
+
+```diff
+@@ -0,0 +1,18 @@
++"""Unit tests for the `babykev` command: `help` prints the help, any other word is refused."""
++
++import pytest
++
++from babykev.cli import HELP, main
++
++
++def run(monkeypatch, *words):
++    """Run `babykev` with these words as its command line."""
++    monkeypatch.setattr("sys.argv", ["babykev", *words])
++    main()
++
++
++@pytest.mark.parametrize("words", [(), ("help",), ("--help",), ("-h",)])
++def test_help_is_printed_for_help_and_for_no_words(monkeypatch, capsys, words):
++    """`babykev`, `babykev help`, `--help` and `-h` all print the help text, and nothing else."""
++    run(monkeypatch, *words)
++    assert capsys.readouterr().out == HELP
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/72678bd1d656f5bc6e44f2d65b44a1e18b024661). [The code after it](https://github.com/rahuldave/babykev/tree/72678bd1d656f5bc6e44f2d65b44a1e18b024661).
+
+## 2.5 A test of an unknown command {#tut-02.5}
+
+The tests check the help, and nothing checks what `babykev` does with a word it does not know. A second test runs
+`babykev train`. It checks that the command ends with exit code 2, and that the message names the word and points to
+the help.
+
+A patch to [`tests/unit/test_cli.py`](#tut-02.5-tests-unit-test_cli.py-44d4a0).
+
+At the end of `tests/unit/test_cli.py`, the new test runs `train` inside `pytest.raises(SystemExit)`.
+
+`pytest.raises(SystemExit)` passes only when the code inside it ends the program. The test then checks the exit code,
+2, and the two parts of the message.
+
+```bash
+just test -k unknown
+```
+
+`-k unknown` runs the tests with `unknown` in their name. pytest prints `5 items / 4 deselected / 1 selected` and
+`1 passed`.
+
+### What changed {#tut-02.5-what-changed-182c57}
+
+- <a id="tut-02.5-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: the test of a word that is not a command. 10 lines added. [The file](https://github.com/rahuldave/babykev/blob/9a4100fd1962921bc11cf9f4b22c5326c7a51807/tests/unit/test_cli.py).
+  - look at `assert exit_info.value.code == 2`
+
+<details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
+
+```diff
+@@ -16,3 +16,13 @@ def test_help_is_printed_for_help_and_for_no_words(monkeypatch, capsys, words):
+     """`babykev`, `babykev help`, `--help` and `-h` all print the help text, and nothing else."""
+     run(monkeypatch, *words)
+     assert capsys.readouterr().out == HELP
++
++
++def test_an_unknown_command_is_refused_with_exit_code_2(monkeypatch, capsys):
++    """A word that is not a command is named, the help is pointed to, and the exit code is 2."""
++    with pytest.raises(SystemExit) as exit_info:
++        run(monkeypatch, "train")
++    assert exit_info.value.code == 2
++    err = capsys.readouterr().err
++    assert "no command named 'train'" in err
++    assert "babykev help" in err
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9a4100fd1962921bc11cf9f4b22c5326c7a51807). [The code after it](https://github.com/rahuldave/babykev/tree/9a4100fd1962921bc11cf9f4b22c5326c7a51807).
+
+## 2.6 pytest looks for tests in tests/ {#tut-02.6}
+
+pytest looks for tests in every folder of the project. The tests are all in `tests/`, and a setting says so.
+`testpaths` in the table `[tool.pytest.ini_options]` names the folder.
+
+A patch to [`pyproject.toml`](#tut-02.6-pyproject.toml-5d07e7).
+
+At the end of `pyproject.toml`, the new table `[tool.pytest.ini_options]` has `testpaths = ["tests"]`.
+
+```bash
+just test
+```
+
+`just test` prints `testpaths: tests` and `5 passed`.
+
+### What changed {#tut-02.6-what-changed-182c57}
+
+- <a id="tut-02.6-pyproject.toml-5d07e7"></a>`pyproject.toml`: the settings of pytest. pytest looks for tests in `tests/` alone. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/348290a934c2bd1da0a38f4c3336f66758f8523c/pyproject.toml).
+  - look at `testpaths = ["tests"]`
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -24,3 +24,6 @@ default-groups = "all"
+ test = [
+     "pytest>=9.1.1",
+ ]
++
++[tool.pytest.ini_options]
++testpaths = ["tests"]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/348290a934c2bd1da0a38f4c3336f66758f8523c). [The code after it](https://github.com/rahuldave/babykev/tree/348290a934c2bd1da0a38f4c3336f66758f8523c).
+
+## 2.7 Pytest-cov, in the group test {#tut-02.7}
+
+The tests pass, but nothing says which lines of babykev they run. Coverage measures that. pytest-cov is a plugin of
+pytest that measures it, when pytest gets the option `--cov`. It goes in the group `test`.
+
+This change came from running `uv add --group test pytest-cov`.
+
+`uv add` puts pytest-cov in the group `test`. It prints `Resolved 9 packages`, and installs `coverage` and
+`pytest-cov`.
+
+In `pyproject.toml`, the group `test` now has `"pytest-cov>=7.1.0",` under pytest. `uv.lock` has pytest-cov 7.1.0, and
+coverage 7.16.2, which it needs.
+
+```bash
+just test --cov=babykev
+```
+
+`just test` prints `5 passed`, and a table under the tests. `cli.py` has 8 statements, and the tests run all of them,
+100%. pytest-cov writes its data into `.coverage`, and `.gitignore` already names it.
+
+### What changed {#tut-02.7-what-changed-182c57}
+
+- <a id="tut-02.7-pyproject.toml-5d07e7"></a>`pyproject.toml`: pytest-cov in the group `test`. 1 line added. It comes from `uv add --group test pytest-cov`. [The file](https://github.com/rahuldave/babykev/blob/326e444b726a914d5f9d0138ca658ed89a979dcd/pyproject.toml).
+  - look at `"pytest-cov>=7.1.0",`
+- <a id="tut-02.7-uv.lock-8356d8"></a>`uv.lock`: coverage and pytest-cov. 103 lines added, 1 removed. It comes from `uv add --group test pytest-cov`. [The file](https://github.com/rahuldave/babykev/blob/326e444b726a914d5f9d0138ca658ed89a979dcd/uv.lock).
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -23,6 +23,7 @@ default-groups = "all"
+ [dependency-groups]
+ test = [
+     "pytest>=9.1.1",
++    "pytest-cov>=7.1.0",
+ ]
+ 
+ [tool.pytest.ini_options]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/326e444b726a914d5f9d0138ca658ed89a979dcd). [The code after it](https://github.com/rahuldave/babykev/tree/326e444b726a914d5f9d0138ca658ed89a979dcd).
+
+## 2.8 Coverage on every run of the tests {#tut-02.8}
+
+A person can forget to type `--cov=babykev`. `addopts` gives pytest options on every run. `--cov=babykev` measures
+the package babykev, and `--cov-report=term-missing` adds a column of the lines that no test ran.
+
+A patch to [`pyproject.toml`](#tut-02.8-pyproject.toml-5d07e7).
+
+At the end of `pyproject.toml`, `addopts` stands under `testpaths`, with a comment above it.
+
+```bash
+just test
+```
+
+`just test` prints the table with a column `Missing`, empty, because the tests run every line of `cli.py`.
+
+### What changed {#tut-02.8-what-changed-182c57}
+
+- <a id="tut-02.8-pyproject.toml-5d07e7"></a>`pyproject.toml`: the options of every run. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/f44cc53a91bc7db84283d6a9ded16d9a7bbedf90/pyproject.toml).
+  - look at `addopts = "--cov=babykev --cov-report=term-missing"`
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -28,3 +28,5 @@ test = [
+ 
+ [tool.pytest.ini_options]
+ testpaths = ["tests"]
++# Every run measures how much of src/babykev the tests run, and lists the lines they do not
++addopts = "--cov=babykev --cov-report=term-missing"
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/f44cc53a91bc7db84283d6a9ded16d9a7bbedf90). [The code after it](https://github.com/rahuldave/babykev/tree/f44cc53a91bc7db84283d6a9ded16d9a7bbedf90).
+
+## 2.9 The README says to run just test {#tut-02.9}
+
+"Start" in the README does not name `just test`. Its paragraph now says to run it, and that a recipe gives its extra
+words to the tool behind it.
+
+A patch to [`README.md`](#tut-02.9-README.md-8ec9a0).
+
+In `README.md`, "Start" now says to run `just test`, and gives `just test -k help` as an example.
+
+```bash
+just test -k help
+```
+
+pytest runs the 4 tests with `help` in their name, and prints `4 passed, 1 deselected`.
+
+### What changed {#tut-02.9-what-changed-182c57}
+
+- <a id="tut-02.9-README.md-8ec9a0"></a>`README.md`: `just test` in "Start". 3 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/ab192e5bd8ff3e3b8ad6c0ae5e17be31b7790557/README.md).
+  - look at `help of the program itself. A recipe gives its extra words to the tool behind it. For example,`
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+```diff
+@@ -54,8 +54,9 @@ Install two tools on your machine, uv and just. The project installs everything
+ ## Start
+ 
+ Run `just setup` first. It installs Python and every dependency into `.venv`, exactly as `uv.lock` says.
+-Then `just` lists the tasks, `just help VERB` explains one, and `uv run babykev help` is the help of the
+-program itself.
++Then run `just test`. `just` lists the tasks, `just help VERB` explains one, and `uv run babykev help` is the
++help of the program itself. A recipe gives its extra words to the tool behind it. For example,
++`just test -k help` runs only the tests with `help` in their name.
+ 
+ ## What is here
+ 
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ab192e5bd8ff3e3b8ad6c0ae5e17be31b7790557). [The code after it](https://github.com/rahuldave/babykev/tree/ab192e5bd8ff3e3b8ad6c0ae5e17be31b7790557).
+
+## 2.10 The README names the tests {#tut-02.10}
+
+The table of "What is here" has no row for the tests. A row for `tests/unit/` comes in. The row of `pyproject.toml`
+now says that it has the settings of the tools too.
+
+A patch to [`README.md`](#tut-02.10-README.md-8ec9a0).
+
+In the table of `README.md`, the new row names `tests/unit/` and `test_cli.py`.
+
+```bash
+just setup
+just test
+```
+
+`just setup` prints `Resolved 9 packages` and `Checked 8 packages`. One of the 9, colorama, is for Windows alone, so
+uv installs 8 here. `just test` prints `5 passed`.
+
+### What changed {#tut-02.10-what-changed-182c57}
+
+- <a id="tut-02.10-README.md-8ec9a0"></a>`README.md`: the row of the tests. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/4640589d80e4f224a4b2c1fd9567e952f564f102/README.md).
+  - look at ``| `tests/unit/` | The unit tests. `test_cli.py` tests the command `babykev` |``
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+```diff
+@@ -62,8 +62,9 @@ help of the program itself. A recipe gives its extra words to the tool behind it
+ 
+ | Path | What it is |
+ |---|---|
+-| `pyproject.toml`, `uv.lock` | The project: its name, its Python, its dependencies, and the exact versions to install |
++| `pyproject.toml`, `uv.lock` | The project: its name, its Python, its dependencies, the settings of its tools, and the exact versions to install |
+ | `src/babykev/` | The code. `cli.py` is the command `babykev` |
++| `tests/unit/` | The unit tests. `test_cli.py` tests the command `babykev` |
+ | `justfile` | Every task of the project, one recipe each. `just help` explains them |
+ | `README.md` | This file |
+ | `LICENSE`, `NOTICE` | The licence, and the credit to kev |
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/4640589d80e4f224a4b2c1fd9567e952f564f102). [The code after it](https://github.com/rahuldave/babykev/tree/4640589d80e4f224a4b2c1fd9567e952f564f102).

@@ -194,3 +194,19 @@ src/babykev/api.py           71      1    99%   90
 - The fix added line 90, the answer for a scale of one level. No test runs it
 - A request cannot have such a scale, because a `Score` needs two levels at least
 - So only a test that calls `score_confidence` itself can run the line. The next move adds that test
+
+---
+
+## From a request to the model, and back
+
+```
+request ──to_record──▶ record: the state as text, and the options of each question
+                                       │
+                                     model
+                                       │
+answers ◀──to_answers── probabilities: one list for each question
+```
+
+- `render` writes the JSON of the state as text, and `option_text` writes each option
+- A noul is two options, `no` then `yes`. A choice is one option per criterion, and a score one per level
+- `to_answers` gives a noul the probability of yes, a choice its winner, and a score its expected level

@@ -1,0 +1,676 @@
+---
+title: "1 The project"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Read the tutorial.** [Build it yourself](../build/tut-01.qmd) is the other way to read this part.
+
+babykev must be a Python project before it can hold code. uv makes the project. Then babykev gets its words, its
+command, and a justfile that names the tasks of the project.
+
+There is no justfile until the ninth move, so do not run `just` in the project before then. `just` looks for a
+justfile in the folder, and then in the folders above it. In the walk repository, the folder above the project has a
+justfile of its own. So an early `just setup` runs that recipe, and not one of babykev.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/70ac5b0a0a1d927dfc4da6f8b7b92344917e4a33). [The code after it](https://github.com/rahuldave/babykev/tree/7ad3a06605fadc9f34b5e2d8180145a3e53389a9).
+
+## 1.1 uv makes the project {#tut-01.1}
+
+The folder has words and a licence, but nothing that Python can build or run. `uv init` makes the files of a Python
+project. `--package` makes a package in `src/babykev/`, with a command that runs its function `main`.
+`--name babykev` names the project, and `--python 3.13` sets the version of Python.
+
+This change came from running `uv init --package --name babykev --python 3.13`.
+
+`uv init` leaves the README alone, because the project has one.
+
+The command made three files. `pyproject.toml` names the project, its Python and its command.
+`src/babykev/__init__.py` holds `main`, which prints a greeting. `.python-version` says `3.13`.
+
+```bash
+cat pyproject.toml
+```
+
+`[project.scripts]` makes a command, `babykev`, and names the function that it runs, `main` of the package
+`babykev`. `[build-system]` names `uv_build`, the tool that builds the package. `dependencies` is an empty list.
+
+`uv init` also writes your version of uv into the line `requires` of `[build-system]`. So your `pyproject.toml` can
+differ there. The check compares `pyproject.toml` by the names of its packages, without the versions, so your files
+still match.
+
+```bash
+git status --short
+```
+
+`git status --short` prints nothing, because git already holds the new files.
+
+### What changed {#tut-01.1-what-changed-182c57}
+
+- <a id="tut-01.1-.python-version-7696e9"></a>`.python-version`: `3.13`, the version of Python that uv installs for the project. New, 1 line. It comes from `uv init --package --name babykev --python 3.13`. [The file](https://github.com/rahuldave/babykev/blob/eac75e0becc78c9a872e734ea715ac3903947844/.python-version).
+- <a id="tut-01.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: `[project.scripts]` makes a command `babykev` that runs `main` of the package `babykev`. `[build-system]` names `uv_build`, the tool that builds the package. New, 14 lines. It comes from `uv init --package --name babykev --python 3.13`. [The file](https://github.com/rahuldave/babykev/blob/eac75e0becc78c9a872e734ea715ac3903947844/pyproject.toml).
+  - look at `babykev = "babykev:main"`
+- <a id="tut-01.1-src-babykev-__init__.py-a40393"></a>`src/babykev/__init__.py`: the function that the command runs. It prints a greeting. New, 2 lines. It comes from `uv init --package --name babykev --python 3.13`. [The file](https://github.com/rahuldave/babykev/blob/eac75e0becc78c9a872e734ea715ac3903947844/src/babykev/__init__.py).
+  - look at `print("Hello from babykev!")`
+
+<details><summary>The diff of <code>.python-version</code></summary>
+
+```diff
+@@ -0,0 +1 @@
++3.13
+```
+
+</details>
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -0,0 +1,14 @@
++[project]
++name = "babykev"
++version = "0.1.0"
++description = "Add your description here"
++readme = "README.md"
++requires-python = ">=3.13"
++dependencies = []
++
++[project.scripts]
++babykev = "babykev:main"
++
++[build-system]
++requires = ["uv_build>=0.12.13,<0.13.0"]
++build-backend = "uv_build"
+```
+
+</details>
+
+<details><summary>The diff of <code>src/babykev/__init__.py</code></summary>
+
+```diff
+@@ -0,0 +1,2 @@
++def main() -> None:
++    print("Hello from babykev!")
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/eac75e0becc78c9a872e734ea715ac3903947844). [The code after it](https://github.com/rahuldave/babykev/tree/eac75e0becc78c9a872e734ea715ac3903947844).
+
+## 1.2 uv lock writes the lockfile {#tut-01.2}
+
+Two machines can install different versions of the same package, and the project then behaves differently on each.
+`uv lock` writes `uv.lock`, the exact versions of every package that the project needs. The project needs no package
+yet, so `uv.lock` lists babykev alone. `uv lock` prints the Python that it found, and `Resolved 1 package`.
+
+This change came from running `uv lock`.
+
+The new file `uv.lock` has one package, babykev, from this folder.
+
+```bash
+uv run babykev
+```
+
+`uv run` makes `.venv`, the environment of the project. It builds babykev, installs it into `.venv`, and runs the
+command. It prints `Using CPython 3.13.3`, `Creating virtual environment at: .venv`, `Building babykev`,
+`Built babykev` and `Installed 1 package`. Then comes the greeting, `Hello from babykev!`.
+
+The version of Python on your machine can differ. If you ran a later part before, `.venv` is there already. `uv run`
+then changes the packages of `.venv` to match, and does not print `Creating virtual environment`.
+
+### What changed {#tut-01.2-what-changed-182c57}
+
+- <a id="tut-01.2-uv.lock-8356d8"></a>`uv.lock`: babykev itself, installed from this folder. `editable` means that a change to the code shows at the next run, with no new install. New, 8 lines. It comes from `uv lock`. [The file](https://github.com/rahuldave/babykev/blob/489f27fad816149652a8d608b162fa98c37563f5/uv.lock).
+  - look at `source = { editable = "." }`
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/489f27fad816149652a8d608b162fa98c37563f5). [The code after it](https://github.com/rahuldave/babykev/tree/489f27fad816149652a8d608b162fa98c37563f5).
+
+## 1.3 The description of babykev {#tut-01.3}
+
+`pyproject.toml` still has the words of uv. Its description is a placeholder, `Add your description here`. The patch
+puts in what babykev is.
+
+A patch to [`pyproject.toml`](#tut-01.3-pyproject.toml-5d07e7).
+
+In `pyproject.toml`, the line `description` now says what babykev is.
+
+```bash
+grep -n description pyproject.toml
+```
+
+`grep` prints line 4, the new description.
+
+### What changed {#tut-01.3-what-changed-182c57}
+
+- <a id="tut-01.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: the description. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/0497c0dc9d3772df47e79361aa4165e5de8e227d/pyproject.toml).
+  - look at `description = "A small decision model: one state, typed questions, a probability for every answer"`
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -1,7 +1,7 @@
+ [project]
+ name = "babykev"
+ version = "0.1.0"
+-description = "Add your description here"
++description = "A small decision model: one state, typed questions, a probability for every answer"
+ readme = "README.md"
+ requires-python = ">=3.13"
+ dependencies = []
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0497c0dc9d3772df47e79361aa4165e5de8e227d). [The code after it](https://github.com/rahuldave/babykev/tree/0497c0dc9d3772df47e79361aa4165e5de8e227d).
+
+## 1.4 The licence of babykev {#tut-01.4}
+
+A package says under which licence others may use it. babykev's licence is kev's, the Apache License 2.0.
+`license` names it, and `license-files` names the two files that a package of babykev carries with it.
+
+A patch to [`pyproject.toml`](#tut-01.4-pyproject.toml-5d07e7).
+
+In `pyproject.toml`, `license` and `license-files` now stand under `readme`.
+
+```bash
+grep -n license pyproject.toml
+```
+
+`grep` prints lines 6 and 7.
+
+### What changed {#tut-01.4-what-changed-182c57}
+
+- <a id="tut-01.4-pyproject.toml-5d07e7"></a>`pyproject.toml`: the licence, and the files a package carries. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/414874463b887dedf65c5c74caeac8a064b0e876/pyproject.toml).
+  - look at `license-files = ["LICENSE", "NOTICE"]`
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -3,6 +3,8 @@ name = "babykev"
+ version = "0.1.0"
+ description = "A small decision model: one state, typed questions, a probability for every answer"
+ readme = "README.md"
++license = "Apache-2.0"
++license-files = ["LICENSE", "NOTICE"]
+ requires-python = ">=3.13"
+ dependencies = []
+ 
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/414874463b887dedf65c5c74caeac8a064b0e876). [The code after it](https://github.com/rahuldave/babykev/tree/414874463b887dedf65c5c74caeac8a064b0e876).
+
+## 1.5 The author of babykev {#tut-01.5}
+
+A package names who wrote it. `authors` names Rahul Dave.
+
+A patch to [`pyproject.toml`](#tut-01.5-pyproject.toml-5d07e7).
+
+In `pyproject.toml`, `authors` now stands under `license-files`.
+
+```bash
+uv lock --check
+```
+
+`uv lock --check` says whether `uv.lock` still matches `pyproject.toml`. It prints `Resolved 1 package`, and ends with
+exit code 0. The words of the three moves change no dependency, so `uv.lock` stays as it was.
+
+### What changed {#tut-01.5-what-changed-182c57}
+
+- <a id="tut-01.5-pyproject.toml-5d07e7"></a>`pyproject.toml`: the author. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/7f38877e597f5404208fdca2eabb176077d95a8e/pyproject.toml).
+  - look at `authors = [{ name = "Rahul Dave" }]`
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -5,6 +5,7 @@ description = "A small decision model: one state, typed questions, a probability
+ readme = "README.md"
+ license = "Apache-2.0"
+ license-files = ["LICENSE", "NOTICE"]
++authors = [{ name = "Rahul Dave" }]
+ requires-python = ">=3.13"
+ dependencies = []
+ 
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7f38877e597f5404208fdca2eabb176077d95a8e). [The code after it](https://github.com/rahuldave/babykev/tree/7f38877e597f5404208fdca2eabb176077d95a8e).
+
+## 1.6 cli.py, the command with help {#tut-01.6}
+
+`babykev` only prints the greeting of uv. A command should say what it can do, and refuse a word it does not know. The
+command gets a file of its own, `src/babykev/cli.py`. `main` there reads the words after `babykev`. With no word, or
+with `help`, `--help` or `-h`, it prints `HELP`. Any other word ends with a message and exit code 2.
+
+A patch to [`src/babykev/cli.py`](#tut-01.6-src-babykev-cli.py-a9e184).
+
+The new file `src/babykev/cli.py` holds `HELP`, the text of the help, and `main` under it. The line
+`raise SystemExit(2)` ends the command on a word it does not know.
+
+Nothing runs the new `main` yet. Python can call it.
+
+```bash
+uv run python -c "from babykev.cli import main; main()"
+uv run babykev
+```
+
+The first command prints the help. The second still prints `Hello from babykev!`, because the command still runs
+the `main` of `__init__.py`.
+
+### What changed {#tut-01.6-what-changed-182c57}
+
+- <a id="tut-01.6-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: `main` reads the words after `babykev`. A word other than `help`, `--help` or `-h` ends the command with exit code 2. New, 21 lines. [The file](https://github.com/rahuldave/babykev/blob/64a78cf48bc1b0f508dfd7b83c3a2b0572fb1912/src/babykev/cli.py).
+  - look at `raise SystemExit(2)`
+
+<details><summary>The diff of <code>src/babykev/cli.py</code></summary>
+
+```diff
+@@ -0,0 +1,21 @@
++"""The babykev command. `babykev help` says what it can do; every command arrives here."""
++
++import sys
++
++HELP = """\
++babykev: a small decision model. Context, typed questions, and a probability for every answer.
++
++usage: babykev COMMAND [FLAGS]
++       babykev help
++
++There are no commands yet.
++"""
++
++
++def main() -> None:
++    """Print the help, or refuse a command that does not exist yet."""
++    words = sys.argv[1:]
++    if words and words[0] not in ("help", "--help", "-h"):
++        print(f"babykev: no command named {words[0]!r}. Run `babykev help`.", file=sys.stderr)
++        raise SystemExit(2)
++    print(HELP, end="")
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/64a78cf48bc1b0f508dfd7b83c3a2b0572fb1912). [The code after it](https://github.com/rahuldave/babykev/tree/64a78cf48bc1b0f508dfd7b83c3a2b0572fb1912).
+
+## 1.7 The command babykev runs cli.py {#tut-01.7}
+
+The command still runs the greeting. One line of `pyproject.toml` points it at the new `main`.
+
+A patch to [`pyproject.toml`](#tut-01.7-pyproject.toml-5d07e7).
+
+In `pyproject.toml`, the command now runs `babykev.cli:main`.
+
+```bash
+uv run babykev help
+uv run babykev train
+```
+
+`pyproject.toml` changed, so `uv run` builds babykev again, and prints `Building babykev`. Then it prints the help.
+`babykev train` prints ``babykev: no command named 'train'. Run `babykev help`.`` and ends with exit code 2.
+
+### What changed {#tut-01.7-what-changed-182c57}
+
+- <a id="tut-01.7-pyproject.toml-5d07e7"></a>`pyproject.toml`: the command now runs `main` of the module `cli`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/292ddcc99a287378929f14e2082d40f0947a2880/pyproject.toml).
+  - look at `babykev = "babykev.cli:main"`
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -10,7 +10,7 @@ requires-python = ">=3.13"
+ dependencies = []
+ 
+ [project.scripts]
+-babykev = "babykev:main"
++babykev = "babykev.cli:main"
+ 
+ [build-system]
+ requires = ["uv_build>=0.12.13,<0.13.0"]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/292ddcc99a287378929f14e2082d40f0947a2880). [The code after it](https://github.com/rahuldave/babykev/tree/292ddcc99a287378929f14e2082d40f0947a2880).
+
+## 1.8 The greeting of uv goes {#tut-01.8}
+
+Nothing runs the `main` of `src/babykev/__init__.py` any more. Code that nothing runs only misleads a reader. The
+patch takes its two lines out, and leaves the file empty, with not even a blank line.
+
+A patch to [`src/babykev/__init__.py`](#tut-01.8-src-babykev-__init__.py-a40393).
+
+`src/babykev/__init__.py` is empty. Python still needs the file, because it makes `src/babykev` a package.
+
+```bash
+wc -c src/babykev/__init__.py
+uv run babykev
+```
+
+`wc -c` counts 0 bytes. `uv run babykev` prints the help, as before.
+
+### What changed {#tut-01.8-what-changed-182c57}
+
+- <a id="tut-01.8-src-babykev-__init__.py-a40393"></a>`src/babykev/__init__.py`: the greeting goes, and the file is empty. 0 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/e32c7ba9f7983fc03cc8d91411562b1eac1d38e9/src/babykev/__init__.py).
+
+<details><summary>The diff of <code>src/babykev/__init__.py</code></summary>
+
+```diff
+@@ -1,2 +0,0 @@
+-def main() -> None:
+-    print("Hello from babykev!")
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e32c7ba9f7983fc03cc8d91411562b1eac1d38e9). [The code after it](https://github.com/rahuldave/babykev/tree/e32c7ba9f7983fc03cc8d91411562b1eac1d38e9).
+
+## 1.9 A justfile with the recipe setup {#tut-01.9}
+
+The command that sets up the project is `uv sync --locked`, and nobody should have to remember it. A `justfile` names
+each task of the project once. `just` reads the file. Each task is a recipe, a name and then the commands to run,
+indented. We run the command of the first recipe by hand first.
+
+```bash
+uv sync --locked
+```
+
+`uv sync` makes `.venv` exactly as `uv.lock` says. `--locked` makes it refuse a `uv.lock` that no longer matches
+`pyproject.toml`. Here it prints `Resolved 1 package` and `Checked 1 package`, because `.venv` is already right.
+
+A patch to [`justfile`](#tut-01.9-justfile-424f0b).
+
+`justfile` is new, with two recipes. `default` lists the others, and `setup` runs `uv sync --locked`.
+
+`just` alone runs the first recipe, `default`, which lists the others. `[private]` keeps `default` out of the list.
+The comment above a recipe is its line in the list. `[group('setup')]` puts the recipe under a heading.
+
+```bash
+just --show setup
+just setup
+just
+```
+
+`just --show setup` prints the recipe. `just setup` prints the command, `uv sync --locked`, then runs it. `just` lists
+the one recipe, under `[setup]`.
+
+### What changed {#tut-01.9-what-changed-182c57}
+
+- <a id="tut-01.9-justfile-424f0b"></a>`justfile`: the recipe `setup` and its line. New, 10 lines. [The file](https://github.com/rahuldave/babykev/blob/e14dffa877a2d24a53d67d8dd3d54b17204885b1/justfile).
+  - look at `setup:`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -0,0 +1,10 @@
++# babykev: every task is a recipe here. `just` lists them.
++
++[private]
++default:
++    @just --list --unsorted
++
++# Install Python and every dependency into .venv, exactly as the lockfile says
++[group('setup')]
++setup:
++    uv sync --locked
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e14dffa877a2d24a53d67d8dd3d54b17204885b1). [The code after it](https://github.com/rahuldave/babykev/tree/e14dffa877a2d24a53d67d8dd3d54b17204885b1).
+
+## 1.10 The recipe help {#tut-01.10}
+
+`just` lists the recipes, but nothing explains one of them. A recipe `help` does. `just help setup` prints the line of
+the recipe `setup`, and `just help` alone prints the list. `help` reads the name of a recipe as `"$1"`. So
+`set positional-arguments` gives each word after the name of a recipe to its commands whole.
+
+A patch to [`justfile`](#tut-01.10-justfile-424f0b).
+
+In `justfile`, `set positional-arguments` now stands near the top, and the recipe `help` comes after `default`. The
+first line of the file now names `just help VERB`.
+
+`help` runs `just --show` for the recipe, and prints its first line without the `# `. For a recipe with a comment,
+that line is the comment.
+
+```bash
+just --show help
+just help setup
+just help
+```
+
+`just --show help` prints the recipe. `just help setup` prints
+`Install Python and every dependency into .venv, exactly as the lockfile says`. `just help` prints the list, now with
+`help` first.
+
+### What changed {#tut-01.10-what-changed-182c57}
+
+- <a id="tut-01.10-justfile-424f0b"></a>`justfile`: the recipe `help`. 12 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a55c90355687e4bf94dfad2277262548ba4ea682/justfile).
+  - look at `help *verb:`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -1,9 +1,20 @@
+-# babykev: every task is a recipe here. `just` lists them.
++# babykev: every task is a recipe here. `just` lists them; `just help VERB` explains one.
++
++# Each word after a recipe's name reaches its commands whole, as "$1", "$2" and so on; "$@" is all of them
++set positional-arguments
+ 
+ [private]
+ default:
+     @just --list --unsorted
+ 
++# Explain a verb: its line. Alone, the list
++[no-exit-message]
++help *verb:
++    #!/usr/bin/env sh
++    if [ "$#" -eq 0 ]; then just --list --unsorted; exit 0; fi
++    shown=$(just --show "$1") || exit 1
++    printf '%s\n' "$shown" | head -1 | sed 's/^# //'
++
+ # Install Python and every dependency into .venv, exactly as the lockfile says
+ [group('setup')]
+ setup:
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a55c90355687e4bf94dfad2277262548ba4ea682). [The code after it](https://github.com/rahuldave/babykev/tree/a55c90355687e4bf94dfad2277262548ba4ea682).
+
+## 1.11 setup answers help {#tut-01.11}
+
+A person who types `just setup help` gets `uv sync --locked`, and no help. The recipe `setup` now takes words, and
+answers the word `help` with `just help setup`. The `@` at the start of its line stops `just` from printing the
+command before it runs it.
+
+A patch to [`justfile`](#tut-01.11-justfile-424f0b).
+
+In `justfile`, `setup` takes `*args`. Its one line runs `just help setup` for the word `help`, and
+`uv sync --locked` for anything else.
+
+```bash
+just setup help
+just setup
+```
+
+`just setup help` prints the line of `setup`. `just setup` prints `Resolved 1 package` and `Checked 1 package`. It no
+longer prints `uv sync --locked` first, because of the `@`.
+
+### What changed {#tut-01.11-what-changed-182c57}
+
+- <a id="tut-01.11-justfile-424f0b"></a>`justfile`: `setup` answers `help`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/3016e7ee53854d719456c12a48c8c8e620614bde/justfile).
+  - look at `@{{ if args == "help" { "just help setup" } else { "uv sync --locked" } }}`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -17,5 +17,5 @@ help *verb:
+ 
+ # Install Python and every dependency into .venv, exactly as the lockfile says
+ [group('setup')]
+-setup:
+-    uv sync --locked
++setup *args:
++    @{{ if args == "help" { "just help setup" } else { "uv sync --locked" } }}
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3016e7ee53854d719456c12a48c8c8e620614bde). [The code after it](https://github.com/rahuldave/babykev/tree/3016e7ee53854d719456c12a48c8c8e620614bde).
+
+## 1.12 help gives the help of the program too {#tut-01.12}
+
+Later recipes run the program, as `uv run babykev VERB`. Their help should also show the help of the program. A
+variable, `program`, names the command once. `help` looks for `uv run {{ program }} VERB` in a recipe, and then runs
+the program's own help too.
+
+A patch to [`justfile`](#tut-01.12-justfile-424f0b).
+
+In `justfile`, `program := "babykev"` stands near the top. `help` now ends with an `if` that runs
+`uv run {{ program }} "$1" help`.
+
+`just` replaces each `{{ ... }}` in a recipe with its value. So the text `{{ program }}` cannot stand in a recipe as it
+is. `{{ "{{ program }}" }}` is a value in quotes, and `just` writes it as the text `{{ program }}`. No recipe runs the
+program yet, so the new branch waits for one.
+
+```bash
+just --evaluate program
+just help setup
+```
+
+`just --evaluate program` prints `babykev`. `just help setup` prints the line of `setup`, as before.
+
+### What changed {#tut-01.12-what-changed-182c57}
+
+- <a id="tut-01.12-justfile-424f0b"></a>`justfile`: the variable `program`, and the branch of `help` that runs the program's help. 6 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/9218f21a784277593cf6930e10389b04e41bf9d0/justfile).
+  - look at `program := "babykev"`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -1,5 +1,7 @@
+ # babykev: every task is a recipe here. `just` lists them; `just help VERB` explains one.
+ 
++program := "babykev"
++
+ # Each word after a recipe's name reaches its commands whole, as "$1", "$2" and so on; "$@" is all of them
+ set positional-arguments
+ 
+@@ -7,13 +9,16 @@ set positional-arguments
+ default:
+     @just --list --unsorted
+ 
+-# Explain a verb: its line. Alone, the list
++# Explain a verb: its line, and the program's flags where the program has them. Alone, the list
+ [no-exit-message]
+ help *verb:
+     #!/usr/bin/env sh
+     if [ "$#" -eq 0 ]; then just --list --unsorted; exit 0; fi
+     shown=$(just --show "$1") || exit 1
+     printf '%s\n' "$shown" | head -1 | sed 's/^# //'
++    if printf '%s\n' "$shown" | grep -qF '{{ "{{ program }}" }} '"$1"; then
++        uv run {{ program }} "$1" help
++    fi
+ 
+ # Install Python and every dependency into .venv, exactly as the lockfile says
+ [group('setup')]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9218f21a784277593cf6930e10389b04e41bf9d0). [The code after it](https://github.com/rahuldave/babykev/tree/9218f21a784277593cf6930e10389b04e41bf9d0).
+
+## 1.13 The README says how to start {#tut-01.13}
+
+A reader of the README cannot yet tell how to start. A section, "Start", says to run `just setup` first, and names
+`just`, `just help VERB` and the help of the program.
+
+A patch to [`README.md`](#tut-01.13-README.md-8ec9a0).
+
+In `README.md`, "Start" says to run `just setup` first, and then names `just`, `just help VERB` and
+`uv run babykev help`.
+
+```bash
+grep -n '^## ' README.md
+```
+
+`grep` prints the headings of the README, with "Start" among them.
+
+### What changed {#tut-01.13-what-changed-182c57}
+
+- <a id="tut-01.13-README.md-8ec9a0"></a>`README.md`: how to start. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/0d2e163cca5d3eeb9fc8f7223fddd8d7da735fde/README.md).
+  - look at ``Run `just setup` first. It installs Python and every dependency into `.venv`, exactly as `uv.lock` says.``
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+```diff
+@@ -51,6 +51,12 @@ Install two tools on your machine, uv and just. The project installs everything
+ | [uv](https://docs.astral.sh/uv/) | Python itself, the dependencies, and running the program |
+ | [just](https://just.systems/) | The tasks of the project. `just` lists them |
+ 
++## Start
++
++Run `just setup` first. It installs Python and every dependency into `.venv`, exactly as `uv.lock` says.
++Then `just` lists the tasks, `just help VERB` explains one, and `uv run babykev help` is the help of the
++program itself.
++
+ ## How the history is organised
+ 
+ The project is built in steps, on the branch `tutorial`. Each step has a tag, `tut-00`, `tut-01` and so
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0d2e163cca5d3eeb9fc8f7223fddd8d7da735fde). [The code after it](https://github.com/rahuldave/babykev/tree/0d2e163cca5d3eeb9fc8f7223fddd8d7da735fde).
+
+## 1.14 The README says what each file is {#tut-01.14}
+
+A reader still cannot tell what each file of the project is. A section, "What is here", has a table, with a row for
+each file.
+
+A patch to [`README.md`](#tut-01.14-README.md-8ec9a0).
+
+In `README.md`, "What is here" is a table of the files of the project, from `pyproject.toml` to `.gitignore`.
+
+```bash
+just setup
+uv run babykev help
+```
+
+Both commands of "Start" work. `just setup` prints `Resolved 1 package` and `Checked 1 package`, and
+`uv run babykev help` prints the help.
+
+### What changed {#tut-01.14-what-changed-182c57}
+
+- <a id="tut-01.14-README.md-8ec9a0"></a>`README.md`: a table of the files. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/7ad3a06605fadc9f34b5e2d8180145a3e53389a9/README.md).
+  - look at ``| `justfile` | Every task of the project, one recipe each. `just help` explains them |``
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+```diff
+@@ -57,6 +57,18 @@ Run `just setup` first. It installs Python and every dependency into `.venv`, ex
+ Then `just` lists the tasks, `just help VERB` explains one, and `uv run babykev help` is the help of the
+ program itself.
+ 
++## What is here
++
++| Path | What it is |
++|---|---|
++| `pyproject.toml`, `uv.lock` | The project: its name, its Python, its dependencies, and the exact versions to install |
++| `src/babykev/` | The code. `cli.py` is the command `babykev` |
++| `justfile` | Every task of the project, one recipe each. `just help` explains them |
++| `README.md` | This file |
++| `LICENSE`, `NOTICE` | The licence, and the credit to kev |
++| `.python-version` | The version of Python that the project uses |
++| `.gitignore` | The files that git does not track, for example `.venv` |
++
+ ## How the history is organised
+ 
+ The project is built in steps, on the branch `tutorial`. Each step has a tag, `tut-00`, `tut-01` and so
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7ad3a06605fadc9f34b5e2d8180145a3e53389a9). [The code after it](https://github.com/rahuldave/babykev/tree/7ad3a06605fadc9f34b5e2d8180145a3e53389a9).

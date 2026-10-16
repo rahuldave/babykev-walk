@@ -1,0 +1,659 @@
+---
+title: "4 What a request is"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Build it yourself.** [Read the tutorial](../read/tut-04.qmd) is the other way to read this part.
+
+If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
+
+```bash
+git rm -rq --cached --ignore-unmatch -- :/ && git restore --source a3fdba91adc1 --staged --worktree -- :/
+```
+
+```bash
+just setup
+```
+
+The contract says what a request is, and no test checks it. The tests of this part check the five sample requests
+against the contract. Then they check what the contract accepts and refuses, one rule at a time. They go in
+`tests/unit/test_api.py`, one test in each move.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/a3fdba91adc19206debd74d87fa107603433b202). [The code after it](https://github.com/rahuldave/babykev/tree/3fdf16e045d976c4351256b4d9ee60e36634d381).
+
+## 4.1 Every line of the sample data fits the contract {#tut-04.1}
+
+The first test of `api.py` checks each of the five sample requests against the contract. `SAMPLE_LINES` reads the
+file. `parametrize` gives the test each line in turn. `model_validate` checks the line, and raises an error if it does
+not fit.
+
+Apply the patch to [`tests/unit/test_api.py`](#tut-04.1-tests-unit-test_api.py-58d97c), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/a4769b1cc4a199776e33def2db2d82ffe728e240.diff | git apply --include=tests/unit/test_api.py
+```
+
+The patch makes the file. Read `SAMPLE_LINES`, then the test.
+
+```bash
+just test
+```
+
+`just test` prints `10 passed`, the 5 of the command and one for each sample line. `api.py` is at 77%. The missing
+lines are the functions that turn probabilities into answers.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check a4769b1cc4a1
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source a3fdba91adc1 --staged -- :/ && git restore --source a4769b1cc4a1 --staged --worktree -- :/
+```
+
+### What changed {#tut-04.1-what-changed-182c57}
+
+- <a id="tut-04.1-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the sample data, and the test that checks each line. New, 27 lines. [The file](https://github.com/rahuldave/babykev/blob/a4769b1cc4a199776e33def2db2d82ffe728e240/tests/unit/test_api.py).
+  - look at `def test_sample_line_fits_the_contract(line):`
+
+<details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -0,0 +1,27 @@
++"""Unit tests of the contract in `babykev.api`: validation, rendering, mappings, confidences."""
++
++import json
++from pathlib import Path
++
++import pytest
++
++from babykev.api import SystemOneRequest, to_record
++
++SAMPLE = Path(__file__).parents[2] / "data" / "cheese" / "sample.jsonl"
++SAMPLE_LINES = [json.loads(line) for line in SAMPLE.read_text(encoding="utf-8").splitlines()]
++
++MILKS = {"cow": None, "goat": None, "sheep": None, "mixed": "More than one kind of milk"}
++FIRMNESS = ["Soft", "Semi-soft", "Semi-hard", "Hard"]
++
++
++# The sample data
++
++
++@pytest.mark.parametrize("line", SAMPLE_LINES)
++def test_sample_line_fits_the_contract(line):
++    """Every line of the sample data is a valid request, with one record question per question."""
++    request = SystemOneRequest.model_validate(line)
++    record, meta = to_record(request)
++    assert record["state"]
++    assert [m["id"] for m in meta] == list(line["questions"])
++    assert all(len(q["options"]) >= 2 for q in record["questions"])
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a4769b1cc4a199776e33def2db2d82ffe728e240). [The code after it](https://github.com/rahuldave/babykev/tree/a4769b1cc4a199776e33def2db2d82ffe728e240).
+
+## 4.2 Every question of the sample data has a label {#tut-04.2}
+
+The tests will compare answers with labels, so each label must have the right kind. A label is a boolean for a noul,
+the name of an option for a choice, and the number of a level for a score.
+
+Apply the patch to [`tests/unit/test_api.py`](#tut-04.2-tests-unit-test_api.py-58d97c), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/41afeeabb4221287e3ae3f13f88f39a5639b27f5.diff | git apply --include=tests/unit/test_api.py
+```
+
+The patch adds the test at the end of the file.
+
+```bash
+just test -k label
+```
+
+pytest runs the new test once for each line, and prints `5 passed`.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 41afeeabb422
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source a4769b1cc4a1 --staged -- :/ && git restore --source 41afeeabb422 --staged --worktree -- :/
+```
+
+### What changed {#tut-04.2-what-changed-182c57}
+
+- <a id="tut-04.2-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the labels of the sample data. 13 lines added. [The file](https://github.com/rahuldave/babykev/blob/41afeeabb4221287e3ae3f13f88f39a5639b27f5/tests/unit/test_api.py).
+  - look at `def test_sample_line_has_a_usable_label_on_every_question(line):`
+
+<details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -25,3 +25,16 @@ def test_sample_line_fits_the_contract(line):
+     assert record["state"]
+     assert [m["id"] for m in meta] == list(line["questions"])
+     assert all(len(q["options"]) >= 2 for q in record["questions"])
++
++
++@pytest.mark.parametrize("line", SAMPLE_LINES)
++def test_sample_line_has_a_usable_label_on_every_question(line):
++    """A label is a boolean for noul, an option name for choice, and a level index for score."""
++    for question in line["questions"].values():
++        label = question["label"]
++        if question["type"] == "noul":
++            assert isinstance(label, bool)
++        elif question["type"] == "choice":
++            assert label in question["criteria"]
++        else:
++            assert label in range(len(question["criteria"]))
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/41afeeabb4221287e3ae3f13f88f39a5639b27f5). [The code after it](https://github.com/rahuldave/babykev/tree/41afeeabb4221287e3ae3f13f88f39a5639b27f5).
+
+## 4.3 A request holds one model for each type of question {#tut-04.3}
+
+The field `type` of a question decides which class of the contract it becomes. A helper, `cheese_request`, makes one
+request with a question of each type, for the tests to share. The test checks that the noul is a `Noul`, the choice a
+`Choice` and the score a `Score`.
+
+Apply the patch to [`tests/unit/test_api.py`](#tut-04.3-tests-unit-test_api.py-58d97c), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/897d387a14f58ae3d2bb67e425e426226b04642f.diff | git apply --include=tests/unit/test_api.py
+```
+
+The patch adds `MILKS`, `FIRMNESS` and `cheese_request` under `SAMPLE_LINES`. It adds the section `# Validation` and
+its first test at the end.
+
+```bash
+just test -k one_model
+```
+
+pytest prints `1 passed`.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 897d387a14f5
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 41afeeabb422 --staged -- :/ && git restore --source 897d387a14f5 --staged --worktree -- :/
+```
+
+### What changed {#tut-04.3-what-changed-182c57}
+
+- <a id="tut-04.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the helper, and the test of the three types. 32 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/897d387a14f58ae3d2bb67e425e426226b04642f/tests/unit/test_api.py).
+  - look at `def test_request_holds_one_model_per_question_type():`
+
+<details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -5,7 +5,13 @@ from pathlib import Path
+ 
+ import pytest
+ 
+-from babykev.api import SystemOneRequest, to_record
++from babykev.api import (
++    Choice,
++    Noul,
++    Score,
++    SystemOneRequest,
++    to_record,
++)
+ 
+ SAMPLE = Path(__file__).parents[2] / "data" / "cheese" / "sample.jsonl"
+ SAMPLE_LINES = [json.loads(line) for line in SAMPLE.read_text(encoding="utf-8").splitlines()]
+@@ -14,6 +20,20 @@ MILKS = {"cow": None, "goat": None, "sheep": None, "mixed": "More than one kind
+ FIRMNESS = ["Soft", "Semi-soft", "Semi-hard", "Hard"]
+ 
+ 
++def cheese_request():
++    """One request that asks a question of each type."""
++    return SystemOneRequest.model_validate(
++        {
++            "state": {"cheese": "Roquefort", "origin": "France"},
++            "questions": {
++                "blue": {"type": "noul", "instructions": "Is this a blue cheese?"},
++                "milk": {"type": "choice", "instructions": "Which milk?", "criteria": MILKS},
++                "firmness": {"type": "score", "instructions": "How firm?", "criteria": FIRMNESS},
++            },
++        }
++    )
++
++
+ # The sample data
+ 
+ 
+@@ -38,3 +58,14 @@ def test_sample_line_has_a_usable_label_on_every_question(line):
+             assert label in question["criteria"]
+         else:
+             assert label in range(len(question["criteria"]))
++
++
++# Validation
++
++
++def test_request_holds_one_model_per_question_type():
++    """The `type` field decides which model a question becomes."""
++    questions = cheese_request().questions
++    assert isinstance(questions["blue"], Noul)
++    assert isinstance(questions["milk"], Choice)
++    assert isinstance(questions["firmness"], Score)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/897d387a14f58ae3d2bb67e425e426226b04642f). [The code after it](https://github.com/rahuldave/babykev/tree/897d387a14f58ae3d2bb67e425e426226b04642f).
+
+## 4.4 A request without questions is refused {#tut-04.4}
+
+A request must ask at least one question. `Field(min_length=1)` on `questions` says so. The test checks that pydantic
+refuses a request with none.
+
+Apply the patch to [`tests/unit/test_api.py`](#tut-04.4-tests-unit-test_api.py-58d97c), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/20844ff36037001c1301da15bff6c65446aff65b.diff | git apply --include=tests/unit/test_api.py
+```
+
+The patch adds the test at the end of the file, and `ValidationError` to the imports.
+
+```bash
+just test -k without_questions
+```
+
+pytest prints `1 passed`.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 20844ff36037
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 897d387a14f5 --staged -- :/ && git restore --source 20844ff36037 --staged --worktree -- :/
+```
+
+### What changed {#tut-04.4-what-changed-182c57}
+
+- <a id="tut-04.4-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a request with no questions. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/20844ff36037001c1301da15bff6c65446aff65b/tests/unit/test_api.py).
+  - look at `def test_request_without_questions_is_rejected():`
+
+<details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -4,6 +4,7 @@ import json
+ from pathlib import Path
+ 
+ import pytest
++from pydantic import ValidationError
+ 
+ from babykev.api import (
+     Choice,
+@@ -69,3 +70,9 @@ def test_request_holds_one_model_per_question_type():
+     assert isinstance(questions["blue"], Noul)
+     assert isinstance(questions["milk"], Choice)
+     assert isinstance(questions["firmness"], Score)
++
++
++def test_request_without_questions_is_rejected():
++    """A request must ask at least one question."""
++    with pytest.raises(ValidationError):
++        SystemOneRequest.model_validate({"state": "Brie", "questions": {}})
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/20844ff36037001c1301da15bff6c65446aff65b). [The code after it](https://github.com/rahuldave/babykev/tree/20844ff36037001c1301da15bff6c65446aff65b).
+
+## 4.5 An unknown type of question is refused {#tut-04.5}
+
+Only noul, choice and score exist. The test gives a question the type `essay`, and expects a refusal.
+
+Apply the patch to [`tests/unit/test_api.py`](#tut-04.5-tests-unit-test_api.py-58d97c), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/344ca5af25f758538a8ebaca51a0a88dd6ccc333.diff | git apply --include=tests/unit/test_api.py
+```
+
+The patch adds the test at the end of the file.
+
+```bash
+just test -k unknown_question
+```
+
+pytest prints `1 passed`.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 344ca5af25f7
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 20844ff36037 --staged -- :/ && git restore --source 344ca5af25f7 --staged --worktree -- :/
+```
+
+### What changed {#tut-04.5-what-changed-182c57}
+
+- <a id="tut-04.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a type that does not exist. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/344ca5af25f758538a8ebaca51a0a88dd6ccc333/tests/unit/test_api.py).
+  - look at `question = {"type": "essay", "instructions": "Describe this cheese."}`
+
+<details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -76,3 +76,10 @@ def test_request_without_questions_is_rejected():
+     """A request must ask at least one question."""
+     with pytest.raises(ValidationError):
+         SystemOneRequest.model_validate({"state": "Brie", "questions": {}})
++
++
++def test_unknown_question_type_is_rejected():
++    """Only noul, choice and score exist."""
++    question = {"type": "essay", "instructions": "Describe this cheese."}
++    with pytest.raises(ValidationError):
++        SystemOneRequest.model_validate({"state": "Brie", "questions": {"q": question}})
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/344ca5af25f758538a8ebaca51a0a88dd6ccc333). [The code after it](https://github.com/rahuldave/babykev/tree/344ca5af25f758538a8ebaca51a0a88dd6ccc333).
+
+## 4.6 A noul needs no criteria {#tut-04.6}
+
+A question of yes or no may leave out what yes and no mean. The test makes a `Noul` with no criteria, and checks that
+its criteria are `None`.
+
+Apply the patch to [`tests/unit/test_api.py`](#tut-04.6-tests-unit-test_api.py-58d97c), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/5128d9cf9dea8e7c76de31d5d67d27e692cfafc0.diff | git apply --include=tests/unit/test_api.py
+```
+
+The patch adds the test at the end of the file.
+
+```bash
+just test -k noul_needs
+```
+
+pytest prints `1 passed`.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 5128d9cf9dea
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 344ca5af25f7 --staged -- :/ && git restore --source 5128d9cf9dea --staged --worktree -- :/
+```
+
+### What changed {#tut-04.6-what-changed-182c57}
+
+- <a id="tut-04.6-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a noul without criteria. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/5128d9cf9dea8e7c76de31d5d67d27e692cfafc0/tests/unit/test_api.py).
+  - look at `assert Noul(type="noul", instructions="Is it blue?").criteria is None`
+
+<details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -83,3 +83,8 @@ def test_unknown_question_type_is_rejected():
+     question = {"type": "essay", "instructions": "Describe this cheese."}
+     with pytest.raises(ValidationError):
+         SystemOneRequest.model_validate({"state": "Brie", "questions": {"q": question}})
++
++
++def test_noul_needs_no_criteria():
++    """A yes-or-no question may leave out what yes and no mean."""
++    assert Noul(type="noul", instructions="Is it blue?").criteria is None
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/5128d9cf9dea8e7c76de31d5d67d27e692cfafc0). [The code after it](https://github.com/rahuldave/babykev/tree/5128d9cf9dea8e7c76de31d5d67d27e692cfafc0).
+
+## 4.7 A choice without options is refused {#tut-04.7}
+
+A choice needs at least one option. The test gives a `Choice` empty criteria, and expects a refusal.
+
+Apply the patch to [`tests/unit/test_api.py`](#tut-04.7-tests-unit-test_api.py-58d97c), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/464e175952882fc67de86b90baaad51caf1a0801.diff | git apply --include=tests/unit/test_api.py
+```
+
+The patch adds the test at the end of the file.
+
+```bash
+just test -k choice_without
+```
+
+pytest prints `1 passed`.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 464e17595288
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 5128d9cf9dea --staged -- :/ && git restore --source 464e17595288 --staged --worktree -- :/
+```
+
+### What changed {#tut-04.7-what-changed-182c57}
+
+- <a id="tut-04.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a choice of nothing. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/464e175952882fc67de86b90baaad51caf1a0801/tests/unit/test_api.py).
+  - look at `def test_choice_without_options_is_rejected():`
+
+<details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -88,3 +88,9 @@ def test_unknown_question_type_is_rejected():
+ def test_noul_needs_no_criteria():
+     """A yes-or-no question may leave out what yes and no mean."""
+     assert Noul(type="noul", instructions="Is it blue?").criteria is None
++
++
++def test_choice_without_options_is_rejected():
++    """A choice needs at least one option."""
++    with pytest.raises(ValidationError):
++        Choice(type="choice", instructions="Which milk?", criteria={})
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/464e175952882fc67de86b90baaad51caf1a0801). [The code after it](https://github.com/rahuldave/babykev/tree/464e175952882fc67de86b90baaad51caf1a0801).
+
+## 4.8 A choice has at most MAX_OPTIONS options {#tut-04.8}
+
+`MAX_OPTIONS` is 255. The test makes a choice of exactly 255 options, which is valid, and one of 256, which is
+refused. A limit is tested on both of its sides.
+
+Apply the patch to [`tests/unit/test_api.py`](#tut-04.8-tests-unit-test_api.py-58d97c), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/9f07f3752d1e1c2622310d6fa556c40cac43be00.diff | git apply --include=tests/unit/test_api.py
+```
+
+The patch adds the test at the end of the file, and `MAX_OPTIONS` to the import from `babykev.api`.
+
+```bash
+just test -k largest
+```
+
+pytest prints `1 passed`.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 9f07f3752d1e
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 464e17595288 --staged -- :/ && git restore --source 9f07f3752d1e --staged --worktree -- :/
+```
+
+### What changed {#tut-04.8-what-changed-182c57}
+
+- <a id="tut-04.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the limit, from both sides. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/9f07f3752d1e1c2622310d6fa556c40cac43be00/tests/unit/test_api.py).
+  - look at `at_limit = {f"option{i}": None for i in range(MAX_OPTIONS)}`
+
+<details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -7,6 +7,7 @@ import pytest
+ from pydantic import ValidationError
+ 
+ from babykev.api import (
++    MAX_OPTIONS,
+     Choice,
+     Noul,
+     Score,
+@@ -94,3 +95,13 @@ def test_choice_without_options_is_rejected():
+     """A choice needs at least one option."""
+     with pytest.raises(ValidationError):
+         Choice(type="choice", instructions="Which milk?", criteria={})
++
++
++def test_choice_accepts_the_largest_number_of_options_and_no_more():
++    """The limit on options is exact."""
++    at_limit = {f"option{i}": None for i in range(MAX_OPTIONS)}
++    assert (
++        len(Choice(type="choice", instructions="Which?", criteria=at_limit).criteria) == MAX_OPTIONS
++    )
++    with pytest.raises(ValidationError):
++        Choice(type="choice", instructions="Which?", criteria={**at_limit, "one_more": None})
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9f07f3752d1e1c2622310d6fa556c40cac43be00). [The code after it](https://github.com/rahuldave/babykev/tree/9f07f3752d1e1c2622310d6fa556c40cac43be00).
+
+## 4.9 A score of one level is refused {#tut-04.9}
+
+A scale needs two levels at least, or it measures nothing. The test gives a `Score` one level, and expects a refusal.
+
+Apply the patch to [`tests/unit/test_api.py`](#tut-04.9-tests-unit-test_api.py-58d97c), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/5a07b57374e4863dee50efb07cc71a9ed848efc5.diff | git apply --include=tests/unit/test_api.py
+```
+
+The patch adds the test at the end of the file.
+
+```bash
+just test
+```
+
+`just test` prints `22 passed`. `api.py` is still at 77%. The tests of validation run lines that the sample data ran
+already.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 5a07b57374e4
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 9f07f3752d1e --staged -- :/ && git restore --source 5a07b57374e4 --staged --worktree -- :/
+```
+
+### What changed {#tut-04.9-what-changed-182c57}
+
+- <a id="tut-04.9-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a scale of one level. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/5a07b57374e4863dee50efb07cc71a9ed848efc5/tests/unit/test_api.py).
+  - look at `Score(type="score", instructions="How firm?", criteria=["Soft"])`
+
+<details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -105,3 +105,9 @@ def test_choice_accepts_the_largest_number_of_options_and_no_more():
+     )
+     with pytest.raises(ValidationError):
+         Choice(type="choice", instructions="Which?", criteria={**at_limit, "one_more": None})
++
++
++def test_score_with_one_level_is_rejected():
++    """A scale needs at least two levels."""
++    with pytest.raises(ValidationError):
++        Score(type="score", instructions="How firm?", criteria=["Soft"])
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/5a07b57374e4863dee50efb07cc71a9ed848efc5). [The code after it](https://github.com/rahuldave/babykev/tree/5a07b57374e4863dee50efb07cc71a9ed848efc5).
+
+## 4.10 The README names the tests of the contract {#tut-04.10}
+
+The row of `tests/unit/` names only the tests of the command. It now names the tests of the contract too.
+
+Apply the patch to [`README.md`](#tut-04.10-README.md-8ec9a0), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/3fdf16e045d976c4351256b4d9ee60e36634d381.diff | git apply --include=README.md
+```
+
+The patch changes the row of `tests/unit/`.
+
+```bash
+grep -n 'tests/unit' README.md
+```
+
+`grep` prints the new row.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 3fdf16e045d9
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 5a07b57374e4 --staged -- :/ && git restore --source 3fdf16e045d9 --staged --worktree -- :/
+```
+
+### What changed {#tut-04.10-what-changed-182c57}
+
+- <a id="tut-04.10-README.md-8ec9a0"></a>`README.md`: the row of the tests. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/3fdf16e045d976c4351256b4d9ee60e36634d381/README.md).
+  - look at ``| `tests/unit/` | The unit tests of the contract and of the command. One test checks every line of the sample data against the contract |``
+
+<details open><summary>The patch to <code>README.md</code></summary>
+
+```diff
+@@ -66,7 +66,7 @@ help of the program itself. A recipe gives its extra words to the tool behind it
+ | `src/babykev/api.py` | The contract: the request and its three types of question as pydantic models, the text and options the model reads, and the answers made from its probabilities |
+ | `src/babykev/cli.py` | The command `babykev` |
+ | `data/cheese/sample.jsonl` | Five requests about cheese, one on each line. Every question has a `label`, the right answer |
+-| `tests/unit/` | The unit tests. `test_cli.py` tests the command `babykev` |
++| `tests/unit/` | The unit tests of the contract and of the command. One test checks every line of the sample data against the contract |
+ | `justfile` | Every task of the project, one recipe each. `just help` explains them |
+ | `README.md` | This file |
+ | `LICENSE`, `NOTICE` | The licence, and the credit to kev |
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3fdf16e045d976c4351256b4d9ee60e36634d381). [The code after it](https://github.com/rahuldave/babykev/tree/3fdf16e045d976c4351256b4d9ee60e36634d381).

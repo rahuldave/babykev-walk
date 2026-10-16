@@ -1,0 +1,561 @@
+---
+title: "4b Every function documented"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Init.** `just setup` changes nothing in `.venv`: no dependency arrived. It prints `Checked 29 packages` and reinstalls the hook. 0.4 s.
+
+```bash
+just setup
+```
+
+**What is new:** the 84 gaps of step 04, filled. A docment beside each of the 18 parameters and returns of `api.py`, a description on each of its 11 model fields, a docstring on the validator; a docment on each of the 54 parameters and returns of the tests. And one line in the justfile: `just docs check` inside `just check`. This commit is clean. Everything is green, and the live part deletes one docment to show the check, and then the hook, catching it.
+
+**A. Green.** `just docs check` prints `12 of 12` for `api`, then `1 of 1`, `26 of 26`, `29 of 29`, `4 of 4`, `16 of 16`, no gap, and `88 of 88 functions, methods and classes are typed and documented`, exit 0. 0.6 s, or 1.5 s the first time after a move, while Python compiles the files.
+
+```bash
+just docs check
+```
+
+**B. What a documented function looks like.** The `sed` line prints `render`, lines 68 to 72 of `api.py`: each parameter on its own line with its docment, the return's docment after the colon, the docstring below. The types of `indent` and the return say `int` and `str`; their comments say what the number means and what the text is for. A docment is for what the type cannot say.
+
+```bash
+sed -n '68,72p' src/babykev/api.py
+```
+
+**C. A model field's description.** The `sed` line prints `Noul`, lines 16 to 24. A pydantic model has no signature to put a comment on, so each field carries `Field(description=...)`, and `docs check` reads that the way it reads a docment. The `state` field of `SystemOneRequest` says "The context: the document the questions are about".
+
+```bash
+sed -n '16,24p' src/babykev/api.py
+```
+
+**D. The Markdown, filled.** `just docs module api` prints the same table as at step 04, every Description cell now filled. Scroll to `render`: "Text, a number, a list or an object, from a request", "How deeply nested this value is; each level indents by two spaces", "The text the model sees". Nothing was written twice: the comment beside the parameter is the cell in the table.
+
+```bash
+just docs module api
+```
+
+**E. The site, filled.** `just docs` builds the site again, 5 s. The `open` line shows `api`'s page with every description in place.
+
+```bash
+just docs
+open docs/_site/index.html
+```
+
+**F. Delete one docment.** The `sed` line removes the comment beside `indent` in `render`. `just docs check` then prints `babykev.api 11 of 12`, one gap, `babykev.api:render(indent): no docment`, `87 of 88`, exit 1. 0.6 s. The `git restore` line puts the comment back.
+
+```bash
+sed -i '' 's|,  # How deeply nested.*|,|' src/babykev/api.py
+just docs check
+git restore src/babykev/api.py
+```
+
+**G. The hook refuses it.** The same `sed` line again, then a commit. The hook prints its four hooks: three `Passed` or `Skipped`, then `just check...Failed`, and under it everything `check` ran: the formatter (9 files), the linter (All checks passed!), the tests (69 passed, 97.78%), and then `docs check`'s table ending `babykev.api:render(indent): no docment`, `87 of 88`. 3.3 s. No commit was made: `git status` shows the file still modified, and the log still ends at this step. The `git restore` line puts the file back.
+
+```bash
+sed -i '' 's|,  # How deeply nested.*|,|' src/babykev/api.py
+git commit -am "try"
+git status
+git restore src/babykev/api.py
+```
+
+**H. `check` has five lines now.** `just --show check` prints the recipe: `fmt --check`, `lint`, `test` over the floor, `docs check`, `lint-config`. `just check` runs all five, green, 2.8 s.
+
+```bash
+just --show check
+just check
+```
+
+**What the next step does.** Step 05 brings the second file, `model.py`, as kev wrote it, and the cycle runs again: a file arrives bare, then its tests, types and docments, now under checks that exist.
+
+## What changed {#step-04b-what-changed-182c57}
+
+- <a id="step-04b-README.md-8ec9a0"></a>`README.md`: 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a9a391de1f271392a948cdd16afe2f3b1cfdd437/README.md).
+- <a id="step-04b-justfile-424f0b"></a>`justfile`: 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a9a391de1f271392a948cdd16afe2f3b1cfdd437/justfile).
+- <a id="step-04b-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: changes `Choice`, `Noul`, `Score`, `SystemOneRequest`, `_check`, `choice_confidence`, `option_text`, `render`, `round_prob`, `score_confidence`, `to_answers`, `to_record`. 48 lines added, 19 removed. [The file](https://github.com/rahuldave/babykev/blob/a9a391de1f271392a948cdd16afe2f3b1cfdd437/src/babykev/api.py).
+- <a id="step-04b-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: changes `cheese_request`, `test_option_text_adds_a_description_only_when_there_is_one`, `test_render_flattens_json_into_text`, `test_sample_line_fits_the_contract`, `test_sample_line_has_a_usable_label_on_every_question`, `test_score_confidence_is_one_when_certain`. 17 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/a9a391de1f271392a948cdd16afe2f3b1cfdd437/tests/unit/test_api.py).
+- <a id="step-04b-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: changes `run`, `test_an_unknown_command_is_refused_with_exit_code_2`, `test_docs_is_passed_to_the_docs_command`, `test_help_is_printed_for_help_and_for_no_words`. 11 lines added, 4 removed. [The file](https://github.com/rahuldave/babykev/blob/a9a391de1f271392a948cdd16afe2f3b1cfdd437/tests/unit/test_cli.py).
+- <a id="step-04b-tests-unit-test_docs.py-31dd08"></a>`tests/unit/test_docs.py`: changes `example`, `test_a_return_that_is_not_none_needs_a_docment`, `test_an_unknown_module_is_a_lookup_error`, `test_check_holds_the_tests_to_the_convention_too`, `test_check_prints_a_count_per_module_then_every_gap_and_fails`, `test_gaps_names_what_each_symbol_is_missing`, `test_help_and_a_bad_word`, `test_inventory_knows_the_line_of_each_symbol`, `test_inventory_lists_the_public_symbols_in_source_order`, `test_list_prints_one_line_per_symbol`, `test_markdown_has_a_heading_a_signature_a_docstring_and_a_table_per_function`, `test_markdown_has_no_links_and_no_ids`, `test_markdown_shows_a_class_and_its_public_methods_only`, `test_markdown_shows_a_pydantic_model_as_a_table_of_fields`, `test_markdown_writes_a_type_alias_by_its_name`, `test_module_prints_the_markdown_and_an_unknown_name_is_refused`. 41 lines added, 16 removed. [The file](https://github.com/rahuldave/babykev/blob/a9a391de1f271392a948cdd16afe2f3b1cfdd437/tests/unit/test_docs.py).
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+```diff
+@@ -62,7 +62,8 @@ agents: `just docs list` names every module, class and function with its summary
+ prints one module, and `just docs check` counts what is typed and documented and lists every gap. The
+ convention: every function is typed, has a docstring, and carries a docment, a comment beside each
+ parameter and the return, which the formatter and the linter leave alone as long as the line fits in 100
+-characters. `src/babykev/docs.py` is the example to read.
++characters. `src/babykev/docs.py` is the example to read. `just docs check` is part of `just check`, so a
++commit that leaves a gap is refused by the hook.
+ 
+ ## What is here
+ 
+```
+
+</details>
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -63,7 +63,7 @@ lint-config *args:
+ test *args:
+     {{ if args == "help" { "just help test" } else { 'uv run pytest "$@"' } }}
+ 
+-# Everything a commit must pass: format, lint, the tests over the coverage floor, the config files
++# Everything a commit must pass: format, lint, the tests over the coverage floor, the docs, the config files
+ [group('quality')]
+ [no-exit-message]
+ check *args:
+@@ -73,6 +73,7 @@ check *args:
+     just fmt --check
+     just lint
+     just test -q --cov-fail-under=90
++    just docs check
+     just lint-config
+ 
+ # Build the docs site into docs/_site. Words go to the program: just docs list, just docs module api, just docs check
+```
+
+</details>
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -16,20 +16,26 @@ MAX_OPTIONS = 255
+ class Noul(BaseModel):
+     """A yes-or-no question."""
+ 
+-    type: Literal["noul"]
+-    instructions: JSONContent
+-    criteria: dict[str, JSONContent] | None = None
++    type: Literal["noul"] = Field(description="Marks the question as yes-or-no")
++    instructions: JSONContent = Field(description="The question, as text or as structured content")
++    criteria: dict[str, JSONContent] | None = Field(
++        default=None,
++        description="What no and yes mean, under the keys `false` and `true`. May be left out",
++    )
+ 
+ 
+ class Choice(BaseModel):
+     """A question answered by picking one of several named options."""
+ 
+-    type: Literal["choice"]
+-    instructions: JSONContent
+-    criteria: dict[str, JSONContent]
++    type: Literal["choice"] = Field(description="Marks the question as a choice")
++    instructions: JSONContent = Field(description="The question, as text or as structured content")
++    criteria: dict[str, JSONContent] = Field(
++        description="Each option's name with its description, or `null` when the name says enough"
++    )
+ 
+     @model_validator(mode="after")
+-    def _check(self) -> Self:
++    def _check(self) -> Self:  # The question, unchanged
++        """Reject a choice with no options or with more than `MAX_OPTIONS`."""
+         if not 1 <= len(self.criteria) <= MAX_OPTIONS:
+             raise ValueError(f"criteria must have 1..{MAX_OPTIONS} options")
+         return self
+@@ -38,9 +44,13 @@ class Choice(BaseModel):
+ class Score(BaseModel):
+     """A question answered with a level on an ordered scale."""
+ 
+-    type: Literal["score"]
+-    instructions: JSONContent
+-    criteria: list[JSONContent] = Field(min_length=2, max_length=MAX_OPTIONS)
++    type: Literal["score"] = Field(description="Marks the question as a score")
++    instructions: JSONContent = Field(description="The question, as text or as structured content")
++    criteria: list[JSONContent] = Field(
++        min_length=2,
++        max_length=MAX_OPTIONS,
++        description="The levels of the scale, from lowest to highest",
++    )
+ 
+ 
+ Question = Noul | Choice | Score
+@@ -49,11 +59,16 @@ Question = Noul | Choice | Score
+ class SystemOneRequest(BaseModel):
+     """One request: a state, and the questions to answer about it."""
+ 
+-    state: JSONContent
+-    questions: dict[str, Question] = Field(min_length=1)
++    state: JSONContent = Field(description="The context: the document the questions are about")
++    questions: dict[str, Question] = Field(
++        min_length=1, description="The questions, each under an id the caller chooses"
++    )
+ 
+ 
+-def render(v: JSONContent, indent: int = 0) -> str:
++def render(
++    v: JSONContent,  # Text, a number, a list or an object, from a request
++    indent: int = 0,  # How deeply nested this value is; each level indents by two spaces
++) -> str:  # The text the model sees
+     """Flatten str | object | array into text the model sees. Field names are kept as labels."""
+     pad = "  " * indent
+     if v is None:
+@@ -70,12 +85,17 @@ def render(v: JSONContent, indent: int = 0) -> str:
+     )
+ 
+ 
+-def option_text(name: str, desc: JSONContent) -> str:
++def option_text(
++    name: str,  # The option's name
++    desc: JSONContent,  # Its description, or `None` or an empty string when the name says enough
++) -> str:  # `name`, or `name: description`
+     """Write one option as the model sees it."""
+     return name if desc is None or desc == "" else f"{name}: {render(desc)}"
+ 
+ 
+-def to_record(req: SystemOneRequest) -> tuple[dict[str, Any], list[dict[str, Any]]]:
++def to_record(
++    req: SystemOneRequest,  # A validated request
++) -> tuple[dict[str, Any], list[dict[str, Any]]]:  # The record, and one metadata entry per question
+     """-> internal record for encode(), plus per-question metadata to map probabilities back."""
+     qs, meta = [], []
+     for qid, q in req.questions.items():
+@@ -100,13 +120,17 @@ def to_record(req: SystemOneRequest) -> tuple[dict[str, Any], list[dict[str, Any
+     return {"state": render(req.state), "questions": qs}, meta
+ 
+ 
+-def choice_confidence(p: list[float]) -> float:
++def choice_confidence(
++    p: list[float],  # The probability of each option
++) -> float:  # 0 for a guess, 1 when one option has all the probability
+     """Measure how far the most likely option stands above a guess among `len(p)` options."""
+     k = len(p)
+     return 1.0 if k == 1 else (max(p) - 1 / k) / (1 - 1 / k)
+ 
+ 
+-def score_confidence(p: list[float]) -> float:
++def score_confidence(
++    p: list[float],  # The probability of each level, lowest level first
++) -> float:  # 1 when one level has all the probability, 0 for a guess or anything as spread out
+     """Measure how closely a score's probabilities sit around the most likely level.
+ 
+     1 when one level has all the probability, 0 for a guess or anything as spread out. The expected
+@@ -122,7 +146,9 @@ def score_confidence(p: list[float]) -> float:
+     return max(0.0, 1.0 - spread / guess)
+ 
+ 
+-def round_prob(x: float) -> float:
++def round_prob(
++    x: float,  # A probability, or a number worked out from probabilities
++) -> float:  # The same number to four decimals
+     """Round a number for output.
+ 
+     Four decimals keep a rounded distribution's sum within 0.02 of 1 even with MAX_OPTIONS options.
+@@ -131,7 +157,10 @@ def round_prob(x: float) -> float:
+     return round(float(x), 4)
+ 
+ 
+-def to_answers(probs: list[list[float]], meta: list[dict[str, Any]]) -> dict[str, Any]:
++def to_answers(
++    probs: list[list[float]],  # For each question, the probability of each of its options
++    meta: list[dict[str, Any]],  # The metadata `to_record` returned for the same request
++) -> dict[str, Any]:  # One answer per question, under the question's id
+     """Turn the model's probabilities into answers of each question's type."""
+     out = {}
+     for p, m in zip(probs, meta, strict=False):
+```
+
+</details>
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -29,7 +29,7 @@ MILKS = {"cow": None, "goat": None, "sheep": None, "mixed": "More than one kind
+ FIRMNESS = ["Soft", "Semi-soft", "Semi-hard", "Hard"]
+ 
+ 
+-def cheese_request() -> SystemOneRequest:
++def cheese_request() -> SystemOneRequest:  # A valid request with three questions
+     """One request that asks a question of each type."""
+     return SystemOneRequest.model_validate(
+         {
+@@ -47,7 +47,9 @@ def cheese_request() -> SystemOneRequest:
+ 
+ 
+ @pytest.mark.parametrize("line", SAMPLE_LINES)
+-def test_sample_line_fits_the_contract(line: dict[str, Any]) -> None:
++def test_sample_line_fits_the_contract(
++    line: dict[str, Any],  # One line of the sample data
++) -> None:
+     """Every sample line is a valid request and gives one record question per question."""
+     request = SystemOneRequest.model_validate(line)
+     record, meta = to_record(request)
+@@ -57,7 +59,9 @@ def test_sample_line_fits_the_contract(line: dict[str, Any]) -> None:
+ 
+ 
+ @pytest.mark.parametrize("line", SAMPLE_LINES)
+-def test_sample_line_has_a_usable_label_on_every_question(line: dict[str, Any]) -> None:
++def test_sample_line_has_a_usable_label_on_every_question(
++    line: dict[str, Any],  # One line of the sample data
++) -> None:
+     """A label is a boolean for noul, an option name for choice, a level index for score."""
+     for question in line["questions"].values():
+         label = question["label"]
+@@ -140,7 +144,10 @@ def test_score_with_one_level_is_rejected() -> None:
+         ([{"role": "customer", "content": "hello"}], "- role: customer\n  content: hello"),
+     ],
+ )
+-def test_render_flattens_json_into_text(value: JSONContent, text: str) -> None:
++def test_render_flattens_json_into_text(
++    value: JSONContent,  # What a request might hold
++    text: str,  # What the model should see
++) -> None:
+     """Strings, numbers, lists and objects all become the text the model reads."""
+     assert render(value) == text
+ 
+@@ -154,7 +161,9 @@ def test_render_flattens_json_into_text(value: JSONContent, text: str) -> None:
+     ],
+ )
+ def test_option_text_adds_a_description_only_when_there_is_one(
+-    name: str, description: str | None, text: str
++    name: str,  # The option's name
++    description: str | None,  # Its description, if it has one
++    text: str,  # The option as the model should see it
+ ) -> None:
+     """An option is its name, followed by its description when it has one."""
+     assert option_text(name, description) == text
+@@ -285,7 +294,9 @@ def test_score_confidence_of_a_single_level_is_one() -> None:
+ 
+ 
+ @pytest.mark.parametrize("level", [0, 1, 2])
+-def test_score_confidence_is_one_when_certain(level: int) -> None:
++def test_score_confidence_is_one_when_certain(
++    level: int,  # The level that has all the probability
++) -> None:
+     """All the probability on one level is certainty, wherever the level is."""
+     p = [0.0, 0.0, 0.0]
+     p[level] = 1.0
+```
+
+</details>
+
+<details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
+
+```diff
+@@ -5,7 +5,10 @@ import pytest
+ from babykev.cli import HELP, main
+ 
+ 
+-def run(monkeypatch: pytest.MonkeyPatch, *words: str) -> None:
++def run(
++    monkeypatch: pytest.MonkeyPatch,  # Replaces `sys.argv` for this test only
++    *words: str,  # The command line, as words
++) -> None:
+     """Run `babykev` with these words as its command line."""
+     monkeypatch.setattr("sys.argv", ["babykev", *words])
+     main()
+@@ -13,7 +16,9 @@ def run(monkeypatch: pytest.MonkeyPatch, *words: str) -> None:
+ 
+ @pytest.mark.parametrize("words", [(), ("help",), ("--help",), ("-h",)])
+ def test_help_is_printed_for_help_and_for_no_words(
+-    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str], words: tuple[str, ...]
++    monkeypatch: pytest.MonkeyPatch,  # Replaces `sys.argv` for this test only
++    capsys: pytest.CaptureFixture[str],  # Captures what the command prints
++    words: tuple[str, ...],  # The command line, as words
+ ) -> None:
+     """`babykev`, `babykev help`, `--help` and `-h` all print the help text, and nothing else."""
+     run(monkeypatch, *words)
+@@ -21,7 +26,8 @@ def test_help_is_printed_for_help_and_for_no_words(
+ 
+ 
+ def test_an_unknown_command_is_refused_with_exit_code_2(
+-    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
++    monkeypatch: pytest.MonkeyPatch,  # Replaces `sys.argv` for this test only
++    capsys: pytest.CaptureFixture[str],  # Captures what the command prints
+ ) -> None:
+     """A word that is not a command is named, the help is pointed to, and the exit code is 2."""
+     with pytest.raises(SystemExit) as exit_info:
+@@ -33,7 +39,8 @@ def test_an_unknown_command_is_refused_with_exit_code_2(
+ 
+ 
+ def test_docs_is_passed_to_the_docs_command(
+-    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
++    monkeypatch: pytest.MonkeyPatch,  # Replaces `sys.argv` for this test only
++    capsys: pytest.CaptureFixture[str],  # Captures what the command prints
+ ) -> None:
+     """`babykev docs list` runs the docs command and exits with its code."""
+     with pytest.raises(SystemExit) as exit_info:
+```
+
+</details>
+
+<details><summary>The diff of <code>tests/unit/test_docs.py</code></summary>
+
+```diff
+@@ -56,7 +56,10 @@ class Thing:
+ '''
+ 
+ 
+-def example(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> str:
++def example(
++    tmp_path: Path,  # A folder of this test's own, where the example package is written
++    monkeypatch: pytest.MonkeyPatch,  # Makes the example importable for this test only
++) -> str:  # The package's name
+     """Write the example package into a folder, make it importable, and return its name."""
+     (tmp_path / "pkg").mkdir()
+     (tmp_path / "pkg" / "__init__.py").write_text('"""The example package."""\n', encoding="utf-8")
+@@ -71,7 +74,8 @@ def example(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> str:
+ 
+ 
+ def test_inventory_lists_the_public_symbols_in_source_order(
+-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
++    tmp_path: Path,  # A folder of this test's own, where the example package is written
++    monkeypatch: pytest.MonkeyPatch,  # Makes the example importable for this test only
+ ) -> None:
+     """Every module, function, class and public method is listed once, with its kind and summary."""
+     pkg = example(tmp_path, monkeypatch)
+@@ -88,7 +92,8 @@ def test_inventory_lists_the_public_symbols_in_source_order(
+ 
+ 
+ def test_inventory_knows_the_line_of_each_symbol(
+-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
++    tmp_path: Path,  # A folder of this test's own, where the example package is written
++    monkeypatch: pytest.MonkeyPatch,  # Makes the example importable for this test only
+ ) -> None:
+     """The line of a symbol is where its `def` or `class` is in the source."""
+     pkg = example(tmp_path, monkeypatch)
+@@ -103,7 +108,8 @@ def test_inventory_knows_the_line_of_each_symbol(
+ 
+ 
+ def test_markdown_has_a_heading_a_signature_a_docstring_and_a_table_per_function(
+-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
++    tmp_path: Path,  # A folder of this test's own, where the example package is written
++    monkeypatch: pytest.MonkeyPatch,  # Makes the example importable for this test only
+ ) -> None:
+     """A function's entry shows its signature as Python and its parameters with their docments."""
+     text = docs.markdown("thing", example(tmp_path, monkeypatch))
+@@ -117,7 +123,8 @@ def test_markdown_has_a_heading_a_signature_a_docstring_and_a_table_per_function
+ 
+ 
+ def test_markdown_writes_a_type_alias_by_its_name(
+-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
++    tmp_path: Path,  # A folder of this test's own, where the example package is written
++    monkeypatch: pytest.MonkeyPatch,  # Makes the example importable for this test only
+ ) -> None:
+     """`Pair` is written as the source wrote it, and a `None` return gets no row in the table."""
+     text = docs.markdown("thing", example(tmp_path, monkeypatch))
+@@ -127,7 +134,8 @@ def test_markdown_writes_a_type_alias_by_its_name(
+ 
+ 
+ def test_markdown_shows_a_class_and_its_public_methods_only(
+-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
++    tmp_path: Path,  # A folder of this test's own, where the example package is written
++    monkeypatch: pytest.MonkeyPatch,  # Makes the example importable for this test only
+ ) -> None:
+     """A class is a heading and its docstring; each public method is a heading one level down."""
+     text = docs.markdown("thing", example(tmp_path, monkeypatch))
+@@ -137,7 +145,8 @@ def test_markdown_shows_a_class_and_its_public_methods_only(
+ 
+ 
+ def test_markdown_shows_a_pydantic_model_as_a_table_of_fields(
+-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
++    tmp_path: Path,  # A folder of this test's own, where the example package is written
++    monkeypatch: pytest.MonkeyPatch,  # Makes the example importable for this test only
+ ) -> None:
+     """A model has no signature to show; its fields are the table, each with its description."""
+     text = docs.markdown("thing", example(tmp_path, monkeypatch))
+@@ -149,7 +158,10 @@ def test_markdown_shows_a_pydantic_model_as_a_table_of_fields(
+     assert "| `label` | str \\| None | `None` |  |" in text
+ 
+ 
+-def test_markdown_has_no_links_and_no_ids(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
++def test_markdown_has_no_links_and_no_ids(
++    tmp_path: Path,  # A folder of this test's own, where the example package is written
++    monkeypatch: pytest.MonkeyPatch,  # Makes the example importable for this test only
++) -> None:
+     """The program's Markdown is plain: the site adds the ids and the links itself."""
+     text = docs.markdown("thing", example(tmp_path, monkeypatch))
+     assert "{#" not in text
+@@ -158,7 +170,8 @@ def test_markdown_has_no_links_and_no_ids(tmp_path: Path, monkeypatch: pytest.Mo
+ 
+ 
+ def test_an_unknown_module_is_a_lookup_error(
+-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
++    tmp_path: Path,  # A folder of this test's own, where the example package is written
++    monkeypatch: pytest.MonkeyPatch,  # Makes the example importable for this test only
+ ) -> None:
+     """Asking for a module the package does not have raises, with the name."""
+     with pytest.raises(LookupError, match="nothing"):
+@@ -169,7 +182,8 @@ def test_an_unknown_module_is_a_lookup_error(
+ 
+ 
+ def test_gaps_names_what_each_symbol_is_missing(
+-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
++    tmp_path: Path,  # A folder of this test's own, where the example package is written
++    monkeypatch: pytest.MonkeyPatch,  # Makes the example importable for this test only
+ ) -> None:
+     """A documented symbol has no gaps; a bare one is missing its docstring, types and docments.
+ 
+@@ -196,7 +210,8 @@ def test_gaps_names_what_each_symbol_is_missing(
+ 
+ 
+ def test_a_return_that_is_not_none_needs_a_docment(
+-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
++    tmp_path: Path,  # A folder of this test's own, where the example package is written
++    monkeypatch: pytest.MonkeyPatch,  # Makes the example importable for this test only
+ ) -> None:
+     """`span` returns `None` and needs no docment for it; `greet` returns a value and has one."""
+     pkg = example(tmp_path, monkeypatch)
+@@ -212,7 +227,9 @@ def test_a_return_that_is_not_none_needs_a_docment(
+ 
+ 
+ def test_check_prints_a_count_per_module_then_every_gap_and_fails(
+-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
++    tmp_path: Path,  # A folder of this test's own, where the example package is written
++    monkeypatch: pytest.MonkeyPatch,  # Makes the example importable for this test only
++    capsys: pytest.CaptureFixture[str],  # Captures what the command prints
+ ) -> None:
+     """`check` prints one line per module, the gaps, the total, and exits 1 when there is a gap."""
+     pkg = example(tmp_path, monkeypatch)
+@@ -224,7 +241,9 @@ def test_check_prints_a_count_per_module_then_every_gap_and_fails(
+ 
+ 
+ def test_check_holds_the_tests_to_the_convention_too(
+-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
++    tmp_path: Path,  # A folder of this test's own, where the example package is written
++    monkeypatch: pytest.MonkeyPatch,  # Makes the example importable for this test only
++    capsys: pytest.CaptureFixture[str],  # Captures what the command prints
+ ) -> None:
+     """A folder of tests is checked like the package, each file under its path."""
+     pkg = example(tmp_path, monkeypatch)
+@@ -237,7 +256,9 @@ def test_check_holds_the_tests_to_the_convention_too(
+ 
+ 
+ def test_list_prints_one_line_per_symbol(
+-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
++    tmp_path: Path,  # A folder of this test's own, where the example package is written
++    monkeypatch: pytest.MonkeyPatch,  # Makes the example importable for this test only
++    capsys: pytest.CaptureFixture[str],  # Captures what the command prints
+ ) -> None:
+     """`list` prints the kind, the full name and the summary, aligned."""
+     assert docs.main(["list"], example(tmp_path, monkeypatch)) == 0
+@@ -247,7 +268,9 @@ def test_list_prints_one_line_per_symbol(
+ 
+ 
+ def test_module_prints_the_markdown_and_an_unknown_name_is_refused(
+-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
++    tmp_path: Path,  # A folder of this test's own, where the example package is written
++    monkeypatch: pytest.MonkeyPatch,  # Makes the example importable for this test only
++    capsys: pytest.CaptureFixture[str],  # Captures what the command prints
+ ) -> None:
+     """`module NAME` prints the Markdown; a name that is no module is refused, the modules named."""
+     pkg = example(tmp_path, monkeypatch)
+@@ -257,7 +280,9 @@ def test_module_prints_the_markdown_and_an_unknown_name_is_refused(
+     assert "no module 'nothing'. The modules: thing" in capsys.readouterr().err
+ 
+ 
+-def test_help_and_a_bad_word(capsys: pytest.CaptureFixture[str]) -> None:
++def test_help_and_a_bad_word(
++    capsys: pytest.CaptureFixture[str],  # Captures what the command prints
++) -> None:
+     """`help` prints the usage and exits 0; anything else prints it to stderr and exits 2."""
+     assert docs.main(["help"]) == 0
+     assert capsys.readouterr().out == docs.USAGE
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/compare/d27a7f152ade46e9024f0b97481b85fcce07a16c...a9a391de1f271392a948cdd16afe2f3b1cfdd437). [The code after it](https://github.com/rahuldave/babykev/tree/a9a391de1f271392a948cdd16afe2f3b1cfdd437).

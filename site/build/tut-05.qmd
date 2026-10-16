@@ -1,0 +1,712 @@
+---
+title: "5 From a request to the model, and back"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Build it yourself.** [Read the tutorial](../read/tut-05.qmd) is the other way to read this part.
+
+If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
+
+```bash
+git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 3fdf16e045d9 --staged --worktree -- :/
+```
+
+```bash
+just setup
+```
+
+The contract also maps a request to what the model reads, and the model's probabilities back to answers. `render`
+turns JSON into text, `option_text` writes an option, `to_record` turns a request into a record, and `to_answers`
+turns probabilities into answers. Each test checks one of their rules.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/3fdf16e045d976c4351256b4d9ee60e36634d381). [The code after it](https://github.com/rahuldave/babykev/tree/c65ddf5484593bfa8c135f4bd5fddc4846cf80c1).
+
+## 5.1 render turns JSON into text {#tut-05.1}
+
+The model reads text, and the state of a request is JSON. `render` writes JSON as text. One test gives `render` nine
+values, from `None` to a list of objects, and checks the text of each.
+
+Apply the patch to [`tests/unit/test_api.py`](#tut-05.1-tests-unit-test_api.py-58d97c), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/2cb2323b0534d811117562d749046d2085f55da1.diff | git apply --include=tests/unit/test_api.py
+```
+
+The patch adds the section `# Rendering` and its test at the end of the file, and `render` to the import.
+
+```bash
+just test -k render
+```
+
+pytest prints `9 passed`, one for each value.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 2cb2323b0534
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 3fdf16e045d9 --staged -- :/ && git restore --source 2cb2323b0534 --staged --worktree -- :/
+```
+
+### What changed {#tut-05.1-what-changed-182c57}
+
+- <a id="tut-05.1-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: nine values, and their text. 26 lines added. [The file](https://github.com/rahuldave/babykev/blob/2cb2323b0534d811117562d749046d2085f55da1/tests/unit/test_api.py).
+  - look at `def test_render_flattens_json_into_text(value, text):`
+
+<details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -12,6 +12,7 @@ from babykev.api import (
+     Noul,
+     Score,
+     SystemOneRequest,
++    render,
+     to_record,
+ )
+ 
+@@ -111,3 +112,28 @@ def test_score_with_one_level_is_rejected():
+     """A scale needs at least two levels."""
+     with pytest.raises(ValidationError):
+         Score(type="score", instructions="How firm?", criteria=["Soft"])
++
++
++# Rendering
++
++
++@pytest.mark.parametrize(
++    ("value", "text"),
++    [
++        (None, ""),
++        ("Brie", "Brie"),
++        (3, "3"),
++        (2.5, "2.5"),
++        (True, "True"),
++        (["creamy", "soft"], "- creamy\n- soft"),
++        ({"cheese": "Brie", "age": 4}, "cheese: Brie\nage: 4"),
++        (
++            {"cheese": "Brie", "notes": {"texture": ["creamy", "soft"]}},
++            "cheese: Brie\nnotes:\n  texture:\n    - creamy\n    - soft",
++        ),
++        ([{"role": "customer", "content": "hello"}], "- role: customer\n  content: hello"),
++    ],
++)
++def test_render_flattens_json_into_text(value, text):
++    """Strings, numbers, lists and objects all become the text the model reads."""
++    assert render(value) == text
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/2cb2323b0534d811117562d749046d2085f55da1). [The code after it](https://github.com/rahuldave/babykev/tree/2cb2323b0534d811117562d749046d2085f55da1).
+
+## 5.2 An option has a description only when it has one {#tut-05.2}
+
+An option is its name, followed by its description when it has one. `option_text` writes it. The test gives it no
+description, an empty one, and a real one.
+
+Apply the patch to [`tests/unit/test_api.py`](#tut-05.2-tests-unit-test_api.py-58d97c), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/b0ac52637697336e97f8fc777ffb4c4398436d6b.diff | git apply --include=tests/unit/test_api.py
+```
+
+The patch adds the test at the end of the file, and `option_text` to the import.
+
+```bash
+just test -k option_text
+```
+
+pytest prints `3 passed`.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check b0ac52637697
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 2cb2323b0534 --staged -- :/ && git restore --source b0ac52637697 --staged --worktree -- :/
+```
+
+### What changed {#tut-05.2-what-changed-182c57}
+
+- <a id="tut-05.2-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: three cases of an option. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/b0ac52637697336e97f8fc777ffb4c4398436d6b/tests/unit/test_api.py).
+  - look at `def test_option_text_adds_a_description_only_when_there_is_one(name, description, text):`
+
+<details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -12,6 +12,7 @@ from babykev.api import (
+     Noul,
+     Score,
+     SystemOneRequest,
++    option_text,
+     render,
+     to_record,
+ )
+@@ -137,3 +138,16 @@ def test_score_with_one_level_is_rejected():
+ def test_render_flattens_json_into_text(value, text):
+     """Strings, numbers, lists and objects all become the text the model reads."""
+     assert render(value) == text
++
++
++@pytest.mark.parametrize(
++    ("name", "description", "text"),
++    [
++        ("cow", None, "cow"),
++        ("cow", "", "cow"),
++        ("mixed", "More than one kind of milk", "mixed: More than one kind of milk"),
++    ],
++)
++def test_option_text_adds_a_description_only_when_there_is_one(name, description, text):
++    """An option is its name, followed by its description when it has one."""
++    assert option_text(name, description) == text
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b0ac52637697336e97f8fc777ffb4c4398436d6b). [The code after it](https://github.com/rahuldave/babykev/tree/b0ac52637697336e97f8fc777ffb4c4398436d6b).
+
+## 5.3 A record keeps the state and the order of questions {#tut-05.3}
+
+`to_record` turns a request into a record, the text and options that the model reads, and the metadata that maps
+them back. The test checks that the state is rendered once, and that the questions keep their order.
+
+Apply the patch to [`tests/unit/test_api.py`](#tut-05.3-tests-unit-test_api.py-58d97c), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/ada878e14d24bf0c5831be23e1dd34ed81c2630b.diff | git apply --include=tests/unit/test_api.py
+```
+
+The patch adds the section `# From a request to a record` and its test at the end of the file.
+
+```bash
+just test -k keeps_the_state
+```
+
+pytest prints `1 passed`.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check ada878e14d24
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source b0ac52637697 --staged -- :/ && git restore --source ada878e14d24 --staged --worktree -- :/
+```
+
+### What changed {#tut-05.3-what-changed-182c57}
+
+- <a id="tut-05.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the state, and the order. 15 lines added. [The file](https://github.com/rahuldave/babykev/blob/ada878e14d24bf0c5831be23e1dd34ed81c2630b/tests/unit/test_api.py).
+  - look at `assert [m["id"] for m in meta] == ["blue", "milk", "firmness"]`
+
+<details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -151,3 +151,18 @@ def test_render_flattens_json_into_text(value, text):
+ def test_option_text_adds_a_description_only_when_there_is_one(name, description, text):
+     """An option is its name, followed by its description when it has one."""
+     assert option_text(name, description) == text
++
++
++# From a request to a record
++
++
++def test_record_keeps_the_state_and_the_order_of_questions():
++    """The state is rendered once and the questions stay in request order."""
++    record, meta = to_record(cheese_request())
++    assert record["state"] == "cheese: Roquefort\norigin: France"
++    assert [m["id"] for m in meta] == ["blue", "milk", "firmness"]
++    assert [q["instr"] for q in record["questions"]] == [
++        "Is this a blue cheese?",
++        "Which milk?",
++        "How firm?",
++    ]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ada878e14d24bf0c5831be23e1dd34ed81c2630b). [The code after it](https://github.com/rahuldave/babykev/tree/ada878e14d24bf0c5831be23e1dd34ed81c2630b).
+
+## 5.4 A noul becomes no, then yes {#tut-05.4}
+
+A noul has two options, `no` first. So the answer to a noul is the probability of option 1, yes.
+
+Apply the patch to [`tests/unit/test_api.py`](#tut-05.4-tests-unit-test_api.py-58d97c), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/1c76e1a38e54bd80383392e8205dd3318a1b17f1.diff | git apply --include=tests/unit/test_api.py
+```
+
+The patch adds the test at the end of the file.
+
+```bash
+just test -k no_then_yes
+```
+
+pytest prints `1 passed`.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 1c76e1a38e54
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source ada878e14d24 --staged -- :/ && git restore --source 1c76e1a38e54 --staged --worktree -- :/
+```
+
+### What changed {#tut-05.4-what-changed-182c57}
+
+- <a id="tut-05.4-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the two options of a noul. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/1c76e1a38e54bd80383392e8205dd3318a1b17f1/tests/unit/test_api.py).
+  - look at `assert record["questions"][0]["options"] == ["no", "yes"]`
+
+<details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -166,3 +166,10 @@ def test_record_keeps_the_state_and_the_order_of_questions():
+         "Which milk?",
+         "How firm?",
+     ]
++
++
++def test_noul_becomes_no_then_yes():
++    """Option 0 is no and option 1 is yes, so the answer is the probability of option 1."""
++    record, meta = to_record(cheese_request())
++    assert record["questions"][0]["options"] == ["no", "yes"]
++    assert meta[0] == {"id": "blue", "type": "noul"}
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/1c76e1a38e54bd80383392e8205dd3318a1b17f1). [The code after it](https://github.com/rahuldave/babykev/tree/1c76e1a38e54bd80383392e8205dd3318a1b17f1).
+
+## 5.5 The criteria of a noul describe no and yes {#tut-05.5}
+
+A noul can say what yes and no mean, under `true` and `false`. They become the descriptions of the two options.
+
+Apply the patch to [`tests/unit/test_api.py`](#tut-05.5-tests-unit-test_api.py-58d97c), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/54d3e0602d9b2d96ba709955cb6672aeab9b1313.diff | git apply --include=tests/unit/test_api.py
+```
+
+The patch adds the test at the end of the file.
+
+```bash
+just test -k describe_no
+```
+
+pytest prints `1 passed`.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 54d3e0602d9b
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 1c76e1a38e54 --staged -- :/ && git restore --source 54d3e0602d9b --staged --worktree -- :/
+```
+
+### What changed {#tut-05.5-what-changed-182c57}
+
+- <a id="tut-05.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the descriptions of no and yes. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/54d3e0602d9b2d96ba709955cb6672aeab9b1313/tests/unit/test_api.py).
+  - look at `def test_noul_criteria_describe_no_and_yes():`
+
+<details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -173,3 +173,12 @@ def test_noul_becomes_no_then_yes():
+     record, meta = to_record(cheese_request())
+     assert record["questions"][0]["options"] == ["no", "yes"]
+     assert meta[0] == {"id": "blue", "type": "noul"}
++
++
++def test_noul_criteria_describe_no_and_yes():
++    """The criteria under `false` and `true` become the descriptions of no and yes."""
++    criteria = {"true": "It has blue veins", "false": "It has none"}
++    question = {"type": "noul", "instructions": "Is it blue?", "criteria": criteria}
++    request = SystemOneRequest.model_validate({"state": "Brie", "questions": {"blue": question}})
++    record, _ = to_record(request)
++    assert record["questions"][0]["options"] == ["no: It has none", "yes: It has blue veins"]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/54d3e0602d9b2d96ba709955cb6672aeab9b1313). [The code after it](https://github.com/rahuldave/babykev/tree/54d3e0602d9b2d96ba709955cb6672aeab9b1313).
+
+## 5.6 A choice becomes one option per criterion {#tut-05.6}
+
+A choice has one option for each criterion, in order, and the metadata keeps their names.
+
+Apply the patch to [`tests/unit/test_api.py`](#tut-05.6-tests-unit-test_api.py-58d97c), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/e10cddd3fcea261b3f72ae3b349d826e611bd714.diff | git apply --include=tests/unit/test_api.py
+```
+
+The patch adds the test at the end of the file.
+
+```bash
+just test -k one_option_per_criterion
+```
+
+pytest prints `1 passed`.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check e10cddd3fcea
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 54d3e0602d9b --staged -- :/ && git restore --source e10cddd3fcea --staged --worktree -- :/
+```
+
+### What changed {#tut-05.6-what-changed-182c57}
+
+- <a id="tut-05.6-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the options of a choice. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/e10cddd3fcea261b3f72ae3b349d826e611bd714/tests/unit/test_api.py).
+  - look at `def test_choice_becomes_one_option_per_criterion_in_order():`
+
+<details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -182,3 +182,15 @@ def test_noul_criteria_describe_no_and_yes():
+     request = SystemOneRequest.model_validate({"state": "Brie", "questions": {"blue": question}})
+     record, _ = to_record(request)
+     assert record["questions"][0]["options"] == ["no: It has none", "yes: It has blue veins"]
++
++
++def test_choice_becomes_one_option_per_criterion_in_order():
++    """Options keep the order of the criteria, and the metadata remembers their names."""
++    record, meta = to_record(cheese_request())
++    assert record["questions"][1]["options"] == [
++        "cow",
++        "goat",
++        "sheep",
++        "mixed: More than one kind of milk",
++    ]
++    assert meta[1] == {"id": "milk", "type": "choice", "keys": ["cow", "goat", "sheep", "mixed"]}
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e10cddd3fcea261b3f72ae3b349d826e611bd714). [The code after it](https://github.com/rahuldave/babykev/tree/e10cddd3fcea261b3f72ae3b349d826e611bd714).
+
+## 5.7 A score becomes one option per level {#tut-05.7}
+
+A score has one option for each level, in order. Its legend maps the number of each level to its name.
+
+Apply the patch to [`tests/unit/test_api.py`](#tut-05.7-tests-unit-test_api.py-58d97c), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/a445bb427a4611ed18fc8683f2462c448f340cab.diff | git apply --include=tests/unit/test_api.py
+```
+
+The patch adds the test at the end of the file.
+
+```bash
+just test -k one_option_per_level
+```
+
+pytest prints `1 passed`.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check a445bb427a46
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source e10cddd3fcea --staged -- :/ && git restore --source a445bb427a46 --staged --worktree -- :/
+```
+
+### What changed {#tut-05.7-what-changed-182c57}
+
+- <a id="tut-05.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the levels, and the legend. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/a445bb427a4611ed18fc8683f2462c448f340cab/tests/unit/test_api.py).
+  - look at `def test_score_becomes_one_option_per_level_with_a_legend():`
+
+<details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -194,3 +194,10 @@ def test_choice_becomes_one_option_per_criterion_in_order():
+         "mixed: More than one kind of milk",
+     ]
+     assert meta[1] == {"id": "milk", "type": "choice", "keys": ["cow", "goat", "sheep", "mixed"]}
++
++
++def test_score_becomes_one_option_per_level_with_a_legend():
++    """Options are the levels in order, and the legend maps each index to its level."""
++    record, meta = to_record(cheese_request())
++    assert record["questions"][2]["options"] == FIRMNESS
++    assert meta[2]["legend"] == {"0": "Soft", "1": "Semi-soft", "2": "Semi-hard", "3": "Hard"}
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a445bb427a4611ed18fc8683f2462c448f340cab). [The code after it](https://github.com/rahuldave/babykev/tree/a445bb427a4611ed18fc8683f2462c448f340cab).
+
+## 5.8 The answer of a noul is the probability of yes {#tut-05.8}
+
+`to_answers` turns the probabilities of the model into answers. The answer to a noul is one number, the probability of
+yes.
+
+Apply the patch to [`tests/unit/test_api.py`](#tut-05.8-tests-unit-test_api.py-58d97c), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/17710a377cbe4978af0b17d0e5f275ebea3ebf31.diff | git apply --include=tests/unit/test_api.py
+```
+
+The patch adds the section `# From probabilities to answers` and its test at the end of the file, and `to_answers` to
+the import.
+
+```bash
+just test
+```
+
+`just test` prints `40 passed`, and `api.py` is at 86%.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 17710a377cbe
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source a445bb427a46 --staged -- :/ && git restore --source 17710a377cbe --staged --worktree -- :/
+```
+
+### What changed {#tut-05.8-what-changed-182c57}
+
+- <a id="tut-05.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the answer of a noul. 10 lines added. [The file](https://github.com/rahuldave/babykev/blob/17710a377cbe4978af0b17d0e5f275ebea3ebf31/tests/unit/test_api.py).
+  - look at `assert answers == {"blue": {"type": "noul", "noul": 0.75}}`
+
+<details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -14,6 +14,7 @@ from babykev.api import (
+     SystemOneRequest,
+     option_text,
+     render,
++    to_answers,
+     to_record,
+ )
+ 
+@@ -201,3 +202,12 @@ def test_score_becomes_one_option_per_level_with_a_legend():
+     record, meta = to_record(cheese_request())
+     assert record["questions"][2]["options"] == FIRMNESS
+     assert meta[2]["legend"] == {"0": "Soft", "1": "Semi-soft", "2": "Semi-hard", "3": "Hard"}
++
++
++# From probabilities to answers
++
++
++def test_noul_answer_is_the_probability_of_yes():
++    """The answer to a yes-or-no question is one number."""
++    answers = to_answers([[0.25, 0.75]], [{"id": "blue", "type": "noul"}])
++    assert answers == {"blue": {"type": "noul", "noul": 0.75}}
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/17710a377cbe4978af0b17d0e5f275ebea3ebf31). [The code after it](https://github.com/rahuldave/babykev/tree/17710a377cbe4978af0b17d0e5f275ebea3ebf31).
+
+## 5.9 A choice names the most likely option {#tut-05.9}
+
+The answer to a choice has its most likely option, a probability for each option, and a confidence.
+
+Apply the patch to [`tests/unit/test_api.py`](#tut-05.9-tests-unit-test_api.py-58d97c), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/0ff7fb5056bc35a07820f54b2fb8341c45fff2f7.diff | git apply --include=tests/unit/test_api.py
+```
+
+The patch adds the test at the end of the file.
+
+```bash
+just test
+```
+
+`just test` prints `41 passed`, and `api.py` is at 94%.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 0ff7fb5056bc
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 17710a377cbe --staged -- :/ && git restore --source 0ff7fb5056bc --staged --worktree -- :/
+```
+
+### What changed {#tut-05.9-what-changed-182c57}
+
+- <a id="tut-05.9-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the answer of a choice. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/0ff7fb5056bc35a07820f54b2fb8341c45fff2f7/tests/unit/test_api.py).
+  - look at `assert answer["choice"] == "goat"`
+
+<details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -211,3 +211,12 @@ def test_noul_answer_is_the_probability_of_yes():
+     """The answer to a yes-or-no question is one number."""
+     answers = to_answers([[0.25, 0.75]], [{"id": "blue", "type": "noul"}])
+     assert answers == {"blue": {"type": "noul", "noul": 0.75}}
++
++
++def test_choice_answer_names_the_most_likely_option():
++    """A choice answer has the winner, a probability for each option, and a confidence."""
++    meta = [{"id": "milk", "type": "choice", "keys": ["cow", "goat", "sheep"]}]
++    answer = to_answers([[0.1, 0.7, 0.2]], meta)["milk"]
++    assert answer["choice"] == "goat"
++    assert answer["probabilities"] == {"cow": 0.1, "goat": 0.7, "sheep": 0.2}
++    assert answer["confidence"] == pytest.approx(0.55)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0ff7fb5056bc35a07820f54b2fb8341c45fff2f7). [The code after it](https://github.com/rahuldave/babykev/tree/0ff7fb5056bc35a07820f54b2fb8341c45fff2f7).
+
+## 5.10 A score answers with the expected level {#tut-05.10}
+
+The answer to a score is the expected level, the mean of the levels weighted by their probabilities. For
+`[0.1, 0.2, 0.7]` it is 0 × 0.1 + 1 × 0.2 + 2 × 0.7 = 1.6.
+
+Apply the patch to [`tests/unit/test_api.py`](#tut-05.10-tests-unit-test_api.py-58d97c), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/6f149fe7e2041c277c9f3b775f081e6e74fe8221.diff | git apply --include=tests/unit/test_api.py
+```
+
+The patch adds the test at the end of the file.
+
+```bash
+just test
+```
+
+`just test` prints `42 passed`, and `api.py` is at 100%.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 6f149fe7e204
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 0ff7fb5056bc --staged -- :/ && git restore --source 6f149fe7e204 --staged --worktree -- :/
+```
+
+### What changed {#tut-05.10-what-changed-182c57}
+
+- <a id="tut-05.10-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the answer of a score. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/6f149fe7e2041c277c9f3b775f081e6e74fe8221/tests/unit/test_api.py).
+  - look at `assert answer["score"] == pytest.approx(1.6)`
+
+<details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -220,3 +220,14 @@ def test_choice_answer_names_the_most_likely_option():
+     assert answer["choice"] == "goat"
+     assert answer["probabilities"] == {"cow": 0.1, "goat": 0.7, "sheep": 0.2}
+     assert answer["confidence"] == pytest.approx(0.55)
++
++
++def test_score_answer_is_the_expected_level():
++    """A score answer is the mean level under the probabilities, with the legend to read it by."""
++    legend = {"0": "Soft", "1": "Semi-soft", "2": "Hard"}
++    answer = to_answers([[0.1, 0.2, 0.7]], [{"id": "firmness", "type": "score", "legend": legend}])[
++        "firmness"
++    ]
++    assert answer["score"] == pytest.approx(1.6)
++    assert answer["legend"] == legend
++    assert answer["probabilities"] == {"0": 0.1, "1": 0.2, "2": 0.7}
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/6f149fe7e2041c277c9f3b775f081e6e74fe8221). [The code after it](https://github.com/rahuldave/babykev/tree/6f149fe7e2041c277c9f3b775f081e6e74fe8221).
+
+## 5.11 Every question gets an answer of its own type {#tut-05.11}
+
+A request of three questions must get three answers, each under the id of its question, each of its type. The test
+runs `to_record` and `to_answers` one after the other.
+
+Apply the patch to [`tests/unit/test_api.py`](#tut-05.11-tests-unit-test_api.py-58d97c), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/c65ddf5484593bfa8c135f4bd5fddc4846cf80c1.diff | git apply --include=tests/unit/test_api.py
+```
+
+The patch adds the test at the end of the file.
+
+```bash
+just test
+```
+
+`just test` prints `43 passed`, and every line of `api.py` runs, 100%. Two lines are still wrong, and the next part
+shows them. Coverage says which lines ran. It does not say that a test checked what each line does.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check c65ddf548459
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 6f149fe7e204 --staged -- :/ && git restore --source c65ddf548459 --staged --worktree -- :/
+```
+
+### What changed {#tut-05.11-what-changed-182c57}
+
+- <a id="tut-05.11-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: one answer for each question. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/c65ddf5484593bfa8c135f4bd5fddc4846cf80c1/tests/unit/test_api.py).
+  - look at `def test_every_question_gets_an_answer_of_its_own_type():`
+
+<details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -231,3 +231,15 @@ def test_score_answer_is_the_expected_level():
+     assert answer["score"] == pytest.approx(1.6)
+     assert answer["legend"] == legend
+     assert answer["probabilities"] == {"0": 0.1, "1": 0.2, "2": 0.7}
++
++
++def test_every_question_gets_an_answer_of_its_own_type():
++    """Records and answers line up: one answer per question, under the question's id."""
++    record, meta = to_record(cheese_request())
++    uniform = [[1 / len(q["options"])] * len(q["options"]) for q in record["questions"]]
++    answers = to_answers(uniform, meta)
++    assert {qid: a["type"] for qid, a in answers.items()} == {
++        "blue": "noul",
++        "milk": "choice",
++        "firmness": "score",
++    }
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/c65ddf5484593bfa8c135f4bd5fddc4846cf80c1). [The code after it](https://github.com/rahuldave/babykev/tree/c65ddf5484593bfa8c135f4bd5fddc4846cf80c1).

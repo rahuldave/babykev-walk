@@ -1,0 +1,313 @@
+# Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again.
+project:
+  type: website
+  output-dir: _site
+  render: ["index.qmd", "read/*.qmd", "build/*.qmd"]   # only these pages
+
+website:
+  title: "babykev, shown one move at a time"
+  page-navigation: true
+  search: true
+  sidebar:
+    style: docked
+    contents:
+      - index.qmd
+      - section: "Read the tutorial"
+        contents:
+          - text: "0 Where we start"
+            href: read/tut-00.qmd
+          - section: "1 The project"
+            href: read/tut-01.qmd
+            contents:
+              - text: "1.1 uv makes the project"
+                href: read/tut-01.qmd#tut-01.1
+              - text: "1.2 uv lock writes the lockfile"
+                href: read/tut-01.qmd#tut-01.2
+              - text: "1.3 The description of babykev"
+                href: read/tut-01.qmd#tut-01.3
+              - text: "1.4 The licence of babykev"
+                href: read/tut-01.qmd#tut-01.4
+              - text: "1.5 The author of babykev"
+                href: read/tut-01.qmd#tut-01.5
+              - text: "1.6 cli.py, the command with help"
+                href: read/tut-01.qmd#tut-01.6
+              - text: "1.7 The command babykev runs cli.py"
+                href: read/tut-01.qmd#tut-01.7
+              - text: "1.8 The greeting of uv goes"
+                href: read/tut-01.qmd#tut-01.8
+              - text: "1.9 A justfile with the recipe setup"
+                href: read/tut-01.qmd#tut-01.9
+              - text: "1.10 The recipe help"
+                href: read/tut-01.qmd#tut-01.10
+              - text: "1.11 setup answers help"
+                href: read/tut-01.qmd#tut-01.11
+              - text: "1.12 help gives the help of the program too"
+                href: read/tut-01.qmd#tut-01.12
+              - text: "1.13 The README says how to start"
+                href: read/tut-01.qmd#tut-01.13
+              - text: "1.14 The README says what each file is"
+                href: read/tut-01.qmd#tut-01.14
+          - section: "2 Tests of the command"
+            href: read/tut-02.qmd
+            contents:
+              - text: "2.1 uv installs every dependency group"
+                href: read/tut-02.qmd#tut-02.1
+              - text: "2.2 Pytest, in the group test"
+                href: read/tut-02.qmd#tut-02.2
+              - text: "2.3 The recipe test"
+                href: read/tut-02.qmd#tut-02.3
+              - text: "2.4 A test of the help"
+                href: read/tut-02.qmd#tut-02.4
+              - text: "2.5 A test of an unknown command"
+                href: read/tut-02.qmd#tut-02.5
+              - text: "2.6 pytest looks for tests in tests/"
+                href: read/tut-02.qmd#tut-02.6
+              - text: "2.7 Pytest-cov, in the group test"
+                href: read/tut-02.qmd#tut-02.7
+              - text: "2.8 Coverage on every run of the tests"
+                href: read/tut-02.qmd#tut-02.8
+              - text: "2.9 The README says to run just test"
+                href: read/tut-02.qmd#tut-02.9
+              - text: "2.10 The README names the tests"
+                href: read/tut-02.qmd#tut-02.10
+          - section: "3 The contract"
+            href: read/tut-03.qmd
+            contents:
+              - text: "3.1 Pydantic, the first dependency"
+                href: read/tut-03.qmd#tut-03.1
+              - text: "3.2 api.py of kev, as he wrote it"
+                href: read/tut-03.qmd#tut-03.2
+              - text: "3.3 The docstring of api.py names no server"
+                href: read/tut-03.qmd#tut-03.3
+              - text: "3.4 A request names no model"
+                href: read/tut-03.qmd#tut-03.4
+              - text: "3.5 output_tokens goes"
+                href: read/tut-03.qmd#tut-03.5
+              - text: "3.6 Five requests about cheese, as sample data"
+                href: read/tut-03.qmd#tut-03.6
+              - text: "3.7 The README names the contract and the data"
+                href: read/tut-03.qmd#tut-03.7
+          - section: "4 What a request is"
+            href: read/tut-04.qmd
+            contents:
+              - text: "4.1 Every line of the sample data fits the contract"
+                href: read/tut-04.qmd#tut-04.1
+              - text: "4.2 Every question of the sample data has a label"
+                href: read/tut-04.qmd#tut-04.2
+              - text: "4.3 A request holds one model for each type of question"
+                href: read/tut-04.qmd#tut-04.3
+              - text: "4.4 A request without questions is refused"
+                href: read/tut-04.qmd#tut-04.4
+              - text: "4.5 An unknown type of question is refused"
+                href: read/tut-04.qmd#tut-04.5
+              - text: "4.6 A noul needs no criteria"
+                href: read/tut-04.qmd#tut-04.6
+              - text: "4.7 A choice without options is refused"
+                href: read/tut-04.qmd#tut-04.7
+              - text: "4.8 A choice has at most MAX_OPTIONS options"
+                href: read/tut-04.qmd#tut-04.8
+              - text: "4.9 A score of one level is refused"
+                href: read/tut-04.qmd#tut-04.9
+              - text: "4.10 The README names the tests of the contract"
+                href: read/tut-04.qmd#tut-04.10
+          - section: "5 From a request to the model, and back"
+            href: read/tut-05.qmd
+            contents:
+              - text: "5.1 render turns JSON into text"
+                href: read/tut-05.qmd#tut-05.1
+              - text: "5.2 An option has a description only when it has one"
+                href: read/tut-05.qmd#tut-05.2
+              - text: "5.3 A record keeps the state and the order of questions"
+                href: read/tut-05.qmd#tut-05.3
+              - text: "5.4 A noul becomes no, then yes"
+                href: read/tut-05.qmd#tut-05.4
+              - text: "5.5 The criteria of a noul describe no and yes"
+                href: read/tut-05.qmd#tut-05.5
+              - text: "5.6 A choice becomes one option per criterion"
+                href: read/tut-05.qmd#tut-05.6
+              - text: "5.7 A score becomes one option per level"
+                href: read/tut-05.qmd#tut-05.7
+              - text: "5.8 The answer of a noul is the probability of yes"
+                href: read/tut-05.qmd#tut-05.8
+              - text: "5.9 A choice names the most likely option"
+                href: read/tut-05.qmd#tut-05.9
+              - text: "5.10 A score answers with the expected level"
+                href: read/tut-05.qmd#tut-05.10
+              - text: "5.11 Every question gets an answer of its own type"
+                href: read/tut-05.qmd#tut-05.11
+          - section: "6 Kev's two bugs"
+            href: read/tut-06.qmd
+            contents:
+              - text: "6.1 A test of rounding, which fails"
+                href: read/tut-06.qmd#tut-06.1
+              - text: "6.2 Probabilities rounded to four decimals"
+                href: read/tut-06.qmd#tut-06.2
+              - text: "6.3 A guess between options has confidence 0"
+                href: read/tut-06.qmd#tut-06.3
+              - text: "6.4 A certain choice has confidence 1"
+                href: read/tut-06.qmd#tut-06.4
+              - text: "6.5 The confidence of a choice grows with its winner"
+                href: read/tut-06.qmd#tut-06.5
+              - text: "6.6 A certain score has confidence 1"
+                href: read/tut-06.qmd#tut-06.6
+              - text: "6.7 A score prefers neighbouring levels"
+                href: read/tut-06.qmd#tut-06.7
+              - text: "6.8 A guess between levels has confidence 0, and the test fails"
+                href: read/tut-06.qmd#tut-06.8
+              - text: "6.9 The confidence of a score measures against a guess"
+                href: read/tut-06.qmd#tut-06.9
+              - text: "6.10 A test of a scale with one level"
+                href: read/tut-06.qmd#tut-06.10
+      - section: "Build it yourself"
+        contents:
+          - text: "0 Where we start"
+            href: build/tut-00.qmd
+          - section: "1 The project"
+            href: build/tut-01.qmd
+            contents:
+              - text: "1.1 uv makes the project"
+                href: build/tut-01.qmd#tut-01.1
+              - text: "1.2 uv lock writes the lockfile"
+                href: build/tut-01.qmd#tut-01.2
+              - text: "1.3 The description of babykev"
+                href: build/tut-01.qmd#tut-01.3
+              - text: "1.4 The licence of babykev"
+                href: build/tut-01.qmd#tut-01.4
+              - text: "1.5 The author of babykev"
+                href: build/tut-01.qmd#tut-01.5
+              - text: "1.6 cli.py, the command with help"
+                href: build/tut-01.qmd#tut-01.6
+              - text: "1.7 The command babykev runs cli.py"
+                href: build/tut-01.qmd#tut-01.7
+              - text: "1.8 The greeting of uv goes"
+                href: build/tut-01.qmd#tut-01.8
+              - text: "1.9 A justfile with the recipe setup"
+                href: build/tut-01.qmd#tut-01.9
+              - text: "1.10 The recipe help"
+                href: build/tut-01.qmd#tut-01.10
+              - text: "1.11 setup answers help"
+                href: build/tut-01.qmd#tut-01.11
+              - text: "1.12 help gives the help of the program too"
+                href: build/tut-01.qmd#tut-01.12
+              - text: "1.13 The README says how to start"
+                href: build/tut-01.qmd#tut-01.13
+              - text: "1.14 The README says what each file is"
+                href: build/tut-01.qmd#tut-01.14
+          - section: "2 Tests of the command"
+            href: build/tut-02.qmd
+            contents:
+              - text: "2.1 uv installs every dependency group"
+                href: build/tut-02.qmd#tut-02.1
+              - text: "2.2 Pytest, in the group test"
+                href: build/tut-02.qmd#tut-02.2
+              - text: "2.3 The recipe test"
+                href: build/tut-02.qmd#tut-02.3
+              - text: "2.4 A test of the help"
+                href: build/tut-02.qmd#tut-02.4
+              - text: "2.5 A test of an unknown command"
+                href: build/tut-02.qmd#tut-02.5
+              - text: "2.6 pytest looks for tests in tests/"
+                href: build/tut-02.qmd#tut-02.6
+              - text: "2.7 Pytest-cov, in the group test"
+                href: build/tut-02.qmd#tut-02.7
+              - text: "2.8 Coverage on every run of the tests"
+                href: build/tut-02.qmd#tut-02.8
+              - text: "2.9 The README says to run just test"
+                href: build/tut-02.qmd#tut-02.9
+              - text: "2.10 The README names the tests"
+                href: build/tut-02.qmd#tut-02.10
+          - section: "3 The contract"
+            href: build/tut-03.qmd
+            contents:
+              - text: "3.1 Pydantic, the first dependency"
+                href: build/tut-03.qmd#tut-03.1
+              - text: "3.2 api.py of kev, as he wrote it"
+                href: build/tut-03.qmd#tut-03.2
+              - text: "3.3 The docstring of api.py names no server"
+                href: build/tut-03.qmd#tut-03.3
+              - text: "3.4 A request names no model"
+                href: build/tut-03.qmd#tut-03.4
+              - text: "3.5 output_tokens goes"
+                href: build/tut-03.qmd#tut-03.5
+              - text: "3.6 Five requests about cheese, as sample data"
+                href: build/tut-03.qmd#tut-03.6
+              - text: "3.7 The README names the contract and the data"
+                href: build/tut-03.qmd#tut-03.7
+          - section: "4 What a request is"
+            href: build/tut-04.qmd
+            contents:
+              - text: "4.1 Every line of the sample data fits the contract"
+                href: build/tut-04.qmd#tut-04.1
+              - text: "4.2 Every question of the sample data has a label"
+                href: build/tut-04.qmd#tut-04.2
+              - text: "4.3 A request holds one model for each type of question"
+                href: build/tut-04.qmd#tut-04.3
+              - text: "4.4 A request without questions is refused"
+                href: build/tut-04.qmd#tut-04.4
+              - text: "4.5 An unknown type of question is refused"
+                href: build/tut-04.qmd#tut-04.5
+              - text: "4.6 A noul needs no criteria"
+                href: build/tut-04.qmd#tut-04.6
+              - text: "4.7 A choice without options is refused"
+                href: build/tut-04.qmd#tut-04.7
+              - text: "4.8 A choice has at most MAX_OPTIONS options"
+                href: build/tut-04.qmd#tut-04.8
+              - text: "4.9 A score of one level is refused"
+                href: build/tut-04.qmd#tut-04.9
+              - text: "4.10 The README names the tests of the contract"
+                href: build/tut-04.qmd#tut-04.10
+          - section: "5 From a request to the model, and back"
+            href: build/tut-05.qmd
+            contents:
+              - text: "5.1 render turns JSON into text"
+                href: build/tut-05.qmd#tut-05.1
+              - text: "5.2 An option has a description only when it has one"
+                href: build/tut-05.qmd#tut-05.2
+              - text: "5.3 A record keeps the state and the order of questions"
+                href: build/tut-05.qmd#tut-05.3
+              - text: "5.4 A noul becomes no, then yes"
+                href: build/tut-05.qmd#tut-05.4
+              - text: "5.5 The criteria of a noul describe no and yes"
+                href: build/tut-05.qmd#tut-05.5
+              - text: "5.6 A choice becomes one option per criterion"
+                href: build/tut-05.qmd#tut-05.6
+              - text: "5.7 A score becomes one option per level"
+                href: build/tut-05.qmd#tut-05.7
+              - text: "5.8 The answer of a noul is the probability of yes"
+                href: build/tut-05.qmd#tut-05.8
+              - text: "5.9 A choice names the most likely option"
+                href: build/tut-05.qmd#tut-05.9
+              - text: "5.10 A score answers with the expected level"
+                href: build/tut-05.qmd#tut-05.10
+              - text: "5.11 Every question gets an answer of its own type"
+                href: build/tut-05.qmd#tut-05.11
+          - section: "6 Kev's two bugs"
+            href: build/tut-06.qmd
+            contents:
+              - text: "6.1 A test of rounding, which fails"
+                href: build/tut-06.qmd#tut-06.1
+              - text: "6.2 Probabilities rounded to four decimals"
+                href: build/tut-06.qmd#tut-06.2
+              - text: "6.3 A guess between options has confidence 0"
+                href: build/tut-06.qmd#tut-06.3
+              - text: "6.4 A certain choice has confidence 1"
+                href: build/tut-06.qmd#tut-06.4
+              - text: "6.5 The confidence of a choice grows with its winner"
+                href: build/tut-06.qmd#tut-06.5
+              - text: "6.6 A certain score has confidence 1"
+                href: build/tut-06.qmd#tut-06.6
+              - text: "6.7 A score prefers neighbouring levels"
+                href: build/tut-06.qmd#tut-06.7
+              - text: "6.8 A guess between levels has confidence 0, and the test fails"
+                href: build/tut-06.qmd#tut-06.8
+              - text: "6.9 The confidence of a score measures against a guess"
+                href: build/tut-06.qmd#tut-06.9
+              - text: "6.10 A test of a scale with one level"
+                href: build/tut-06.qmd#tut-06.10
+
+theme: cosmo
+css: styles.css
+toc: true
+toc-depth: 2
+code-copy: true
+from: markdown-tex_math_dollars-smart  # a $ is a dollar, not mathematics; -- stays two hyphens

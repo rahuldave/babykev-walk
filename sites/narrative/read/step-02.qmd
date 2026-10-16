@@ -1,0 +1,314 @@
+---
+title: "2 Format and lint arrive"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Init.** `just setup` adds one package, ruff. `.venv`: 15 packages. (Coming from step-00 instead of step-01, it adds 14.)
+
+```bash
+just setup
+```
+
+**What is new:** ruff; `[tool.ruff]` in `pyproject.toml` with the formatter's settings and the lint rules, a comment on each; the `fmt` and `lint` recipes; the two fixes (`score_confidence` is 0 for a guess, `round_prob` rounds to four decimals; `sundry/the-two-bugs.md` explains both); `UV_LOCKED` exported from the justfile. `api.py` is still as it arrived. This step brings the tools and we run them here; the next commit holds what they leave behind.
+
+**First, the two fixes.** The two tests that failed at step 01 pass here. The tests did not change; the code did. The file view shows what changed in `api.py`.
+
+The first fix: a guess now has confidence 0. When the model cannot tell the levels of a score apart, the answer used to say it was half sure, 0.5. Now it says it is not sure at all. The code measured how spread out the answer was against the wrong yardstick: the whole length of the scale, instead of how spread out a guess is. With numbers: three levels, and the model gives each one a third. How spread out the answer is: all three are equally likely, so the code counts from the first, and the levels are 0, 1 and 2 steps from it, so 1/3 × 0 + 1/3 × 1 + 1/3 × 2 = 1 step. The old yardstick, first level to last, is 2 steps, so the confidence was 1 − 1/2 = 0.5. The new yardstick, how spread out a guess is, around the middle level, is 1/3 × 1 + 1/3 × 0 + 1/3 × 1 = 0.67 steps; 1 − 1/0.67 = −0.5. The formula counts anything below 0 as 0, so an answer as spread out as a guess, or more, has confidence 0. `just test -k score_confidence_is_zero`: 1 passed.
+
+```bash
+just test -k score_confidence_is_zero
+```
+
+The second fix: the probabilities add up to 1 again. Each one was rounded to two decimal places. With 77 options, each 0.013 became 0.01, and the total came to 0.77. Now they are rounded to four places, and the total stays close to 1. `just test -k rounded_probabilities`: 1 passed.
+
+```bash
+just test -k rounded_probabilities
+```
+
+**A. The tests pass, and one line is never reached.** 52 passed. The coverage table: `api.py` 71 statements, 1 missed, column `Missing` says `90`. The `sed` line prints lines 88 to 91:
+
+```
+    L = len(p)
+    if L == 1:
+        return 1.0
+    mode = max(range(L), key=lambda i: p[i])
+```
+
+The fix added this branch. No test reaches it, because a `Score` needs at least two levels (`criteria` has `min_length=2`), so no request ever makes a one-level score. But `score_confidence` is a public function, and without the branch `score_confidence([1.0])` divides by zero: a guess's spread over one level is 0. The table found an edge no one had thought about. Two honest answers. Cut the branch, on the grounds that the function is only ever called through a request, and accept that calling it with one level then crashes. Or keep the branch and write the one test that reaches it: `score_confidence([1.0]) == 1.0`, "one level is the whole scale, there is nothing to be unsure about". The second is right here: the function is public, its contract is "a list of probabilities", and a crash on a legal input is a bug waiting for a caller. So the next step adds that test, and coverage goes back to 100% honestly, by asking the question the table raised. What never happens: adding a test only to make the number 100. The column is not a score to maximise. It is a list of lines nobody has asked a question about.
+
+```bash
+just test
+sed -n '88,91p' src/babykev/api.py
+```
+
+**B. The formatter.** ruff is one tool with two jobs, a formatter and a linter, and this step brings both. `uv run ruff format --check` asks the formatter what it would change, without changing anything. It is red: "1 file would be reformatted, 5 files already formatted", and it prints what it would change in `api.py`:
+
+| Where | What kev wrote | What the formatter does |
+|---|---|---|
+| line 7 | the imports right after the module docstring | a blank line between |
+| line 27, `Choice._check` | `if not 1 <= len(...) <= MAX_OPTIONS: raise ValueError(...)`, 119 characters, two statements on one line | two lines |
+| lines 48 to 51, `render` | three `if ...: return ...` on one line each, then a 142-character `return "\n".join(...)` | six lines, then the join spread over five |
+| line 72, `to_record` | `meta.append({...})`, 118 characters | the dictionary over seven lines, one key per line |
+| lines 110 and 113, `to_answers` | two dictionaries of 177 and 209 characters | six lines each |
+
+```bash
+uv run ruff format --check
+```
+
+`just --show fmt` prints the recipe: `uv run ruff format "$@"`, where `"$@"` is the words after `just fmt`. So `just fmt --check` is the command above, and `just fmt` alone is `uv run ruff format`, which rewrites the files.
+
+```bash
+just --show fmt
+```
+
+`just fmt`: "1 file reformatted". 114 lines become 141; the longest line goes from 209 characters to 107. `just fmt --check`: "6 files already formatted". `just test`: 52 passed. The formatter changed the look of every long line and the meaning of none.
+
+```bash
+just fmt
+just fmt --check
+just test
+```
+
+**C. What formatting did to the lint count.** At the commit `just lint --statistics` says 79 findings; after `just fmt` it says 70. The nine that went: the four E701 (several statements on one line, lines 27, 48, 49, 50) and five of the twelve E501 (lines over 100: the five long code lines). The seven E501 left are all in docstrings: the formatter rewraps code, never text.
+
+**D. Reading the linter.** `uv run ruff check --statistics` is the linter, the other half of ruff: it reads the code against the rule families listed in `[tool.ruff.lint]` in `pyproject.toml` and prints one line per code with its count and name; `[*]` marks a code ruff can fix by itself. "Found 70 errors." After formatting, with what each code means:
+
+| Code | Count | Meaning | Where |
+|---|---|---|---|
+| ANN201 | 32 | a public function has no return type | 30 tests; `to_record`; `cheese_request` in the tests |
+| ANN001 | 14 | an argument has no type | all in the tests: `line`, `level`, `text`, `monkeypatch`, `capsys`, ... |
+| E501 | 7 | a line over 100 characters | docstrings: 4 in `api.py`, 3 in the tests |
+| D101 | 4 | a class has no docstring | `Noul`, `Choice`, `Score`, `SystemOneRequest` |
+| D103 | 3 | a function has no docstring | `option_text`, `choice_confidence`, `to_answers` |
+| N806 | 2 | a variable inside a function is not lower case | `K` in `choice_confidence`, `L` in `score_confidence` |
+| UP007 | 2 | `Union[X, Y]` where `X \| Y` is the modern form | the aliases `JSONContent` and `Question` |
+| B905 | 2 | `zip()` without `strict=`: if the two sequences differ in length, it silently drops the tail | both in `to_answers` |
+| ANN202 | 1 | a private function has no return type | `Choice._check` |
+| ANN002 | 1 | `*args` has no type | `*words` in `test_cli.run` |
+| D104 | 1 | the package has no docstring | `src/babykev/__init__.py` |
+| I001 | 1 | imports not in isort's order | `api.py`: the standard library and pydantic imports with no blank line between |
+
+```bash
+uv run ruff check --statistics
+```
+
+`just --show lint` prints the recipe: `uv run ruff check "$@"`, with the words after `just lint` in place of `"$@"`. From now on, `just lint`. Without `--statistics` it prints each finding with its line, a caret under the place, and a help text. Every code we have met, what it means, why it matters and what fixed it: `sundry/lint-codes.md`.
+
+```bash
+just --show lint
+just lint
+```
+
+**E. Safe fixes.** `just lint --fix`: "70 errors (1 fixed, 69 remaining)". The one is I001: a blank line between `from typing import ...` and `from pydantic import ...`. A safe fix is one that cannot change what the code does.
+
+```bash
+just lint --fix
+just lint --statistics
+```
+
+**F. Unsafe fixes, read the diff.** `just lint --fix --unsafe-fixes`: "69 errors (32 fixed, 37 remaining)". The 32: `-> None` written on the thirty test functions that return nothing (ruff is sure of `None`, not of other types: `to_record` and `cheese_request` keep their ANN201), and `strict=False` on the two `zip` calls (unsafe because the author might have meant `strict=True`; `False` keeps today's behaviour and makes the choice visible). `just lint --statistics` shows the 37 that remain.
+
+```bash
+just lint --fix --unsafe-fixes
+just lint --statistics
+```
+
+After 33 automatic edits, `just fmt --check` is still green and `just test` still says 52 passed.
+
+```bash
+just fmt --check
+just test
+```
+
+**G. What is left for a person, 37.** Fourteen argument types in the tests. Seven long docstring lines to rewrap. Eight docstrings to write (four classes, three functions, the package). Two return types ruff would not guess, `to_record` and `cheese_request`, and `_check`'s. `*words: str`. Two names, `K` and `L`. Two `Union`s. None of these is mechanical: each needs someone who knows what the function means. That is the next step.
+
+**H. One by hand.** The `echo` line writes a one-line docstring into `__init__.py`; `just lint --statistics` goes from 37 to 36: D104 gone.
+
+```bash
+echo '"""babykev: a small decision model."""' > src/babykev/__init__.py
+just lint --statistics
+```
+
+**What the next step does with all this.** The next commit holds: the formatted `api.py`; the two automatic fixes (the import order, `strict=False` on the `zip`s) and the thirty `-> None`s; and the 36 a person has to do, which is what the next step is: eight docstrings, the fourteen argument types in the tests, the three return types ruff would not guess, `*words: str`, `K` and `L` renamed, the two `Union`s rewritten, seven docstring lines rewrapped. And the test for the one-level edge, so the coverage column is empty again. After that `just fmt --check`, `just lint` and `just test` are all green, which is the moment to make them stay green. Nothing is put back: the move to the next step drops every edit made here, and the next commit holds all of them.
+
+## What changed {#step-02-what-changed-182c57}
+
+- <a id="step-02-README.md-8ec9a0"></a>`README.md`: 3 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/4681f251318456e721cb4a7dcecbb9f73d3589cf/README.md).
+- <a id="step-02-justfile-424f0b"></a>`justfile`: adds `recipe fmt`, `recipe lint`. 15 lines added. [The file](https://github.com/rahuldave/babykev/blob/4681f251318456e721cb4a7dcecbb9f73d3589cf/justfile).
+- <a id="step-02-pyproject.toml-5d07e7"></a>`pyproject.toml`: 39 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/4681f251318456e721cb4a7dcecbb9f73d3589cf/pyproject.toml).
+- <a id="step-02-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: adds `round_prob`; changes `score_confidence`, `to_answers`; removes `r2`. 20 lines added, 10 removed. [The file](https://github.com/rahuldave/babykev/blob/4681f251318456e721cb4a7dcecbb9f73d3589cf/src/babykev/api.py).
+- <a id="step-02-uv.lock-8356d8"></a>`uv.lock`: 31 lines added. [The file](https://github.com/rahuldave/babykev/blob/4681f251318456e721cb4a7dcecbb9f73d3589cf/uv.lock).
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+```diff
+@@ -50,7 +50,8 @@ Three tools on the machine. This project installs everything else itself.
+ | [just](https://just.systems/) | The project's tasks. `just` lists them |
+ | [Quarto](https://quarto.org/) | The docs site |
+ 
+-Then `just setup`, and `just test`. `just` lists the tasks, `just help VERB` explains one, and `uv run
++Then `just setup`, and `just test`. `just fmt` formats the code and `just lint` checks it against the
++rules in `pyproject.toml`. `just` lists the tasks, `just help VERB` explains one, and `uv run
+ babykev help` is the program's own help. Extra arguments go to the tool behind a recipe: `just test -k
+ render` runs only the tests whose name contains `render`.
+ 
+@@ -58,7 +59,7 @@ render` runs only the tests whose name contains `render`.
+ 
+ | Path | What it is |
+ |---|---|
+-| `pyproject.toml`, `uv.lock` | The project: its name, its Python, its dependencies, the settings of its tools, and the exact versions installed |
++| `pyproject.toml`, `uv.lock` | The project: its name, its Python, its dependencies, the settings of its tools (the formatter's, and every lint rule with its reason), and the exact versions installed |
+ | `src/babykev/api.py` | The contract: the request and its three question types as Pydantic models, how they become the text and options the model sees, and how probabilities become answers |
+ | `src/babykev/cli.py` | The `babykev` command |
+ | `data/cheese/sample.jsonl` | Five lines of data. Each is a request about a cheese with a `label` on every question: the right answer |
+```
+
+</details>
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -5,6 +5,9 @@ program := "babykev"
+ # Each word after a recipe's name reaches its commands whole, as "$1", "$2" and so on; "$@" is all of them
+ set positional-arguments
+ 
++# uv refuses a stale lockfile instead of quietly re-locking it: a lockfile changes only on purpose
++export UV_LOCKED := "1"
++
+ [private]
+ default:
+     @just --list --unsorted
+@@ -25,6 +28,18 @@ help *verb:
+ setup *args:
+     {{ if args == "help" { "just help setup" } else { "uv sync --locked" } }}
+ 
++# Format the code, one way, no arguments. Extra arguments go to ruff: just fmt --check, just fmt --diff
++[group('quality')]
++[no-exit-message]
++fmt *args:
++    {{ if args == "help" { "just help fmt" } else { 'uv run ruff format "$@"' } }}
++
++# Check the code against the rules in pyproject.toml. Extra arguments go to ruff: just lint --statistics
++[group('quality')]
++[no-exit-message]
++lint *args:
++    {{ if args == "help" { "just help lint" } else { 'uv run ruff check "$@"' } }}
++
+ # Run the tests, with coverage of src/babykev. Extra arguments go to pytest: just test -k render
+ [group('quality')]
+ [no-exit-message]
+```
+
+</details>
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -23,9 +23,47 @@ test = [
+     "pytest>=9.1",
+     "pytest-cov>=7.1.0",
+ ]
+-dev = [{ include-group = "test" }]
++dev = [{ include-group = "test" }, { include-group = "lint" }]
++lint = [
++    "ruff>=0.16",
++]
+ 
+ [tool.pytest.ini_options]
+ testpaths = ["tests"]
+ # Every run measures how much of src/babykev the tests touch and lists the lines they do not
+ addopts = "--cov=babykev --cov-report=term-missing"
++
++[tool.ruff]
++# The one setting the formatter and the linter share. Ruff's own default is 88; this project reads better
++# at 100, and docs-check (later) needs a signature with its docments to fit on a line.
++line-length = 100
++
++[tool.ruff.format]
++# The formatter has no style to argue about. These are ruff's defaults, written out so the choice is visible.
++quote-style = "double"            # "text", not 'text'
++indent-style = "space"            # four spaces, never tabs
++skip-magic-trailing-comma = false # a trailing comma means "keep this one item per line"
++line-ending = "auto"              # the file's own line endings
++docstring-code-format = false     # code examples inside docstrings are left as written
++
++[tool.ruff.lint]
++# What the linter checks. A family of rules per line, and why it is on.
++select = [
++    "E",   # pycodestyle errors: the basics, from indentation to line length
++    "W",   # pycodestyle warnings: stray whitespace and the like
++    "F",   # pyflakes: names that are unused, undefined or redefined
++    "I",   # isort: imports in one order, standard library first
++    "B",   # bugbear: constructs that are likely bugs, such as a mutable default argument
++    "UP",  # pyupgrade: older syntax that this Python has a newer form for
++    "SIM", # simplify: code that can be said in fewer words
++    "S",   # bandit: security, from `assert` in production code to `eval`
++    "N",   # pep8-naming: classes CamelCase, functions and variables lower_case
++    "ANN", # annotations: every parameter and every return value has a type
++    "D1",  # pydocstyle: every module, class and function has a docstring
++]
++# random is used to shuffle and to augment data, never for secrets
++ignore = ["S311"]
++
++[tool.ruff.lint.per-file-ignores]
++# A test is written with assert
++"tests/**" = ["S101"]
+```
+
+</details>
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -80,25 +80,35 @@ def choice_confidence(p: list[float]) -> float:
+ 
+ 
+ def score_confidence(p: list[float]) -> float:
+-    """Approximation of TypeSafe's 'distance from the modal level' statistic (exact formula unpublished):
+-    1 - E|level - mode| / (L - 1)."""
+-    L = len(p); mode = max(range(L), key=lambda i: p[i])
+-    return 1.0 - sum(pi * abs(i - mode) for i, pi in enumerate(p)) / (L - 1)
++    """How closely a score's probabilities sit around the most likely level: 1 when certain, 0 for a guess.
+ 
++    The expected distance from the most likely level, divided by the distance a guess would have: equal
++    probability on every level, measured from the middle of the scale.
++    """
++    L = len(p)
++    if L == 1:
++        return 1.0
++    mode = max(range(L), key=lambda i: p[i])
++    spread = sum(pi * abs(i - mode) for i, pi in enumerate(p))
++    guess = sum(abs(i - (L - 1) / 2) for i in range(L)) / L
++    return max(0.0, 1.0 - spread / guess)
+ 
+-def r2(x: float) -> float:
+-    return round(float(x), 2)
++
++def round_prob(x: float) -> float:
++    """Round a number for output. Four decimals keep a rounded distribution's sum within 0.02 of 1 even
++    with MAX_OPTIONS options; two decimals did not: 77 equal options summed to 0.77."""
++    return round(float(x), 4)
+ 
+ 
+ def to_answers(probs: list[list[float]], meta: list[dict]) -> dict[str, Any]:
+     out = {}
+     for p, m in zip(probs, meta):
+         if m["type"] == "noul":
+-            out[m["id"]] = {"type": "noul", "noul": r2(p[1])}
++            out[m["id"]] = {"type": "noul", "noul": round_prob(p[1])}
+         elif m["type"] == "choice":
+-            dist = {k: r2(v) for k, v in zip(m["keys"], p)}
+-            out[m["id"]] = {"type": "choice", "choice": m["keys"][max(range(len(p)), key=lambda i: p[i])], "confidence": r2(choice_confidence(p)), "probabilities": dist}
++            dist = {k: round_prob(v) for k, v in zip(m["keys"], p)}
++            out[m["id"]] = {"type": "choice", "choice": m["keys"][max(range(len(p)), key=lambda i: p[i])], "confidence": round_prob(choice_confidence(p)), "probabilities": dist}
+         else:
+             score = sum(i * pi for i, pi in enumerate(p))
+-            out[m["id"]] = {"type": "score", "score": r2(score), "legend": m["legend"], "probabilities": {str(i): r2(v) for i, v in enumerate(p)}, "confidence": r2(score_confidence(p))}
++            out[m["id"]] = {"type": "score", "score": round_prob(score), "legend": m["legend"], "probabilities": {str(i): round_prob(v) for i, v in enumerate(p)}, "confidence": round_prob(score_confidence(p))}
+     return out
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/compare/9cc0343527b93a817207a11a2866752807f0013d...4681f251318456e721cb4a7dcecbb9f73d3589cf). [The code after it](https://github.com/rahuldave/babykev/tree/4681f251318456e721cb4a7dcecbb9f73d3589cf).

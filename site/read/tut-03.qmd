@@ -1,0 +1,402 @@
+---
+title: "3 The contract"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Read the tutorial.** [Build it yourself](../build/tut-03.qmd) is the other way to read this part.
+
+```bash
+just setup
+```
+
+babykev will answer typed questions about a text, and its model comes later. First we fix what a request is and what
+an answer is. kev wrote this agreement in a file, `api.py`, and we call it the contract. It comes in as kev wrote it.
+
+Then three parts that belong to kev's server go, one at a time. Five sample requests come last. No test reaches the
+contract yet, so coverage falls.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/4640589d80e4f224a4b2c1fd9567e952f564f102). [The code after it](https://github.com/rahuldave/babykev/tree/a3fdba91adc19206debd74d87fa107603433b202).
+
+## 3.1 Pydantic, the first dependency {#tut-03.1}
+
+The contract is written with pydantic, and babykev does not have it yet. pydantic checks that data has the shape that
+a class describes. `uv add` writes the package into `dependencies`, because a package of babykev needs it to run.
+
+This change came from running `uv add pydantic`.
+
+`uv add pydantic` prints `Resolved 14 packages`, and lists what it installed. It installed pydantic and the four
+packages that pydantic needs, `annotated-types`, `pydantic-core`, `typing-extensions` and `typing-inspection`.
+
+In `pyproject.toml`, `dependencies` now names pydantic. `uv.lock` has pydantic and the four packages it needs, each at
+one exact version.
+
+```bash
+uv tree --depth 1
+```
+
+`uv tree` prints the dependencies as a tree. `--depth 1` keeps the packages that babykev names itself. It prints
+`pydantic v2.14.1`, and the group `test` with pytest and pytest-cov.
+
+### What changed {#tut-03.1-what-changed-182c57}
+
+- <a id="tut-03.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the first dependency. `>=2.14.1` is the version that `uv add` found, as the lowest version to accept. 3 lines added, 1 removed. It comes from `uv add pydantic`. [The file](https://github.com/rahuldave/babykev/blob/96502df0a92f6f7090d6f624cda901a271dac9a7/pyproject.toml).
+  - look at `"pydantic>=2.14.1",`
+- <a id="tut-03.1-uv.lock-8356d8"></a>`uv.lock`: pydantic and the four packages it needs, each with its exact version. 136 lines added. It comes from `uv add pydantic`. [The file](https://github.com/rahuldave/babykev/blob/96502df0a92f6f7090d6f624cda901a271dac9a7/uv.lock).
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -7,7 +7,9 @@ license = "Apache-2.0"
+ license-files = ["LICENSE", "NOTICE"]
+ authors = [{ name = "Rahul Dave" }]
+ requires-python = ">=3.13"
+-dependencies = []
++dependencies = [
++    "pydantic>=2.14.1",
++]
+ 
+ [project.scripts]
+ babykev = "babykev.cli:main"
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/96502df0a92f6f7090d6f624cda901a271dac9a7). [The code after it](https://github.com/rahuldave/babykev/tree/96502df0a92f6f7090d6f624cda901a271dac9a7).
+
+## 3.2 api.py of kev, as he wrote it {#tut-03.2}
+
+babykev has no contract yet. kev's `api.py` says what a request is and what an answer is. It comes in as kev wrote it,
+all 111 lines, so that we read his code before we change it.
+
+A patch to [`src/babykev/api.py`](#tut-03.2-src-babykev-api.py-2ea65f).
+
+`src/babykev/api.py` is new. Lines 14 to 42 are the classes of a request. The functions after them turn a request into
+options, and probabilities into answers.
+
+```bash
+sed -n '14,42p' src/babykev/api.py
+```
+
+Each class says what its data must look like. `Literal["score"]` accepts only the text `score`.
+`Field(min_length=2, max_length=MAX_OPTIONS)` asks a score for 2 to 255 levels. A `Choice` checks its number of options
+in its own validator, `_check`, on lines 25 to 28.
+
+```bash
+just test
+```
+
+The 5 tests pass, and coverage falls. `api.py` has 70 statements, and no test runs any of them. The total is 10%, 8 of
+78 statements. A file that no test reaches counts against the total.
+
+### What changed {#tut-03.2-what-changed-182c57}
+
+- <a id="tut-03.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a request has a state and its questions by name. Each question is a `Noul`, a `Choice` or a `Score`, and its field `type` says which. New, 111 lines. [The file](https://github.com/rahuldave/babykev/blob/85ac48d80d3f558507cd04add56502a55228fdfb/src/babykev/api.py).
+  - look at `class SystemOneRequest(BaseModel):`
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -0,0 +1,111 @@
++"""TypeSafe-compatible request/response shapes (POST /v1/systemone) mapped onto the single pointer primitive.
++
++Noul   -> 2 options [false, true];            answer = p(true)
++Choice -> options 'name' or 'name: desc';      answer = argmax, probabilities by name, confidence
++Score  -> options = ordered level descriptions; answer = expected level, legend, probabilities by index
++"""
++from typing import Any, Literal, Union
++from pydantic import BaseModel, Field, model_validator
++
++JSONContent = Union[str, dict, list, int, float, bool, None]
++MAX_OPTIONS = 255
++
++
++class Noul(BaseModel):
++    type: Literal["noul"]
++    instructions: JSONContent
++    criteria: dict[str, JSONContent] | None = None
++
++
++class Choice(BaseModel):
++    type: Literal["choice"]
++    instructions: JSONContent
++    criteria: dict[str, JSONContent]
++
++    @model_validator(mode="after")
++    def _check(self):
++        if not 1 <= len(self.criteria) <= MAX_OPTIONS: raise ValueError(f"criteria must have 1..{MAX_OPTIONS} options")
++        return self
++
++
++class Score(BaseModel):
++    type: Literal["score"]
++    instructions: JSONContent
++    criteria: list[JSONContent] = Field(min_length=2, max_length=MAX_OPTIONS)
++
++
++Question = Union[Noul, Choice, Score]
++
++
++class SystemOneRequest(BaseModel):
++    state: JSONContent
++    model: str = "kev-latest"
++    questions: dict[str, Question] = Field(min_length=1)
++
++
++def render(v: JSONContent, indent: int = 0) -> str:
++    """Flatten str | object | array into text the model sees. Field names are kept as labels."""
++    pad = "  " * indent
++    if v is None: return ""
++    if isinstance(v, (str, int, float, bool)): return str(v)
++    if isinstance(v, list): return "\n".join(f"{pad}- {render(x, indent + 1).lstrip()}" for x in v)
++    return "\n".join(f"{pad}{k}:\n{render(x, indent + 1)}" if isinstance(x, (dict, list)) else f"{pad}{k}: {render(x)}" for k, x in v.items())
++
++
++def option_text(name: str, desc: JSONContent) -> str:
++    return name if desc is None or desc == "" else f"{name}: {render(desc)}"
++
++
++def to_record(req: SystemOneRequest):
++    """-> internal record for encode(), plus per-question metadata to map probabilities back."""
++    qs, meta = [], []
++    for qid, q in req.questions.items():
++        instr = render(q.instructions)
++        if q.type == "noul":
++            c = q.criteria or {}
++            opts = [option_text("no", c.get("false")), option_text("yes", c.get("true"))]
++            meta.append({"id": qid, "type": "noul"})
++        elif q.type == "choice":
++            opts = [option_text(k, v) for k, v in q.criteria.items()]
++            meta.append({"id": qid, "type": "choice", "keys": list(q.criteria.keys())})
++        else:
++            opts = [render(x) for x in q.criteria]
++            meta.append({"id": qid, "type": "score", "legend": {str(i): render(x) for i, x in enumerate(q.criteria)}})
++        qs.append({"instr": instr, "options": opts, "label": 0})
++    return {"state": render(req.state), "questions": qs}, meta
++
++
++def choice_confidence(p: list[float]) -> float:
++    K = len(p)
++    return 1.0 if K == 1 else (max(p) - 1 / K) / (1 - 1 / K)
++
++
++def score_confidence(p: list[float]) -> float:
++    """Approximation of TypeSafe's 'distance from the modal level' statistic (exact formula unpublished):
++    1 - E|level - mode| / (L - 1)."""
++    L = len(p); mode = max(range(L), key=lambda i: p[i])
++    return 1.0 - sum(pi * abs(i - mode) for i, pi in enumerate(p)) / (L - 1)
++
++
++def r2(x: float) -> float:
++    return round(float(x), 2)
++
++
++def to_answers(probs: list[list[float]], meta: list[dict]) -> dict[str, Any]:
++    out = {}
++    for p, m in zip(probs, meta):
++        if m["type"] == "noul":
++            out[m["id"]] = {"type": "noul", "noul": r2(p[1])}
++        elif m["type"] == "choice":
++            dist = {k: r2(v) for k, v in zip(m["keys"], p)}
++            out[m["id"]] = {"type": "choice", "choice": m["keys"][max(range(len(p)), key=lambda i: p[i])], "confidence": r2(choice_confidence(p)), "probabilities": dist}
++        else:
++            score = sum(i * pi for i, pi in enumerate(p))
++            out[m["id"]] = {"type": "score", "score": r2(score), "legend": m["legend"], "probabilities": {str(i): r2(v) for i, v in enumerate(p)}, "confidence": r2(score_confidence(p))}
++    return out
++
++
++def output_tokens(tok, answers: dict) -> int:
++    """Billing-style figure: tokens of the serialised answers. Not a measure of generation (there is none)."""
++    import json
++    return len(tok(json.dumps(answers), add_special_tokens=False).input_ids)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/85ac48d80d3f558507cd04add56502a55228fdfb). [The code after it](https://github.com/rahuldave/babykev/tree/85ac48d80d3f558507cd04add56502a55228fdfb).
+
+## 3.3 The docstring of api.py names no server {#tut-03.3}
+
+kev served the model over HTTP, and babykev has no server. The first line of `api.py` names the address of kev's
+server, `POST /v1/systemone`.
+
+A patch to [`src/babykev/api.py`](#tut-03.3-src-babykev-api.py-2ea65f).
+
+In `src/babykev/api.py`, the docstring no longer names `POST /v1/systemone`.
+
+```bash
+head -n 1 src/babykev/api.py
+```
+
+It prints the new first line.
+
+### What changed {#tut-03.3-what-changed-182c57}
+
+- <a id="tut-03.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the docstring. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/7d02a86b5264734575f0ae987b83749c721c3b8a/src/babykev/api.py).
+  - look at `"""The contract: request and answer shapes, mapped onto the single pointer primitive.`
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -1,4 +1,4 @@
+-"""TypeSafe-compatible request/response shapes (POST /v1/systemone) mapped onto the single pointer primitive.
++"""The contract: request and answer shapes, mapped onto the single pointer primitive.
+ 
+ Noul   -> 2 options [false, true];            answer = p(true)
+ Choice -> options 'name' or 'name: desc';      answer = argmax, probabilities by name, confidence
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7d02a86b5264734575f0ae987b83749c721c3b8a). [The code after it](https://github.com/rahuldave/babykev/tree/7d02a86b5264734575f0ae987b83749c721c3b8a).
+
+## 3.4 A request names no model {#tut-03.4}
+
+The field `model` named the model for kev's server to run. babykev has one model, so a request names none.
+
+A patch to [`src/babykev/api.py`](#tut-03.4-src-babykev-api.py-2ea65f).
+
+In `src/babykev/api.py`, `SystemOneRequest` ends with the line `questions`.
+
+```bash
+uv run python -c "from babykev.api import SystemOneRequest; print(sorted(SystemOneRequest.model_fields))"
+```
+
+`model_fields` lists the fields of a pydantic model. The command prints `['questions', 'state']`.
+
+### What changed {#tut-03.4-what-changed-182c57}
+
+- <a id="tut-03.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a request has two fields, `state` and `questions`. 0 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/2413a8630c06aea68cbb29ab1600ff55416e21ed/src/babykev/api.py).
+  - look at `    questions: dict[str, Question] = Field(min_length=1)`
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -39,7 +39,6 @@ Question = Union[Noul, Choice, Score]
+ 
+ class SystemOneRequest(BaseModel):
+     state: JSONContent
+-    model: str = "kev-latest"
+     questions: dict[str, Question] = Field(min_length=1)
+ 
+ 
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/2413a8630c06aea68cbb29ab1600ff55416e21ed). [The code after it](https://github.com/rahuldave/babykev/tree/2413a8630c06aea68cbb29ab1600ff55416e21ed).
+
+## 3.5 output_tokens goes {#tut-03.5}
+
+`output_tokens` counted the tokens of an answer for a bill, and needs the tokenizer of a model. babykev bills nothing.
+
+A patch to [`src/babykev/api.py`](#tut-03.5-src-babykev-api.py-2ea65f).
+
+`src/babykev/api.py` now ends with `to_answers`.
+
+```bash
+wc -l src/babykev/api.py
+just test
+```
+
+`wc -l` counts 104 lines. `just test` prints `5 passed`, and the total is 11%, 8 of 74 statements.
+
+### What changed {#tut-03.5-what-changed-182c57}
+
+- <a id="tut-03.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the function goes. 0 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/f4639659192ee57606c516584434974f14dbe45b/src/babykev/api.py).
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -102,9 +102,3 @@ def to_answers(probs: list[list[float]], meta: list[dict]) -> dict[str, Any]:
+             score = sum(i * pi for i, pi in enumerate(p))
+             out[m["id"]] = {"type": "score", "score": r2(score), "legend": m["legend"], "probabilities": {str(i): r2(v) for i, v in enumerate(p)}, "confidence": r2(score_confidence(p))}
+     return out
+-
+-
+-def output_tokens(tok, answers: dict) -> int:
+-    """Billing-style figure: tokens of the serialised answers. Not a measure of generation (there is none)."""
+-    import json
+-    return len(tok(json.dumps(answers), add_special_tokens=False).input_ids)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/f4639659192ee57606c516584434974f14dbe45b). [The code after it](https://github.com/rahuldave/babykev/tree/f4639659192ee57606c516584434974f14dbe45b).
+
+## 3.6 Five requests about cheese, as sample data {#tut-03.6}
+
+The tests of the contract need requests to check, and the project has none. Five requests about cheese come in a file
+of their own. Each line of the file is one request, in JSON. Each question has a `label`, the right answer.
+
+A patch to [`data/cheese/sample.jsonl`](#tut-03.6-data-cheese-sample.jsonl-79f982).
+
+`data/cheese/sample.jsonl` is new, with one request on each line.
+
+```bash
+head -n 1 data/cheese/sample.jsonl | python3 -m json.tool
+```
+
+`python3 -m json.tool` prints JSON with one key on each line. The first request is about the cheese Coquetdale, and
+asks three questions. `vegetarian` is a `noul` with the label `true`. `intensity` is a `score` of four levels with the
+label `1`, the second level. `milk` is a `choice` of five options with the label `cow`.
+
+### What changed {#tut-03.6-what-changed-182c57}
+
+- <a id="tut-03.6-data-cheese-sample.jsonl-79f982"></a>`data/cheese/sample.jsonl`: each line is a request with a `state` and its `questions`. New, 5 lines. [The file](https://github.com/rahuldave/babykev/blob/a51a2eb1b7d9408614e8b1e61ccec561f12984e0/data/cheese/sample.jsonl).
+
+<details><summary>The diff of <code>data/cheese/sample.jsonl</code></summary>
+
+```diff
+@@ -0,0 +1,5 @@
++{"state":{"cheese":"Coquetdale","origin":"Coquet, England","style":"soft-ripened","notes":{"texture":["creamy"],"flavour":["fruity"],"aroma":["rich"]},"colour":"pale yellow"},"questions":{"vegetarian":{"type":"noul","instructions":"Would you offer this cheese to a vegetarian?","label":true,"src":"cheese/vegetarian/withheld"},"intensity":{"type":"score","instructions":"How strong is the flavour of this cheese?","criteria":["Mild: milky, buttery, gentle","Medium: nutty, fruity, earthy","Pronounced: tangy, sharp, spicy","Strong: pungent, the kind you smell first"],"label":1,"src":"cheese/intensity/stated"},"milk":{"type":"choice","instructions":"Choose the milk this cheese is made from.","criteria":{"buffalo":null,"goat":null,"mixed":"More than one kind of milk","cow":null,"sheep":null},"label":"cow","src":"cheese/milk/withheld"}}}
++{"state":"ARDSALLAGH SMOKED CHEESE. Carrigtwohill. natural rind. smooth. white. taste: mild, nutty, smokey and sweet. vegetarian.","questions":{"has_rind":{"type":"noul","instructions":"Is there a rind on this cheese?","label":true,"src":"cheese/has_rind/stated"},"milk":{"type":"choice","instructions":"What kind of milk goes into this cheese?","criteria":{"buffalo":null,"goat":null,"cow":null,"sheep":null,"mixed":"More than one kind of milk"},"label":"goat","src":"cheese/milk/withheld"},"firmness":{"type":"score","instructions":"Where does this cheese sit between soft and hard?","criteria":["Soft: spreadable or yielding","Semi-soft: supple, bends before it breaks","Semi-hard: slices cleanly","Hard: dense, for grating or breaking"],"label":2,"src":"cheese/firmness/withheld"}}}
++{"state":{"cheese":"Alisia-Victoria","milk":"cow's","notes":{"texture":["smooth"],"flavour":["buttery"],"aroma":["nutty"]},"colour":"golden yellow"},"questions":{"fresh":{"type":"noul","instructions":"Is this a fresh cheese, sold without aging?","label":false,"src":"cheese/fresh/withheld"},"origin":{"type":"choice","instructions":"Where does this cheese come from?","criteria":{"United States or Canada":null,"British Isles":"England, Scotland, Wales or Ireland","rest of the world":null,"elsewhere in Europe":null,"France":null},"label":"elsewhere in Europe","src":"cheese/origin/withheld"},"firmness":{"type":"score","instructions":"Where does this cheese sit between soft and hard?","criteria":["Soft: spreadable or yielding","Semi-soft: supple, bends before it breaks","Semi-hard: slices cleanly","Hard: dense, for grating or breaking"],"label":3,"src":"cheese/firmness/withheld"}}}
++{"state":{"cheese":"Amou","milk":"sheep's"},"questions":{"vegetarian":{"type":"noul","instructions":"Is this cheese suitable for vegetarians?","label":false,"src":"cheese/vegetarian/withheld"},"milk":{"type":"choice","instructions":"Choose the milk this cheese is made from.","criteria":{"mixed":"More than one kind of milk","goat":null,"cow":null,"sheep":null,"buffalo":null},"label":"sheep","src":"cheese/milk/stated"},"firmness":{"type":"score","instructions":"Rate the firmness of this cheese.","criteria":["Soft: spreadable or yielding","Semi-soft: supple, bends before it breaks","Semi-hard: slices cleanly","Hard: dense, for grating or breaking"],"label":3,"src":"cheese/firmness/withheld"}}}
++{"state":"LOMA ALTA. soft-ripened. mould-ripened rind. firm. white. taste: buttery and nutty. smell: rich. not vegetarian.","questions":{"origin":{"type":"choice","instructions":"Choose where this cheese originates.","criteria":{"elsewhere in Europe":null,"United States or Canada":null,"rest of the world":null,"France":null,"British Isles":"England, Scotland, Wales or Ireland"},"label":"United States or Canada","src":"cheese/origin/withheld"},"no_cow":{"type":"noul","instructions":"Is this cheese free of cow's milk?","label":false,"src":"cheese/no_cow/withheld"},"intensity":{"type":"score","instructions":"How strong is the flavour of this cheese?","criteria":["Mild: milky, buttery, gentle","Medium: nutty, fruity, earthy","Pronounced: tangy, sharp, spicy","Strong: pungent, the kind you smell first"],"label":1,"src":"cheese/intensity/stated"}}}
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a51a2eb1b7d9408614e8b1e61ccec561f12984e0). [The code after it](https://github.com/rahuldave/babykev/tree/a51a2eb1b7d9408614e8b1e61ccec561f12984e0).
+
+## 3.7 The README names the contract and the data {#tut-03.7}
+
+The table of the README names neither the contract nor the data. Rows for `api.py`, `cli.py` and the sample data take
+the place of the row of `src/babykev/`.
+
+A patch to [`README.md`](#tut-03.7-README.md-8ec9a0).
+
+In the table of `README.md`, the rows of `src/babykev/api.py`, `src/babykev/cli.py` and `data/cheese/sample.jsonl`
+stand above the row of the tests.
+
+```bash
+grep -n -E 'api.py|sample.jsonl' README.md
+```
+
+`grep` prints the two new rows.
+
+### What changed {#tut-03.7-what-changed-182c57}
+
+- <a id="tut-03.7-README.md-8ec9a0"></a>`README.md`: the rows of the contract and the data. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a3fdba91adc19206debd74d87fa107603433b202/README.md).
+  - look at ``| `data/cheese/sample.jsonl` | Five requests about cheese, one on each line. Every question has a `label`, the right answer |``
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+```diff
+@@ -63,7 +63,9 @@ help of the program itself. A recipe gives its extra words to the tool behind it
+ | Path | What it is |
+ |---|---|
+ | `pyproject.toml`, `uv.lock` | The project: its name, its Python, its dependencies, the settings of its tools, and the exact versions to install |
+-| `src/babykev/` | The code. `cli.py` is the command `babykev` |
++| `src/babykev/api.py` | The contract: the request and its three types of question as pydantic models, the text and options the model reads, and the answers made from its probabilities |
++| `src/babykev/cli.py` | The command `babykev` |
++| `data/cheese/sample.jsonl` | Five requests about cheese, one on each line. Every question has a `label`, the right answer |
+ | `tests/unit/` | The unit tests. `test_cli.py` tests the command `babykev` |
+ | `justfile` | Every task of the project, one recipe each. `just help` explains them |
+ | `README.md` | This file |
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a3fdba91adc19206debd74d87fa107603433b202). [The code after it](https://github.com/rahuldave/babykev/tree/a3fdba91adc19206debd74d87fa107603433b202).

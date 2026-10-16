@@ -1,0 +1,1470 @@
+---
+title: "5 A second file: model.py"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Init.** `just setup` brings the model's stack: torch (the CPU build, from PyTorch's own index), transformers, peft, safetensors and what they need, hypothesis for the tests, and ty, the type checker. 64 packages in `.venv`, up from 30. From uv's cache it takes a second; the first time on a machine it is a download of a few hundred megabytes.
+
+```bash
+just setup
+```
+
+**What is new:** `src/babykev/model.py`, kev's model, typed, with a docment on every parameter and return and a docstring on everything; `src/babykev/smoke.py` and `babykev smoke`; a tiny model for the tests (`tests/tiny.py`, `tests/conftest.py`); `test_model.py` and `test_smoke.py`; two recipes, `smoke` and `types`. This commit is dirty on purpose, and nothing in it can tell: the mask lets a question see the questions before it (pretend it came that way from upstream), and two lines are written the way kev wrote them, which ty refuses. Everything `just check` runs is green. Step 05a brings what can see it.
+
+**A. The four ideas.** The `sed` line prints the top of `model.py`, the module docstring, which names them. Packing: the state and every question into one sequence, marked off by five delimiter tokens. The mask: each token sees the state and its own question, never another. Positions restart after the state, so a question looks the same wherever it comes. Pointing: a head scores each option's closing token against the question's decide token; no text is generated.
+
+```bash
+sed -n '1,20p' src/babykev/model.py
+```
+
+**B. Packing, in the signature.** `encode`, lines 85 to 97: a tokenizer, a record as `to_record` returns it, two limits, and an `Encoded` back, each docment saying what the thing is. The last line printed looks up the five delimiter ids.
+
+```bash
+sed -n '85,97p' src/babykev/model.py
+```
+
+**The mask, as designed.** `branch_mask`'s docstring, lines 131 to 135 of `model.py`, states the rule: token i may attend to token j when j is not after i, and j is in the state or in the same question as i. The slide draws it as a grid. The cell that matters is a token of question 2 looking at question 1: an ordinary causal mask would allow it, and this rule forbids it. That one cell is the whole difference: it is why question 2 gets the same answer whether or not question 1 was asked. The slide shows the mask as it was designed; whether the code keeps the rule is a question for the end of this step.
+
+```bash
+sed -n '131,135p' src/babykev/model.py
+```
+
+**C. Pointing.** `PointerHead`, lines 146 to 166: two linear layers and a scaled dot product. The docments carry the shapes: `[d]`, `[K, d]`, `[K]`.
+
+```bash
+sed -n '146,166p' src/babykev/model.py
+```
+
+**What is trained.** The language model, Qwen2.5-0.5B, is frozen: 494,032,768 parameters that never change. Two things train: the LoRA adapter of rank 16, 8,798,208 parameters, and the pointer head, 459,264. That is 503,290,240 in all, 9,257,472 of them trainable, which the smoke prints as `503M parameters, 9.3M of them trainable`. The four counts were measured on step 05's code with the real model from the cache.
+
+**D. Fixtures.** A test needs things to work on before it can check anything: a sample request, a tokenizer, a model. Not the real ones, but small stand-ins made up for the tests: data such as one request with three questions, and objects such as a tokenizer with one token per character. A fixture makes one of them, in one place, for every test that asks. It is a function marked `@pytest.fixture`. A test names it as one of its arguments; pytest finds the fixture of that name, calls it, and passes in what it returns. The `sed` line prints all three of ours, the whole of `tests/conftest.py` below its imports, lines 16 to 40. `tok` is built once for the whole run, because of `scope="session"`. `record` and `model` have the default scope, one per test, so they are built fresh for every test that asks, and no test can spoil them for the next. `model` itself asks for `tok`: a fixture can use another fixture. `capsys` and `monkeypatch` at step 01 were pytest's own fixtures; these are ours.
+
+```bash
+sed -n '16,40p' tests/conftest.py
+```
+
+**Writing a fixture.** At step 01 the tests built a request with a helper, `cheese_request`, lines 32 to 43 of `test_api.py`, and six tests call it by hand, as on line 81. The `record` fixture, lines 30 to 40 of `conftest.py`, does the same job the other way round: it is marked `@pytest.fixture`, and a test asks for it by name. To write one: a function that returns what the test needs, marked `@pytest.fixture`, in `conftest.py` if more than one file needs it. If the test leaves something to clean up, the fixture uses `yield` instead of `return`, and the code after `yield` runs when the test is done; `tmp_path`, which the documentation tests used at step 04, is pytest's own fixture of that kind.
+
+```bash
+sed -n '32,43p' tests/unit/test_api.py
+sed -n '81p' tests/unit/test_api.py
+sed -n '30,40p' tests/conftest.py
+```
+
+**`conftest.py`.** pytest reads `tests/conftest.py` before it runs any test, and every test file under `tests/` can use its fixtures without importing anything. Ours contains three fixtures: `tok`, the tiny tokenizer; `model`, a tiny model; `record`, one request with a state and three questions. Eight test functions ask for them: all eight for `tok`, four for `record`, two for `model`. pytest runs them as 12 tests, because one of the eight, the forgery test, runs once for each of the five delimiters. `just test --fixtures` lists every fixture pytest can see, 125 lines on the terminal with just's echo of the command: pytest's own and its plugins' first, then, at the end, under `fixtures defined from conftest`, ours, each with the line of its `def` in `conftest.py` (17, 23 and 31) and its docstring.
+
+```bash
+just test --fixtures
+```
+
+**Fixtures in use.** Eight test functions ask for the fixtures, and each asks for its own mix. `tok`: all eight. `record`: `test_positions_restart_after_the_state`, `test_a_question_that_does_not_fit_is_refused`, `test_probabilities_sum_to_one_for_every_question`, `test_with_an_adapter_only_the_adapter_and_the_head_train`. `model`: `test_probabilities_sum_to_one_for_every_question` and `test_smoke_reports_on_every_question_of_the_sample`. The other three that ask only for `tok` are `test_packing_marks_every_part_with_its_delimiter` and the two forgery tests. The `sed` lines print three of them. `test_positions_restart_after_the_state`, lines 60 to 69 of `test_model.py`, kind: unit, takes `tok` and `record`. `test_probabilities_sum_to_one_for_every_question`, lines 137 to 146, kind: integration, takes all three, and expects `[2, 3, 3]` because the `record` fixture's three questions have 2, 3 and 3 options: a fixture's data is known in advance, so a test can expect exact numbers. `test_smoke_reports_on_every_question_of_the_sample`, lines 9 to 21 of `test_smoke.py`, kind: integration, takes `model` and `tok`. Each test gets its own fresh `model` and `record`; all share one `tok`. `just test --fixtures-per-test` names the fixtures a test uses and where each is defined: for `-k "probabilities_sum or positions_restart"`, the two tests, `record` and `tok` for the first, `model`, `record` and `tok` for the second, each with its line in `conftest.py` and its docstring; for `test_smoke.py`, `model` and `tok`.
+
+```bash
+sed -n '60,69p' tests/unit/test_model.py
+sed -n '137,146p' tests/unit/test_model.py
+sed -n '9,21p' tests/unit/test_smoke.py
+just test --fixtures-per-test -k "probabilities_sum or positions_restart"
+just test --fixtures-per-test tests/unit/test_smoke.py
+```
+
+**E. The tiny model: a test that uses it.** `test_probabilities_sum_to_one_for_every_question`, lines 137 to 146 of `test_model.py`, kind: integration: packing, the model and the head together. The test never says "tiny". It names `model` and `tok` as arguments, and pytest passes it the tiny model and the tiny tokenizer. `encode(tok, record)` turns the record into tokens with the tiny tokenizer, and `model.probs(...)` runs them through the tiny model and the pointer head. The code that runs is our real `DecisionModel`, from `model.py`; only the backbone and the tokenizer under it are small. Nothing is trained, so the probabilities mean nothing. The test checks what is true of any probabilities: one per option, `[2, 3, 3]`, and they add up to 1. `just test -k probabilities_sum`: 1 passed.
+
+```bash
+sed -n '137,146p' tests/unit/test_model.py
+just test -k probabilities_sum
+```
+
+**The tiny model: where `model` and `tok` come from.** `tests/conftest.py`, lines 16 to 27, contains two fixtures. `tok`, lines 16 to 19, returns `tiny_tokenizer()`; it is built once for the whole run (`scope="session"`). `model`, lines 22 to 27, returns `DecisionModel("tiny", "cpu", backbone=tiny_backbone(len(tok))).eval()`, a decision model on the tiny backbone, without an adapter; it is built again for each test, the default scope. pytest calls the two fixtures and passes what they return to every test that names them. `tests/tiny.py` contains two ordinary functions, `tiny_tokenizer` on line 16 and `tiny_backbone` from line 31. Nothing marks them `@pytest.fixture`: they build the two small parts, and any code can call them, as the two fixtures do. Why the builders are not fixtures: our `model` fixture takes no arguments and always returns one model, without an adapter. The adapter test needs a tiny model with an adapter, so it calls the function itself, at line 163 of `test_model.py`: `DecisionModel("tiny", "cpu", lora=4, backbone=tiny_backbone(len(tok)))`. `test_model.py` also calls `tiny_tokenizer()` at line 14, `TOK = tiny_tokenizer()`, for two tests further down, at lines 82 and 115. Those two are fed by hypothesis, which runs a test many times; hypothesis refuses a test that takes a function-scoped fixture such as `model` (step 05a tries it), so a test that hypothesis feeds builds what it needs itself. The `grep` line finds every call.
+
+```bash
+sed -n '16p;31,34p' tests/tiny.py
+sed -n '16,27p' tests/conftest.py
+grep -n "tiny_backbone\|tiny_tokenizer" tests/unit/test_model.py tests/conftest.py
+```
+
+**The tiny model: what the two functions build.** Both halves are built in memory, with no download. The tokenizer has one token for each of the 100 printable characters, one for each of the five delimiters, and `[UNK]`, the token for any other character: 106 tokens in all; the `python` line asks it to split "Roquefort" and gets nine tokens, one per letter. The backbone is Qwen's own code, `Qwen2Model`, built smaller: 2 layers of 32 numbers, where the real model has 24 layers of 896. Its weights are random, from a fixed seed, so they are the same every run. The second `python` line counts them: 24,224 parameters, against the real backbone's 494,032,768.
+
+```bash
+sed -n '22,27p' tests/tiny.py
+sed -n '37,46p' tests/tiny.py
+uv run python -c "from tests.tiny import tiny_tokenizer; t = tiny_tokenizer(); print(len(t), t.tokenize('Roquefort'))"
+uv run python -c "from tests.tiny import tiny_backbone; print(sum(p.numel() for p in tiny_backbone(106).parameters()))"
+```
+
+**F. The tiny model, why it is enough.** What the tests check is exact: which token may see which, where the positions start, which parameters get a gradient. That is true for any weights, trained or random. What the tiny model cannot tell: whether the answers are any good, how the real tokenizer splits words, how fast it runs on a GPU. What it buys: no download, no GPU, a few seconds. It is a working, simplified stand-in for the real model; testers call such a stand-in a fake. Only our code can make these tests fail: no network, no download, and they run on the CPU, which every machine has. They are hermetic, so they run on every commit.
+
+**G. Kinds of tests.** Five names, by how much of the program a test runs. A unit test runs one function alone: `test_score_confidence_is_zero_for_a_guess` gives `score_confidence` three numbers. An integration test runs several of our parts together, with stand-ins for what comes from outside: `test_probabilities_sum_to_one_for_every_question` packs a request and runs the model and the head, and `test_smoke_reports_on_every_question_of_the_sample` takes each request of the sample file through the contract, the packing, the model and the answers, both on the tiny model. An end-to-end, or system, test runs the whole program with its real parts, the way a user does: `just smoke local`, on the real model. A smoke test is a quick end-to-end run, to see whether the program starts and answers at all; our end-to-end run is a smoke. An acceptance test asks whether a promise to the users is kept, such as an answer within 50 ms; we have none. An end-to-end test uses the real parts, so something outside our code can make it fail: it is never hermetic, and our smoke needs the download and a device. An integration test is hermetic only when what comes from outside is replaced: ours are, because the tiny model replaces the real one; one that talks to a real database is not. The tiny model is not a kind of test: it is the stand-in for the real model, and the `model` fixture returns it to the tests that name it. A test's name says what it calls, not what kind of test it is: `test_smoke_reports_on_every_question_of_the_sample` calls our function `smoke`, but it is an integration test, not a smoke test. Teams draw the lines between these names differently, so when you call a test an integration test, say what runs in it.
+
+**H. The tests.** `just test`: 92 passed, 23 of them new. The coverage table has two new rows: `model.py` 96% (the CUDA branch and the real-model loading path are not reached by a tiny model), `smoke.py` 71% (its `main` loads the real model). Total 94%, over the floor. The first run after a move takes about 30 seconds while Python compiles torch's modules; after that, about 7.
+
+```bash
+just test
+```
+
+`just test -k forge` runs the forgery tests alone: 6 passed. Kind: unit, `user_tokens` and a tokenizer. The `sed` line prints two of them: the first proves the danger is real (the text of a delimiter, tokenized plainly, becomes that delimiter), the second that `user_tokens` closes the door, for each of the five.
+
+```bash
+just test -k forge
+sed -n '96,112p' tests/unit/test_model.py
+```
+
+Two more to read. `test_smoke.py`, lines 9 to 21, kind: integration. It calls our function `smoke` with the tiny model, and the report must have a line for each of the fifteen questions of the sample, and a closing count. `just test -k smoke_reports`: 1 passed, and no model was downloaded for it.
+
+```bash
+sed -n '9,21p' tests/unit/test_smoke.py
+just test -k smoke_reports
+```
+
+And the weighty one, `test_model.py` lines 158 to 178, kind: integration, what trains: one backward pass on the tiny model with an adapter, then every parameter that received a gradient is named, and all of them are the adapter's or the head's, and `trainable_parameters` lists exactly those. `just test -k only_the_adapter`: 1 passed. This test says what fine-tuning means here: the backbone never moves; nine million parameters do.
+
+```bash
+sed -n '158,178p' tests/unit/test_model.py
+just test -k only_the_adapter
+```
+
+**I. Documented, and checked.** `just docs check`: 139 of 139, every function, method and class in the package, the tests and `docs/apidocs.py`. `just check`: green, 15 seconds now that the model tests are in it.
+
+```bash
+just docs check
+just check
+```
+
+**What a smoke test is.** The name comes from electronics: switch a new circuit on, and see whether it smokes. A smoke test asks whether the whole thing starts and gives an answer at all, not whether the answer is right. It is fast and shallow, and runs first, before the slow and deep tests. Ours loads the real model, asks the 15 sample questions, and prints each answer beside its label. Kind: smoke, which is end-to-end; run by hand, not part of `just test`.
+
+**J. The smoke, as a command.** `uv run babykev smoke` is the program's new word. It loads the base model, Qwen2.5-0.5B, with a fresh adapter and an untrained pointer head, on the best device this machine has (`mps` here, Apple's GPU), and asks it the five sample requests. It prints the device, the load time (4 s), the parameter counts (503M, 9.3M of them trainable: the adapter and the head), then each answer beside its label, and the count: 6 of 15 right, about 200 ms a request on this Mac (198 ms at one run, 212 at another). 10 seconds in all. The first time on a machine, the download of the base model, about 1 GB. Nothing is trained, so these are guesses. What the run proves is that the pieces fit: the contract, the packing, the model, the answers.
+
+```bash
+uv run babykev smoke
+```
+
+`just --show smoke` prints the recipe: a script with three branches, `help`, `local` (the command above), and anything else refused with a message, because no other platform exists yet. `just smoke local` runs it: the same report, 6 of 15 right. From now on, `just smoke local`.
+
+```bash
+just --show smoke
+just smoke local
+```
+
+**K. The type checker.** A type says what kind of value something is: a whole number, a list of numbers, a tokenizer. Since step 03, every function of ours says the types it takes and the type it returns, and we use this in docments. `uv run ty check` is ty: it compares every call and every `return` with what the function says, by reading the code, without running it. It prints 6 diagnostics, in 3 seconds. The code runs, and every test passes; ty finds the places where a caller trusts more than the called function promises.
+
+```bash
+uv run ty check
+```
+
+`just --show types` prints the recipe: its comment, two attributes, its name, and a body of one line, `uv run ty check "$@"`, inside an `if` that answers `help`. The words after `just types` go to ty. From now on, `just types`.
+
+```bash
+just --show types
+just types
+```
+
+`just --show check` shows what is not there: no `types` line. Here we run ty by hand and read what it finds. `just check` does not include it yet, so a commit with negative ty findings still goes through, and the hook let this commit in with its six findings. At the next step, 05a, `just check` runs ty too. From then on, a commit with a negative ty finding is refused.
+
+```bash
+just --show check
+```
+
+**Currently we get six findings.** Each is printed with a file, a line and a code. `model.py:68`, `invalid-return-type`: `load_tokenizer` says it returns a `PreTrainedTokenizerBase`, and returns what `AutoTokenizer.from_pretrained` gives, which the library says may be one of two backends or `None`. `model.py:97`, `not-iterable`: the result of `convert_tokens_to_ids` may be a single number, which cannot be split into five names. `test_model.py:49` and `:120`, `not-iterable`: the same. `test_model.py:100`, `not-subscriptable`: the same result, followed by `[4]`; a single number has no item 4. `test_model.py:111`, `invalid-argument-type`: the same result, given to `set(...)`, which needs something it can go through item by item. The first comes from one call; the other five from one other call, `convert_tokens_to_ids`. The `sed` line prints the first.
+
+```bash
+sed -n '65,68p' src/babykev/model.py
+```
+
+**The five findings from one call.** `model.py` line 97 splits the result of `tok.convert_tokens_to_ids(SPECIAL)` into five names. `SPECIAL` is the list of the five delimiters, and `convert_tokens_to_ids` turns tokens into their numbers. The library says it returns `int | list[int]`: one number when given one token, a list when given a list. We give it a list of five, so it returns a list of five, and the line de-structures them into five names. The code runs, and the tests pass. ty reads only what the library says, not what happens at run time, and "it may be one number" is enough: one number cannot be split into five names. The `grep` line finds the call in `model.py` and the tests: line 52 of `test_model.py` passes one character at a time and uses each result as one number, so ty has nothing to say about it. In the next step, 05a, we call this once, in a new function `delimiter_ids`, which always returns a list. It also makes `load_tokenizer` stop with an error when it gets no tokenizer. Then ty finds nothing, and `just types` joins `just check`.
+
+```bash
+sed -n '97p' src/babykev/model.py
+grep -n "convert_tokens_to_ids" src/babykev/model.py tests/unit/test_model.py
+```
+
+**L. The problem with the mask as written.** This is what the mask should be, token by token: say we have a small request of six tokens, numbered 1 to 6 in the order they are packed: two for the state, two for question 1, two for question 2. The mask says, for each token, which tokens it may look at. The slide draws it as a grid, one row per token, `#` for "may look at this token" and `.` for "may not". No token may look at a token after it, so everything right of the diagonal is `.`. The tokens of question 2, rows 5 and 6, may not look at question 1, tokens 3 and 4: rows 5 and 6 read `##..#.` and `##..##`. This is the red cell of the earlier picture, token by token, and it is the rule of `branch_mask`'s docstring, lines 131 to 135.
+
+**All green, and the mask is wrong.** Here there is no test that checks the mask. Every check in `just check` passes: 92 tests, 94% coverage, 139 of 139 documented, a smoke that answers every question. Coverage counts `branch_mask` as tested, because its lines ran; no test looks at the mask the code here builds. The `python` line asks `branch_mask` for the mask of the six tokens of the last slide, parts `[0, 0, 1, 1, 2, 2]`, and prints it as rows of `#` and `.`. Rows 1 to 4 are as they should be. Rows 5 and 6 are `#####.` and `######`: question 2 may look at question 1. The `sed` line prints the cause, line 140. `same` should be yes only when two tokens are in the same question, or the other one is in the state; `torch.ones_like(causal)` makes it yes for every pair, so every token may look at every token before it.
+
+```bash
+uv run python -c "from babykev.model import branch_mask; m = branch_mask([0, 0, 1, 1, 2, 2], 'cpu')[0, 0] == 0; print('\n'.join(''.join('#' if x else '.' for x in r) for r in m))"
+sed -n '140p' src/babykev/model.py
+```
+
+**A check that sees it.** At step 05 there is no test of the mask, and we bring none forward: a few lines of plain Python do the job. The slide shows them as a function; the shell runs the same comparison as a here document, where `python -` reads the lines up to `EOF`. The lines import `branch_mask`, hold the right mask for six tokens, two of the state and two each of two questions, as six lines of `#` and `.`, build the mask with `branch_mask` for the parts `[0, 0, 1, 1, 2, 2]`, and print each pair of rows, the right one and the built one, with `ok` or `WRONG`. Rows 1 to 4 print `ok`. Row 5 prints `##..#. #####. WRONG`: the state and itself are right, and the built mask also takes question 1's two tokens. Row 6 prints `##..## ###### WRONG`. The same two rows as the grids of the last slide. Nothing to clean up: nothing was written to a file.
+
+```bash
+uv run python - <<'EOF'
+from babykev.model import branch_mask
+picture = ["#.....", "##....", "###...", "####..", "##..#.", "##..##"]
+mask = branch_mask([0, 0, 1, 1, 2, 2], "cpu")[0, 0] == 0
+rows = ["".join("#" if ok else "." for ok in row) for row in mask]
+for want, got in zip(picture, rows, strict=True): print(want, got, "ok" if want == got else "WRONG")
+EOF
+```
+
+**The commit anyway.** The last slide, with Pavlos. Normally we would fix before we commit. This commit went in with the mask wrong, and with six ty findings, on purpose: nothing in `just check` can see either, so the hook let it through. Pavlos distracted us, so we committed and went to his class. The next step is what we do when we come back.
+
+**What the next step does.** Step 05a brings the seven tests that see the mask, the one-line fix, the two guards ty asked for, `just types` into `check`, and two pages on the model.
+
+## What changed {#step-05-what-changed-182c57}
+
+- <a id="step-05-README.md-8ec9a0"></a>`README.md`: 19 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/README.md).
+- <a id="step-05-justfile-424f0b"></a>`justfile`: adds `recipe smoke`, `recipe types`. 17 lines added. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/justfile).
+- <a id="step-05-pyproject.toml-5d07e7"></a>`pyproject.toml`: 20 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/pyproject.toml).
+- <a id="step-05-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: changes `main`. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/src/babykev/cli.py).
+- <a id="step-05-src-babykev-docs.py-267fa4"></a>`src/babykev/docs.py`: adds `key_comments`, `keys_table`, `python_files`, `unwrapped`; changes `check`, `entry`, `file_modules`, `gaps_of`, `main`, `methods`, `own`. 56 lines added, 12 removed. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/src/babykev/docs.py).
+- <a id="step-05-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: adds `__init__`, `branch_mask`, `class DecisionModel`, `class Encoded`, `class PointerHead`, `encode`, `forward`, `hidden`, `load_tokenizer`, `pick_device`, `probs`, `trainable_parameters`, `user_tokens`. New, 232 lines. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/src/babykev/model.py).
+- <a id="step-05-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: adds `answer`, `main`, `read_lines`, `smoke`, `verdict`. New, 122 lines. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/src/babykev/smoke.py).
+- <a id="step-05-tests-conftest.py-626af3"></a>`tests/conftest.py`: adds `model`, `record`, `tok`. New, 40 lines. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/tests/conftest.py).
+- <a id="step-05-tests-tiny.py-70c1c9"></a>`tests/tiny.py`: adds `tiny_backbone`, `tiny_tokenizer`. New, 46 lines. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/tests/tiny.py).
+- <a id="step-05-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: adds `test_smoke_runs_the_smoke`. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/tests/unit/test_cli.py).
+- <a id="step-05-tests-unit-test_docs.py-31dd08"></a>`tests/unit/test_docs.py`: adds `class Point`, `grow`, `inner`, `logged`, `test_a_decorated_method_is_seen_through_its_decorator`, `test_check_holds_the_tests_and_the_root_and_docs_files_too`, `test_markdown_shows_a_typeddict_as_a_table_of_keys`; changes `test_check_prints_a_count_per_module_then_every_gap_and_fails`, `test_gaps_names_what_each_symbol_is_missing`, `test_inventory_lists_the_public_symbols_in_source_order`, `test_list_prints_one_line_per_symbol`; removes `test_check_holds_the_tests_to_the_convention_too`. 69 lines added, 12 removed. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/tests/unit/test_docs.py).
+- <a id="step-05-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: adds `logits_of`, `test_a_packed_record_has_exactly_the_delimiters_its_shape_needs`, `test_a_question_that_does_not_fit_is_refused`, `test_a_tokenizer_alone_would_let_text_forge_a_delimiter`, `test_packed_lists_always_line_up`, `test_packing_marks_every_part_with_its_delimiter`, `test_pick_device_finds_something_to_run_on`, `test_pick_device_takes_an_override`, `test_pointer_head_gives_one_logit_per_option`, `test_positions_restart_after_the_state`, `test_probabilities_sum_to_one_for_every_question`, `test_user_text_cannot_forge_a_delimiter`, `test_with_an_adapter_only_the_adapter_and_the_head_train`. New, 190 lines. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/tests/unit/test_model.py).
+- <a id="step-05-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: adds `test_smoke_reports_on_every_question_of_the_sample`, `test_verdict_agrees_when_the_answer_is_the_label`, `test_verdict_reads_a_noul_answer_as_yes_from_one_half`, `test_verdict_reads_a_score_answer_as_its_most_likely_level`. New, 44 lines. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/tests/unit/test_smoke.py).
+- <a id="step-05-uv.lock-8356d8"></a>`uv.lock`: 766 lines added, 13 removed. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/uv.lock).
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+```diff
+@@ -50,7 +50,8 @@ Three tools on the machine. This project installs everything else itself.
+ | [just](https://just.systems/) | The project's tasks. `just` lists them |
+ | [Quarto](https://quarto.org/) | The docs site: `just docs`. `just setup` says if it is missing |
+ 
+-Then `just setup`, and `just test`. `just fmt` formats the code and `just lint` checks it against the
++Then `just setup`, and `just test`. `just setup` installs torch's CPU build from PyTorch's own index,
++which is enough for the tests and for running the model on a laptop. `just fmt` formats the code and `just lint` checks it against the
+ rules in `pyproject.toml`. `just check` runs everything a commit must pass, and `just setup` installs it
+ as a git hook, so a commit that fails a check is refused. `just` lists the tasks, `just help VERB` explains one, and `uv run
+ babykev help` is the program's own help. Extra arguments go to the tool behind a recipe: `just test -k
+@@ -65,17 +66,32 @@ parameter and the return, which the formatter and the linter leave alone as long
+ characters. `src/babykev/docs.py` is the example to read. `just docs check` is part of `just check`, so a
+ commit that leaves a gap is refused by the hook.
+ 
++## Running it
++
++`just smoke local` runs everything that exists so far, end to end, on this machine: it loads the base
++model, Qwen2.5-0.5B, with a fresh adapter and an untrained pointer head, asks it the questions in the
++sample data, and prints each answer beside its label. Nothing is trained yet, so the answers are guesses;
++what the run shows is that the pieces fit. The first run downloads the base model from the Hugging Face
++Hub, about 1 GB, into its cache; later runs read it from there. The platform is a word of the recipe, and
++only `local` exists so far.
++
++`just types` is ty, the type checker: it reads every call against what the called function declares.
++It is not part of `just check` yet.
++
+ ## What is here
+ 
+ | Path | What it is |
+ |---|---|
+ | `pyproject.toml`, `uv.lock` | The project: its name, its Python, its dependencies, the settings of its tools (the formatter's, and every lint rule with its reason), and the exact versions installed |
+ | `src/babykev/api.py` | The contract: the request and its three question types as Pydantic models, how they become the text and options the model sees, and how probabilities become answers |
+-| `src/babykev/cli.py` | The `babykev` command |
++| `src/babykev/cli.py` | The `babykev` command: `docs` and `smoke` |
++| `src/babykev/model.py` | The model: packing a context and its questions into one sequence, the mask that keeps questions apart, the pointer head that scores options, and the class that puts them on a language model |
++| `src/babykev/smoke.py` | The smoke run behind `just smoke` |
+ | `src/babykev/docs.py` | What the code says about itself, as plain Markdown: `babykev docs list`, `docs module NAME`, `docs check` |
+ | `docs/` | The docs site: `_quarto.yml`, the front page `index.qmd`, `apidocs.py` (writes the reference pages from `babykev docs` before every render) and `linkify.lua` (a name in backticks becomes a link). The built site in `_site/` is not committed |
+ | `data/cheese/sample.jsonl` | Five lines of data. Each is a request about a cheese with a `label` on every question: the right answer |
+-| `tests/unit/` | Unit tests of the contract, of the command and of the documentation. One test checks every line of the sample data against the contract |
++| `tests/unit/` | Unit tests of the contract, of the command, of the documentation, of the model and of the smoke. One test checks every line of the sample data against the contract |
++| `tests/tiny.py`, `tests/conftest.py` | A tokenizer with one token per character and a two-layer backbone with random weights, built in memory: the model's tests need no download and no GPU |
+ | `justfile` | Every task of the project, one recipe each. `just help` explains them |
+ | `LICENSE`, `NOTICE` | The licence, and the credit to kev |
+ | `.python-version` | The Python version the project uses |
+```
+
+</details>
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -57,6 +57,12 @@ lint-config *args:
+     uv lock --check
+     just --fmt --check --unstable
+ 
++# Check the types: what a caller passes against what a function declares. Extra arguments go to ty
++[group('quality')]
++[no-exit-message]
++types *args:
++    {{ if args == "help" { "just help types" } else { 'uv run ty check "$@"' } }}
++
+ # Run the tests, with coverage of src/babykev. Extra arguments go to pytest: just test -k render
+ [group('quality')]
+ [no-exit-message]
+@@ -84,3 +90,14 @@ docs *args:
+     if [ "$*" = help ]; then just help docs; exit 0; fi
+     if [ "$#" -eq 0 ]; then exec uv run quarto render docs; fi
+     exec uv run {{ program }} docs "$@"
++
++# Run everything that exists so far on the real model: just smoke local. Other platforms arrive later
++[group('model')]
++[no-exit-message]
++smoke *args:
++    #!/usr/bin/env sh
++    case "$*" in
++        help) just help smoke ;;
++        local) exec uv run {{ program }} smoke ;;
++        *) echo "smoke: the platform is local; $* is not here yet" >&2; exit 2 ;;
++    esac
+```
+
+</details>
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -9,7 +9,11 @@ authors = [{ name = "Rahul Dave" }]
+ requires-python = ">=3.13"
+ dependencies = [
+     "fastcore>=2.2.32",
++    "peft>=0.21",
+     "pydantic>=2.11",
++    "safetensors>=0.5",
++    "torch>=2.14,<2.15",
++    "transformers>=5.17,<6",
+ ]
+ 
+ [project.scripts]
+@@ -21,6 +25,7 @@ build-backend = "uv_build"
+ 
+ [dependency-groups]
+ test = [
++    "hypothesis>=6.168",
+     "pytest>=9.1",
+     "pytest-cov>=7.1.0",
+ ]
+@@ -28,12 +33,22 @@ dev = [{ include-group = "test" }, { include-group = "lint" }]
+ lint = [
+     "pre-commit>=4.6",
+     "ruff>=0.16",
++    "ty>=0.0.84",
+     "validate-pyproject>=0.26",
+     "yamllint>=1.38",
+ ]
+ 
++# torch comes in several builds. This project installs the CPU build everywhere, from PyTorch's own
++# index: small, and enough for the tests and for inference on a laptop. `explicit` keeps every other
++# package on PyPI. A GPU build arrives with the first platform that has a GPU.
++[[tool.uv.index]]
++name = "pytorch-cpu"
++url = "https://download.pytorch.org/whl/cpu"
++explicit = true
++
+ [tool.pytest.ini_options]
+ testpaths = ["tests"]
++pythonpath = ["."] # so that a test can import its helpers as tests.tiny
+ # Every run measures how much of src/babykev the tests touch and lists the lines they do not
+ addopts = "--cov=babykev --cov-report=term-missing"
+ 
+@@ -72,5 +87,8 @@ select = [
+ ignore = ["S311"]
+ 
+ [tool.ruff.lint.per-file-ignores]
+-# A test is written with assert
+-"tests/**" = ["S101"]
++# A test is written with assert. S106 mistakes the tokenizer argument `unk_token` for a password
++"tests/**" = ["S101", "S106"]
++
++[tool.uv.sources]
++torch = { index = "pytorch-cpu" } # the CPU build, from the index above
+```
+
+</details>
+
+<details><summary>The diff of <code>src/babykev/cli.py</code></summary>
+
+```diff
+@@ -12,6 +12,7 @@ usage: babykev COMMAND [FLAGS]
+ 
+ commands:
+   docs    what the code says about itself, as Markdown: docs list, docs module NAME, docs check
++  smoke   load the base model on this machine and answer the five sample requests, untrained
+ """
+ 
+ 
+@@ -23,5 +24,9 @@ def main() -> None:
+         return
+     if words[0] == "docs":
+         raise SystemExit(docs.main(words[1:]))
++    if words[0] == "smoke":
++        from babykev import smoke  # imports torch, so only when asked for
++
++        raise SystemExit(smoke.main(words[1:]))
+     print(f"babykev: no command named {words[0]!r}. Run `babykev help`.", file=sys.stderr)
+     raise SystemExit(2)
+```
+
+</details>
+
+<details><summary>The diff of <code>src/babykev/docs.py</code></summary>
+
+```diff
+@@ -7,7 +7,8 @@
+ Types come from the annotations, the description of a parameter from its docment (the comment beside
+ it, read by fastcore) and the summary from the docstring. Nothing is written twice. The output is
+ plain Markdown with no links, ids or URLs, so that a person, an agent or the docs site can read it.
+-`list` and `module` show the package; `check` holds the package and the tests to the convention.
++`list` and `module` show the package; `check` holds the package, the tests, and the Python files at
++the root and under `docs/` to the convention.
+ 
+ How to write a docment, so that the formatter and the linter leave it alone: one parameter per
+ line, a trailing comma after the last, the comment two spaces after the code; the return's comment
+@@ -20,6 +21,7 @@ lint rule looks inside one.
+ import importlib
+ import importlib.util
+ import inspect
++import re
+ import sys
+ import types
+ import typing
+@@ -32,8 +34,9 @@ from fastcore.docments import docments
+ from pydantic import BaseModel
+ 
+ PACKAGE = "babykev"
+-TESTS = Path("tests")
++ROOT = Path()
+ EMPTY = inspect.Parameter.empty
++KEY_COMMENT = re.compile(r"^\s+(\w+)\s*:[^#\n]+#\s*(.+)$", re.MULTILINE)
+ USAGE = """\
+ usage: babykev docs list            every module, class, method and function, one line each
+        babykev docs module NAME     one module as Markdown: api, cli or docs
+@@ -63,12 +66,20 @@ def package_modules(
+     return [importlib.import_module(f"{package}.{n}") for n in names]
+ 
+ 
++def python_files(
++    root: Path,  # The repository's root
++) -> list[Path]:  # Every `.py` file at the root, under `docs/` and under `tests/`, in that order
++    """Find the Python files that are not the package and are held to the convention too."""
++    found = sorted(root.glob("*.py")) + sorted((root / "docs").glob("*.py"))
++    return found + sorted((root / "tests").rglob("*.py"))
++
++
+ def file_modules(
+-    folder: Path,  # A folder of Python files, such as `tests/`
+-) -> list[ModuleType]:  # One module per file found, named by its path, in path order
+-    """Import every Python file under a folder as a module of its own, named by its path."""
++    files: list[Path],  # Python files that are not part of a package
++) -> list[ModuleType]:  # One module per file, named by its path, in the order given
++    """Import Python files as modules of their own, named by their paths."""
+     mods = []
+-    for file in sorted(folder.rglob("*.py")):
++    for file in files:
+         name = file.as_posix()
+         spec = importlib.util.spec_from_file_location(name, file)
+         if spec is None or spec.loader is None:
+@@ -112,6 +123,14 @@ def line_of(
+     return inspect.getsourcelines(sym)[1]
+ 
+ 
++def unwrapped(
++    obj: object,  # Anything a module or a class holds under a name
++) -> object:  # The function inside it when it is a decorator's wrapper; otherwise the object itself
++    """See through a decorator that kept the function, as `functools.wraps` and a fixture do."""
++    inner = getattr(obj, "__func__", obj)
++    return inspect.unwrap(inner) if callable(inner) and hasattr(inner, "__wrapped__") else inner
++
++
+ def own(
+     mod: ModuleType,  # An imported module
+     private: bool = False,  # Include names that start with an underscore
+@@ -119,7 +138,7 @@ def own(
+     """List the functions and classes a module defines itself, in source order; not its imports."""
+     found = [
+         o
+-        for n, o in vars(mod).items()
++        for n, o in ((n, unwrapped(o)) for n, o in vars(mod).items())
+         if (private or not n.startswith("_"))
+         and (inspect.isfunction(o) or inspect.isclass(o))
+         and o.__module__ == mod.__name__
+@@ -139,7 +158,7 @@ def methods(
+     private: bool = False,  # Include names that start with one underscore
+ ) -> list[FunctionType]:  # The methods the class defines, in source order
+     """List the methods a class defines itself, in source order, not what it inherits."""
+-    found = [(n, getattr(o, "__func__", o)) for n, o in vars(klass).items() if not is_dunder(n)]
++    found = [(n, unwrapped(o)) for n, o in vars(klass).items() if not is_dunder(n)]
+     own_ = [o for n, o in found if (private or not n.startswith("_")) and inspect.isfunction(o)]
+     return sorted(own_, key=line_of)
+ 
+@@ -281,6 +300,24 @@ def fields_table(
+     return table(rows, ["Field", "Type", "Default", "Description"])
+ 
+ 
++def key_comments(
++    klass: type,  # A TypedDict class
++) -> dict[str, str]:  # For each key that has one, the comment beside it
++    """Read the docments of a TypedDict: the comment beside each key in the class body."""
++    return dict(KEY_COMMENT.findall(inspect.getsource(klass)))
++
++
++def keys_table(
++    klass: type,  # A TypedDict class
++    mod: ModuleType,  # The module it was written in
++) -> str:  # A Markdown table of its keys: type, description
++    """Describe a TypedDict by its keys, because calling it says nothing."""
++    said = key_comments(klass)
++    keys = klass.__annotations__.items()
++    rows = [[f"`{n}`", type_text(a, mod), said.get(n, "")] for n, a in keys]
++    return table(rows, ["Key", "Type", "Description"])
++
++
+ def has_init(
+     klass: type,  # A class
+ ) -> bool:  # Whether it has a constructor of its own, written by hand or by `dataclass`
+@@ -298,6 +335,8 @@ def entry(
+     head = f"{'#' * level} {'class ' if is_class else ''}{sym.__qualname__}"
+     if is_class and issubclass(sym, BaseModel):
+         parts = [head, doc(sym), fields_table(sym, mod)]
++    elif is_class and typing.is_typeddict(sym):
++        parts = [head, doc(sym), keys_table(sym, mod)]
+     elif is_class and not has_init(sym):
+         parts = [head, doc(sym)]
+     else:
+@@ -331,6 +370,9 @@ def gaps_of(
+     if is_class and issubclass(sym, BaseModel):
+         fields = sym.model_fields.items()
+         return out + [f"{name}.{n}: no description" for n, f in fields if not f.description]
++    if is_class and typing.is_typeddict(sym):
++        said = key_comments(sym)
++        return out + [f"{name}.{n}: no docment" for n in sym.__annotations__ if n not in said]
+     if is_class and not has_init(sym):
+         return out
+     for pname, d in docments(sym, full=True).items():
+@@ -361,11 +403,13 @@ def gaps(
+ 
+ def check(
+     package: str = PACKAGE,  # The package to hold to the convention
+-    tests: Path | None = None,  # A folder of tests to hold to it too, or `None`
++    root: Path = ROOT,  # The repository's root, whose own Python files are held to it too
+ ) -> int:  # The exit code: 0 when nothing is missing, 1 otherwise
+     """Print how much of each module is typed and documented, then every gap, then the total."""
+     found, done, total = [], 0, 0
+-    for mod in package_modules(package) + (file_modules(tests) if tests else []):
++    if str(root.resolve()) not in sys.path:
++        sys.path.insert(0, str(root.resolve()))  # a test imports its helpers as tests.tiny
++    for mod in package_modules(package) + file_modules(python_files(root)):
+         missing = gaps(mod)
+         found += missing.pop(mod.__name__)
+         complete = sum(not g for g in missing.values())
+@@ -380,7 +424,7 @@ def check(
+ def main(
+     words: list[str],  # The words after `babykev docs`: `list`, `module NAME`, `check`, `help`
+     package: str = PACKAGE,  # The package to document
+-    tests: Path = TESTS,  # The folder of tests that `check` holds to the convention, if it exists
++    root: Path = ROOT,  # The repository's root, for the files `check` holds to the convention
+ ) -> int:  # The exit code: 0, 1 when `check` finds a gap, 2 for words that are no command
+     """Run one docs command and return its exit code."""
+     if words in (["help"], ["--help"], ["-h"]):
+@@ -402,6 +446,6 @@ def main(
+             return 2
+         return 0
+     if words == ["check"]:
+-        return check(package, tests if tests.is_dir() else None)
++        return check(package, root)
+     print(USAGE, end="", file=sys.stderr)
+     return 2
+```
+
+</details>
+
+<details><summary>The diff of <code>src/babykev/model.py</code></summary>
+
+```diff
+@@ -0,0 +1,232 @@
++"""The model: a language model that reads a packed request, and a head that points at options.
++
++Four ideas make a language model into a decision model.
++
++1. **Packing.** `encode` writes the state and every question into one sequence of tokens. Five
++   delimiter tokens mark the parts: the state, a question, the start and the end of an option, and
++   the place where the question is decided.
++2. **The mask.** `branch_mask` lets each token see the state and its own question, and never another
++   question. The questions share one reading of the state and cannot influence each other.
++3. **Positions restart.** Each question's positions begin right after the state, so a question looks
++   the same to the model wherever it comes in the request.
++4. **Pointing.** `PointerHead` scores each option's closing token against the question's decide
++   token. The model has no vocabulary head and generates nothing.
++
++`DecisionModel` puts them together around a backbone, with a LoRA adapter if asked for.
++"""
++
++import math
++import re
++from typing import Any, TypedDict
++
++import torch
++from peft import LoraConfig, get_peft_model
++from torch import nn
++from transformers import (
++    AutoModelForCausalLM,
++    AutoTokenizer,
++    PreTrainedModel,
++    PreTrainedTokenizerBase,
++)
++
++# The delimiters are special tokens the base model already has and rarely uses, in this order:
++# state, question, option start, option end, decide. No embedding has to be added or trained for
++# them; the adapter learns their new meaning.
++SPECIAL = ["<|fim_prefix|>", "<|fim_middle|>", "<|box_start|>", "<|box_end|>", "<|fim_suffix|>"]
++MAX_STATE, MAX_BRANCH = 384, 1024
++LORA_TARGETS = ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]
++
++_SPECIAL_RE = re.compile(r"<\|([A-Za-z0-9_]+)\|>")
++
++
++class Encoded(TypedDict):
++    """One packed record, ready for the model."""
++
++    ids: list[int]  # The token ids of the whole sequence
++    seg: list[int]  # The segment of each token: 0 for the state, k for question k
++    pos: list[int]  # The position of each token; every question restarts right after the state
++    decide_idx: list[int]  # For each question, where its decide token is
++    opt_idx: list[list[int]]  # For each question, where the closing token of each option is
++    labels: list[int]  # For each question, the index of the right option
++
++
++def pick_device(
++    override: str | None = None,  # A device name to use whatever the machine has
++) -> str:  # `cuda`, `mps` or `cpu`
++    """Choose where the model runs: a CUDA GPU if there is one, then Apple's GPU, then the CPU."""
++    if override:
++        return override
++    if torch.cuda.is_available():
++        return "cuda"
++    return "mps" if torch.backends.mps.is_available() else "cpu"
++
++
++def load_tokenizer(
++    name: str,  # A model name on the Hugging Face Hub, or a local folder
++) -> PreTrainedTokenizerBase:  # Its tokenizer
++    """Load the tokenizer that belongs to a base model."""
++    return AutoTokenizer.from_pretrained(name)
++
++
++def user_tokens(
++    tok: PreTrainedTokenizerBase,  # The base model's tokenizer
++    text: str,  # Text that came from a caller: a state, an instruction or an option
++) -> list[int]:  # Its token ids, none of which is a delimiter or any other special token
++    """Tokenize a caller's text so that it can never forge a delimiter.
++
++    A tokenizer turns the string `<|box_end|>` into the special token of that name, wherever the
++    string appears. Text that contained it could close an option early. So `<|name|>` is rewritten
++    to `<¦name¦>` before tokenizing, which reads the same to a person and is ordinary text to the
++    tokenizer.
++    """
++    return tok(_SPECIAL_RE.sub(r"<¦\1¦>", text), add_special_tokens=False).input_ids
++
++
++def encode(
++    tok: PreTrainedTokenizerBase,  # The base model's tokenizer
++    rec: dict[str, Any],  # A record, as `to_record` returns it: a state and its questions
++    max_state: int = MAX_STATE,  # The longest state kept, in tokens
++    max_branch: int = MAX_BRANCH,  # The longest state and question together, in tokens
++) -> Encoded:  # The packed record
++    """Pack a record into one sequence: the state, then one branch for each question.
++
++    The state is the state delimiter and its text. A branch is the question delimiter, the
++    instruction, each option between its two delimiters, and the decide delimiter. Raises
++    `ValueError` when a branch does not fit in `max_branch`.
++    """
++    s_id, q_id, o_id, c_id, d_id = tok.convert_tokens_to_ids(SPECIAL)
++    state = [s_id] + user_tokens(tok, rec["state"])[: max_state - 1]
++    ids, seg, pos = list(state), [0] * len(state), list(range(len(state)))
++    decide_idx, opt_idx = [], []
++    for k, q in enumerate(rec["questions"], start=1):
++        br = [q_id] + user_tokens(tok, q["instr"])
++        oi = []
++        for o in q["options"]:
++            br += [o_id] + user_tokens(tok, o) + [c_id]
++            oi.append(len(br) - 1)
++        br.append(d_id)
++        if len(br) > max_branch - len(state):
++            raise ValueError(f"branch too long: {len(br)}")
++        base = len(ids)
++        ids += br
++        seg += [k] * len(br)
++        pos += list(range(len(state), len(state) + len(br)))
++        decide_idx.append(base + len(br) - 1)
++        opt_idx.append([base + i for i in oi])
++    return {
++        "ids": ids,
++        "seg": seg,
++        "pos": pos,
++        "decide_idx": decide_idx,
++        "opt_idx": opt_idx,
++        "labels": [q["label"] for q in rec["questions"]],
++    }
++
++
++def branch_mask(
++    seg: list[int],  # The segment of each token: 0 for the state, k for question k
++    device: str,  # Where to build the mask
++    dtype: torch.dtype = torch.float32,  # The number type of the model's attention scores
++) -> torch.Tensor:  # Shape [1, 1, n, n]: 0 where i may attend to j, very negative elsewhere
++    """Build the block-causal mask: a token sees the state and its own question, never a sibling.
++
++    Token i may attend to token j when j is not after i, and j is in the state or in the same
++    question as i. The mask is added to the attention scores, so a blocked pair gets the most
++    negative number the type can hold.
++    """
++    s = torch.tensor(seg, device=device)
++    n = len(seg)
++    causal = torch.tril(torch.ones(n, n, dtype=torch.bool, device=device))
++    same = torch.ones_like(causal) | (s[None, :] == 0)
++    allow = causal & same
++    blocked = torch.finfo(dtype).min
++    return torch.zeros(n, n, dtype=dtype, device=device).masked_fill(~allow, blocked)[None, None]
++
++
++class PointerHead(nn.Module):
++    """Scores the options of one question against its decide token."""
++
++    def __init__(
++        self,
++        d: int,  # The width of the backbone's hidden states
++        dp: int = 256,  # The width of the space in which options and decide tokens are compared
++    ) -> None:
++        """Make the two projections, one for decide tokens and one for options."""
++        super().__init__()
++        self.q, self.k = nn.Linear(d, dp), nn.Linear(d, dp)
++        self.scale = 1 / math.sqrt(dp)
++
++    def forward(
++        self,
++        h_decide: torch.Tensor,  # The hidden state at the decide token, shape [d]
++        h_opts: torch.Tensor,  # The hidden states at the K options' closing tokens, shape [K, d]
++    ) -> torch.Tensor:  # One logit per option, shape [K]
++        """Project both sides and take their scaled dot products."""
++        return (self.k(h_opts) @ self.q(h_decide)) * self.scale
++
++
++class DecisionModel(nn.Module):
++    """A language model without its vocabulary head, read through a mask, with a `PointerHead`."""
++
++    def __init__(
++        self,
++        name: str,  # The base model to load from the Hugging Face Hub, when no backbone is given
++        device: str,  # Where the model runs: `cuda`, `mps` or `cpu`
++        lora: int | None = None,  # The rank of a LoRA adapter to add, or `None` for no adapter
++        backbone: PreTrainedModel | None = None,  # A ready backbone, such as a small one in tests
++    ) -> None:
++        """Load or take the backbone, wrap it in an adapter if asked, and add the head."""
++        super().__init__()
++        if backbone is None:
++            # Only the transformer is kept. The vocabulary head is dropped: nothing is generated.
++            lm = AutoModelForCausalLM.from_pretrained(
++                name, dtype=torch.float32, attn_implementation="eager"
++            )
++            backbone = lm.model
++        width: int = backbone.config.hidden_size
++        self.lm: nn.Module = backbone
++        if lora:
++            cfg = LoraConfig(
++                task_type="FEATURE_EXTRACTION",
++                r=lora,
++                lora_alpha=2 * lora,
++                lora_dropout=0.05,
++                target_modules=LORA_TARGETS,
++            )
++            self.lm = get_peft_model(self.lm, cfg)
++        self.head = PointerHead(width)
++        self.device = device
++        self.to(device)
++
++    def hidden(
++        self,
++        enc: Encoded,  # A packed record
++    ) -> torch.Tensor:  # The hidden state of every token, shape [n, d]
++        """Run the backbone over a packed record, with its restarted positions and its mask."""
++        ids = torch.tensor([enc["ids"]], device=self.device)
++        pos = torch.tensor([enc["pos"]], device=self.device)
++        mask = branch_mask(enc["seg"], self.device)
++        return self.lm(input_ids=ids, position_ids=pos, attention_mask=mask).last_hidden_state[0]
++
++    def forward(
++        self,
++        enc: Encoded,  # A packed record
++    ) -> list[torch.Tensor]:  # For each question, one logit per option
++        """Score every option of every question in one pass."""
++        h = self.hidden(enc)
++        return [
++            self.head(h[d], h[torch.tensor(oi, device=self.device)])
++            for d, oi in zip(enc["decide_idx"], enc["opt_idx"], strict=True)
++        ]
++
++    @torch.no_grad()
++    def probs(
++        self,
++        enc: Encoded,  # A packed record
++    ) -> list[torch.Tensor]:  # For each question, the probability of each option, on the CPU
++        """Answer without tracking gradients: the logits of `forward` turned into probabilities."""
++        return [torch.softmax(z, -1).cpu() for z in self.forward(enc)]
++
++    def trainable_parameters(self) -> list[nn.Parameter]:  # The adapter's and the head's
++        """List the parameters that training changes."""
++        return [p for p in self.parameters() if p.requires_grad]
+```
+
+</details>
+
+<details><summary>The diff of <code>src/babykev/smoke.py</code></summary>
+
+```diff
+@@ -0,0 +1,122 @@
++"""A smoke run: everything that exists so far, end to end, on the real model.
++
++    babykev smoke
++
++It loads the base model with a fresh adapter and an untrained pointer head, asks it the questions
++in the sample data, and prints each answer beside its label. Nothing has been trained yet, so the
++answers are guesses. What the run shows is that the pieces fit: a line of data passes the contract,
++is packed into one sequence, goes through the model on whatever device there is, and comes back as
++answers.
++"""
++
++import json
++import sys
++import time
++from collections.abc import Iterator
++from pathlib import Path
++from typing import Any
++
++import torch
++from transformers import PreTrainedTokenizerBase
++
++from babykev.api import SystemOneRequest, to_answers, to_record
++from babykev.model import DecisionModel, encode, load_tokenizer, pick_device
++
++BASE = "Qwen/Qwen2.5-0.5B"
++LORA_RANK = 16
++SAMPLE = Path("data/cheese/sample.jsonl")
++USAGE = """\
++usage: babykev smoke    load the base model on this machine; answer the sample requests, untrained
++"""
++
++
++def read_lines(
++    path: Path = SAMPLE,  # A JSONL file of labelled requests
++) -> list[dict[str, Any]]:  # One labelled request per line of the file
++    """Read labelled requests from a JSONL file."""
++    with path.open(encoding="utf-8") as f:
++        return [json.loads(line) for line in f if line.strip()]
++
++
++def answer(
++    model: DecisionModel,  # The model that answers
++    tok: PreTrainedTokenizerBase,  # Its tokenizer
++    line: dict[str, Any],  # One labelled request
++) -> tuple[dict[str, Any], int, float]:  # The answers, the tokens packed, the seconds taken
++    """Answer one request: the contract, then packing, then one forward pass, then answers."""
++    record, meta = to_record(SystemOneRequest.model_validate(line))
++    enc = encode(tok, record)
++    started = time.perf_counter()
++    probs = [p.tolist() for p in model.probs(enc)]
++    return to_answers(probs, meta), len(enc["ids"]), time.perf_counter() - started
++
++
++def verdict(
++    question: dict[str, Any],  # One question of a labelled request, with its `label`
++    given: dict[str, Any],  # The model's answer to it
++) -> tuple[str, str, bool]:  # What the model said, what the label says, and whether they agree
++    """Put one answer beside its label."""
++    label = question["label"]
++    if given["type"] == "noul":
++        said = given["noul"] >= 0.5
++        return (
++            f"{'yes' if said else 'no'} ({given['noul']:.2f})",
++            "yes" if label else "no",
++            said == label,
++        )
++    if given["type"] == "choice":
++        chosen = given["choice"]
++        return f"{chosen} ({given['probabilities'][chosen]:.2f})", str(label), chosen == label
++    level = max(given["probabilities"], key=lambda i: given["probabilities"][i])
++    return f"level {level} (score {given['score']:.2f})", f"level {label}", int(level) == label
++
++
++def smoke(
++    model: DecisionModel,  # The model to try
++    tok: PreTrainedTokenizerBase,  # Its tokenizer
++    lines: list[dict[str, Any]],  # Labelled requests to ask it
++) -> Iterator[str]:  # The report, a line at a time
++    """Ask the model every question in `lines` and report each answer beside its label."""
++    answer(model, tok, lines[0])  # the first pass on a device is slow, so it is not timed
++    right, total, seconds = 0, 0, []
++    for line in lines:
++        answers, tokens, took = answer(model, tok, line)
++        seconds.append(took)
++        first = SystemOneRequest.model_validate(line)
++        state = to_record(first)[0]["state"].splitlines()[0]
++        yield f"\n{state[:70]}   [{tokens} tokens, {took * 1000:.0f} ms]"
++        for qid, question in line["questions"].items():
++            said, label, agree = verdict(question, answers[qid])
++            right, total = right + agree, total + 1
++            mark = "ok" if agree else "--"
++            yield f"  {mark}  {qid:12s} {question['type']:7s} says {said:28s} label: {label}"
++    typical = sorted(seconds)[len(seconds) // 2] * 1000
++    yield f"\n{right} of {total} right, {typical:.0f} ms a request."
++    yield "Nothing is trained yet: these are guesses."
++
++
++def main(
++    words: list[str],  # The words after `babykev smoke`: none to run, `help` for the usage
++) -> int:  # The exit code: 0, or 2 for words that are no command
++    """Load the real model on the best device there is and run the smoke on the sample data."""
++    if words in (["help"], ["--help"], ["-h"]):
++        print(USAGE, end="")
++        return 0
++    if words:
++        print(USAGE, end="", file=sys.stderr)
++        return 2
++    device = pick_device()
++    where = torch.cuda.get_device_name(0) if device == "cuda" else device
++    print(f"babykev smoke: {BASE} on {where}", flush=True)
++    started = time.perf_counter()
++    torch.manual_seed(0)
++    tok = load_tokenizer(BASE)
++    model = DecisionModel(BASE, device, lora=LORA_RANK).eval()
++    everything = sum(p.numel() for p in model.parameters())
++    trainable = sum(p.numel() for p in model.trainable_parameters())
++    loaded = time.perf_counter() - started
++    sizes = f"{everything / 1e6:.0f}M parameters, {trainable / 1e6:.1f}M of them trainable"
++    print(f"loaded in {loaded:.1f} s: {sizes}", flush=True)
++    for text in smoke(model, tok, read_lines()):
++        print(text, flush=True)
++    return 0
+```
+
+</details>
+
+<details><summary>The diff of <code>tests/conftest.py</code></summary>
+
+```diff
+@@ -0,0 +1,40 @@
++"""Shared fixtures: the tiny tokenizer, a tiny model and a record.
++
++The properties the tests check (the mask, the packing, the isolation of questions) are exact. They
++hold for any weights, so they need no trained model, no download and no GPU.
++"""
++
++from typing import Any
++
++import pytest
++from transformers import PreTrainedTokenizerFast
++
++from babykev.model import DecisionModel
++from tests.tiny import tiny_backbone, tiny_tokenizer
++
++
++@pytest.fixture(scope="session")
++def tok() -> PreTrainedTokenizerFast:  # The tiny tokenizer, built once for the whole test run
++    """Provide the tiny tokenizer."""
++    return tiny_tokenizer()
++
++
++@pytest.fixture
++def model(
++    tok: PreTrainedTokenizerFast,  # The tiny tokenizer
++) -> DecisionModel:  # A decision model on the tiny backbone, with no adapter, ready to answer
++    """Provide a fresh tiny model for each test, on the CPU."""
++    return DecisionModel("tiny", "cpu", backbone=tiny_backbone(len(tok))).eval()
++
++
++@pytest.fixture
++def record() -> dict[str, Any]:  # A record with a state and three questions
++    """Provide one record, as `to_record` would return it."""
++    return {
++        "state": "Roquefort. A blue cheese from France, made from sheep's milk.",
++        "questions": [
++            {"instr": "Is this a blue cheese?", "options": ["no", "yes"], "label": 1},
++            {"instr": "Which milk?", "options": ["cow", "goat", "sheep"], "label": 2},
++            {"instr": "How firm?", "options": ["Soft", "Semi-soft", "Hard"], "label": 1},
++        ],
++    }
+```
+
+</details>
+
+<details><summary>The diff of <code>tests/tiny.py</code></summary>
+
+```diff
+@@ -0,0 +1,46 @@
++"""A tokenizer and a backbone small enough to build in memory, with random weights.
++
++The tokenizer has one token per character. The backbone has the base model's architecture, with
++two layers and 32 dimensions. Neither needs a download.
++"""
++
++import string
++
++import torch
++from tokenizers import Tokenizer, models, pre_tokenizers
++from transformers import PreTrainedTokenizerFast, Qwen2Config, Qwen2Model
++
++from babykev.model import SPECIAL
++
++
++def tiny_tokenizer() -> PreTrainedTokenizerFast:  # A tokenizer with one token per character
++    """Build a real fast tokenizer in memory, with the five delimiters as its special tokens.
++
++    Like the base model's tokenizer, it turns the text of a special token into that token wherever
++    it appears, which is the behaviour `user_tokens` has to defend against.
++    """
++    chars = sorted(set(string.printable))
++    vocab = {"[UNK]": 0, **{c: i + 1 for i, c in enumerate(chars)}}
++    core = Tokenizer(models.WordLevel(vocab, unk_token="[UNK]"))
++    core.pre_tokenizer = pre_tokenizers.Split("", "isolated")
++    tok = PreTrainedTokenizerFast(tokenizer_object=core, unk_token="[UNK]")
++    tok.add_special_tokens({"additional_special_tokens": SPECIAL})
++    return tok
++
++
++def tiny_backbone(
++    vocab_size: int,  # How many tokens the tokenizer has
++    seed: int = 0,  # The seed of the random weights
++) -> Qwen2Model:  # A backbone of the base model's architecture, with two small layers
++    """Build a randomly initialised backbone, the same every time for the same seed."""
++    torch.manual_seed(seed)
++    config = Qwen2Config(
++        vocab_size=vocab_size,
++        hidden_size=32,
++        intermediate_size=64,
++        num_hidden_layers=2,
++        num_attention_heads=2,
++        num_key_value_heads=2,
++        max_position_embeddings=2048,
++    )
++    return Qwen2Model(config)
+```
+
+</details>
+
+<details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
+
+```diff
+@@ -47,3 +47,15 @@ def test_docs_is_passed_to_the_docs_command(
+         run(monkeypatch, "docs", "list")
+     assert exit_info.value.code == 0
+     assert "babykev.api" in capsys.readouterr().out
++
++
++def test_smoke_runs_the_smoke(
++    monkeypatch: pytest.MonkeyPatch,  # Replaces `sys.argv` and the smoke itself for this test only
++) -> None:
++    """`babykev smoke` runs the smoke's `main` with the words after it; here a stand-in."""
++    ran = []
++    monkeypatch.setattr("babykev.smoke.main", lambda words: ran.append(words) or 0)
++    with pytest.raises(SystemExit) as exit_info:
++        run(monkeypatch, "smoke")
++    assert exit_info.value.code == 0
++    assert ran == [[]]
+```
+
+</details>
+
+<details><summary>The diff of <code>tests/unit/test_docs.py</code></summary>
+
+````diff
+@@ -11,13 +11,34 @@ from babykev import docs
+ THING = '''
+ """A thing, with one function that is documented and one that is not."""
+ 
+-from typing import Literal
++import functools
++from collections.abc import Callable
++from typing import Literal, TypedDict
+ 
+ from pydantic import BaseModel, Field
+ 
+ Pair = tuple[int, int]
+ 
+ 
++def logged(
++    f: Callable,  # A function to wrap
++) -> Callable:  # The same function, wrapped
++    """Decorate a function, keeping it under `__wrapped__`."""
++
++    @functools.wraps(f)
++    def inner(*a, **k):
++        return f(*a, **k)
++
++    return inner
++
++
++class Point(TypedDict):
++    """A point, as a TypedDict: its keys are its signature."""
++
++    x: int  # Across
++    y: int
++
++
+ def greet(
+     name: str,  # Who to greet
+     times: int = 1,  # How many times over
+@@ -51,6 +72,14 @@ class Thing:
+         """Measure the thing."""
+         return 1
+ 
++    @logged
++    def grow(
++        self,
++        by: int,  # How much
++    ) -> int:  # The new size
++        """Grow the thing, through a decorator."""
++        return 1 + by
++
+     def _hidden(self):
+         return 0
+ '''
+@@ -82,12 +111,15 @@ def test_inventory_lists_the_public_symbols_in_source_order(
+     found = [(s.kind, s.name, s.summary) for s in docs.inventory(pkg)]
+     assert found == [
+         ("module", "", "A thing, with one function that is documented and one that is not."),
++        ("function", "logged", "Decorate a function, keeping it under `__wrapped__`."),
++        ("class", "Point", "A point, as a TypedDict: its keys are its signature."),
+         ("function", "greet", "Say hello."),
+         ("function", "bare", ""),
+         ("function", "span", "Print the pair."),
+         ("class", "Box", "A box, as a pydantic model: its fields are its signature."),
+         ("class", "Thing", "A thing with a method."),
+         ("method", "Thing.size", "Measure the thing."),
++        ("method", "Thing.grow", "Grow the thing, through a decorator."),
+     ]
+ 
+ 
+@@ -158,6 +190,27 @@ def test_markdown_shows_a_pydantic_model_as_a_table_of_fields(
+     assert "| `label` | str \\| None | `None` |  |" in text
+ 
+ 
++def test_markdown_shows_a_typeddict_as_a_table_of_keys(
++    tmp_path: Path,  # A folder of this test's own, where the example package is written
++    monkeypatch: pytest.MonkeyPatch,  # Makes the example importable for this test only
++) -> None:
++    """A TypedDict has no signature to show; its keys are the table, with their comments."""
++    text = docs.markdown("thing", example(tmp_path, monkeypatch))
++    assert "## class Point\n\nA point, as a TypedDict: its keys are its signature.\n\n| Key" in text
++    assert "| `x` | int | Across |" in text
++    assert "| `y` | int |  |" in text
++
++
++def test_a_decorated_method_is_seen_through_its_decorator(
++    tmp_path: Path,  # A folder of this test's own, where the example package is written
++    monkeypatch: pytest.MonkeyPatch,  # Makes the example importable for this test only
++) -> None:
++    """`Thing.grow` is wrapped by `logged`; its own signature and docments are what is shown."""
++    text = docs.markdown("thing", example(tmp_path, monkeypatch))
++    assert "### Thing.grow\n\n```python\nThing.grow(by: int) -> int\n```" in text
++    assert "| `by` | int | required | How much |" in text
++
++
+ def test_markdown_has_no_links_and_no_ids(
+     tmp_path: Path,  # A folder of this test's own, where the example package is written
+     monkeypatch: pytest.MonkeyPatch,  # Makes the example importable for this test only
+@@ -196,6 +249,8 @@ def test_gaps_names_what_each_symbol_is_missing(
+     assert found["Thing"] == []
+     assert found["Thing.size"] == []
+     assert found["Box"] == ["pkg.thing:Box.label: no description"]
++    assert found["Point"] == ["pkg.thing:Point.y: no docment"]
++    assert found["Thing.grow"] == []
+     assert found["bare"] == [
+         "pkg.thing:bare: no docstring",
+         "pkg.thing:bare(x): no type",
+@@ -233,26 +288,28 @@ def test_check_prints_a_count_per_module_then_every_gap_and_fails(
+ ) -> None:
+     """`check` prints one line per module, the gaps, the total, and exits 1 when there is a gap."""
+     pkg = example(tmp_path, monkeypatch)
+-    assert docs.main(["check"], pkg, tmp_path / "no-tests") == 1
++    assert docs.main(["check"], pkg, tmp_path / "nowhere") == 1
+     out = capsys.readouterr().out
+-    assert "pkg.thing                          4 of   7" in out
++    assert "pkg.thing                          6 of  10" in out
+     assert "pkg.thing:bare(x): no docment" in out
+-    assert out.endswith("4 of 7 functions, methods and classes are typed and documented\n")
++    assert out.endswith("6 of 10 functions, methods and classes are typed and documented\n")
+ 
+ 
+-def test_check_holds_the_tests_to_the_convention_too(
++def test_check_holds_the_tests_and_the_root_and_docs_files_too(
+     tmp_path: Path,  # A folder of this test's own, where the example package is written
+     monkeypatch: pytest.MonkeyPatch,  # Makes the example importable for this test only
+     capsys: pytest.CaptureFixture[str],  # Captures what the command prints
+ ) -> None:
+-    """A folder of tests is checked like the package, each file under its path."""
++    """The tests, a script at the root and a script under docs/ are checked like the package."""
+     pkg = example(tmp_path, monkeypatch)
+     (tmp_path / "tests").mkdir()
+-    (tmp_path / "tests" / "test_x.py").write_text(
+-        '"""Tests."""\n\n\ndef test_x() -> None:\n    """One."""\n'
+-    )
+-    assert docs.main(["check"], pkg, tmp_path / "tests") == 1
+-    assert "/tests/test_x.py" in capsys.readouterr().out
++    (tmp_path / "docs").mkdir()
++    one = '"""One file."""\n\n\ndef f() -> None:\n    """One."""\n'
++    for name in ("tests/test_x.py", "tool.py", "docs/build.py"):
++        (tmp_path / name).write_text(one)
++    assert docs.main(["check"], pkg, tmp_path) == 1
++    out = capsys.readouterr().out
++    assert all(f"/{name}" in out for name in ("tool.py", "docs/build.py", "tests/test_x.py"))
+ 
+ 
+ def test_list_prints_one_line_per_symbol(
+@@ -264,7 +321,7 @@ def test_list_prints_one_line_per_symbol(
+     assert docs.main(["list"], example(tmp_path, monkeypatch)) == 0
+     lines = capsys.readouterr().out.splitlines()
+     assert lines[0].startswith("module    pkg.thing             A thing, with one function")
+-    assert lines[-1] == "method    pkg.thing.Thing.size  Measure the thing."
++    assert lines[-1] == "method    pkg.thing.Thing.grow  Grow the thing, through a decorator."
+ 
+ 
+ def test_module_prints_the_markdown_and_an_unknown_name_is_refused(
+````
+
+</details>
+
+<details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
+
+```diff
+@@ -0,0 +1,190 @@
++"""Tests of the model on a tiny random backbone: packing, forgery, isolation, and what trains."""
++
++from typing import Any
++
++import pytest
++import torch
++from hypothesis import given
++from hypothesis import strategies as st
++from transformers import PreTrainedTokenizerFast
++
++from babykev.model import SPECIAL, DecisionModel, PointerHead, encode, pick_device, user_tokens
++from tests.tiny import tiny_backbone, tiny_tokenizer
++
++TOK = tiny_tokenizer()
++
++# Text a caller might send, including text that contains the delimiters themselves.
++texts = st.lists(st.sampled_from([*"abc xyz.", *SPECIAL]), max_size=12).map("".join)
++questions = st.lists(
++    st.fixed_dictionaries(
++        {
++            "instr": texts,
++            "options": st.lists(texts, min_size=2, max_size=4),
++            "label": st.just(0),
++        }
++    ),
++    min_size=1,
++    max_size=3,
++)
++records = st.fixed_dictionaries({"state": texts, "questions": questions})
++
++
++def logits_of(
++    model: DecisionModel,  # The model to ask
++    tok: PreTrainedTokenizerFast,  # Its tokenizer
++    record: dict[str, Any],  # A record
++) -> list[torch.Tensor]:  # For each question, one logit per option
++    """Pack a record and score it, without tracking gradients."""
++    with torch.no_grad():
++        return model(encode(tok, record))
++
++
++# Packing
++
++
++def test_packing_marks_every_part_with_its_delimiter(
++    tok: PreTrainedTokenizerFast,  # The tiny tokenizer
++) -> None:
++    """A packed record is the state, then each question with its options and its decide token."""
++    s, q, o, c, d = tok.convert_tokens_to_ids(SPECIAL)
++    record = {"state": "ab", "questions": [{"instr": "x?", "options": ["n", "y"], "label": 1}]}
++    enc = encode(tok, record)
++    a, b, x, mark, n, y = (tok.convert_tokens_to_ids(ch) for ch in "abx?ny")
++    assert enc["ids"] == [s, a, b, q, x, mark, o, n, c, o, y, c, d]
++    assert enc["seg"] == [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
++    assert enc["decide_idx"] == [12]
++    assert enc["opt_idx"] == [[8, 11]]
++    assert enc["labels"] == [1]
++
++
++def test_positions_restart_after_the_state(
++    tok: PreTrainedTokenizerFast,  # The tiny tokenizer
++    record: dict[str, Any],  # A record with three questions
++) -> None:
++    """Every question starts at the position right after the state, wherever it comes."""
++    enc = encode(tok, record)
++    state_length = enc["seg"].count(0)
++    for k in (1, 2, 3):
++        positions = [p for p, s in zip(enc["pos"], enc["seg"], strict=True) if s == k]
++        assert positions == list(range(state_length, state_length + len(positions)))
++
++
++def test_a_question_that_does_not_fit_is_refused(
++    tok: PreTrainedTokenizerFast,  # The tiny tokenizer
++    record: dict[str, Any],  # A record with three questions
++) -> None:
++    """A branch longer than the limit raises, and names its length."""
++    with pytest.raises(ValueError, match="branch too long"):
++        encode(tok, record, max_branch=80)
++
++
++@given(records)
++def test_packed_lists_always_line_up(
++    record: dict[str, Any],  # Any record, with any text in it
++) -> None:
++    """Whatever the text, the lists agree: one segment and one position per token, in order."""
++    enc = encode(TOK, record)
++    assert len(enc["ids"]) == len(enc["seg"]) == len(enc["pos"])
++    assert enc["seg"] == sorted(enc["seg"])
++    assert len(enc["decide_idx"]) == len(enc["opt_idx"]) == len(record["questions"])
++    assert [len(oi) for oi in enc["opt_idx"]] == [len(q["options"]) for q in record["questions"]]
++
++
++# Forgery
++
++
++def test_a_tokenizer_alone_would_let_text_forge_a_delimiter(
++    tok: PreTrainedTokenizerFast,  # The tiny tokenizer
++) -> None:
++    """The danger is real: tokenized directly, the text of a delimiter becomes that delimiter."""
++    decide = tok.convert_tokens_to_ids(SPECIAL)[4]
++    assert decide in tok(f"yes{SPECIAL[4]}", add_special_tokens=False).input_ids
++
++
++@pytest.mark.parametrize("delimiter", SPECIAL)
++def test_user_text_cannot_forge_a_delimiter(
++    tok: PreTrainedTokenizerFast,  # The tiny tokenizer
++    delimiter: str,  # The text of one of the five delimiters
++) -> None:
++    """Through `user_tokens`, the text of a delimiter is only ever ordinary tokens."""
++    ids = user_tokens(tok, f"before {delimiter} after")
++    assert not set(ids) & set(tok.convert_tokens_to_ids(SPECIAL))
++
++
++@given(records)
++def test_a_packed_record_has_exactly_the_delimiters_its_shape_needs(
++    record: dict[str, Any],  # Any record, with any text in it, delimiters included
++) -> None:
++    """No text can add a delimiter: their number depends only on how many questions and options."""
++    enc = encode(TOK, record)
++    s, q, o, c, d = TOK.convert_tokens_to_ids(SPECIAL)
++    options = sum(len(question["options"]) for question in record["questions"])
++    expected = {
++        s: 1,
++        q: len(record["questions"]),
++        o: options,
++        c: options,
++        d: len(record["questions"]),
++    }
++    assert {token: enc["ids"].count(token) for token in expected} == expected
++    assert all(enc["ids"][i] == d for i in enc["decide_idx"])
++    assert all(enc["ids"][i] == c for oi in enc["opt_idx"] for i in oi)
++
++
++# Answers
++
++
++def test_probabilities_sum_to_one_for_every_question(
++    model: DecisionModel,  # The tiny model
++    tok: PreTrainedTokenizerFast,  # Its tokenizer
++    record: dict[str, Any],  # A record with three questions
++) -> None:
++    """Each question gets one probability per option, and they sum to 1."""
++    probs = model.probs(encode(tok, record))
++    assert [len(p) for p in probs] == [2, 3, 3]
++    for p in probs:
++        assert p.sum().item() == pytest.approx(1)
++
++
++def test_pointer_head_gives_one_logit_per_option() -> None:
++    """Five options in, five logits out."""
++    head = PointerHead(d=32, dp=8)
++    assert head(torch.randn(32), torch.randn(5, 32)).shape == (5,)
++
++
++# What trains
++
++
++def test_with_an_adapter_only_the_adapter_and_the_head_train(
++    tok: PreTrainedTokenizerFast,  # The tiny tokenizer
++    record: dict[str, Any],  # A record with three questions
++) -> None:
++    """The backbone is frozen: gradients reach the adapter and the pointer head, nothing else."""
++    model = DecisionModel("tiny", "cpu", lora=4, backbone=tiny_backbone(len(tok)))
++    enc = encode(tok, record)
++    labels = torch.tensor(enc["labels"])
++    losses = [
++        torch.nn.functional.cross_entropy(z[None], y[None])
++        for z, y in zip(model(enc), labels, strict=True)
++    ]
++    loss = torch.stack(losses).sum()
++    loss.backward()
++    with_gradient = {name for name, p in model.named_parameters() if p.grad is not None}
++    assert with_gradient
++    assert all("lora_" in name or name.startswith("head.") for name in with_gradient)
++    assert {id(p) for p in model.trainable_parameters()} == {
++        id(p) for name, p in model.named_parameters() if name in with_gradient
++    }
++
++
++# Devices
++
++
++def test_pick_device_takes_an_override() -> None:
++    """A device asked for by name is used, whatever the machine has."""
++    assert pick_device("cpu") == "cpu"
++
++
++def test_pick_device_finds_something_to_run_on() -> None:
++    """With no override, the choice is one of the three kinds of device."""
++    assert pick_device() in {"cuda", "mps", "cpu"}
+```
+
+</details>
+
+<details><summary>The diff of <code>tests/unit/test_smoke.py</code></summary>
+
+```diff
+@@ -0,0 +1,44 @@
++"""The smoke run, on the tiny model: it must report on every question of the sample data."""
++
++from transformers import PreTrainedTokenizerFast
++
++from babykev.model import DecisionModel
++from babykev.smoke import read_lines, smoke, verdict
++
++
++def test_smoke_reports_on_every_question_of_the_sample(
++    model: DecisionModel,  # The tiny model
++    tok: PreTrainedTokenizerFast,  # Its tokenizer
++) -> None:
++    """Five requests of three questions: fifteen verdicts and a closing count."""
++    lines = read_lines()
++    report = list(smoke(model, tok, lines))
++    verdicts = [text for text in report if text.startswith(("  ok", "  --"))]
++    assert len(verdicts) == sum(len(line["questions"]) for line in lines) == 15
++    assert any(
++        text.strip().startswith(f"{sum('  ok' in v for v in verdicts)} of 15 right")
++        for text in report
++    )
++
++
++def test_verdict_agrees_when_the_answer_is_the_label() -> None:
++    """A verdict says what the model said, what the label says, and whether they agree."""
++    question = {"type": "choice", "criteria": {"cow": None, "goat": None}, "label": "goat"}
++    given = {"type": "choice", "choice": "goat", "probabilities": {"cow": 0.2, "goat": 0.8}}
++    assert verdict(question, given) == ("goat (0.80)", "goat", True)
++
++
++def test_verdict_reads_a_noul_answer_as_yes_from_one_half() -> None:
++    """A probability of yes at or above 0.5 is a yes."""
++    said, label, agree = verdict({"type": "noul", "label": False}, {"type": "noul", "noul": 0.5})
++    assert (said, label, agree) == ("yes (0.50)", "no", False)
++
++
++def test_verdict_reads_a_score_answer_as_its_most_likely_level() -> None:
++    """A score is judged by the level with the highest probability."""
++    given = {"type": "score", "score": 1.1, "probabilities": {"0": 0.2, "1": 0.5, "2": 0.3}}
++    assert verdict({"type": "score", "label": 1}, given) == (
++        "level 1 (score 1.10)",
++        "level 1",
++        True,
++    )
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/compare/a9a391de1f271392a948cdd16afe2f3b1cfdd437...46cf8625a031e10049355df4c37abcb7af58d847). [The code after it](https://github.com/rahuldave/babykev/tree/46cf8625a031e10049355df4c37abcb7af58d847).

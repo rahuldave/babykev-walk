@@ -1,0 +1,604 @@
+---
+title: "5b Two images from one lockfile"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Init.** `just setup` brings one package, hadolint 2.15.1, the Dockerfile's linter, as a wheel from PyPI: there are wheels for the Mac and for Linux on both architectures. 0.5 s.
+
+```bash
+just setup
+```
+
+**What is new:** a `Dockerfile` that builds two images from `uv.lock`, and a `.dockerignore`; the `image` recipe; hadolint as a line of `lint-config`; `tests/system/test_real_model.py`, the smoke on the real model, marked `system` and left out of `just test`; a section of the README on Docker. Clean: 103 tests and 1 deselected, 155 of 155 documented, green.
+
+**How Docker was born.** The second slide is the meme: "It works on my machine." "Then we'll ship your machine." And that is how Docker was born. A widely shared meme; its author is unknown (imgflip.com/i/24ac74).
+
+**Two images from one lockfile.** The table of the next two pictures. The dev image has every dependency with the dev tools, uv, just, Quarto and git; it starts a shell with your folder mounted; it is for working on the project on any system, and in CI; 1.84 GB. The run image has Python and what the program needs; it starts `babykev`; it is for a platform that runs the program; 1.15 GB. Both are built from `uv.lock`, the packages first and the code after, so a change to the code does not reinstall torch.
+
+**A. The run image, in the file.** The `sed` line prints lines 11 to 39 of the `Dockerfile`. Line 12 takes uv from its own image. Lines 16 to 28 are a build stage: the packages from the lockfile first (line 25), then the code (lines 27 and 28), so a change to the code reinstalls one package and not torch. Lines 31 to 39 are the run image: a fresh Python, the finished environment copied over from the build stage (line 32), the sample data, and `babykev` as the command it starts. No uv, no just, no dev tools. The first slide of the two shows these lines with the settings (lines 18 to 23 and 35 to 37) left out, and a note on each stage.
+
+```bash
+sed -n '11,39p' Dockerfile
+```
+
+**B. Build it, run it.** `docker build --target run` builds that image and names it `babykev-run`: 20 s with the cache warm. `docker run --rm babykev-run` starts it with no words, which runs line 39's default, `babykev help`, and removes the container when it exits.
+
+```bash
+docker build --target run --tag babykev-run .
+docker run --rm babykev-run
+```
+
+`docker image ls` with a format prints the name and the size: 1.15 GB, nearly all of it torch.
+
+```bash
+docker image ls babykev-run --format '{{.Repository}}:{{.Tag}}  {{.Size}}'
+```
+
+**C. The smoke on Linux.** The same smoke, in the image. The `-v` mounts this Mac's Hugging Face cache at `/hf`, where line 36 tells the image to look, so the 953 MB model is not downloaded again. It says `on cpu`: a container on a Mac is Linux in a virtual machine, and sees no Apple GPU. 4 of 15 right, 2.9 s a request, 33 s in all. On the Mac (05a) it was 362 ms a request on `mps`, and the fifteen answers are identical, line for line, to the two decimals printed.
+
+```bash
+docker run --rm -v ~/.cache/huggingface:/hf babykev-run smoke
+```
+
+**D. The dev image.** Lines 41 to 77: the image to work in. Debian packages for git and curl (lines 49 to 51), Quarto from its release (lines 53 to 56), uv (line 57), just from PyPI (line 68), and then the whole project with its dev group (lines 71 to 74). The environment is in `/opt/venv` (line 58), outside the project folder. Line 76 declares the port the step browser uses. It starts a shell. The second slide shows these lines with the long ones cut, and a note on each part. `docker build --target dev` needs only the first stage, `uv`, because that is the only stage the dev image copies from.
+
+```bash
+sed -n '41,77p' Dockerfile
+```
+
+`docker build --target dev`: 2 s with the cache warm; 61 s cold. 1.84 GB: the dev tools, Quarto and git on top of the run image's 1.15.
+
+```bash
+docker build --target dev --tag babykev-dev .
+```
+
+**E. Working inside it.** `docker run -it` gives a terminal in the container; `-v "$PWD":/work` mounts this folder as the project, so an edit here is seen in there at once. The prompt changes: we are in Linux, in `/work`.
+
+```bash
+docker run --rm -it -v "$PWD":/work babykev-dev
+```
+
+`which` shows where each tool is: Python from `/opt/venv`, just, Quarto and uv from `/usr/local/bin`. This folder's own `.venv` is the Mac's, and nothing in the container looks at it.
+
+```bash
+which python just quarto uv
+```
+
+`just check`, inside: the same lines as on the Mac, and green. 103 passed, 1 deselected, 155 of 155, 93.12% coverage. 24 s on its own, 65 s in the rehearsal of 2026-10-06 with another container running. `just smoke local`, inside: the same smoke as on the Mac, on the CPU, from the mounted cache: 4 of 15 right, loaded in 10 s, about 8 s a request with another container running. `git status` works in the mounted folder, because line 69 of the `Dockerfile` declares every folder safe. As `root`, in `/work`: Python 3.13, just 1.50.0, uv 0.12.13, Quarto 1.8.26.
+
+```bash
+just check
+just smoke local
+exit
+```
+
+**F. The recipe.** `just --show image`: one recipe, three words. `build dev|run` runs the `docker build` of B or D and names the image by the commit, so the image always says which code is in it; `shell` is E's `docker run`; `run WORDS` is C's. On a machine with no Docker, and inside the image, it says so instead of failing.
+
+```bash
+just --show image
+```
+
+From now on `just image`. Both builds are instant from the cache, and `docker image ls` shows each image under two names: `latest`, from B and D, and the commit's short hash.
+
+```bash
+just image build dev
+just image build run
+docker image ls 'babykev-*' --format '{{.Repository}}:{{.Tag}}  {{.Size}}'
+```
+
+`just image shell` starts a new container every time, and `exit` deletes it: whatever was installed or run in there is gone, and only the mounted folder keeps what changed. To keep one, `just image start` leaves a container named `babykev-dev` running in the background; `just image shell` then goes into that one (`docker exec`), and a second `just image start` refuses. Both publish the dev image's port 8765, the step browser's, on the first free port here from 8765 up, and print the address: in the rehearsal `http://localhost:8766`, because the step browser on this Mac uses 8765. `docker ps` shows it running, with the port. `just test` inside: 103 passed, 1 deselected. `just image stop` removes it.
+
+```bash
+just image start
+docker ps --filter name=babykev-dev --format '{{.Names}}  {{.Image}}  {{.Status}}  {{.Ports}}'
+just image shell
+just test
+exit
+just image stop
+```
+
+**G. hadolint.** A linter for Dockerfiles. `uv run hadolint Dockerfile` says nothing: clean, exit 0. It found two things in the first draft, and the slide shows both.
+
+The first is rule DL3059: two `RUN` lines in a row could be one. Lines 68 and 69 are one `RUN`, the `just` install and the `git` setting joined with `&&`. The first `perl` line splits them into two `RUN` lines, and hadolint then says `Dockerfile:69 DL3059 info: Multiple consecutive `RUN` instructions. Consider consolidation.`, exit 1. The `git restore` line puts the file back.
+
+```bash
+uv run hadolint Dockerfile
+perl -pi -e 's/^RUN uv tool install "rust-just==\$\{JUST\}" \\$/RUN uv tool install "rust-just==\${JUST}"/; s/^    && git config /RUN git config /' Dockerfile
+uv run hadolint Dockerfile
+git restore Dockerfile
+```
+
+The second is DL3008. Lines 46 to 48 say why: hadolint's rule DL3008 asks for a pinned version of every Debian package, and we declined it, with the reason beside the line. The `perl` line deletes the ignore, line 48; hadolint then says `Dockerfile:48 DL3008 warning: Pin versions in apt get install. Instead of `apt-get install <package>` use `apt-get install <package>=<version>``, exit 1, at the `RUN` line. A pinned Debian version is removed from the archive at its next security fix, and the build breaks within weeks; the base image's tag is the pin. The `git restore` line puts the ignore back, because the next command checks the file.
+
+```bash
+sed -n '46,48p' Dockerfile
+perl -ni -e 'print unless /^# hadolint ignore=DL3008$/' Dockerfile
+uv run hadolint Dockerfile
+git restore Dockerfile
+```
+
+`just --show lint-config`: hadolint is the second line. `just lint-config`: green, 1.5 s. So the hook runs it on every commit.
+
+```bash
+just --show lint-config
+just lint-config
+```
+
+**What should not go in the hook?** The slide asks it, because the slides so far were about the hook: at almost every step we added a check, `just check` runs them all, and the commit hook runs `just check`. A check that needs the network, a download, a GPU or a lot of time can fail for reasons outside our code, and a hook that fails for those reasons cannot be trusted. The question for every check: can anything but our code make it fail?
+
+**Kinds of tests, and which can run on every commit.** The table of step 05 again, with an example of ours for each kind and whether it is hermetic. Unit: a confidence function on a list of numbers. Integration: the mask, the packing and the model together, and the whole smoke on the tiny model; hermetic, because the tiny model stands in for the real one. End-to-end: the smoke on the real model, `test_real_model.py`; not hermetic. Smoke: the same smoke, by hand, `just smoke local`. Acceptance: none yet. pytest has no built-in kinds: a marker is a name we make up in `pyproject.toml`, put on a test as `@pytest.mark.NAME`, and choose with `-m NAME`. Our one marker is `system`, the end-to-end kind of the table: it is on the one test that needs the Hub, the weights and a device.
+
+**2 unit tests, 0 integration tests.** The meme: two window handles that each work when used alone, and block each other when used together. Made popular by Randal Olson in January 2016; the clip's author is unknown. The file in `walks/narrative/slides/pictures/memes/` is the clip from Giphy, cut to 300 pixels wide and 8 frames a second, 2.6 MB; an earlier copy was Giphy's "This content is not available" placeholder.
+
+**H. The test that is not hermetic.** `pyproject.toml` lines 53 to 57: pytest now leaves out every test marked `system` (line 56), and line 57 declares the marker.
+
+```bash
+sed -n '53,57p' pyproject.toml
+```
+
+The test, `tests/system/test_real_model.py`: the docstring says why it is apart, line 14 marks every test in the file, and the test runs the smoke's `main` and asserts what is true on any device: exit code 0, fifteen verdicts, and a count of them. Not the score: an untrained model guesses.
+
+```bash
+sed -n '1,27p' tests/system/test_real_model.py
+```
+
+`just test`: 103 passed, 1 deselected. `just test -m system`: 1 passed, 103 deselected, 19 s on the Mac's GPU. Its coverage table shows `smoke.py` at 94%: `main`, lines 102 to 122, which no unit test reaches.
+
+```bash
+just test
+just test -m system
+```
+
+**I. Hermetic, by experiment.** `just image shell` with `--network none`: extra words go to docker, and this container has no network at all.
+
+```bash
+just image shell --network none
+```
+
+`just check`: green, 25 s, as with the network. Everything the hook runs is hermetic.
+
+```bash
+just check
+```
+
+The system test passes too, 29 s on the CPU: not because it is hermetic, but because the model is in the mounted cache.
+
+```bash
+just test -m system
+```
+
+Point the cache at an empty folder and it fails, in 48 s: "We couldn't connect to 'https://huggingface.co' to load the files, and couldn't find them in the cached files."
+
+```bash
+HF_HOME=/tmp/empty just test -m system
+exit
+```
+
+**A test is anything that can fail and stop you.** The table lists what is checked, how, with which recipe, and whether it runs on every commit: the functions, the mask and the model with pytest, hypothesis and the tiny model, `just test`; types with ty, `just types`; documentation, `just docs check`; format and lint with ruff; the config files and the Dockerfile with yamllint, validate-pyproject, uv and hadolint, `just lint-config`; all of these on every commit. The real model from the Hub, the smoke marked `system`, `just test -m system`, does not run on every commit: it is not hermetic. More generally, a test is anything that can fail and stop a commit. Most of these are not pytest. All of them are `just`.
+
+**You may even call it a gate.** The distracted girlfriend: the agent looks back at the gate, and the general test, her boyfriend, watches. A widely shared stock photo, labelled by us; the template is on imgflip, imgflip.com/memetemplate/118429510. The file is `walks/narrative/slides/pictures/memes/distracted-agent-gate.jpg`.
+
+**J. If there is time: amd64.** This Mac is arm64; most platforms and CI runners are amd64. `--platform linux/amd64` goes through to `docker build`: 33 s, under Rosetta. `docker image inspect` says `linux/amd64`. The smoke runs, with a warning that the image's platform is not the host's: 4 of 15 again, 10.4 s a request, three and a half times slower than native.
+
+```bash
+just image build run --platform linux/amd64
+docker image inspect babykev-run:$(git rev-parse --short HEAD) --format '{{.Os}}/{{.Architecture}}'
+just image run smoke
+```
+
+**K. The site, published.** So far the site was a folder on this machine, `docs/_site/`. `just --show docs`: one more word, `publish`. It checks that the remote `origin` exists and is on GitHub, and says so and stops if not; then `quarto publish gh-pages docs` renders the site and pushes it to the `gh-pages` branch, which GitHub Pages serves. Once, in the repository's settings, Pages is set to deploy from that branch.
+
+```bash
+just --show docs
+just docs publish
+```
+
+**What the next step does.** This is the end of the first lecture. Running on the platforms is a different class.
+
+## What changed {#step-05b-what-changed-182c57}
+
+- <a id="step-05b-.dockerignore-05a721"></a>`.dockerignore`: New, 26 lines. [The file](https://github.com/rahuldave/babykev/blob/47b43c0916ac186e3efdf42e15dbcf1f04edb1a0/.dockerignore).
+- <a id="step-05b-Dockerfile-6651dd"></a>`Dockerfile`: New, 77 lines. [The file](https://github.com/rahuldave/babykev/blob/47b43c0916ac186e3efdf42e15dbcf1f04edb1a0/Dockerfile).
+- <a id="step-05b-README.md-8ec9a0"></a>`README.md`: 41 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/47b43c0916ac186e3efdf42e15dbcf1f04edb1a0/README.md).
+- <a id="step-05b-justfile-424f0b"></a>`justfile`: adds `recipe image`. 88 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/47b43c0916ac186e3efdf42e15dbcf1f04edb1a0/justfile).
+- <a id="step-05b-pyproject.toml-5d07e7"></a>`pyproject.toml`: 6 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/47b43c0916ac186e3efdf42e15dbcf1f04edb1a0/pyproject.toml).
+- <a id="step-05b-tests-system-test_real_model.py-df0b9d"></a>`tests/system/test_real_model.py`: adds `test_the_real_model_answers_every_sample_question`. New, 27 lines. [The file](https://github.com/rahuldave/babykev/blob/47b43c0916ac186e3efdf42e15dbcf1f04edb1a0/tests/system/test_real_model.py).
+- <a id="step-05b-uv.lock-8356d8"></a>`uv.lock`: 158 lines added, 108 removed. [The file](https://github.com/rahuldave/babykev/blob/47b43c0916ac186e3efdf42e15dbcf1f04edb1a0/uv.lock).
+
+<details><summary>The diff of <code>.dockerignore</code></summary>
+
+```diff
+@@ -0,0 +1,26 @@
++# What `docker build` never copies into an image: the git history, this machine's environment and
++# settings, and everything a run or a tool writes. The image makes its own environment in /opt/venv.
++.git
++.venv
++.env
++.env.*
++**/__pycache__
++.ruff_cache
++.pytest_cache
++.hypothesis
++.coverage
++.coverage.*
++htmlcov
++mlflow.db
++mlflow.db-*
++mlartifacts
++mlruns
++runs
++checkpoints
++predictions
++reports
++docs/_site
++docs/.quarto
++docs/api
++docs/_symbols.json
++.DS_Store
+```
+
+</details>
+
+<details><summary>The diff of <code>Dockerfile</code></summary>
+
+```diff
+@@ -0,0 +1,77 @@
++# Two images from one file, both built from uv.lock, so they hold the versions the lockfile names.
++#
++#   docker build --target dev --tag babykev-dev .
++#       everything to work on the project: the dev tools, uv, just and Quarto. Starts a shell
++#   docker build --target run --tag babykev-run .
++#       only what the program needs, with no dev tools, no uv and no just. Starts `babykev`
++#
++# `just image build dev|run` runs these and names the image by the commit. The environment lives
++# in /opt/venv, never in the project folder, so a mounted folder's own .venv is never used.
++
++# uv itself, copied from its own image: the same version as on the machine that wrote the lockfile
++FROM ghcr.io/astral-sh/uv:0.12.13 AS uv
++
++# The environment without the dev tools. Its packages first and the code after, so a change to the
++# code reinstalls one package, not torch.
++FROM python:3.13-slim-trixie AS build
++COPY --from=uv /uv /usr/local/bin/uv
++ENV UV_PROJECT_ENVIRONMENT=/opt/venv \
++    UV_PYTHON_DOWNLOADS=never \
++    UV_COMPILE_BYTECODE=1 \
++    UV_LINK_MODE=copy \
++    UV_NO_CACHE=1
++WORKDIR /app
++COPY pyproject.toml uv.lock .python-version ./
++RUN uv sync --locked --no-dev --no-install-project
++COPY README.md LICENSE NOTICE ./
++COPY src ./src
++RUN uv sync --locked --no-dev --no-editable
++
++# The run image: Python, the environment, the program and its sample data. What a platform starts
++FROM python:3.13-slim-trixie AS run
++COPY --from=build /opt/venv /opt/venv
++WORKDIR /app
++COPY data ./data
++ENV PATH=/opt/venv/bin:$PATH \
++    HF_HOME=/hf \
++    PYTHONUNBUFFERED=1
++ENTRYPOINT ["babykev"]
++CMD ["help"]
++
++# The dev image: the whole project with its dev group, and the three tools the README asks for
++FROM python:3.13-slim-trixie AS dev
++ARG TARGETARCH
++ARG JUST=1.50.0
++ARG QUARTO=1.8.26
++# hadolint asks for a pinned version of each Debian package (DL3008). Debian replaces a package
++# with each security fix, so a pinned version stops building within weeks. The base image is the pin
++# hadolint ignore=DL3008
++RUN apt-get update \
++    && apt-get install --yes --no-install-recommends ca-certificates curl git \
++    && rm -rf /var/lib/apt/lists/*
++ARG RELEASES=https://github.com/quarto-dev/quarto-cli/releases/download
++RUN curl --fail --silent --show-error --location --output /tmp/quarto.deb \
++        "${RELEASES}/v${QUARTO}/quarto-${QUARTO}-linux-${TARGETARCH}.deb" \
++    && dpkg --install /tmp/quarto.deb \
++    && rm /tmp/quarto.deb
++COPY --from=uv /uv /uvx /usr/local/bin/
++ENV UV_PROJECT_ENVIRONMENT=/opt/venv \
++    UV_PYTHON_DOWNLOADS=never \
++    UV_LINK_MODE=copy \
++    UV_NO_CACHE=1 \
++    UV_TOOL_BIN_DIR=/usr/local/bin \
++    PATH=/opt/venv/bin:$PATH \
++    HF_HOME=/hf \
++    PYTHONUNBUFFERED=1
++# just, as a wheel from PyPI. git refuses a repository owned by another user, and a mounted folder
++# is owned by the host's user, so every folder is declared safe
++RUN uv tool install "rust-just==${JUST}" \
++    && git config --system --add safe.directory '*'
++WORKDIR /work
++COPY pyproject.toml uv.lock .python-version ./
++RUN UV_COMPILE_BYTECODE=1 uv sync --locked --no-install-project
++COPY . .
++RUN uv sync --locked
++# The step browser, when it runs in here; `docker run -p 8765:8765` makes it reachable from outside
++EXPOSE 8765
++CMD ["bash"]
+```
+
+</details>
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+````diff
+@@ -42,7 +42,9 @@ This is an educational repo. The repo `babykev` keeps the original model but reb
+ 
+ ## What you need
+ 
+-Three tools on the machine. This project installs everything else itself.
++Three tools on the machine. This project installs everything else itself. On a Mac or on Linux,
++install them directly. On Windows, work inside WSL2, which is Linux, or use the dev image (below);
++the recipes are not written for Windows itself.
+ 
+ | Tool | What it is for |
+ |---|---|
+@@ -58,7 +60,10 @@ babykev help` is the program's own help. Extra arguments go to the tool behind a
+ render` runs only the tests whose name contains `render`.
+ 
+ The documentation comes from the code. `just docs` builds the site into `docs/_site/`; open
+-`docs/_site/index.html`. Under Guide, two pages explain the model: the four ideas, and the mask as a
++`docs/_site/index.html`. `just docs publish` builds it and pushes it to the `gh-pages` branch of the
++GitHub repository that `origin` names, for GitHub Pages to serve (once, in the repository's settings,
++Pages must be set to deploy from that branch); with no remote, or one that is not on GitHub, it says so
++and does nothing. Under Guide, two pages explain the model: the four ideas, and the mask as a
+ grid (a notebook, committed with its outputs; a test re-runs its cells and checks the outputs are still
+ true). The same text is there at the terminal as plain Markdown, for people and for
+ agents: `just docs list` names every module, class and function with its summary, `just docs module api`
+@@ -77,9 +82,41 @@ what the run shows is that the pieces fit. The first run downloads the base mode
+ Hub, about 1 GB, into its cache; later runs read it from there. The platform is a word of the recipe, and
+ only `local` exists so far.
+ 
++`just test` runs every test that needs nothing but our code. One more test, in
++`tests/system/`, loads the real model the way the smoke does; it needs the Hub, the weights and a
++device, so it runs only when asked for: `just test -m system`.
++
+ `just types` is ty, the type checker: it reads every call against what the called function declares,
+ and it is one of the lines of `just check`, so the hook runs it on every commit.
+ 
++## In Docker
++
++The `Dockerfile` builds two images from the lockfile, for any machine that has Docker (Docker Desktop
++on a Mac or on Windows, OrbStack on a Mac, Docker Engine on Linux or on a cloud VM):
++
++| Image | Holds | Starts | For |
++|---|---|---|---|
++| dev | Python, every dependency with the dev tools, uv, just, Quarto, git | a shell | working on the project on any system, and checking it the way a CI runner would |
++| run | Python and the dependencies the program needs, nothing else | `babykev` | a platform that runs the program |
++
++```
++just image build dev        # docker build --target dev, named babykev-dev:COMMIT
++just image shell            # a shell in a new container, with this folder mounted at /work: just check
++just image start            # or keep one running in the background; then just image shell goes into it,
++just image stop             #   and what you installed or ran there is still there, until stop removes it
++just image build run
++just image run smoke        # the smoke in the run image, on the CPU
++```
++
++Each image is built for the machine's own architecture; `just image build run --platform linux/amd64`
++builds the one most platforms run. The environment inside lives in `/opt/venv`, so a mounted folder's
++own `.venv` is never used. Both images read the Hugging Face cache of the machine, mounted at `/hf`, so
++the base model is downloaded once. Extra arguments go to docker: `just image shell --network none`
++starts the shell with no network at all, where `just check` still passes and the real model can load
++only from the cache. The dev image declares port 8765, the step browser's: `just image shell` and `just image start`
++publish it on the first free port here from 8765 up, and say which. The recipe runs on the machine,
++never inside an image.
++
+ ## What is here
+ 
+ | Path | What it is |
+@@ -92,6 +129,8 @@ and it is one of the lines of `just check`, so the hook runs it on every commit.
+ | `src/babykev/docs.py` | What the code says about itself, as plain Markdown: `babykev docs list`, `docs module NAME`, `docs check` |
+ | `docs/` | The docs site: `_quarto.yml`, the front page `index.qmd`, the guide pages under `guide/`, `apidocs.py` (writes the reference pages from `babykev docs` before every render) and `linkify.lua` (a name in backticks becomes a link). The built site in `_site/` is not committed |
+ | `data/cheese/sample.jsonl` | Five lines of data. Each is a request about a cheese with a `label` on every question: the right answer |
++| `Dockerfile`, `.dockerignore` | The two images, dev and run, and what a build never copies into them |
++| `tests/system/` | The test that is not hermetic: the real model, from the Hub, on this machine's device |
+ | `tests/unit/` | Unit tests of the contract, of the command, of the documentation, of the model and of the smoke. One test checks every line of the sample data against the contract |
+ | `tests/tiny.py`, `tests/conftest.py` | A tokenizer with one token per character and a two-layer backbone with random weights, built in memory: the model's tests need no download and no GPU |
+ | `justfile` | Every task of the project, one recipe each. `just help` explains them |
+````
+
+</details>
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -33,6 +33,75 @@ setup *args:
+     uv run pre-commit install
+     command -v quarto > /dev/null || echo "Quarto is not on this machine; just docs needs it: https://quarto.org/docs/get-started/"
+ 
++# The two images of the Dockerfile, by commit: just image build dev|run, just image start|shell|stop, just image run smoke
++[group('setup')]
++[no-exit-message]
++image *args:
++    #!/usr/bin/env sh
++    set -e
++    if [ "$*" = help ]; then just help image; exit 0; fi
++    if ! command -v docker > /dev/null; then
++        echo "image: there is no docker here. Inside the dev image, run the recipes themselves: just check" >&2
++        exit 2
++    fi
++    tag=$(git rev-parse --short HEAD)
++    cache="${HF_HOME:-$HOME/.cache/huggingface}"
++    name="{{ program }}-dev"
++    if [ -t 0 ]; then terminal=-it; else terminal=-i; fi
++    # The step browser's port in the dev image, 8765, is published on the first free port here from 8765 up
++    port=8765
++    while command -v nc > /dev/null && nc -z 127.0.0.1 "$port" 2> /dev/null; do port=$((port + 1)); done
++    case "$1" in
++        build)
++            case "$2" in dev | run) ;; *) echo "image build: say which image, dev or run" >&2; exit 2 ;; esac
++            if [ -n "$(git status --porcelain)" ]; then
++                echo "image: the working copy has changes the commit $tag does not; the image holds them" >&2
++            fi
++            kind=$2
++            shift 2
++            exec docker build --target "$kind" --tag "{{ program }}-$kind:$tag" "$@" .
++            ;;
++        stop)
++            exec docker rm --force "$name"
++            ;;
++        shell)
++            if [ -n "$(docker ps --quiet --filter "name=^$name\$")" ]; then
++                running=$(docker inspect --format '{{ "{{" }}.Config.Image{{ "}}" }}' "$name")
++                there=$(docker port "$name" 8765 | head -1 | sed 's/.*://')
++                echo "image: into $name, which runs $running; its port 8765 is http://localhost:$there here" >&2
++                exec docker exec "$terminal" "$name" bash
++            fi
++            ;;
++    esac
++    case "$1" in
++        start | shell | run)
++            if [ "$1" = run ]; then kind=run; else kind=dev; fi
++            image="{{ program }}-$kind:$tag"
++            if ! docker image inspect "$image" > /dev/null 2>&1; then
++                echo "image: there is no $image yet; build it with: just image build $kind" >&2
++                exit 1
++            fi
++            case "$1" in
++                run) shift; exec docker run --rm -v "$cache:/hf" "$image" "$@" ;;
++                shell)
++                    shift
++                    echo "image: a new container of $image; its port 8765 is http://localhost:$port here" >&2
++                    exec docker run --rm "$terminal" -p "$port:8765" -v "$PWD:/work" -v "$cache:/hf" "$@" "$image"
++                    ;;
++            esac
++            if [ -n "$(docker ps --all --quiet --filter "name=^$name\$")" ]; then
++                echo "image: $name is there already: just image shell goes into it, just image stop removes it" >&2
++                exit 1
++            fi
++            shift
++            docker run --detach -it --name "$name" -p "$port:8765" -v "$PWD:/work" -v "$cache:/hf" \
++                "$@" "$image" > /dev/null
++            echo "image: $name runs $image in the background; its port 8765 is http://localhost:$port here"
++            echo "image: just image shell goes into it, just image stop ends it"
++            ;;
++        *) echo "image: build dev|run, start, shell, stop, or run WORDS" >&2; exit 2 ;;
++    esac
++
+ # Format the code, one way, no arguments. Extra arguments go to ruff: just fmt --check, just fmt --diff
+ [group('quality')]
+ [no-exit-message]
+@@ -45,7 +114,7 @@ fmt *args:
+ lint *args:
+     {{ if args == "help" { "just help lint" } else { 'uv run ruff check "$@"' } }}
+ 
+-# Lint the config files: the YAML files, pyproject.toml, the lockfile and this justfile
++# Lint the config files: the YAML files, the Dockerfile, pyproject.toml, the lockfile and this justfile
+ [group('quality')]
+ [no-exit-message]
+ lint-config *args:
+@@ -53,6 +122,7 @@ lint-config *args:
+     set -e
+     if [ "$*" = help ]; then just help lint-config; exit 0; fi
+     uv run yamllint --strict .
++    uv run hadolint Dockerfile
+     uv run validate-pyproject pyproject.toml
+     uv lock --check
+     just --fmt --check --unstable
+@@ -83,13 +153,29 @@ check *args:
+     just docs check
+     just lint-config
+ 
+-# Build the docs site into docs/_site. Words go to the program: just docs list, just docs module api, just docs check
++# Build the docs site into docs/_site; just docs publish puts it on GitHub Pages. Other words go to the program: just docs list
+ [group('docs')]
+ [no-exit-message]
+ docs *args:
+     #!/usr/bin/env sh
+     if [ "$*" = help ]; then just help docs; exit 0; fi
+     if [ "$#" -eq 0 ]; then exec uv run quarto render docs; fi
++    if [ "$*" = publish ]; then
++        if ! origin=$(git remote get-url origin 2> /dev/null); then
++            echo "docs publish: this repository has no remote named origin; GitHub Pages needs one on GitHub" >&2
++            exit 2
++        fi
++        case "$origin" in
++            *github.com*) ;;
++            *) echo "docs publish: origin is $origin, not GitHub; GitHub Pages needs a GitHub repository" >&2; exit 2 ;;
++        esac
++        if ! git ls-remote --exit-code --heads origin gh-pages > /dev/null; then
++            empty=$(git commit-tree "$(git hash-object -t tree /dev/null)" -m "An empty branch for GitHub Pages")
++            git push origin "$empty:refs/heads/gh-pages"
++        fi
++        # The site is committed on gh-pages, which has no .pre-commit-config.yaml: the hook lets that pass
++        PRE_COMMIT_ALLOW_NO_CONFIG=1 exec uv run quarto publish gh-pages docs --no-prompt --no-browser
++    fi
+     exec uv run {{ program }} docs "$@"
+ 
+ # Run everything that exists so far on the real model: just smoke local. Other platforms arrive later
+```
+
+</details>
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -31,6 +31,7 @@ test = [
+ ]
+ dev = [{ include-group = "test" }, { include-group = "lint" }]
+ lint = [
++    "hadolint-bin>=2.15.1",
+     "pre-commit>=4.6",
+     "ruff>=0.16",
+     "ty>=0.0.84",
+@@ -49,8 +50,11 @@ explicit = true
+ [tool.pytest.ini_options]
+ testpaths = ["tests"]
+ pythonpath = ["."] # so that a test can import its helpers as tests.tiny
+-# Every run measures how much of src/babykev the tests touch and lists the lines they do not
+-addopts = "--cov=babykev --cov-report=term-missing"
++# Every run measures how much of src/babykev the tests touch and lists the lines they do not. A test
++# marked system needs something besides our code (the Hub, the real weights, a device) and runs
++# only when asked for: just test -m system
++addopts = "--cov=babykev --cov-report=term-missing -m 'not system'"
++markers = ["system: needs the network, the real model or a device; run with -m system"]
+ 
+ [tool.ruff]
+ # The one setting the formatter and the linter share. Ruff's own default is 88; this project reads better
+```
+
+</details>
+
+<details><summary>The diff of <code>tests/system/test_real_model.py</code></summary>
+
+```diff
+@@ -0,0 +1,27 @@
++"""The smoke on the real model: the one test here that is not hermetic.
++
++Every test under `tests/unit/` needs nothing but our code: the tiny model is built in memory, with
++random weights. This one loads Qwen2.5-0.5B from the Hugging Face Hub (953 MB the first time, from
++the cache after that) onto the best device the machine has. The network, the download and the
++device can each make it fail, so it is marked `system` and runs only when asked for:
++`just test -m system`. It asserts what is true on any device: the model answers every question.
++"""
++
++import pytest
++
++from babykev.smoke import main
++
++pytestmark = pytest.mark.system
++
++
++def test_the_real_model_answers_every_sample_question(
++    capsys: pytest.CaptureFixture[str],  # What the smoke prints
++) -> None:
++    """Five requests of three questions: fifteen verdicts, a count of those right, exit code 0."""
++    assert main([]) == 0
++    printed = capsys.readouterr().out.splitlines()
++    assert printed[0].startswith("babykev smoke: Qwen/Qwen2.5-0.5B on ")
++    verdicts = [line for line in printed if line.startswith(("  ok", "  --"))]
++    assert len(verdicts) == 15
++    right = sum(line.startswith("  ok") for line in verdicts)
++    assert f"{right} of 15 right" in "\n".join(printed)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/compare/c954af4beae61eaab89bcb2d4724eea4f2706703...47b43c0916ac186e3efdf42e15dbcf1f04edb1a0). [The code after it](https://github.com/rahuldave/babykev/tree/47b43c0916ac186e3efdf42e15dbcf1f04edb1a0).

@@ -1,0 +1,27 @@
+---
+title: "babykev, the first lecture"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+This walk is one of several through the project. The website of the first, [babykev, shown one move at a time](../), lists them all.
+
+The first lecture walks through babykev on its branch `main`, from `step-00` to `step-05b`. Each step is one
+commit, with no moves between the steps. The tutorial, on the branch `tutorial`, builds the same project again
+one move at a time.
+
+Each part ends with a section called **What changed**. It lists every file that the part changes, with a link to the file, and then the whole diff of each file, folded. A lockfile and a binary file have a link alone. The text above it explains the change.
+
+## Read the tutorial
+
+Each change explained, with the code to look at.
+
+- [0 Where we start](read/step-00.qmd)
+- [1 The contract, and its tests](read/step-01.qmd)
+- [2 Format and lint arrive](read/step-02.qmd)
+- [3 Clean, and kept clean](read/step-03.qmd)
+- [4 Documentation from the code](read/step-04.qmd)
+- [4b Every function documented](read/step-04b.qmd)
+- [5 A second file: model.py](read/step-05.qmd)
+- [5a The tests that could tell](read/step-05a.qmd)
+- [5b Two images from one lockfile](read/step-05b.qmd)

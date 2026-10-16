@@ -1,23 +1,24 @@
 # Which slides are shown at which step and move of the babykev tutorial. Each line is
 #   step-or-move = [ slides, in the order they are shown ]
 # "uv.md" is every slide of slides/uv.md, "uv.md#2" its second slide, "uv.md#1-2" its first and second.
-# A key with a dot, the name of a move, is quoted: "tut-01.4" = [...].
+# A key with a dot, the name of a move, is quoted: "tut-01.9" = [...].
 # The files come from slides/ on main, the slides of the narrative, changed where the tutorial differs.
 
 [slides]
 tut-00 = ["00-start.md"]
 tut-01 = ["uv.md#1"]
-"tut-01.4" = ["just.md#1-2"]
-"tut-01.5" = ["just.md#3-4"]
-tut-02 = ["contract.md#1"]
-"tut-02.2" = ["contract.md#2-4"]
-"tut-02.5" = ["uv.md#4"]
-"tut-02.6" = ["just.md#5"]
-"tut-02.7" = ["contract.md#5-6"]
-"tut-02.8" = ["contract.md#7"]
-"tut-02.9" = ["contract.md#8"]
-"tut-02.11" = ["contract.md#9"]
-"tut-02.12" = ["contract.md#10"]
-"tut-02.13" = ["contract.md#11"]
-"tut-02.14" = ["contract.md#12-13"]
-# uv.md#2 waits for the move that sets UV_LOCKED, and uv.md#3, all the groups, for tut-05
+"tut-01.9" = ["just.md#1-2"]
+"tut-01.10" = ["just.md#3-4"]
+"tut-02.3" = ["just.md#5"]
+"tut-02.4" = ["contract.md#5-6"]
+tut-03 = ["contract.md#1"]
+"tut-03.1" = ["uv.md#4"]
+"tut-03.2" = ["contract.md#2-4"]
+"tut-03.5" = ["contract.md#7"]
+"tut-04.1" = ["contract.md#8"]
+tut-05 = ["contract.md#14"]
+"tut-06.1" = ["contract.md#9"]
+"tut-06.2" = ["contract.md#10"]
+"tut-06.8" = ["contract.md#11"]
+"tut-06.9" = ["contract.md#12-13"]
+# uv.md#2 waits for the move that sets UV_LOCKED, and uv.md#3, all the groups, for the step of the linters

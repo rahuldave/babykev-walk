@@ -45,13 +45,16 @@ dependencies = [
     "pydantic>=2.14.1",
 ]
 
+[tool.uv]
+default-groups = "all"
+
 [dependency-groups]
 test = [
     "pytest>=9.1.1",
 ]
-dev = [{ include-group = "test" }]
 ```
 
 - `uv add pydantic` writes pydantic into `dependencies`. A package of babykev carries it
 - `uv add --group test pytest` writes the group `test`. It is for the people who work on the project
-- `uv sync` installs the group `dev` by default, and `dev` includes `test`. So `just setup` installs pytest
+- `uv sync` installs only the group `dev` by default. `default-groups = "all"` makes it install every group, so
+  `just setup` installs pytest
