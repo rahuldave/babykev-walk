@@ -57,3 +57,39 @@ on the return, a docstring, and a description on every field of a pydantic model
 - Each build writes the reference pages from the code first. git ignores what the build makes
 - A front page, written by hand, says what the project is
 - A name in backticks, such as `to_answers`, becomes a link to its entry
+
+---
+
+## The code documents itself
+
+| Command | Prints |
+|---|---|
+| `just docs list` | every module, class and function of the package, one line each |
+| `just docs module babykev.api` | one module, as plain Markdown |
+| `just docs check` | every gap, and exit code 1 if there is one |
+
+- The recipe `just docs` gives its words to `smalldocs api`, with `--dir docs`, the folder of the settings
+- The Markdown has no links. It is for people at a terminal, and for AI agents
+
+---
+
+## What documented code looks like
+
+```python
+def render(
+    v: JSONContent,  # Text, a number, a list or an object, from a request
+    indent: int = 0,  # How deeply the value is nested. Each level indents by two spaces
+) -> str:  # The text that the model sees
+```
+
+- The type says `int`, and the docment says what the number means. A docment says what the type cannot say
+
+```python
+class Noul(BaseModel):
+    """A question of yes or no. Its criteria, if it has them, describe false and true."""
+
+    type: Literal["noul"] = Field(description="Marks the question as one of yes or no")
+```
+
+- A field of a pydantic model has no signature to put a comment on, so it carries `description=`. The docs check
+  reads it as it reads a docment

@@ -76,7 +76,10 @@ A machine-learning project is a software project with a model and data in it.
 | tut-11 | `just check`, and a git hook that runs it before each commit | **pre-commit** |
 | tut-12 | Checks of the config files | **validate-pyproject**, **yamllint** |
 | tut-13, tut-14 | Documentation in the code, its check, and a site built from it | **smalldocs** |
-| Later | The model and its tests, Docker images, checks and docs on GitHub | **torch**, **ty**, **hypothesis**, **Docker**, **GitHub Actions** |
+| tut-15 to tut-17 | The packages of the model, `model.py` from kev, and a type checker | **torch**, **transformers**, **peft**, **ty** |
+| tut-18 | A smoke run of the real model | **torch** |
+| tut-19 to tut-21 | A tiny model, fixtures, tests of the model, and a floor on coverage | **pytest** |
+| Later | The mask, found and fixed, a system test, Docker images, checks and docs on GitHub | **hypothesis**, **Docker**, **GitHub Actions** |
 
 ---
 
@@ -148,6 +151,6 @@ tools such as ruff, smalldocs and torch. `just setup` installs everything that t
 | File in the first commit of kev | Lines | What it does | Arrives at |
 |---|---|---|---|
 | `api.py` | 111 | The contract: what a request and an answer look like | tut-03 |
-| `model.py` | 101 | Packing, the mask, the pointer head | A later step |
+| `model.py` | 101 | Packing, the mask, the pointer head | tut-16 |
 | `data.py`, `train.py`, `evaluate.py` | 446 | Training records, the loop, accuracy and calibration | The class on training |
 | `serve.py` | 170 | Inference | The class on CI/CD with GitHub Actions |

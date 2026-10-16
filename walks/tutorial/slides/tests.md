@@ -144,3 +144,87 @@ Each runs several of our parts in a row, and the tiny model stands in for the re
 - `--cov-fail-under=90` makes pytest fail when the tests run less than 90% of the code
 - It joins `just check` now, and not before. The model came in at 0%, and its tests brought the total over 90%
 - The lines left are those that need the Hub, a download or a GPU of NVIDIA. A test of those is not hermetic
+
+---
+
+## Writing a fixture
+
+The tests of the contract use a helper, `cheese_request`. Six tests call it themselves.
+
+```python
+def cheese_request() -> SystemOneRequest:
+    return SystemOneRequest.model_validate({...})
+
+def test_request_holds_one_model_per_question_type() -> None:
+    questions = cheese_request().questions
+```
+
+A test asks for a fixture by its name, and calls nothing.
+
+```python
+@pytest.fixture
+def record() -> dict[str, Any]:
+    return {"state": "Roquefort. A blue cheese from France, made from sheep's milk.", "questions": [...]}
+
+def test_probabilities_sum_to_one_for_every_question(model, tok, record): ...
+```
+
+*Without the docstrings and the docments.*
+
+- A fixture is a function that returns what a test needs, marked `@pytest.fixture`. It goes in `conftest.py` when
+  more than one file needs it
+- If the test leaves something to clean up, the fixture can `yield` the thing in place of returning it. The code
+  after `yield` runs when the test is done
+
+---
+
+## Fixtures in use
+
+Three tests, each with its own mix of fixtures, without the types:
+
+```python
+def test_positions_restart_after_the_state(tok, record): ...                   # Kind: unit
+def test_probabilities_sum_to_one_for_every_question(model, tok, record): ...  # Kind: integration
+def test_user_text_cannot_forge_a_delimiter(tok, delimiter): ...               # Kind: unit
+```
+
+- All three share one `tok`. Each test that names `model` or `record` gets a fresh one
+- `delimiter` is not a fixture. `@pytest.mark.parametrize` gives it, once for each of the five delimiters
+- `just test --fixtures-per-test -k "probabilities_sum or positions_restart"` lists the fixtures of each test, and
+  where each is defined, such as `model -- tests/conftest.py:23`
+
+---
+
+## The tiny model: functions, and fixtures
+
+`tests/tiny.py` has two ordinary functions, with no `@pytest.fixture` on them:
+
+```python
+def tiny_tokenizer() -> PreTrainedTokenizerFast: ...                  # line 12
+def tiny_backbone(vocab_size: int, seed: int = 0) -> Qwen2Model: ...  # line 27
+```
+
+`tests/conftest.py`, lines 16 to 27, makes two fixtures from them:
+
+```python
+@pytest.fixture(scope="session")
+def tok() -> PreTrainedTokenizerFast:
+    return tiny_tokenizer()
+
+@pytest.fixture
+def model(tok: PreTrainedTokenizerFast) -> DecisionModel:
+    return DecisionModel("tiny", "cpu", backbone=tiny_backbone(len(tok))).eval()
+```
+
+- The fixture `model` always returns a model with no adapter
+- The test of what trains needs a tiny model with an adapter. So line 117 of `test_model.py` calls the function
+  itself, in `DecisionModel("tiny", "cpu", lora=4, backbone=tiny_backbone(len(tok)))`
+- Any code can call a function. Only pytest calls a fixture
+
+---
+
+## 2 unit tests, 0 integration tests
+
+<img src="pictures/memes/2-unit-tests-0-integration-tests.gif" alt="Two window handles that each work, and block each other" style="max-height: 480px; max-width: 100%">
+
+Made popular by Randal Olson, January 2016; the clip's author is unknown. giphy.com/gifs/2-unit-tests-0-integration-3o7rbGT9rrEJa4Y5LG

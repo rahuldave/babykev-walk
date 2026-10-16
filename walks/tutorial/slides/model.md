@@ -122,3 +122,22 @@ class PointerHead(nn.Module):                           # src/babykev/model.py
 - The comment names one rule, and holds for one line. Every other rule still checks the line
 - The rule still guards every other class of the project
 - The reason sits above it, for the next reader
+
+---
+
+## ty joins `just check`
+
+```just
+check *args:
+    ...
+    just fmt --check
+    just lint
+    just types
+    just test -q
+    just docs check
+    just lint-config
+```
+
+- `just check` runs `just types` after the linter, and before the tests
+- The hook runs `just check`. So git refuses a commit with a finding of ty, and the tests do not run
+- Before this step, a commit with a finding of ty went through

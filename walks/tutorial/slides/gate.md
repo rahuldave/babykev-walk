@@ -40,3 +40,17 @@ if [ -x "$INSTALL_PYTHON" ]; then
 | `post-checkout`, `post-merge` | after a move to another commit | follow the move, for example update the environment |
 
 A hook is like a callback in a training loop. It is code that runs at a set moment. We use one, `pre-commit`.
+
+---
+
+## You may even call it a gate
+
+<img src="pictures/memes/distracted-agent-gate.jpg" alt="The distracted girlfriend meme, labelled: the agent looks back at the gate, while the general test watches" style="max-height: 480px; max-width: 100%">
+
+Distracted girlfriend, a widely shared stock photo (imgflip.com/memetemplate/118429510). The labels are ours
+
+---
+
+## The config of the hook, line by line
+
+![The pre-commit config of tut-11, with a note on each part](pictures/precommit-config.svg)

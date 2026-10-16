@@ -50,3 +50,11 @@
 - The rules `D1` of ruff ask for a docstring on every public module, class and function. A name that starts
   with `_` is private, and needs none
 - ruff cannot write a docstring. Only a person knows what the code is for
+
+---
+
+## The indentation question
+
+<img src="pictures/memes/commitstrip-indentation.jpg" alt="CommitStrip, The Indentation Question" style="max-height: 480px; max-width: 100%">
+
+CommitStrip, *The Indentation Question*, 14 February 2013, commitstrip.com
