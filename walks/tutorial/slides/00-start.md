@@ -76,12 +76,6 @@ A machine-learning project is a software project with a model and data in it.
 | tut-11 | `just check`, and a git hook that runs it before each commit | **pre-commit** |
 | tut-12 | Checks of the config files | **validate-pyproject**, **yamllint** |
 | tut-13, tut-14 | Documentation in the code, its check, and a site built from it | **smalldocs** |
-<<<<<<< HEAD
-| tut-15 to tut-17 | The packages of the model, `model.py` from kev, and a type checker | **torch**, **transformers**, **peft**, **ty** |
-| tut-18 | A smoke run of the real model | **torch** |
-| tut-19 to tut-21 | A tiny model, fixtures, tests of the model, and a floor on coverage | **pytest** |
-| Later | The mask, found and fixed, a system test, Docker images, checks and docs on GitHub | **hypothesis**, **Docker**, **GitHub Actions** |
-=======
 | tut-15 to tut-17 | The packages of the model, the model of kev, and a type checker | **torch**, **transformers**, **peft**, **ty** |
 | tut-18 | The smoke run, on the real model | **the Hugging Face Hub** |
 | tut-19 to tut-21 | A tiny model, unit tests and integration tests, and a floor of coverage | **pytest** |
@@ -90,7 +84,6 @@ A machine-learning project is a software project with a model and data in it.
 | tut-24 | Two pages of the docs on the model | **smalldocs** |
 | tut-25 | Two images, built from the lockfile | **Docker**, **hadolint** |
 | tut-26 | The gate and the docs, on GitHub | **GitHub Actions**, **actionlint** |
->>>>>>> tut-22
 
 ---
 
