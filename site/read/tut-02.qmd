@@ -225,7 +225,7 @@ At the end of `tests/unit/test_cli.py`, the new test runs `train` inside `pytest
 2, and the two parts of the message.
 
 ```bash
-just test -k unknown
+just test -k unknown_command
 ```
 
 `-k unknown` runs the tests with `unknown` in their name. pytest prints `5 items / 4 deselected / 1 selected` and

@@ -598,7 +598,7 @@ At the end of `tests/unit/test_cli.py`, the new test runs `train` inside `pytest
 `pytest.raises(SystemExit)` passes only when the code inside it ends the program. The test then checks the exit code,
 2, and the two parts of the message.
 
-$ just test -k unknown
+$ just test -k unknown_command
 
 `-k unknown` runs the tests with `unknown` in their name. pytest prints `5 items / 4 deselected / 1 selected` and
 `1 passed`.
@@ -1681,3 +1681,759 @@ $ just test
 files:
 - diff `tests/unit/test_api.py`: the test calls the function itself.
   show: `    assert score_confidence([1.0]) == 1.0`
+
+## tut-07 Format
+
+$ just setup
+
+`just setup` prints `Resolved 14 packages`.
+
+kev wrote `api.py` in a style of his own. Some lines hold an `if` and its `return` together, and some lines run past
+200 characters. The tests check what the code does, and nothing checks how it looks. A formatter writes every file
+in one style, so that a later change shows only what changed, and no fight over spaces and line breaks. ruff comes
+first into the project, then its settings and a recipe. Then the check fails on `api.py`, and the formatter
+rewrites the file.
+
+### tut-07.1 Ruff, in the group lint
+
+Nothing formats the code yet. ruff is a formatter and a linter in one program. The formatter changes how the code
+looks, and never what it does. The linter comes in the next part of the tutorial. ruff is for working on babykev,
+and a user of the package does not need it. So it goes in a second dependency group, `lint`, next to the group
+`test`.
+
+do$ uv add --group lint ruff
+
+`uv add` prints `Resolved 15 packages`, and installs `ruff==0.17.1`. ruff is one program, and needs no other
+package.
+
+::: do
+If a newer ruff is out, `uv add` writes its version as the lower bound. That line then differs from the one here,
+and so does `uv.lock`. Only the versions differ.
+:::
+
+::: watch
+In `pyproject.toml`, the new group `lint` is on lines 26 to 28, above the group `test`, with the line
+`"ruff>=0.17.1",`. `uv.lock` has ruff 0.17.1.
+:::
+
+$ uv run ruff --version
+$ uv run ruff format --check
+
+`uv run ruff --version` prints `ruff 0.17.1`. `ruff format --check` changes nothing. It prints what it would
+change in each file, and ends with `3 files would be reformatted, 3 files already formatted`, and exit code 1. The
+three files are `src/babykev/api.py`, `src/babykev/cli.py` and `tests/unit/test_api.py`. By default, ruff lets a
+line run to 88 characters. Line 19 of `cli.py` has 94 characters, so ruff would split it.
+
+files:
+- diff `pyproject.toml`: the group `lint`, with ruff.
+  show: `"ruff>=0.17.1",`
+- diff `uv.lock`: ruff, at its exact version.
+
+### tut-07.2 Lines of up to 100 characters
+
+At 88 characters, the formatter would split lines of `cli.py` and of the tests that read well as they are. The
+setting `line-length` in the table `[tool.ruff]` lets a line run to 100 characters. The formatter and the linter
+both read the table.
+
+patch$ pyproject.toml
+
+::: do
+The patch adds the table `[tool.ruff]` at the end of `pyproject.toml`, with a comment and `line-length = 100`.
+:::
+
+::: watch
+At the end of `pyproject.toml`, the new table `[tool.ruff]` is on lines 39 to 41, with `line-length = 100`.
+:::
+
+$ uv run ruff format --check
+
+The check now ends with `1 file would be reformatted, 5 files already formatted`, and exit code 1. `cli.py` and the
+tests have no line over 100 characters, so they pass, and `api.py` still fails. ruff prints each change it would
+make, with the old lines marked `-` and the new ones `+`. The one-line `if` of `_check`, at line 27, becomes two
+lines, and so do the three of `render`, at lines 48 to 50. The long dictionaries of `to_record` and `to_answers`
+are split, one key on each line.
+
+files:
+- diff `pyproject.toml`: the table `[tool.ruff]`.
+  show: `line-length = 100`
+
+### tut-07.3 The settings of the formatter, written out
+
+The formatter has almost no options, and its defaults are its style. A reader of `pyproject.toml` cannot see them.
+The table `[tool.ruff.format]` writes out five of them, each with a comment. They are the defaults, so the output of
+the formatter does not change.
+
+patch$ pyproject.toml
+
+::: do
+The patch adds the table `[tool.ruff.format]` at the end of `pyproject.toml`. Read the comment beside each setting.
+:::
+
+::: watch
+At the end of `pyproject.toml`, the new table `[tool.ruff.format]` is on lines 43 to 49. It sets double quotes, four
+spaces, and three more defaults, each with a comment.
+:::
+
+`skip-magic-trailing-comma = false` is the one that a reader meets most. A list that ends with a comma keeps one item
+on each line, even when it would fit on one line. The group `lint`, on lines 26 to 28, is such a list.
+
+$ uv run ruff format --check
+
+The check prints the same as before, `1 file would be reformatted, 5 files already formatted`. The settings are the
+defaults, so nothing changes.
+
+files:
+- diff `pyproject.toml`: the five settings of the formatter.
+  show: `quote-style = "double"            # "text", not 'text'`
+
+### tut-07.4 The recipe fmt, and the check fails
+
+The command that formats the code is `uv run ruff format`, and every task of the project has a recipe. The recipe
+`fmt` runs it, and gives it every word after `fmt`. The check fails, because `api.py` is not formatted yet. The
+next part formats it.
+
+patch$ justfile
+
+::: do
+The patch adds the recipe `fmt` above the recipe `test`, under the comment that explains it.
+:::
+
+::: watch
+In `justfile`, the recipe `fmt` is on lines 28 to 32, above `test`, in the group `quality`. It runs
+`uv run ruff format "$@"`.
+:::
+
+$ uv run ruff format --check
+$ just --show fmt
+$ just fmt --check
+$ just help fmt
+
+`uv run ruff format --check` lists the changes to `api.py` and ends with exit code 1, as before. `just --show fmt`
+prints the recipe. `just fmt --check` runs the same command, and prints the same,
+`1 file would be reformatted, 5 files already formatted`. It ends with exit code 1, and `just` adds no message of
+its own. `just help fmt` prints the line of the recipe.
+
+files:
+- diff `justfile`: the recipe `fmt`.
+  show: `fmt *args:`
+
+### tut-07.5 The code, formatted
+
+`just fmt --check` found one file that does not follow the style, `api.py`. `just fmt` rewrites it.
+
+do$ just fmt
+
+`just fmt` prints `1 file reformatted, 5 files left unchanged`.
+
+::: watch
+`src/babykev/api.py` grows from 114 lines to 141. A blank line now comes after the docstring, on line 7. Each `if`
+of `_check` and of `render` has its statement on a line of its own, on lines 28 to 29 and 50 to 55. The long lines
+of `render`, `to_record` and `to_answers` are split, one part or one key on each line. They are now lines 56 to 61,
+82 to 88, 126 to 131 and 134 to 140.
+:::
+
+$ just fmt --check
+$ just test
+
+`just fmt --check` prints `6 files already formatted`, and ends with exit code 0. `just test` prints `53 passed`, as
+before. The total is still 100%, of 83 statements in place of 79. `api.py` has 75 statements, 4 more than before.
+The four one-line `if` statements of `_check` and `render` each became two lines, and coverage counts each line
+with a statement.
+
+files:
+- diff `src/babykev/api.py`: the same code, in the style of the formatter.
+  show: `        if not 1 <= len(self.criteria) <= MAX_OPTIONS:`
+
+## tut-08 Lint
+
+$ just setup
+
+`just setup` prints `Resolved 15 packages`.
+
+The formatter changes how the code looks, and leaves a wrong line wrong. A linter reads the code against rules,
+and reports what breaks them, from an import that nobody uses to a `zip` that drops items silently. ruff is the
+linter too, and the families of rules come first. The linter finds 8 problems in `api.py`, and each rule then gets
+a fix of its own. ruff makes the last fix itself.
+
+### tut-08.1 The rules of the linter
+
+ruff has more than 900 rules. The table `[tool.ruff.lint]` chooses which to check, with `select`. Each family of
+rules has a prefix, such as `E` or `B`. The list has one family on each line, with a comment that says what it
+finds.
+
+patch$ pyproject.toml
+
+::: do
+The patch adds the table `[tool.ruff.lint]` at the end of `pyproject.toml`. Read the comment beside each family.
+:::
+
+::: watch
+At the end of `pyproject.toml`, the new table `[tool.ruff.lint]` starts at line 51. `select = [` on line 53 lists
+nine families of rules, from `E` to `N`.
+:::
+
+$ uv run ruff check --statistics
+
+`ruff check` is the linter. `--statistics` prints one line for each code, with the number of problems. ruff finds 52
+problems, and ends with exit code 1. 44 of them are `S101`, an `assert`. Python skips every `assert` when it runs with
+`python -O`, so a check in the package must not rely on one. Each of the 44 is in the tests, where pytest checks
+with `assert`. The other 8 are in `api.py`.
+
+files:
+- diff `pyproject.toml`: a family of rules on each line.
+  show: `    "B",   # bugbear: code that is likely a bug, such as a zip that drops items silently`
+
+### tut-08.2 The tests may use assert
+
+The 44 `S101` hide the 8 problems of `api.py`. A test is written with `assert`, and the tests never run with
+`python -O`. The table `[tool.ruff.lint.per-file-ignores]` lets the files under `tests/` break `S101`. The package
+still may not use `assert`.
+
+patch$ pyproject.toml
+
+::: do
+The patch adds the table `[tool.ruff.lint.per-file-ignores]` at the end of `pyproject.toml`.
+:::
+
+::: watch
+At the end of `pyproject.toml`, the new table `[tool.ruff.lint.per-file-ignores]` is on lines 65 to 67. It names
+`S101` for `"tests/**"`.
+:::
+
+$ uv run ruff check --statistics
+
+ruff finds 8 problems, and ends with exit code 1. `N806`, `UP007` and `B905` come twice each, and `E501` and `I001`
+once each. The last line says that `--fix` can fix one, and that 2 unsafe fixes are available.
+
+files:
+- diff `pyproject.toml`: the tests may use `assert`.
+  show: `"tests/**" = ["S101"]`
+
+### tut-08.3 The recipe lint
+
+The command that runs the linter is `uv run ruff check`. The recipe `lint` runs it, and gives it every word after
+`lint`, as `fmt` does.
+
+patch$ justfile
+
+::: do
+The patch adds the recipe `lint` under the recipe `fmt`, above `test`.
+:::
+
+::: watch
+In `justfile`, the recipe `lint` is on lines 34 to 38, between `fmt` and `test`. It runs `uv run ruff check "$@"`.
+:::
+
+$ just --show lint
+$ just lint
+$ just help lint
+
+`just --show lint` prints the recipe. `just lint`, with no words, prints each problem with the lines around it, and
+ends with `Found 8 errors.` and exit code 1. All 8 are in `src/babykev/api.py`. Each one starts with its code, and
+a `help:` line says what would fix it.
+
+- `E501` is line 5, of 103 characters, in the docstring. The formatter does not split the text of a docstring.
+- `I001` is on line 8. The imports need a blank line between the standard library and pydantic. Its `[*]` says
+  that ruff can fix it.
+- `UP007` is on lines 11 and 39, `Union[...]`, where Python 3.10 and later write `X | Y`.
+- `N806` is on lines 94 and 104, `K` and `L`, variables in capitals.
+- `B905` is on lines 121 and 125, a `zip` with no `strict=`. ruff shows a fix, `strict=False`, with the note
+  `This is an unsafe fix and may change runtime behavior`.
+
+`uv run ruff rule CODE` explains any code, for example `uv run ruff rule B905`. `just help lint` prints the line of
+the recipe. The next parts fix the problems one code at a time, by hand. ruff fixes the last two.
+
+files:
+- diff `justfile`: the recipe `lint`.
+  show: `lint *args:`
+
+### tut-08.4 The docstring of api.py fits in 100 characters
+
+`E501`: line 5 of `api.py` has 103 characters. The docstring is a small table, with the three types of question in
+lines 3 to 5, and `answer =` lined up in one column. Line 5 is the longest, and sets the column. "The levels, in
+order" takes the place of "ordered level descriptions", and says the same in fewer characters. The three lines
+line up again, at column 43.
+
+patch$ src/babykev/api.py
+
+::: do
+The patch writes lines 3 to 5 of the docstring again. Only the words of line 5 change, and the spaces before
+`answer =` on lines 3 and 4.
+:::
+
+::: watch
+In `src/babykev/api.py`, lines 3 to 5 now have `answer =` at column 43. Line 5 has 97 characters.
+:::
+
+$ just lint --statistics
+$ just fmt --check
+
+`just lint --statistics` prints 7 problems, and no `E501`. `just fmt --check` prints `6 files already formatted`.
+The formatter leaves the text of a docstring as it is.
+
+files:
+- diff `src/babykev/api.py`: the table of the docstring, in 97 characters.
+  show: `Score  -> options = the levels, in order; answer = expected level, legend, probabilities by index`
+
+### tut-08.5 X | Y in place of Union
+
+`UP007`: since Python 3.10, `str | None` is a union of two types, and `Union[str, None]` is the old way to write it.
+babykev needs Python 3.13. `JSONContent` on line 11 and `Question` on line 39 become `X | Y`. ruff has no fix for
+these two lines, so a person writes them.
+
+patch$ src/babykev/api.py
+
+::: do
+In `src/babykev/api.py`, the patch writes line 11 and line 39 again, with `|` between the types in place of
+`Union[...]`.
+:::
+
+::: watch
+In `src/babykev/api.py`, line 11 is now `JSONContent = str | dict | list | int | float | bool | None`, and line 39
+is `Question = Noul | Choice | Score`.
+:::
+
+`Union` is no longer used, and its import on line 8 is now a problem of its own.
+
+$ just lint --statistics
+$ just test
+
+`just lint --statistics` prints 6 problems. `UP007` is gone, and `F401`, `unused-import`, is new, with a `[*]`.
+ruff can remove the import itself, and the last part of this section lets it. `just test` prints `53 passed`.
+pydantic reads `X | Y` as it read `Union`.
+
+files:
+- diff `src/babykev/api.py`: two unions, written with `|`.
+  show: `JSONContent = str | dict | list | int | float | bool | None`
+
+### tut-08.6 K and n, in lower case
+
+`N806`: a variable inside a function is in lower case, and a capital marks a constant, such as `MAX_OPTIONS`. `K` in
+`choice_confidence` is the number of options, and becomes `k`. `L` in `score_confidence` is the number of levels.
+`l` would break another rule, `E741`, because `l` looks like `1` and `I` in many fonts. So `L` becomes `n`.
+
+patch$ src/babykev/api.py
+
+::: do
+In `choice_confidence`, the patch renames `K` to `k`, on lines 94 and 95. In `score_confidence`, it renames `L` to
+`n`, on lines 104 to 109.
+:::
+
+::: watch
+In `src/babykev/api.py`, `k = len(p)` is on line 94, and `n = len(p)` on line 104. Each use of the two names
+changes with them.
+:::
+
+$ just lint --statistics
+$ just test -k confidence
+
+`just lint --statistics` prints 4 problems, and no `N806`. `just test -k confidence` runs the 9 tests of the two
+functions, and prints `9 passed, 44 deselected`. A new name changes nothing that runs.
+
+files:
+- diff `src/babykev/api.py`: two names, in lower case.
+  show: `    n = len(p)`
+
+### tut-08.7 Zip with strict=True
+
+`B905`: `zip` pairs the items of two lists, and stops at the end of the shorter one. The rest is dropped, and
+nothing says so. `to_answers` pairs the probabilities with the questions on line 121, and the keys of a choice with
+its probabilities on line 125. Each pair of lists must have the same length. A difference is a bug, and it should
+stop the program.
+
+ruff's own fix writes `strict=False`, which keeps the silent drop and says so. ruff calls it unsafe, and leaves the
+choice to a person. `strict=True` makes `zip` raise a `ValueError` when the lengths differ.
+
+patch$ src/babykev/api.py
+
+::: do
+In `to_answers`, the patch adds `strict=True` to each of the two calls of `zip`, on lines 121 and 125.
+:::
+
+::: watch
+In `src/babykev/api.py`, line 121 is now `for p, m in zip(probs, meta, strict=True):`, and line 125 ends with
+`zip(m["keys"], p, strict=True)}`.
+:::
+
+$ just lint --statistics
+$ just test -k answer
+
+`just lint --statistics` prints 2 problems, `I001` and `F401`, each with a `[*]`. `just test -k answer` runs the 4
+tests of the answers, which call `to_answers`, and prints `4 passed, 49 deselected`. Their lists have the same
+lengths, so nothing raises.
+
+files:
+- diff `src/babykev/api.py`: two calls of `zip`, with `strict=True`.
+  show: `    for p, m in zip(probs, meta, strict=True):`
+
+### tut-08.8 Just lint --fix sorts the imports
+
+The last two problems are on lines 8 and 9 of `api.py`, in the imports, and ruff can fix both safely. `--fix` makes
+only the fixes that ruff counts as safe.
+
+do$ just lint --fix
+
+`just lint --fix` prints `Found 2 errors (2 fixed, 0 remaining).`, and ends with exit code 0. It removed `Union`
+from the import of `typing` (`F401`). It put a blank line between the standard library and pydantic, which is
+installed (`I001`).
+
+::: watch
+At the top of `src/babykev/api.py`, line 8 is now `from typing import Any, Literal`, and a blank line comes before
+`from pydantic import BaseModel, Field, model_validator`, on line 10.
+:::
+
+$ just lint
+$ just fmt --check
+$ just test
+
+`just lint` prints `All checks passed!`. `just fmt --check` prints `6 files already formatted`, and `just test`
+prints `53 passed`.
+
+files:
+- diff `src/babykev/api.py`: the imports, sorted.
+  show: `from typing import Any, Literal`
+
+## tut-09 Types in every signature
+
+$ just setup
+
+`just setup` prints `Resolved 15 packages`.
+
+A reader of `def to_record(req: SystemOneRequest):` knows what the function takes, and not what it returns. A type
+annotation says it, in the signature. Python does not check annotations when it runs, but a reader does, and a type
+checker can, later. The family `ANN` of ruff asks for the type of every parameter and of every return value. A
+person writes each type that ruff cannot guess, and ruff writes the rest.
+
+### tut-09.1 The rule that every function has types
+
+Nothing asks for types yet. The family `ANN` joins the list `select`, on a line of its own, with its comment.
+
+patch$ pyproject.toml
+
+::: do
+The patch adds the line of `"ANN"` at the end of the list `select`, under the line of `"N"`.
+:::
+
+::: watch
+In `pyproject.toml`, the line `"ANN", # annotations: every parameter and every return value has a type` is now line
+63, the last of the list `select`.
+:::
+
+$ just lint --statistics
+
+`just lint --statistics` prints 49 problems in four codes, and ends with exit code 1.
+
+- `ANN201`, 33 times: a public function with no return type.
+- `ANN001`, 14 times: a parameter with no type.
+- `ANN202`, once: a private function with no return type. Its name starts with `_`.
+- `ANN002`, once: `*args` with no type.
+
+The last line says `31 unsafe fixes available with --fix --unsafe-fixes`. ruff can write 31 of the return types
+itself, and the other 18 problems need a person. The person goes first, so that ruff's fix comes last and leaves
+nothing.
+
+files:
+- diff `pyproject.toml`: the family `ANN`.
+  show: `    "ANN", # annotations: every parameter and every return value has a type`
+
+### tut-09.2 _check returns Self
+
+`ANN202`: `_check` is the validator of `Choice`, and returns the choice itself, `self`. `Self`, from `typing`, is
+the type of the class that the method belongs to.
+
+patch$ src/babykev/api.py
+
+::: do
+In `src/babykev/api.py`, the patch adds `Self` to the import of `typing` on line 8, and `-> Self` to the line of
+`def _check(self)`.
+:::
+
+::: watch
+In `src/babykev/api.py`, line 8 imports `Self` from `typing`, and line 28 is now `def _check(self) -> Self:`.
+:::
+
+$ just lint --statistics
+$ just test -k choice
+
+`just lint --statistics` prints 48 problems, and no `ANN202`. `just test -k choice` runs the 7 tests with `choice` in
+their name, and prints `7 passed, 46 deselected`. Two of them check the limits that `_check` sets on the options.
+
+files:
+- diff `src/babykev/api.py`: the return type of `_check`.
+  show: `    def _check(self) -> Self:`
+
+### tut-09.3 The two return types that ruff cannot guess
+
+`ANN201`: of the 33 public functions with no return type, ruff can guess 31. Each of them returns nothing, and its
+type is `None`. The other two return something, and a person names the type. `to_record` in `api.py` returns two
+things, the record and the metadata of its questions. The record is a dictionary, and the metadata is a list of
+dictionaries. `cheese_request` in the tests returns a `SystemOneRequest`.
+
+patch$ src/babykev/api.py
+
+patch$ tests/unit/test_api.py
+
+::: do
+In `src/babykev/api.py`, the patch adds the return type at the end of the line `def to_record(...)`. In
+`tests/unit/test_api.py`, it adds `-> SystemOneRequest` to the line `def cheese_request()`.
+:::
+
+::: watch
+In `src/babykev/api.py`, line 69 now ends with `-> tuple[dict[str, Any], list[dict[str, Any]]]:`. In
+`tests/unit/test_api.py`, line 30 is now `def cheese_request() -> SystemOneRequest:`.
+:::
+
+$ just lint --statistics
+
+`just lint --statistics` prints 46 problems. 31 are `ANN201`, and ruff can fix each of them.
+
+files:
+- diff `src/babykev/api.py`: the return type of `to_record`.
+  show: `def to_record(req: SystemOneRequest) -> tuple[dict[str, Any], list[dict[str, Any]]]:`
+- diff `tests/unit/test_api.py`: the return type of `cheese_request`.
+  show: `def cheese_request() -> SystemOneRequest:`
+
+### tut-09.4 The types of the fixtures of pytest
+
+`ANN001`: 14 parameters have no type. Five of them are the fixtures of pytest in `test_cli.py`, which pytest passes
+in by their names. `monkeypatch` is a `pytest.MonkeyPatch`, and `capsys` is a `pytest.CaptureFixture[str]`, which
+catches text. With the types, the two signatures of the tests pass 100 characters, so each is split over three
+lines, as the formatter splits it.
+
+patch$ tests/unit/test_cli.py
+
+::: do
+In `tests/unit/test_cli.py`, the patch gives `monkeypatch` its type in `run`, and `monkeypatch` and `capsys` their
+types in the two tests. Each signature of a test now has its parameters on a line of their own.
+:::
+
+::: watch
+In `tests/unit/test_cli.py`, line 8 is now `def run(monkeypatch: pytest.MonkeyPatch, *words):`. The parameters of the two
+tests are on lines 16 and 24, each between the line of the name and the line `):`.
+:::
+
+The fixtures are what the tests of the command are made of, so we read them again with their types.
+
+$ sed -n '8,30p' tests/unit/test_cli.py
+$ just test -k unknown_command
+
+`sed` prints `run` and the two tests. `run` uses `monkeypatch.setattr` to put the words in `sys.argv`, and calls
+`main`. Each test reads what `main` printed through `capsys.readouterr()`, `.out` for the help and `.err` for the
+message of an unknown command. `just test -k unknown_command` prints `1 passed, 52 deselected`. The test of an unknown
+command passes with the types, as it did without them.
+
+files:
+- diff `tests/unit/test_cli.py`: the types of the fixtures.
+  show: `    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]`
+
+### tut-09.5 The types of the parameters of the tests
+
+The other nine parameters with no type get their values from `@pytest.mark.parametrize`. Each gets the type of the
+values in its list.
+
+- `words` in `test_cli.py` is a tuple of strings, `tuple[str, ...]`.
+- `line` in `test_api.py` is a line of the sample data, a `dict[str, Any]`, so the file imports `Any` from `typing`.
+- `value` and `description` are what `render` and `option_text` take, a `JSONContent`, so the file imports it from
+  `babykev.api`.
+- `text` and `name` are strings, and `level` is an `int`.
+
+patch$ tests/unit/test_api.py
+
+patch$ tests/unit/test_cli.py
+
+::: do
+In `tests/unit/test_api.py`, the patch adds `from typing import Any` under `from pathlib import Path`, and
+`JSONContent` to the import from `babykev.api`. Then it gives a type to the parameters of five tests. In
+`tests/unit/test_cli.py`, it gives `words` its type, on line 16.
+:::
+
+::: watch
+In `tests/unit/test_api.py`, `from typing import Any` is on line 5, and `JSONContent` on line 13. The five tests with
+parameters now give their types, for example `def test_score_confidence_is_one_when_certain(level: int):` on line
+283. The signature of `test_option_text_adds_a_description_only_when_there_is_one` is split over lines 156 to 158.
+In `tests/unit/test_cli.py`, line 16 ends with `words: tuple[str, ...]`.
+:::
+
+$ just lint --statistics
+$ just test
+
+`just lint --statistics` prints 32 problems, 31 `ANN201` and one `ANN002`. `just test` prints `53 passed`.
+
+files:
+- diff `tests/unit/test_api.py`: the types of the parameters, and two imports.
+  show: `def test_render_flattens_json_into_text(value: JSONContent, text: str):`
+- diff `tests/unit/test_cli.py`: the type of `words`.
+  show: `    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str], words: tuple[str, ...]`
+
+### tut-09.6 The words of run are strings
+
+`ANN002`: `*words` in `run` gathers any number of words into a tuple. Its annotation is the type of each word, `str`,
+and not of the tuple.
+
+patch$ tests/unit/test_cli.py
+
+::: do
+In `tests/unit/test_cli.py`, the patch adds `: str` after `*words`, on line 8.
+:::
+
+::: watch
+In `tests/unit/test_cli.py`, line 8 is now `def run(monkeypatch: pytest.MonkeyPatch, *words: str):`.
+:::
+
+$ just lint --statistics
+$ just lint --statistics --unsafe-fixes
+
+`just lint --statistics` prints 31 problems, all `ANN201`. With `--unsafe-fixes`, it marks each of them `[*]`, and
+says `31 fixable with --fix`. Neither command changes a file.
+
+files:
+- diff `tests/unit/test_cli.py`: the type of `*words`.
+  show: `def run(monkeypatch: pytest.MonkeyPatch, *words: str):`
+
+### tut-09.7 Just lint --fix --unsafe-fixes writes -> None
+
+The last 31 problems are functions of the tests with no `return`, which return `None`. ruff can add `-> None` to
+each of them. ruff marks this fix as unsafe, so `--fix` alone does not make it, and `--unsafe-fixes` lets it.
+
+do$ just lint --fix --unsafe-fixes
+
+`just lint --fix --unsafe-fixes` prints `Found 31 errors (31 fixed, 0 remaining).`, and ends with exit code 0.
+
+::: watch
+In `tests/unit/test_api.py`, 28 signatures now end with `-> None:`, for example
+`def test_sample_line_fits_the_contract(line: dict[str, Any]) -> None:` on line 50. In `tests/unit/test_cli.py`,
+`run` and the two tests end with `-> None:`, on lines 8, 17 and 25.
+:::
+
+$ just lint
+$ just fmt --check
+$ just test
+
+`just lint` prints `All checks passed!`. `just fmt --check` prints `6 files already formatted`. No line passed 100
+characters with `-> None`. `just test` prints `53 passed`.
+
+files:
+- diff `tests/unit/test_api.py`: `-> None` on 28 functions.
+  show: `def test_sample_line_fits_the_contract(line: dict[str, Any]) -> None:`
+- diff `tests/unit/test_cli.py`: `-> None` on `run` and the two tests.
+  show: `def run(monkeypatch: pytest.MonkeyPatch, *words: str) -> None:`
+
+## tut-10 Docstrings
+
+$ just setup
+
+`just setup` prints `Resolved 15 packages`.
+
+A docstring says what a module, a class or a function is for. Python keeps it in `__doc__`, and `help()` and the
+editor show it. kev gave a docstring to some functions of `api.py`, and to none of its classes. The rules `D1` of
+ruff ask for a docstring on every public module, class and function. ruff cannot write one, so each comes by hand,
+one kind at a time.
+
+### tut-10.1 The rule that every public name has a docstring
+
+Nothing asks for docstrings yet. The rules `D1` of the family `D`, pydocstyle, join the list `select`. `D1` is the
+part of the family that asks whether a docstring is there. The rest of the family checks how a docstring is written,
+and stays off.
+
+patch$ pyproject.toml
+
+::: do
+The patch adds the line of `"D1"` at the end of the list `select`, under the line of `"ANN"`.
+:::
+
+::: watch
+In `pyproject.toml`, the line of `"D1"` is now line 64, the last of the list `select`.
+:::
+
+$ just lint --output-format concise
+
+`--output-format concise` prints each problem on one line, with its file, line and column. `just lint` finds 8
+problems, and ends with exit code 1. `D104` is the package, `src/babykev/__init__.py`, which is empty. `D101` is
+four classes of `api.py`, on lines 16, 22, 34 and 43. `D103` is three functions, on lines 65, 94 and 120. `_check`
+is private, so it needs none.
+
+files:
+- diff `pyproject.toml`: the rules `D1`.
+  show: `    "D1",  # pydocstyle: every public module, class and function has a docstring`
+
+### tut-10.2 The docstring of the package
+
+`D104`: `src/babykev/__init__.py` is the package `babykev` itself, and it is empty. Its docstring says what babykev
+is, as the first line of the help of the command does.
+
+patch$ src/babykev/__init__.py
+
+::: do
+The patch writes the one line of the file, a docstring.
+:::
+
+::: watch
+`src/babykev/__init__.py` now has one line, the docstring of the package.
+:::
+
+$ uv run python -c "import babykev; print(babykev.__doc__)"
+$ just test
+
+`uv run python -c` prints the docstring, `babykev: a small decision model. A state, typed questions, and a probability
+for every answer.` `just test` prints `53 passed`. `__init__.py` still has 0 statements, because coverage does not
+count a docstring.
+
+files:
+- file `src/babykev/__init__.py`: the docstring of the package.
+  show: `"""babykev: a small decision model. A state, typed questions, and a probability for every answer."""`
+
+### tut-10.3 The docstrings of the four classes of a request
+
+`D101`: `Noul`, `Choice`, `Score` and `SystemOneRequest` are the classes of a request, and none has a docstring.
+Each gets one line, under its `class` line, that says what it is.
+
+patch$ src/babykev/api.py
+
+::: do
+In `src/babykev/api.py`, the patch adds a docstring and a blank line under each of the four lines `class ...`.
+:::
+
+::: watch
+In `src/babykev/api.py`, the docstrings of the classes are on lines 17, 25, 39 and 50, under the lines of `Noul`,
+`Choice`, `Score` and `SystemOneRequest`.
+:::
+
+$ uv run python -c "from babykev.api import Score; print(Score.__doc__)"
+$ just lint --statistics
+
+`uv run python -c` prints the docstring of `Score`, `A question answered by a level of a scale, whose criteria are
+the levels in order.` `just lint --statistics` prints 3 problems, all `D103`.
+
+files:
+- diff `src/babykev/api.py`: a docstring on each class of a request.
+  show: `    """A question answered by a level of a scale, whose criteria are the levels in order."""`
+
+### tut-10.4 The docstrings of three functions
+
+`D103`: `option_text`, `choice_confidence` and `to_answers` have no docstring. Each gets one line, under its `def`
+line, that says what it does. The docstring of `choice_confidence` gives the two ends of its scale, as the docstring
+of `score_confidence` does.
+
+patch$ src/babykev/api.py
+
+::: do
+In `src/babykev/api.py`, the patch adds a docstring under each of the three lines `def ...`.
+:::
+
+::: watch
+In `src/babykev/api.py`, the docstrings of the functions are on lines 74, 104 and 131, under the lines of
+`option_text`, `choice_confidence` and `to_answers`.
+:::
+
+$ uv run python -c "from babykev.api import choice_confidence; print(choice_confidence.__doc__)"
+$ just lint
+$ just fmt --check
+$ just test
+
+`uv run python -c` prints `Measure how far the most likely option stands above a guess: 1 if certain, 0 for a
+guess.` `just lint` prints `All checks passed!`, and `just fmt --check` prints `6 files already formatted`. `just
+test` prints `53 passed`, and the total is 100%, 83 of 83 statements.
+
+files:
+- diff `src/babykev/api.py`: a docstring on each of the three functions.
+  show: `    """Measure how far the most likely option stands above a guess: 1 if certain, 0 for a guess."""`

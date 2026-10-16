@@ -1,0 +1,451 @@
+---
+title: "7 Format"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Build it yourself.** [Read the tutorial](../read/tut-07.qmd) is the other way to read this part.
+
+If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
+
+```bash
+git rm -rq --cached --ignore-unmatch -- :/ && git restore --source bb441c7fdf6f --staged --worktree -- :/
+```
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 14 packages`.
+
+kev wrote `api.py` in a style of his own. Some lines hold an `if` and its `return` together, and some lines run past
+200 characters. The tests check what the code does, and nothing checks how it looks. A formatter writes every file
+in one style, so that a later change shows only what changed, and no fight over spaces and line breaks. ruff comes
+first into the project, then its settings and a recipe. Then the check fails on `api.py`, and the formatter
+rewrites the file.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/bb441c7fdf6f8fcd066dbcdd7f7bc03837a661ac). [The code after it](https://github.com/rahuldave/babykev/tree/8bd029109219433f96ccabc5d2d5e21d4e4255c7).
+
+## 7.1 Ruff, in the group lint {#tut-07.1}
+
+Nothing formats the code yet. ruff is a formatter and a linter in one program. The formatter changes how the code
+looks, and never what it does. The linter comes in the next part of the tutorial. ruff is for working on babykev,
+and a user of the package does not need it. So it goes in a second dependency group, `lint`, next to the group
+`test`.
+
+```bash
+uv add --group lint ruff
+```
+
+`uv add` prints `Resolved 15 packages`, and installs `ruff==0.17.1`. ruff is one program, and needs no other
+package.
+
+If a newer ruff is out, `uv add` writes its version as the lower bound. That line then differs from the one here,
+and so does `uv.lock`. Only the versions differ.
+
+```bash
+uv run ruff --version
+uv run ruff format --check
+```
+
+`uv run ruff --version` prints `ruff 0.17.1`. `ruff format --check` changes nothing. It prints what it would
+change in each file, and ends with `3 files would be reformatted, 3 files already formatted`, and exit code 1. The
+three files are `src/babykev/api.py`, `src/babykev/cli.py` and `tests/unit/test_api.py`. By default, ruff lets a
+line run to 88 characters. Line 19 of `cli.py` has 94 characters, so ruff would split it.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 45771bcdecc5
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source bb441c7fdf6f --staged -- :/ && git restore --source 45771bcdecc5 --staged --worktree -- :/
+```
+
+### What changed {#tut-07.1-what-changed-182c57}
+
+- <a id="tut-07.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the group `lint`, with ruff. 3 lines added. It comes from `uv add --group lint ruff`. [The file](https://github.com/rahuldave/babykev/blob/45771bcdecc5e973af574e40cdb5591c7b19fcef/pyproject.toml).
+  - look at `"ruff>=0.17.1",`
+- <a id="tut-07.1-uv.lock-8356d8"></a>`uv.lock`: ruff, at its exact version. 29 lines added. It comes from `uv add --group lint ruff`. [The file](https://github.com/rahuldave/babykev/blob/45771bcdecc5e973af574e40cdb5591c7b19fcef/uv.lock).
+
+<details><summary>The diff that <code>uv add --group lint ruff</code> makes in <code>pyproject.toml</code></summary>
+
+```diff
+@@ -23,6 +23,9 @@ build-backend = "uv_build"
+ default-groups = "all"
+ 
+ [dependency-groups]
++lint = [
++    "ruff>=0.17.1",
++]
+ test = [
+     "pytest>=9.1.1",
+     "pytest-cov>=7.1.0",
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/45771bcdecc5e973af574e40cdb5591c7b19fcef). [The code after it](https://github.com/rahuldave/babykev/tree/45771bcdecc5e973af574e40cdb5591c7b19fcef).
+
+## 7.2 Lines of up to 100 characters {#tut-07.2}
+
+At 88 characters, the formatter would split lines of `cli.py` and of the tests that read well as they are. The
+setting `line-length` in the table `[tool.ruff]` lets a line run to 100 characters. The formatter and the linter
+both read the table.
+
+Set the values that this change sets in [`pyproject.toml`](#tut-07.2-pyproject.toml-5d07e7). Run this command from the top of the project. It reads your file with tomlkit, a library for TOML files. It sets each of these values as the project has it, and keeps the rest of your file:
+
+```bash
+uv run --quiet --no-config --no-project --with tomlkit python - <<'PY'
+import pathlib, tomlkit
+path = pathlib.Path('pyproject.toml')
+doc = tomlkit.parse(path.read_text(encoding='utf-8')) if path.exists() else tomlkit.document()
+# Each value that the change sets, by its keys
+SET = [
+    (('tool', 'ruff'), {'line-length': 100}),
+]
+
+def put(table, keys, value):   # make each table on the way; a table goes into the one there, key by key
+    for key in keys[:-1]:
+        if key not in table:
+            table[key] = tomlkit.table(True)
+        table = table[key]
+    if isinstance(value, dict) and isinstance(table.get(keys[-1]), dict):
+        for key, item in value.items():
+            put(table[keys[-1]], [key], item)
+    else:
+        table[keys[-1]] = value
+
+for keys, value in SET:
+    put(doc, keys, value)
+path.write_text(tomlkit.dumps(doc), encoding='utf-8')
+PY
+```
+
+The patch adds the table `[tool.ruff]` at the end of `pyproject.toml`, with a comment and `line-length = 100`.
+
+```bash
+uv run ruff format --check
+```
+
+The check now ends with `1 file would be reformatted, 5 files already formatted`, and exit code 1. `cli.py` and the
+tests have no line over 100 characters, so they pass, and `api.py` still fails. ruff prints each change it would
+make, with the old lines marked `-` and the new ones `+`. The one-line `if` of `_check`, at line 27, becomes two
+lines, and so do the three of `render`, at lines 48 to 50. The long dictionaries of `to_record` and `to_answers`
+are split, one key on each line.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 21a99b6aee94
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 45771bcdecc5 --staged -- :/ && git restore --source 21a99b6aee94 --staged --worktree -- :/
+```
+
+### What changed {#tut-07.2-what-changed-182c57}
+
+- <a id="tut-07.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the table `[tool.ruff]`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/21a99b6aee94eed322ee349a3363d5db3abbaed9/pyproject.toml).
+  - look at `line-length = 100`
+
+<details open><summary>The patch to <code>pyproject.toml</code></summary>
+
+```diff
+@@ -35,3 +35,7 @@ test = [
+ testpaths = ["tests"]
+ # Every run measures how much of src/babykev the tests run, and lists the lines they do not
+ addopts = "--cov=babykev --cov-report=term-missing"
++
++[tool.ruff]
++# The formatter and the linter share this setting. ruff's own default is 88, and this project uses 100
++line-length = 100
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/21a99b6aee94eed322ee349a3363d5db3abbaed9). [The code after it](https://github.com/rahuldave/babykev/tree/21a99b6aee94eed322ee349a3363d5db3abbaed9).
+
+## 7.3 The settings of the formatter, written out {#tut-07.3}
+
+The formatter has almost no options, and its defaults are its style. A reader of `pyproject.toml` cannot see them.
+The table `[tool.ruff.format]` writes out five of them, each with a comment. They are the defaults, so the output of
+the formatter does not change.
+
+Set the values that this change sets in [`pyproject.toml`](#tut-07.3-pyproject.toml-5d07e7). Run this command from the top of the project. It reads your file with tomlkit, a library for TOML files. It sets each of these values as the project has it, and keeps the rest of your file:
+
+```bash
+uv run --quiet --no-config --no-project --with tomlkit python - <<'PY'
+import pathlib, tomlkit
+path = pathlib.Path('pyproject.toml')
+doc = tomlkit.parse(path.read_text(encoding='utf-8')) if path.exists() else tomlkit.document()
+# Each value that the change sets, by its keys
+SET = [
+    (('tool', 'ruff', 'format'),
+     {'quote-style': 'double',
+      'indent-style': 'space',
+      'skip-magic-trailing-comma': False,
+      'line-ending': 'auto',
+      'docstring-code-format': False}),
+]
+
+def put(table, keys, value):   # make each table on the way; a table goes into the one there, key by key
+    for key in keys[:-1]:
+        if key not in table:
+            table[key] = tomlkit.table(True)
+        table = table[key]
+    if isinstance(value, dict) and isinstance(table.get(keys[-1]), dict):
+        for key, item in value.items():
+            put(table[keys[-1]], [key], item)
+    else:
+        table[keys[-1]] = value
+
+for keys, value in SET:
+    put(doc, keys, value)
+path.write_text(tomlkit.dumps(doc), encoding='utf-8')
+PY
+```
+
+The patch adds the table `[tool.ruff.format]` at the end of `pyproject.toml`. Read the comment beside each setting.
+
+`skip-magic-trailing-comma = false` is the one that a reader meets most. A list that ends with a comma keeps one item
+on each line, even when it would fit on one line. The group `lint`, on lines 26 to 28, is such a list.
+
+```bash
+uv run ruff format --check
+```
+
+The check prints the same as before, `1 file would be reformatted, 5 files already formatted`. The settings are the
+defaults, so nothing changes.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 51375ef9bd0f
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 21a99b6aee94 --staged -- :/ && git restore --source 51375ef9bd0f --staged --worktree -- :/
+```
+
+### What changed {#tut-07.3-what-changed-182c57}
+
+- <a id="tut-07.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: the five settings of the formatter. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/51375ef9bd0fbbc697fad0d65a4a375bd7de975c/pyproject.toml).
+  - look at `quote-style = "double"            # "text", not 'text'`
+
+<details open><summary>The patch to <code>pyproject.toml</code></summary>
+
+```diff
+@@ -39,3 +39,11 @@ addopts = "--cov=babykev --cov-report=term-missing"
+ [tool.ruff]
+ # The formatter and the linter share this setting. ruff's own default is 88, and this project uses 100
+ line-length = 100
++
++[tool.ruff.format]
++# These are ruff's defaults, written out so that a reader sees them
++quote-style = "double"            # "text", not 'text'
++indent-style = "space"            # four spaces, never tabs
++skip-magic-trailing-comma = false # a trailing comma keeps one item on each line
++line-ending = "auto"              # the line endings that the file already has
++docstring-code-format = false     # code in a docstring stays as it was written
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/51375ef9bd0fbbc697fad0d65a4a375bd7de975c). [The code after it](https://github.com/rahuldave/babykev/tree/51375ef9bd0fbbc697fad0d65a4a375bd7de975c).
+
+## 7.4 The recipe fmt, and the check fails {#tut-07.4}
+
+The command that formats the code is `uv run ruff format`, and every task of the project has a recipe. The recipe
+`fmt` runs it, and gives it every word after `fmt`. The check fails, because `api.py` is not formatted yet. The
+next part formats it.
+
+Apply the patch to [`justfile`](#tut-07.4-justfile-424f0b), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/925c6099a919f02b6a58fe6b2ce6752a3527e488.diff | git apply --include=justfile
+```
+
+The patch adds the recipe `fmt` above the recipe `test`, under the comment that explains it.
+
+```bash
+uv run ruff format --check
+just --show fmt
+just fmt --check
+just help fmt
+```
+
+`uv run ruff format --check` lists the changes to `api.py` and ends with exit code 1, as before. `just --show fmt`
+prints the recipe. `just fmt --check` runs the same command, and prints the same,
+`1 file would be reformatted, 5 files already formatted`. It ends with exit code 1, and `just` adds no message of
+its own. `just help fmt` prints the line of the recipe.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 925c6099a919
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 51375ef9bd0f --staged -- :/ && git restore --source 925c6099a919 --staged --worktree -- :/
+```
+
+### What changed {#tut-07.4-what-changed-182c57}
+
+- <a id="tut-07.4-justfile-424f0b"></a>`justfile`: the recipe `fmt`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/925c6099a919f02b6a58fe6b2ce6752a3527e488/justfile).
+  - look at `fmt *args:`
+
+<details open><summary>The patch to <code>justfile</code></summary>
+
+```diff
+@@ -25,6 +25,12 @@ help *verb:
+ setup *args:
+     @{{ if args == "help" { "just help setup" } else { "uv sync --locked" } }}
+ 
++# Write the Python of the project in one style. Extra words go to ruff: just fmt --check
++[group('quality')]
++[no-exit-message]
++fmt *args:
++    @{{ if args == "help" { "just help fmt" } else { 'uv run ruff format "$@"' } }}
++
+ # Run the tests. Extra words go to pytest: just test -k render
+ [group('quality')]
+ [no-exit-message]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/925c6099a919f02b6a58fe6b2ce6752a3527e488). [The code after it](https://github.com/rahuldave/babykev/tree/925c6099a919f02b6a58fe6b2ce6752a3527e488).
+
+## 7.5 The code, formatted {#tut-07.5}
+
+`just fmt --check` found one file that does not follow the style, `api.py`. `just fmt` rewrites it.
+
+```bash
+just fmt
+```
+
+`just fmt` prints `1 file reformatted, 5 files left unchanged`.
+
+```bash
+just fmt --check
+just test
+```
+
+`just fmt --check` prints `6 files already formatted`, and ends with exit code 0. `just test` prints `53 passed`, as
+before. The total is still 100%, of 83 statements in place of 79. `api.py` has 75 statements, 4 more than before.
+The four one-line `if` statements of `_check` and `render` each became two lines, and coverage counts each line
+with a statement.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 8bd029109219
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 925c6099a919 --staged -- :/ && git restore --source 8bd029109219 --staged --worktree -- :/
+```
+
+### What changed {#tut-07.5-what-changed-182c57}
+
+- <a id="tut-07.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the same code, in the style of the formatter. 35 lines added, 8 removed. It comes from `just fmt`. [The file](https://github.com/rahuldave/babykev/blob/8bd029109219433f96ccabc5d2d5e21d4e4255c7/src/babykev/api.py).
+  - look at `        if not 1 <= len(self.criteria) <= MAX_OPTIONS:`
+
+<details><summary>The diff that <code>just fmt</code> makes in <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -4,6 +4,7 @@ Noul   -> 2 options [false, true];            answer = p(true)
+ Choice -> options 'name' or 'name: desc';      answer = argmax, probabilities by name, confidence
+ Score  -> options = ordered level descriptions; answer = expected level, legend, probabilities by index
+ """
++
+ from typing import Any, Literal, Union
+ from pydantic import BaseModel, Field, model_validator
+ 
+@@ -24,7 +25,8 @@ class Choice(BaseModel):
+ 
+     @model_validator(mode="after")
+     def _check(self):
+-        if not 1 <= len(self.criteria) <= MAX_OPTIONS: raise ValueError(f"criteria must have 1..{MAX_OPTIONS} options")
++        if not 1 <= len(self.criteria) <= MAX_OPTIONS:
++            raise ValueError(f"criteria must have 1..{MAX_OPTIONS} options")
+         return self
+ 
+ 
+@@ -45,10 +47,18 @@ class SystemOneRequest(BaseModel):
+ def render(v: JSONContent, indent: int = 0) -> str:
+     """Flatten str | object | array into text the model sees. Field names are kept as labels."""
+     pad = "  " * indent
+-    if v is None: return ""
+-    if isinstance(v, (str, int, float, bool)): return str(v)
+-    if isinstance(v, list): return "\n".join(f"{pad}- {render(x, indent + 1).lstrip()}" for x in v)
+-    return "\n".join(f"{pad}{k}:\n{render(x, indent + 1)}" if isinstance(x, (dict, list)) else f"{pad}{k}: {render(x)}" for k, x in v.items())
++    if v is None:
++        return ""
++    if isinstance(v, (str, int, float, bool)):
++        return str(v)
++    if isinstance(v, list):
++        return "\n".join(f"{pad}- {render(x, indent + 1).lstrip()}" for x in v)
++    return "\n".join(
++        f"{pad}{k}:\n{render(x, indent + 1)}"
++        if isinstance(x, (dict, list))
++        else f"{pad}{k}: {render(x)}"
++        for k, x in v.items()
++    )
+ 
+ 
+ def option_text(name: str, desc: JSONContent) -> str:
+@@ -69,7 +79,13 @@ def to_record(req: SystemOneRequest):
+             meta.append({"id": qid, "type": "choice", "keys": list(q.criteria.keys())})
+         else:
+             opts = [render(x) for x in q.criteria]
+-            meta.append({"id": qid, "type": "score", "legend": {str(i): render(x) for i, x in enumerate(q.criteria)}})
++            meta.append(
++                {
++                    "id": qid,
++                    "type": "score",
++                    "legend": {str(i): render(x) for i, x in enumerate(q.criteria)},
++                }
++            )
+         qs.append({"instr": instr, "options": opts, "label": 0})
+     return {"state": render(req.state), "questions": qs}, meta
+ 
+@@ -107,8 +123,19 @@ def to_answers(probs: list[list[float]], meta: list[dict]) -> dict[str, Any]:
+             out[m["id"]] = {"type": "noul", "noul": round_prob(p[1])}
+         elif m["type"] == "choice":
+             dist = {k: round_prob(v) for k, v in zip(m["keys"], p)}
+-            out[m["id"]] = {"type": "choice", "choice": m["keys"][max(range(len(p)), key=lambda i: p[i])], "confidence": round_prob(choice_confidence(p)), "probabilities": dist}
++            out[m["id"]] = {
++                "type": "choice",
++                "choice": m["keys"][max(range(len(p)), key=lambda i: p[i])],
++                "confidence": round_prob(choice_confidence(p)),
++                "probabilities": dist,
++            }
+         else:
+             score = sum(i * pi for i, pi in enumerate(p))
+-            out[m["id"]] = {"type": "score", "score": round_prob(score), "legend": m["legend"], "probabilities": {str(i): round_prob(v) for i, v in enumerate(p)}, "confidence": round_prob(score_confidence(p))}
++            out[m["id"]] = {
++                "type": "score",
++                "score": round_prob(score),
++                "legend": m["legend"],
++                "probabilities": {str(i): round_prob(v) for i, v in enumerate(p)},
++                "confidence": round_prob(score_confidence(p)),
++            }
+     return out
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/8bd029109219433f96ccabc5d2d5e21d4e4255c7). [The code after it](https://github.com/rahuldave/babykev/tree/8bd029109219433f96ccabc5d2d5e21d4e4255c7).

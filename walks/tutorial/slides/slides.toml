@@ -22,4 +22,8 @@ tut-05 = ["contract.md#14"]
 "tut-06.2" = ["contract.md#10"]
 "tut-06.8" = ["contract.md#11"]
 "tut-06.9" = ["contract.md#12-13"]
+tut-07 = ["format-lint.md#1"]
+tut-08 = ["format-lint.md#2"]
+tut-09 = ["format-lint.md#3"]
+tut-10 = ["format-lint.md#4"]
 # uv.md#2 waits for the move that sets UV_LOCKED, and uv.md#3, all the groups, for the step of the linters

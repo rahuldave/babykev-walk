@@ -44,6 +44,10 @@ Each change explained, with the code to look at.
 - [4 What a request is](read/tut-04.qmd)
 - [5 From a request to the model, and back](read/tut-05.qmd)
 - [6 Kev's two bugs](read/tut-06.qmd)
+- [7 Format](read/tut-07.qmd)
+- [8 Lint](read/tut-08.qmd)
+- [9 Types in every signature](read/tut-09.qmd)
+- [10 Docstrings](read/tut-10.qmd)
 
 ## Build it yourself
 
@@ -169,6 +173,10 @@ git config alias.check '!f() { i="$(git rev-parse --git-path check-index)" && { 
 - [4 What a request is](build/tut-04.qmd)
 - [5 From a request to the model, and back](build/tut-05.qmd)
 - [6 Kev's two bugs](build/tut-06.qmd)
+- [7 Format](build/tut-07.qmd)
+- [8 Lint](build/tut-08.qmd)
+- [9 Types in every signature](build/tut-09.qmd)
+- [10 Docstrings](build/tut-10.qmd)
 
 ## The other walks
 

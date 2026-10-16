@@ -158,6 +158,66 @@ website:
                 href: read/tut-06.qmd#tut-06.9
               - text: "6.10 A test of a scale with one level"
                 href: read/tut-06.qmd#tut-06.10
+          - section: "7 Format"
+            href: read/tut-07.qmd
+            contents:
+              - text: "7.1 Ruff, in the group lint"
+                href: read/tut-07.qmd#tut-07.1
+              - text: "7.2 Lines of up to 100 characters"
+                href: read/tut-07.qmd#tut-07.2
+              - text: "7.3 The settings of the formatter, written out"
+                href: read/tut-07.qmd#tut-07.3
+              - text: "7.4 The recipe fmt, and the check fails"
+                href: read/tut-07.qmd#tut-07.4
+              - text: "7.5 The code, formatted"
+                href: read/tut-07.qmd#tut-07.5
+          - section: "8 Lint"
+            href: read/tut-08.qmd
+            contents:
+              - text: "8.1 The rules of the linter"
+                href: read/tut-08.qmd#tut-08.1
+              - text: "8.2 The tests may use assert"
+                href: read/tut-08.qmd#tut-08.2
+              - text: "8.3 The recipe lint"
+                href: read/tut-08.qmd#tut-08.3
+              - text: "8.4 The docstring of api.py fits in 100 characters"
+                href: read/tut-08.qmd#tut-08.4
+              - text: "8.5 X | Y in place of Union"
+                href: read/tut-08.qmd#tut-08.5
+              - text: "8.6 K and n, in lower case"
+                href: read/tut-08.qmd#tut-08.6
+              - text: "8.7 Zip with strict=True"
+                href: read/tut-08.qmd#tut-08.7
+              - text: "8.8 Just lint --fix sorts the imports"
+                href: read/tut-08.qmd#tut-08.8
+          - section: "9 Types in every signature"
+            href: read/tut-09.qmd
+            contents:
+              - text: "9.1 The rule that every function has types"
+                href: read/tut-09.qmd#tut-09.1
+              - text: "9.2 _check returns Self"
+                href: read/tut-09.qmd#tut-09.2
+              - text: "9.3 The two return types that ruff cannot guess"
+                href: read/tut-09.qmd#tut-09.3
+              - text: "9.4 The types of the fixtures of pytest"
+                href: read/tut-09.qmd#tut-09.4
+              - text: "9.5 The types of the parameters of the tests"
+                href: read/tut-09.qmd#tut-09.5
+              - text: "9.6 The words of run are strings"
+                href: read/tut-09.qmd#tut-09.6
+              - text: "9.7 Just lint --fix --unsafe-fixes writes -> None"
+                href: read/tut-09.qmd#tut-09.7
+          - section: "10 Docstrings"
+            href: read/tut-10.qmd
+            contents:
+              - text: "10.1 The rule that every public name has a docstring"
+                href: read/tut-10.qmd#tut-10.1
+              - text: "10.2 The docstring of the package"
+                href: read/tut-10.qmd#tut-10.2
+              - text: "10.3 The docstrings of the four classes of a request"
+                href: read/tut-10.qmd#tut-10.3
+              - text: "10.4 The docstrings of three functions"
+                href: read/tut-10.qmd#tut-10.4
       - section: "Build it yourself"
         contents:
           - text: "0 Where we start"
@@ -304,6 +364,66 @@ website:
                 href: build/tut-06.qmd#tut-06.9
               - text: "6.10 A test of a scale with one level"
                 href: build/tut-06.qmd#tut-06.10
+          - section: "7 Format"
+            href: build/tut-07.qmd
+            contents:
+              - text: "7.1 Ruff, in the group lint"
+                href: build/tut-07.qmd#tut-07.1
+              - text: "7.2 Lines of up to 100 characters"
+                href: build/tut-07.qmd#tut-07.2
+              - text: "7.3 The settings of the formatter, written out"
+                href: build/tut-07.qmd#tut-07.3
+              - text: "7.4 The recipe fmt, and the check fails"
+                href: build/tut-07.qmd#tut-07.4
+              - text: "7.5 The code, formatted"
+                href: build/tut-07.qmd#tut-07.5
+          - section: "8 Lint"
+            href: build/tut-08.qmd
+            contents:
+              - text: "8.1 The rules of the linter"
+                href: build/tut-08.qmd#tut-08.1
+              - text: "8.2 The tests may use assert"
+                href: build/tut-08.qmd#tut-08.2
+              - text: "8.3 The recipe lint"
+                href: build/tut-08.qmd#tut-08.3
+              - text: "8.4 The docstring of api.py fits in 100 characters"
+                href: build/tut-08.qmd#tut-08.4
+              - text: "8.5 X | Y in place of Union"
+                href: build/tut-08.qmd#tut-08.5
+              - text: "8.6 K and n, in lower case"
+                href: build/tut-08.qmd#tut-08.6
+              - text: "8.7 Zip with strict=True"
+                href: build/tut-08.qmd#tut-08.7
+              - text: "8.8 Just lint --fix sorts the imports"
+                href: build/tut-08.qmd#tut-08.8
+          - section: "9 Types in every signature"
+            href: build/tut-09.qmd
+            contents:
+              - text: "9.1 The rule that every function has types"
+                href: build/tut-09.qmd#tut-09.1
+              - text: "9.2 _check returns Self"
+                href: build/tut-09.qmd#tut-09.2
+              - text: "9.3 The two return types that ruff cannot guess"
+                href: build/tut-09.qmd#tut-09.3
+              - text: "9.4 The types of the fixtures of pytest"
+                href: build/tut-09.qmd#tut-09.4
+              - text: "9.5 The types of the parameters of the tests"
+                href: build/tut-09.qmd#tut-09.5
+              - text: "9.6 The words of run are strings"
+                href: build/tut-09.qmd#tut-09.6
+              - text: "9.7 Just lint --fix --unsafe-fixes writes -> None"
+                href: build/tut-09.qmd#tut-09.7
+          - section: "10 Docstrings"
+            href: build/tut-10.qmd
+            contents:
+              - text: "10.1 The rule that every public name has a docstring"
+                href: build/tut-10.qmd#tut-10.1
+              - text: "10.2 The docstring of the package"
+                href: build/tut-10.qmd#tut-10.2
+              - text: "10.3 The docstrings of the four classes of a request"
+                href: build/tut-10.qmd#tut-10.3
+              - text: "10.4 The docstrings of three functions"
+                href: build/tut-10.qmd#tut-10.4
 
 theme: cosmo
 css: styles.css

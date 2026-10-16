@@ -1537,7 +1537,7 @@ At the end of `tests/unit/test_cli.py`, the new test runs `train` inside `pytest
 2, and the two parts of the message.
 
 ```bash
-just test -k unknown
+just test -k unknown_command
 ```
 
 `-k unknown` runs the tests with `unknown` in their name. pytest prints `5 items / 4 deselected / 1 selected` and
@@ -3759,3 +3759,1716 @@ just test
 </details>
 
 [This change on GitHub](https://github.com/rahuldave/babykev/commit/bb441c7fdf6f8fcd066dbcdd7f7bc03837a661ac). [The code after it](https://github.com/rahuldave/babykev/tree/bb441c7fdf6f8fcd066dbcdd7f7bc03837a661ac).
+
+<a id="tut-07"></a>
+
+## 7 Format
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 14 packages`.
+
+kev wrote `api.py` in a style of his own. Some lines hold an `if` and its `return` together, and some lines run past
+200 characters. The tests check what the code does, and nothing checks how it looks. A formatter writes every file
+in one style, so that a later change shows only what changed, and no fight over spaces and line breaks. ruff comes
+first into the project, then its settings and a recipe. Then the check fails on `api.py`, and the formatter
+rewrites the file.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/bb441c7fdf6f8fcd066dbcdd7f7bc03837a661ac). [The code after it](https://github.com/rahuldave/babykev/tree/8bd029109219433f96ccabc5d2d5e21d4e4255c7).
+
+<a id="tut-07.1"></a>
+
+### 7.1 Ruff, in the group lint
+
+Nothing formats the code yet. ruff is a formatter and a linter in one program. The formatter changes how the code
+looks, and never what it does. The linter comes in the next part of the tutorial. ruff is for working on babykev,
+and a user of the package does not need it. So it goes in a second dependency group, `lint`, next to the group
+`test`.
+
+This change came from running `uv add --group lint ruff`.
+
+`uv add` prints `Resolved 15 packages`, and installs `ruff==0.17.1`. ruff is one program, and needs no other
+package.
+
+In `pyproject.toml`, the new group `lint` is on lines 26 to 28, above the group `test`, with the line
+`"ruff>=0.17.1",`. `uv.lock` has ruff 0.17.1.
+
+```bash
+uv run ruff --version
+uv run ruff format --check
+```
+
+`uv run ruff --version` prints `ruff 0.17.1`. `ruff format --check` changes nothing. It prints what it would
+change in each file, and ends with `3 files would be reformatted, 3 files already formatted`, and exit code 1. The
+three files are `src/babykev/api.py`, `src/babykev/cli.py` and `tests/unit/test_api.py`. By default, ruff lets a
+line run to 88 characters. Line 19 of `cli.py` has 94 characters, so ruff would split it.
+
+#### What changed
+
+- <a id="tut-07.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the group `lint`, with ruff. 3 lines added. It comes from `uv add --group lint ruff`. [The file](https://github.com/rahuldave/babykev/blob/45771bcdecc5e973af574e40cdb5591c7b19fcef/pyproject.toml).
+  - look at `"ruff>=0.17.1",`
+- <a id="tut-07.1-uv.lock-8356d8"></a>`uv.lock`: ruff, at its exact version. 29 lines added. It comes from `uv add --group lint ruff`. [The file](https://github.com/rahuldave/babykev/blob/45771bcdecc5e973af574e40cdb5591c7b19fcef/uv.lock).
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -23,6 +23,9 @@ build-backend = "uv_build"
+ default-groups = "all"
+ 
+ [dependency-groups]
++lint = [
++    "ruff>=0.17.1",
++]
+ test = [
+     "pytest>=9.1.1",
+     "pytest-cov>=7.1.0",
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/45771bcdecc5e973af574e40cdb5591c7b19fcef). [The code after it](https://github.com/rahuldave/babykev/tree/45771bcdecc5e973af574e40cdb5591c7b19fcef).
+
+<a id="tut-07.2"></a>
+
+### 7.2 Lines of up to 100 characters
+
+At 88 characters, the formatter would split lines of `cli.py` and of the tests that read well as they are. The
+setting `line-length` in the table `[tool.ruff]` lets a line run to 100 characters. The formatter and the linter
+both read the table.
+
+A patch to [`pyproject.toml`](#tut-07.2-pyproject.toml-5d07e7).
+
+At the end of `pyproject.toml`, the new table `[tool.ruff]` is on lines 39 to 41, with `line-length = 100`.
+
+```bash
+uv run ruff format --check
+```
+
+The check now ends with `1 file would be reformatted, 5 files already formatted`, and exit code 1. `cli.py` and the
+tests have no line over 100 characters, so they pass, and `api.py` still fails. ruff prints each change it would
+make, with the old lines marked `-` and the new ones `+`. The one-line `if` of `_check`, at line 27, becomes two
+lines, and so do the three of `render`, at lines 48 to 50. The long dictionaries of `to_record` and `to_answers`
+are split, one key on each line.
+
+#### What changed
+
+- <a id="tut-07.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the table `[tool.ruff]`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/21a99b6aee94eed322ee349a3363d5db3abbaed9/pyproject.toml).
+  - look at `line-length = 100`
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -35,3 +35,7 @@ test = [
+ testpaths = ["tests"]
+ # Every run measures how much of src/babykev the tests run, and lists the lines they do not
+ addopts = "--cov=babykev --cov-report=term-missing"
++
++[tool.ruff]
++# The formatter and the linter share this setting. ruff's own default is 88, and this project uses 100
++line-length = 100
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/21a99b6aee94eed322ee349a3363d5db3abbaed9). [The code after it](https://github.com/rahuldave/babykev/tree/21a99b6aee94eed322ee349a3363d5db3abbaed9).
+
+<a id="tut-07.3"></a>
+
+### 7.3 The settings of the formatter, written out
+
+The formatter has almost no options, and its defaults are its style. A reader of `pyproject.toml` cannot see them.
+The table `[tool.ruff.format]` writes out five of them, each with a comment. They are the defaults, so the output of
+the formatter does not change.
+
+A patch to [`pyproject.toml`](#tut-07.3-pyproject.toml-5d07e7).
+
+At the end of `pyproject.toml`, the new table `[tool.ruff.format]` is on lines 43 to 49. It sets double quotes, four
+spaces, and three more defaults, each with a comment.
+
+`skip-magic-trailing-comma = false` is the one that a reader meets most. A list that ends with a comma keeps one item
+on each line, even when it would fit on one line. The group `lint`, on lines 26 to 28, is such a list.
+
+```bash
+uv run ruff format --check
+```
+
+The check prints the same as before, `1 file would be reformatted, 5 files already formatted`. The settings are the
+defaults, so nothing changes.
+
+#### What changed
+
+- <a id="tut-07.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: the five settings of the formatter. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/51375ef9bd0fbbc697fad0d65a4a375bd7de975c/pyproject.toml).
+  - look at `quote-style = "double"            # "text", not 'text'`
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -39,3 +39,11 @@ addopts = "--cov=babykev --cov-report=term-missing"
+ [tool.ruff]
+ # The formatter and the linter share this setting. ruff's own default is 88, and this project uses 100
+ line-length = 100
++
++[tool.ruff.format]
++# These are ruff's defaults, written out so that a reader sees them
++quote-style = "double"            # "text", not 'text'
++indent-style = "space"            # four spaces, never tabs
++skip-magic-trailing-comma = false # a trailing comma keeps one item on each line
++line-ending = "auto"              # the line endings that the file already has
++docstring-code-format = false     # code in a docstring stays as it was written
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/51375ef9bd0fbbc697fad0d65a4a375bd7de975c). [The code after it](https://github.com/rahuldave/babykev/tree/51375ef9bd0fbbc697fad0d65a4a375bd7de975c).
+
+<a id="tut-07.4"></a>
+
+### 7.4 The recipe fmt, and the check fails
+
+The command that formats the code is `uv run ruff format`, and every task of the project has a recipe. The recipe
+`fmt` runs it, and gives it every word after `fmt`. The check fails, because `api.py` is not formatted yet. The
+next part formats it.
+
+A patch to [`justfile`](#tut-07.4-justfile-424f0b).
+
+In `justfile`, the recipe `fmt` is on lines 28 to 32, above `test`, in the group `quality`. It runs
+`uv run ruff format "$@"`.
+
+```bash
+uv run ruff format --check
+just --show fmt
+just fmt --check
+just help fmt
+```
+
+`uv run ruff format --check` lists the changes to `api.py` and ends with exit code 1, as before. `just --show fmt`
+prints the recipe. `just fmt --check` runs the same command, and prints the same,
+`1 file would be reformatted, 5 files already formatted`. It ends with exit code 1, and `just` adds no message of
+its own. `just help fmt` prints the line of the recipe.
+
+#### What changed
+
+- <a id="tut-07.4-justfile-424f0b"></a>`justfile`: the recipe `fmt`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/925c6099a919f02b6a58fe6b2ce6752a3527e488/justfile).
+  - look at `fmt *args:`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -25,6 +25,12 @@ help *verb:
+ setup *args:
+     @{{ if args == "help" { "just help setup" } else { "uv sync --locked" } }}
+ 
++# Write the Python of the project in one style. Extra words go to ruff: just fmt --check
++[group('quality')]
++[no-exit-message]
++fmt *args:
++    @{{ if args == "help" { "just help fmt" } else { 'uv run ruff format "$@"' } }}
++
+ # Run the tests. Extra words go to pytest: just test -k render
+ [group('quality')]
+ [no-exit-message]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/925c6099a919f02b6a58fe6b2ce6752a3527e488). [The code after it](https://github.com/rahuldave/babykev/tree/925c6099a919f02b6a58fe6b2ce6752a3527e488).
+
+<a id="tut-07.5"></a>
+
+### 7.5 The code, formatted
+
+`just fmt --check` found one file that does not follow the style, `api.py`. `just fmt` rewrites it.
+
+This change came from running `just fmt`.
+
+`just fmt` prints `1 file reformatted, 5 files left unchanged`.
+
+`src/babykev/api.py` grows from 114 lines to 141. A blank line now comes after the docstring, on line 7. Each `if`
+of `_check` and of `render` has its statement on a line of its own, on lines 28 to 29 and 50 to 55. The long lines
+of `render`, `to_record` and `to_answers` are split, one part or one key on each line. They are now lines 56 to 61,
+82 to 88, 126 to 131 and 134 to 140.
+
+```bash
+just fmt --check
+just test
+```
+
+`just fmt --check` prints `6 files already formatted`, and ends with exit code 0. `just test` prints `53 passed`, as
+before. The total is still 100%, of 83 statements in place of 79. `api.py` has 75 statements, 4 more than before.
+The four one-line `if` statements of `_check` and `render` each became two lines, and coverage counts each line
+with a statement.
+
+#### What changed
+
+- <a id="tut-07.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the same code, in the style of the formatter. 35 lines added, 8 removed. It comes from `just fmt`. [The file](https://github.com/rahuldave/babykev/blob/8bd029109219433f96ccabc5d2d5e21d4e4255c7/src/babykev/api.py).
+  - look at `        if not 1 <= len(self.criteria) <= MAX_OPTIONS:`
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -4,6 +4,7 @@ Noul   -> 2 options [false, true];            answer = p(true)
+ Choice -> options 'name' or 'name: desc';      answer = argmax, probabilities by name, confidence
+ Score  -> options = ordered level descriptions; answer = expected level, legend, probabilities by index
+ """
++
+ from typing import Any, Literal, Union
+ from pydantic import BaseModel, Field, model_validator
+ 
+@@ -24,7 +25,8 @@ class Choice(BaseModel):
+ 
+     @model_validator(mode="after")
+     def _check(self):
+-        if not 1 <= len(self.criteria) <= MAX_OPTIONS: raise ValueError(f"criteria must have 1..{MAX_OPTIONS} options")
++        if not 1 <= len(self.criteria) <= MAX_OPTIONS:
++            raise ValueError(f"criteria must have 1..{MAX_OPTIONS} options")
+         return self
+ 
+ 
+@@ -45,10 +47,18 @@ class SystemOneRequest(BaseModel):
+ def render(v: JSONContent, indent: int = 0) -> str:
+     """Flatten str | object | array into text the model sees. Field names are kept as labels."""
+     pad = "  " * indent
+-    if v is None: return ""
+-    if isinstance(v, (str, int, float, bool)): return str(v)
+-    if isinstance(v, list): return "\n".join(f"{pad}- {render(x, indent + 1).lstrip()}" for x in v)
+-    return "\n".join(f"{pad}{k}:\n{render(x, indent + 1)}" if isinstance(x, (dict, list)) else f"{pad}{k}: {render(x)}" for k, x in v.items())
++    if v is None:
++        return ""
++    if isinstance(v, (str, int, float, bool)):
++        return str(v)
++    if isinstance(v, list):
++        return "\n".join(f"{pad}- {render(x, indent + 1).lstrip()}" for x in v)
++    return "\n".join(
++        f"{pad}{k}:\n{render(x, indent + 1)}"
++        if isinstance(x, (dict, list))
++        else f"{pad}{k}: {render(x)}"
++        for k, x in v.items()
++    )
+ 
+ 
+ def option_text(name: str, desc: JSONContent) -> str:
+@@ -69,7 +79,13 @@ def to_record(req: SystemOneRequest):
+             meta.append({"id": qid, "type": "choice", "keys": list(q.criteria.keys())})
+         else:
+             opts = [render(x) for x in q.criteria]
+-            meta.append({"id": qid, "type": "score", "legend": {str(i): render(x) for i, x in enumerate(q.criteria)}})
++            meta.append(
++                {
++                    "id": qid,
++                    "type": "score",
++                    "legend": {str(i): render(x) for i, x in enumerate(q.criteria)},
++                }
++            )
+         qs.append({"instr": instr, "options": opts, "label": 0})
+     return {"state": render(req.state), "questions": qs}, meta
+ 
+@@ -107,8 +123,19 @@ def to_answers(probs: list[list[float]], meta: list[dict]) -> dict[str, Any]:
+             out[m["id"]] = {"type": "noul", "noul": round_prob(p[1])}
+         elif m["type"] == "choice":
+             dist = {k: round_prob(v) for k, v in zip(m["keys"], p)}
+-            out[m["id"]] = {"type": "choice", "choice": m["keys"][max(range(len(p)), key=lambda i: p[i])], "confidence": round_prob(choice_confidence(p)), "probabilities": dist}
++            out[m["id"]] = {
++                "type": "choice",
++                "choice": m["keys"][max(range(len(p)), key=lambda i: p[i])],
++                "confidence": round_prob(choice_confidence(p)),
++                "probabilities": dist,
++            }
+         else:
+             score = sum(i * pi for i, pi in enumerate(p))
+-            out[m["id"]] = {"type": "score", "score": round_prob(score), "legend": m["legend"], "probabilities": {str(i): round_prob(v) for i, v in enumerate(p)}, "confidence": round_prob(score_confidence(p))}
++            out[m["id"]] = {
++                "type": "score",
++                "score": round_prob(score),
++                "legend": m["legend"],
++                "probabilities": {str(i): round_prob(v) for i, v in enumerate(p)},
++                "confidence": round_prob(score_confidence(p)),
++            }
+     return out
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/8bd029109219433f96ccabc5d2d5e21d4e4255c7). [The code after it](https://github.com/rahuldave/babykev/tree/8bd029109219433f96ccabc5d2d5e21d4e4255c7).
+
+<a id="tut-08"></a>
+
+## 8 Lint
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 15 packages`.
+
+The formatter changes how the code looks, and leaves a wrong line wrong. A linter reads the code against rules,
+and reports what breaks them, from an import that nobody uses to a `zip` that drops items silently. ruff is the
+linter too, and the families of rules come first. The linter finds 8 problems in `api.py`, and each rule then gets
+a fix of its own. ruff makes the last fix itself.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/8bd029109219433f96ccabc5d2d5e21d4e4255c7). [The code after it](https://github.com/rahuldave/babykev/tree/656823a9a807e47a710a3671155dcc464138574d).
+
+<a id="tut-08.1"></a>
+
+### 8.1 The rules of the linter
+
+ruff has more than 900 rules. The table `[tool.ruff.lint]` chooses which to check, with `select`. Each family of
+rules has a prefix, such as `E` or `B`. The list has one family on each line, with a comment that says what it
+finds.
+
+A patch to [`pyproject.toml`](#tut-08.1-pyproject.toml-5d07e7).
+
+At the end of `pyproject.toml`, the new table `[tool.ruff.lint]` starts at line 51. `select = [` on line 53 lists
+nine families of rules, from `E` to `N`.
+
+```bash
+uv run ruff check --statistics
+```
+
+`ruff check` is the linter. `--statistics` prints one line for each code, with the number of problems. ruff finds 52
+problems, and ends with exit code 1. 44 of them are `S101`, an `assert`. Python skips every `assert` when it runs with
+`python -O`, so a check in the package must not rely on one. Each of the 44 is in the tests, where pytest checks
+with `assert`. The other 8 are in `api.py`.
+
+#### What changed
+
+- <a id="tut-08.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: a family of rules on each line. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/4c3dbecd082193666339419018d7785ab26c601b/pyproject.toml).
+  - look at `    "B",   # bugbear: code that is likely a bug, such as a zip that drops items silently`
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -47,3 +47,17 @@ indent-style = "space"            # four spaces, never tabs
+ skip-magic-trailing-comma = false # a trailing comma keeps one item on each line
+ line-ending = "auto"              # the line endings that the file already has
+ docstring-code-format = false     # code in a docstring stays as it was written
++
++[tool.ruff.lint]
++# What the linter checks: a family of rules on each line, and why it is on
++select = [
++    "E",   # pycodestyle errors: the basics, from indentation to the length of a line
++    "W",   # pycodestyle warnings: stray whitespace and the like
++    "F",   # pyflakes: names that are unused, undefined or defined twice
++    "I",   # isort: imports in one order, the standard library first
++    "B",   # bugbear: code that is likely a bug, such as a zip that drops items silently
++    "UP",  # pyupgrade: older syntax that this Python has a newer form for
++    "SIM", # simplify: code that can be said in fewer words
++    "S",   # bandit: security, from `assert` in the package to `eval`
++    "N",   # pep8-naming: classes in CamelCase, functions and variables in lower_case
++]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/4c3dbecd082193666339419018d7785ab26c601b). [The code after it](https://github.com/rahuldave/babykev/tree/4c3dbecd082193666339419018d7785ab26c601b).
+
+<a id="tut-08.2"></a>
+
+### 8.2 The tests may use assert
+
+The 44 `S101` hide the 8 problems of `api.py`. A test is written with `assert`, and the tests never run with
+`python -O`. The table `[tool.ruff.lint.per-file-ignores]` lets the files under `tests/` break `S101`. The package
+still may not use `assert`.
+
+A patch to [`pyproject.toml`](#tut-08.2-pyproject.toml-5d07e7).
+
+At the end of `pyproject.toml`, the new table `[tool.ruff.lint.per-file-ignores]` is on lines 65 to 67. It names
+`S101` for `"tests/**"`.
+
+```bash
+uv run ruff check --statistics
+```
+
+ruff finds 8 problems, and ends with exit code 1. `N806`, `UP007` and `B905` come twice each, and `E501` and `I001`
+once each. The last line says that `--fix` can fix one, and that 2 unsafe fixes are available.
+
+#### What changed
+
+- <a id="tut-08.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the tests may use `assert`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/9ab2109f36fe30ed9e0072766c2a5525c0d5d449/pyproject.toml).
+  - look at `"tests/**" = ["S101"]`
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -61,3 +61,7 @@ select = [
+     "S",   # bandit: security, from `assert` in the package to `eval`
+     "N",   # pep8-naming: classes in CamelCase, functions and variables in lower_case
+ ]
++
++[tool.ruff.lint.per-file-ignores]
++# A test is written with assert
++"tests/**" = ["S101"]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9ab2109f36fe30ed9e0072766c2a5525c0d5d449). [The code after it](https://github.com/rahuldave/babykev/tree/9ab2109f36fe30ed9e0072766c2a5525c0d5d449).
+
+<a id="tut-08.3"></a>
+
+### 8.3 The recipe lint
+
+The command that runs the linter is `uv run ruff check`. The recipe `lint` runs it, and gives it every word after
+`lint`, as `fmt` does.
+
+A patch to [`justfile`](#tut-08.3-justfile-424f0b).
+
+In `justfile`, the recipe `lint` is on lines 34 to 38, between `fmt` and `test`. It runs `uv run ruff check "$@"`.
+
+```bash
+just --show lint
+just lint
+just help lint
+```
+
+`just --show lint` prints the recipe. `just lint`, with no words, prints each problem with the lines around it, and
+ends with `Found 8 errors.` and exit code 1. All 8 are in `src/babykev/api.py`. Each one starts with its code, and
+a `help:` line says what would fix it.
+
+- `E501` is line 5, of 103 characters, in the docstring. The formatter does not split the text of a docstring.
+- `I001` is on line 8. The imports need a blank line between the standard library and pydantic. Its `[*]` says
+  that ruff can fix it.
+- `UP007` is on lines 11 and 39, `Union[...]`, where Python 3.10 and later write `X | Y`.
+- `N806` is on lines 94 and 104, `K` and `L`, variables in capitals.
+- `B905` is on lines 121 and 125, a `zip` with no `strict=`. ruff shows a fix, `strict=False`, with the note
+  `This is an unsafe fix and may change runtime behavior`.
+
+`uv run ruff rule CODE` explains any code, for example `uv run ruff rule B905`. `just help lint` prints the line of
+the recipe. The next parts fix the problems one code at a time, by hand. ruff fixes the last two.
+
+#### What changed
+
+- <a id="tut-08.3-justfile-424f0b"></a>`justfile`: the recipe `lint`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/8f9cf3da94d518b8d64d08c2bf56439ea8020d22/justfile).
+  - look at `lint *args:`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -31,6 +31,12 @@ setup *args:
+ fmt *args:
+     @{{ if args == "help" { "just help fmt" } else { 'uv run ruff format "$@"' } }}
+ 
++# Check the code against the rules in pyproject.toml. Extra words go to ruff: just lint --statistics
++[group('quality')]
++[no-exit-message]
++lint *args:
++    @{{ if args == "help" { "just help lint" } else { 'uv run ruff check "$@"' } }}
++
+ # Run the tests. Extra words go to pytest: just test -k render
+ [group('quality')]
+ [no-exit-message]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/8f9cf3da94d518b8d64d08c2bf56439ea8020d22). [The code after it](https://github.com/rahuldave/babykev/tree/8f9cf3da94d518b8d64d08c2bf56439ea8020d22).
+
+<a id="tut-08.4"></a>
+
+### 8.4 The docstring of api.py fits in 100 characters
+
+`E501`: line 5 of `api.py` has 103 characters. The docstring is a small table, with the three types of question in
+lines 3 to 5, and `answer =` lined up in one column. Line 5 is the longest, and sets the column. "The levels, in
+order" takes the place of "ordered level descriptions", and says the same in fewer characters. The three lines
+line up again, at column 43.
+
+A patch to [`src/babykev/api.py`](#tut-08.4-src-babykev-api.py-2ea65f).
+
+In `src/babykev/api.py`, lines 3 to 5 now have `answer =` at column 43. Line 5 has 97 characters.
+
+```bash
+just lint --statistics
+just fmt --check
+```
+
+`just lint --statistics` prints 7 problems, and no `E501`. `just fmt --check` prints `6 files already formatted`.
+The formatter leaves the text of a docstring as it is.
+
+#### What changed
+
+- <a id="tut-08.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the table of the docstring, in 97 characters. 3 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/538471b714ed2a7ff04298aa5a8222bf888435ad/src/babykev/api.py).
+  - look at `Score  -> options = the levels, in order; answer = expected level, legend, probabilities by index`
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -1,8 +1,8 @@
+ """The contract: request and answer shapes, mapped onto the single pointer primitive.
+ 
+-Noul   -> 2 options [false, true];            answer = p(true)
+-Choice -> options 'name' or 'name: desc';      answer = argmax, probabilities by name, confidence
+-Score  -> options = ordered level descriptions; answer = expected level, legend, probabilities by index
++Noul   -> 2 options [false, true];        answer = p(true)
++Choice -> options 'name' or 'name: desc'; answer = argmax, probabilities by name, confidence
++Score  -> options = the levels, in order; answer = expected level, legend, probabilities by index
+ """
+ 
+ from typing import Any, Literal, Union
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/538471b714ed2a7ff04298aa5a8222bf888435ad). [The code after it](https://github.com/rahuldave/babykev/tree/538471b714ed2a7ff04298aa5a8222bf888435ad).
+
+<a id="tut-08.5"></a>
+
+### 8.5 X | Y in place of Union
+
+`UP007`: since Python 3.10, `str | None` is a union of two types, and `Union[str, None]` is the old way to write it.
+babykev needs Python 3.13. `JSONContent` on line 11 and `Question` on line 39 become `X | Y`. ruff has no fix for
+these two lines, so a person writes them.
+
+A patch to [`src/babykev/api.py`](#tut-08.5-src-babykev-api.py-2ea65f).
+
+In `src/babykev/api.py`, line 11 is now `JSONContent = str | dict | list | int | float | bool | None`, and line 39
+is `Question = Noul | Choice | Score`.
+
+`Union` is no longer used, and its import on line 8 is now a problem of its own.
+
+```bash
+just lint --statistics
+just test
+```
+
+`just lint --statistics` prints 6 problems. `UP007` is gone, and `F401`, `unused-import`, is new, with a `[*]`.
+ruff can remove the import itself, and the last part of this section lets it. `just test` prints `53 passed`.
+pydantic reads `X | Y` as it read `Union`.
+
+#### What changed
+
+- <a id="tut-08.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: two unions, written with `|`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/a4c44c0ab664fe98a2920dad133b3675ff0b396d/src/babykev/api.py).
+  - look at `JSONContent = str | dict | list | int | float | bool | None`
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -8,7 +8,7 @@ Score  -> options = the levels, in order; answer = expected level, legend, proba
+ from typing import Any, Literal, Union
+ from pydantic import BaseModel, Field, model_validator
+ 
+-JSONContent = Union[str, dict, list, int, float, bool, None]
++JSONContent = str | dict | list | int | float | bool | None
+ MAX_OPTIONS = 255
+ 
+ 
+@@ -36,7 +36,7 @@ class Score(BaseModel):
+     criteria: list[JSONContent] = Field(min_length=2, max_length=MAX_OPTIONS)
+ 
+ 
+-Question = Union[Noul, Choice, Score]
++Question = Noul | Choice | Score
+ 
+ 
+ class SystemOneRequest(BaseModel):
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a4c44c0ab664fe98a2920dad133b3675ff0b396d). [The code after it](https://github.com/rahuldave/babykev/tree/a4c44c0ab664fe98a2920dad133b3675ff0b396d).
+
+<a id="tut-08.6"></a>
+
+### 8.6 K and n, in lower case
+
+`N806`: a variable inside a function is in lower case, and a capital marks a constant, such as `MAX_OPTIONS`. `K` in
+`choice_confidence` is the number of options, and becomes `k`. `L` in `score_confidence` is the number of levels.
+`l` would break another rule, `E741`, because `l` looks like `1` and `I` in many fonts. So `L` becomes `n`.
+
+A patch to [`src/babykev/api.py`](#tut-08.6-src-babykev-api.py-2ea65f).
+
+In `src/babykev/api.py`, `k = len(p)` is on line 94, and `n = len(p)` on line 104. Each use of the two names
+changes with them.
+
+```bash
+just lint --statistics
+just test -k confidence
+```
+
+`just lint --statistics` prints 4 problems, and no `N806`. `just test -k confidence` runs the 9 tests of the two
+functions, and prints `9 passed, 44 deselected`. A new name changes nothing that runs.
+
+#### What changed
+
+- <a id="tut-08.6-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: two names, in lower case. 6 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/f2ef0988cef13622a0bf8f5f773ada48e4573d2f/src/babykev/api.py).
+  - look at `    n = len(p)`
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -91,8 +91,8 @@ def to_record(req: SystemOneRequest):
+ 
+ 
+ def choice_confidence(p: list[float]) -> float:
+-    K = len(p)
+-    return 1.0 if K == 1 else (max(p) - 1 / K) / (1 - 1 / K)
++    k = len(p)
++    return 1.0 if k == 1 else (max(p) - 1 / k) / (1 - 1 / k)
+ 
+ 
+ def score_confidence(p: list[float]) -> float:
+@@ -101,12 +101,12 @@ def score_confidence(p: list[float]) -> float:
+     `spread` is the expected distance from the most likely level. `guess` is the spread of a guess,
+     equal probability on every level, around the middle. Anything as spread out as a guess gets 0.
+     """
+-    L = len(p)
+-    if L == 1:
++    n = len(p)
++    if n == 1:
+         return 1.0
+-    mode = max(range(L), key=lambda i: p[i])
++    mode = max(range(n), key=lambda i: p[i])
+     spread = sum(pi * abs(i - mode) for i, pi in enumerate(p))
+-    guess = sum(abs(i - (L - 1) / 2) for i in range(L)) / L
++    guess = sum(abs(i - (n - 1) / 2) for i in range(n)) / n
+     return max(0.0, 1.0 - spread / guess)
+ 
+ 
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/f2ef0988cef13622a0bf8f5f773ada48e4573d2f). [The code after it](https://github.com/rahuldave/babykev/tree/f2ef0988cef13622a0bf8f5f773ada48e4573d2f).
+
+<a id="tut-08.7"></a>
+
+### 8.7 Zip with strict=True
+
+`B905`: `zip` pairs the items of two lists, and stops at the end of the shorter one. The rest is dropped, and
+nothing says so. `to_answers` pairs the probabilities with the questions on line 121, and the keys of a choice with
+its probabilities on line 125. Each pair of lists must have the same length. A difference is a bug, and it should
+stop the program.
+
+ruff's own fix writes `strict=False`, which keeps the silent drop and says so. ruff calls it unsafe, and leaves the
+choice to a person. `strict=True` makes `zip` raise a `ValueError` when the lengths differ.
+
+A patch to [`src/babykev/api.py`](#tut-08.7-src-babykev-api.py-2ea65f).
+
+In `src/babykev/api.py`, line 121 is now `for p, m in zip(probs, meta, strict=True):`, and line 125 ends with
+`zip(m["keys"], p, strict=True)}`.
+
+```bash
+just lint --statistics
+just test -k answer
+```
+
+`just lint --statistics` prints 2 problems, `I001` and `F401`, each with a `[*]`. `just test -k answer` runs the 4
+tests of the answers, which call `to_answers`, and prints `4 passed, 49 deselected`. Their lists have the same
+lengths, so nothing raises.
+
+#### What changed
+
+- <a id="tut-08.7-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: two calls of `zip`, with `strict=True`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/253db887cb1c30fd556959c42bd9af598787d985/src/babykev/api.py).
+  - look at `    for p, m in zip(probs, meta, strict=True):`
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -118,11 +118,11 @@ def round_prob(x: float) -> float:
+ 
+ def to_answers(probs: list[list[float]], meta: list[dict]) -> dict[str, Any]:
+     out = {}
+-    for p, m in zip(probs, meta):
++    for p, m in zip(probs, meta, strict=True):
+         if m["type"] == "noul":
+             out[m["id"]] = {"type": "noul", "noul": round_prob(p[1])}
+         elif m["type"] == "choice":
+-            dist = {k: round_prob(v) for k, v in zip(m["keys"], p)}
++            dist = {k: round_prob(v) for k, v in zip(m["keys"], p, strict=True)}
+             out[m["id"]] = {
+                 "type": "choice",
+                 "choice": m["keys"][max(range(len(p)), key=lambda i: p[i])],
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/253db887cb1c30fd556959c42bd9af598787d985). [The code after it](https://github.com/rahuldave/babykev/tree/253db887cb1c30fd556959c42bd9af598787d985).
+
+<a id="tut-08.8"></a>
+
+### 8.8 Just lint --fix sorts the imports
+
+The last two problems are on lines 8 and 9 of `api.py`, in the imports, and ruff can fix both safely. `--fix` makes
+only the fixes that ruff counts as safe.
+
+This change came from running `just lint --fix`.
+
+`just lint --fix` prints `Found 2 errors (2 fixed, 0 remaining).`, and ends with exit code 0. It removed `Union`
+from the import of `typing` (`F401`). It put a blank line between the standard library and pydantic, which is
+installed (`I001`).
+
+At the top of `src/babykev/api.py`, line 8 is now `from typing import Any, Literal`, and a blank line comes before
+`from pydantic import BaseModel, Field, model_validator`, on line 10.
+
+```bash
+just lint
+just fmt --check
+just test
+```
+
+`just lint` prints `All checks passed!`. `just fmt --check` prints `6 files already formatted`, and `just test`
+prints `53 passed`.
+
+#### What changed
+
+- <a id="tut-08.8-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the imports, sorted. 2 lines added, 1 removed. It comes from `just lint --fix`. [The file](https://github.com/rahuldave/babykev/blob/656823a9a807e47a710a3671155dcc464138574d/src/babykev/api.py).
+  - look at `from typing import Any, Literal`
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -5,7 +5,8 @@ Choice -> options 'name' or 'name: desc'; answer = argmax, probabilities by name
+ Score  -> options = the levels, in order; answer = expected level, legend, probabilities by index
+ """
+ 
+-from typing import Any, Literal, Union
++from typing import Any, Literal
++
+ from pydantic import BaseModel, Field, model_validator
+ 
+ JSONContent = str | dict | list | int | float | bool | None
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/656823a9a807e47a710a3671155dcc464138574d). [The code after it](https://github.com/rahuldave/babykev/tree/656823a9a807e47a710a3671155dcc464138574d).
+
+<a id="tut-09"></a>
+
+## 9 Types in every signature
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 15 packages`.
+
+A reader of `def to_record(req: SystemOneRequest):` knows what the function takes, and not what it returns. A type
+annotation says it, in the signature. Python does not check annotations when it runs, but a reader does, and a type
+checker can, later. The family `ANN` of ruff asks for the type of every parameter and of every return value. A
+person writes each type that ruff cannot guess, and ruff writes the rest.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/656823a9a807e47a710a3671155dcc464138574d). [The code after it](https://github.com/rahuldave/babykev/tree/8346c6519e40c978efca61945dfa7f58c64b1c8e).
+
+<a id="tut-09.1"></a>
+
+### 9.1 The rule that every function has types
+
+Nothing asks for types yet. The family `ANN` joins the list `select`, on a line of its own, with its comment.
+
+A patch to [`pyproject.toml`](#tut-09.1-pyproject.toml-5d07e7).
+
+In `pyproject.toml`, the line `"ANN", # annotations: every parameter and every return value has a type` is now line
+63, the last of the list `select`.
+
+```bash
+just lint --statistics
+```
+
+`just lint --statistics` prints 49 problems in four codes, and ends with exit code 1.
+
+- `ANN201`, 33 times: a public function with no return type.
+- `ANN001`, 14 times: a parameter with no type.
+- `ANN202`, once: a private function with no return type. Its name starts with `_`.
+- `ANN002`, once: `*args` with no type.
+
+The last line says `31 unsafe fixes available with --fix --unsafe-fixes`. ruff can write 31 of the return types
+itself, and the other 18 problems need a person. The person goes first, so that ruff's fix comes last and leaves
+nothing.
+
+#### What changed
+
+- <a id="tut-09.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the family `ANN`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/f486d9d06d42f3379d0c8190ba0d6e38aa4d1d95/pyproject.toml).
+  - look at `    "ANN", # annotations: every parameter and every return value has a type`
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -60,6 +60,7 @@ select = [
+     "SIM", # simplify: code that can be said in fewer words
+     "S",   # bandit: security, from `assert` in the package to `eval`
+     "N",   # pep8-naming: classes in CamelCase, functions and variables in lower_case
++    "ANN", # annotations: every parameter and every return value has a type
+ ]
+ 
+ [tool.ruff.lint.per-file-ignores]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/f486d9d06d42f3379d0c8190ba0d6e38aa4d1d95). [The code after it](https://github.com/rahuldave/babykev/tree/f486d9d06d42f3379d0c8190ba0d6e38aa4d1d95).
+
+<a id="tut-09.2"></a>
+
+### 9.2 _check returns Self
+
+`ANN202`: `_check` is the validator of `Choice`, and returns the choice itself, `self`. `Self`, from `typing`, is
+the type of the class that the method belongs to.
+
+A patch to [`src/babykev/api.py`](#tut-09.2-src-babykev-api.py-2ea65f).
+
+In `src/babykev/api.py`, line 8 imports `Self` from `typing`, and line 28 is now `def _check(self) -> Self:`.
+
+```bash
+just lint --statistics
+just test -k choice
+```
+
+`just lint --statistics` prints 48 problems, and no `ANN202`. `just test -k choice` runs the 7 tests with `choice` in
+their name, and prints `7 passed, 46 deselected`. Two of them check the limits that `_check` sets on the options.
+
+#### What changed
+
+- <a id="tut-09.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the return type of `_check`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/863f01a05cf2a736103d443a2af4a56b5e88f6e1/src/babykev/api.py).
+  - look at `    def _check(self) -> Self:`
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -5,7 +5,7 @@ Choice -> options 'name' or 'name: desc'; answer = argmax, probabilities by name
+ Score  -> options = the levels, in order; answer = expected level, legend, probabilities by index
+ """
+ 
+-from typing import Any, Literal
++from typing import Any, Literal, Self
+ 
+ from pydantic import BaseModel, Field, model_validator
+ 
+@@ -25,7 +25,7 @@ class Choice(BaseModel):
+     criteria: dict[str, JSONContent]
+ 
+     @model_validator(mode="after")
+-    def _check(self):
++    def _check(self) -> Self:
+         if not 1 <= len(self.criteria) <= MAX_OPTIONS:
+             raise ValueError(f"criteria must have 1..{MAX_OPTIONS} options")
+         return self
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/863f01a05cf2a736103d443a2af4a56b5e88f6e1). [The code after it](https://github.com/rahuldave/babykev/tree/863f01a05cf2a736103d443a2af4a56b5e88f6e1).
+
+<a id="tut-09.3"></a>
+
+### 9.3 The two return types that ruff cannot guess
+
+`ANN201`: of the 33 public functions with no return type, ruff can guess 31. Each of them returns nothing, and its
+type is `None`. The other two return something, and a person names the type. `to_record` in `api.py` returns two
+things, the record and the metadata of its questions. The record is a dictionary, and the metadata is a list of
+dictionaries. `cheese_request` in the tests returns a `SystemOneRequest`.
+
+A patch to [`src/babykev/api.py`](#tut-09.3-src-babykev-api.py-2ea65f).
+
+A patch to [`tests/unit/test_api.py`](#tut-09.3-tests-unit-test_api.py-58d97c).
+
+In `src/babykev/api.py`, line 69 now ends with `-> tuple[dict[str, Any], list[dict[str, Any]]]:`. In
+`tests/unit/test_api.py`, line 30 is now `def cheese_request() -> SystemOneRequest:`.
+
+```bash
+just lint --statistics
+```
+
+`just lint --statistics` prints 46 problems. 31 are `ANN201`, and ruff can fix each of them.
+
+#### What changed
+
+- <a id="tut-09.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the return type of `to_record`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/89e0678e567540c99e3b9bb27299824531b6e0ab/src/babykev/api.py).
+  - look at `def to_record(req: SystemOneRequest) -> tuple[dict[str, Any], list[dict[str, Any]]]:`
+- <a id="tut-09.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the return type of `cheese_request`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/89e0678e567540c99e3b9bb27299824531b6e0ab/tests/unit/test_api.py).
+  - look at `def cheese_request() -> SystemOneRequest:`
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -66,7 +66,7 @@ def option_text(name: str, desc: JSONContent) -> str:
+     return name if desc is None or desc == "" else f"{name}: {render(desc)}"
+ 
+ 
+-def to_record(req: SystemOneRequest):
++def to_record(req: SystemOneRequest) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+     """-> internal record for encode(), plus per-question metadata to map probabilities back."""
+     qs, meta = [], []
+     for qid, q in req.questions.items():
+```
+
+</details>
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -27,7 +27,7 @@ MILKS = {"cow": None, "goat": None, "sheep": None, "mixed": "More than one kind
+ FIRMNESS = ["Soft", "Semi-soft", "Semi-hard", "Hard"]
+ 
+ 
+-def cheese_request():
++def cheese_request() -> SystemOneRequest:
+     """One request that asks a question of each type."""
+     return SystemOneRequest.model_validate(
+         {
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/89e0678e567540c99e3b9bb27299824531b6e0ab). [The code after it](https://github.com/rahuldave/babykev/tree/89e0678e567540c99e3b9bb27299824531b6e0ab).
+
+<a id="tut-09.4"></a>
+
+### 9.4 The types of the fixtures of pytest
+
+`ANN001`: 14 parameters have no type. Five of them are the fixtures of pytest in `test_cli.py`, which pytest passes
+in by their names. `monkeypatch` is a `pytest.MonkeyPatch`, and `capsys` is a `pytest.CaptureFixture[str]`, which
+catches text. With the types, the two signatures of the tests pass 100 characters, so each is split over three
+lines, as the formatter splits it.
+
+A patch to [`tests/unit/test_cli.py`](#tut-09.4-tests-unit-test_cli.py-44d4a0).
+
+In `tests/unit/test_cli.py`, line 8 is now `def run(monkeypatch: pytest.MonkeyPatch, *words):`. The parameters of the two
+tests are on lines 16 and 24, each between the line of the name and the line `):`.
+
+The fixtures are what the tests of the command are made of, so we read them again with their types.
+
+```bash
+sed -n '8,30p' tests/unit/test_cli.py
+just test -k unknown_command
+```
+
+`sed` prints `run` and the two tests. `run` uses `monkeypatch.setattr` to put the words in `sys.argv`, and calls
+`main`. Each test reads what `main` printed through `capsys.readouterr()`, `.out` for the help and `.err` for the
+message of an unknown command. `just test -k unknown_command` prints `1 passed, 52 deselected`. The test of an unknown
+command passes with the types, as it did without them.
+
+#### What changed
+
+- <a id="tut-09.4-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: the types of the fixtures. 7 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/7e8194b1498a4d533782cbec472c632279c95a02/tests/unit/test_cli.py).
+  - look at `    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]`
+
+<details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
+
+```diff
+@@ -5,20 +5,24 @@ import pytest
+ from babykev.cli import HELP, main
+ 
+ 
+-def run(monkeypatch, *words):
++def run(monkeypatch: pytest.MonkeyPatch, *words):
+     """Run `babykev` with these words as its command line."""
+     monkeypatch.setattr("sys.argv", ["babykev", *words])
+     main()
+ 
+ 
+ @pytest.mark.parametrize("words", [(), ("help",), ("--help",), ("-h",)])
+-def test_help_is_printed_for_help_and_for_no_words(monkeypatch, capsys, words):
++def test_help_is_printed_for_help_and_for_no_words(
++    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str], words
++):
+     """`babykev`, `babykev help`, `--help` and `-h` all print the help text, and nothing else."""
+     run(monkeypatch, *words)
+     assert capsys.readouterr().out == HELP
+ 
+ 
+-def test_an_unknown_command_is_refused_with_exit_code_2(monkeypatch, capsys):
++def test_an_unknown_command_is_refused_with_exit_code_2(
++    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
++):
+     """A word that is not a command is named, the help is pointed to, and the exit code is 2."""
+     with pytest.raises(SystemExit) as exit_info:
+         run(monkeypatch, "train")
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7e8194b1498a4d533782cbec472c632279c95a02). [The code after it](https://github.com/rahuldave/babykev/tree/7e8194b1498a4d533782cbec472c632279c95a02).
+
+<a id="tut-09.5"></a>
+
+### 9.5 The types of the parameters of the tests
+
+The other nine parameters with no type get their values from `@pytest.mark.parametrize`. Each gets the type of the
+values in its list.
+
+- `words` in `test_cli.py` is a tuple of strings, `tuple[str, ...]`.
+- `line` in `test_api.py` is a line of the sample data, a `dict[str, Any]`, so the file imports `Any` from `typing`.
+- `value` and `description` are what `render` and `option_text` take, a `JSONContent`, so the file imports it from
+  `babykev.api`.
+- `text` and `name` are strings, and `level` is an `int`.
+
+A patch to [`tests/unit/test_api.py`](#tut-09.5-tests-unit-test_api.py-58d97c).
+
+A patch to [`tests/unit/test_cli.py`](#tut-09.5-tests-unit-test_cli.py-44d4a0).
+
+In `tests/unit/test_api.py`, `from typing import Any` is on line 5, and `JSONContent` on line 13. The five tests with
+parameters now give their types, for example `def test_score_confidence_is_one_when_certain(level: int):` on line
+283. The signature of `test_option_text_adds_a_description_only_when_there_is_one` is split over lines 156 to 158.
+In `tests/unit/test_cli.py`, line 16 ends with `words: tuple[str, ...]`.
+
+```bash
+just lint --statistics
+just test
+```
+
+`just lint --statistics` prints 32 problems, 31 `ANN201` and one `ANN002`. `just test` prints `53 passed`.
+
+#### What changed
+
+- <a id="tut-09.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the types of the parameters, and two imports. 9 lines added, 5 removed. [The file](https://github.com/rahuldave/babykev/blob/c013c8baacd52d63a1630e69c78623f829f741fc/tests/unit/test_api.py).
+  - look at `def test_render_flattens_json_into_text(value: JSONContent, text: str):`
+- <a id="tut-09.5-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: the type of `words`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/c013c8baacd52d63a1630e69c78623f829f741fc/tests/unit/test_cli.py).
+  - look at `    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str], words: tuple[str, ...]`
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -2,6 +2,7 @@
+ 
+ import json
+ from pathlib import Path
++from typing import Any
+ 
+ import pytest
+ from pydantic import ValidationError
+@@ -9,6 +10,7 @@ from pydantic import ValidationError
+ from babykev.api import (
+     MAX_OPTIONS,
+     Choice,
++    JSONContent,
+     Noul,
+     Score,
+     SystemOneRequest,
+@@ -45,7 +47,7 @@ def cheese_request() -> SystemOneRequest:
+ 
+ 
+ @pytest.mark.parametrize("line", SAMPLE_LINES)
+-def test_sample_line_fits_the_contract(line):
++def test_sample_line_fits_the_contract(line: dict[str, Any]):
+     """Every line of the sample data is a valid request, with one record question per question."""
+     request = SystemOneRequest.model_validate(line)
+     record, meta = to_record(request)
+@@ -55,7 +57,7 @@ def test_sample_line_fits_the_contract(line):
+ 
+ 
+ @pytest.mark.parametrize("line", SAMPLE_LINES)
+-def test_sample_line_has_a_usable_label_on_every_question(line):
++def test_sample_line_has_a_usable_label_on_every_question(line: dict[str, Any]):
+     """A label is a boolean for noul, an option name for choice, and a level index for score."""
+     for question in line["questions"].values():
+         label = question["label"]
+@@ -138,7 +140,7 @@ def test_score_with_one_level_is_rejected():
+         ([{"role": "customer", "content": "hello"}], "- role: customer\n  content: hello"),
+     ],
+ )
+-def test_render_flattens_json_into_text(value, text):
++def test_render_flattens_json_into_text(value: JSONContent, text: str):
+     """Strings, numbers, lists and objects all become the text the model reads."""
+     assert render(value) == text
+ 
+@@ -151,7 +153,9 @@ def test_render_flattens_json_into_text(value, text):
+         ("mixed", "More than one kind of milk", "mixed: More than one kind of milk"),
+     ],
+ )
+-def test_option_text_adds_a_description_only_when_there_is_one(name, description, text):
++def test_option_text_adds_a_description_only_when_there_is_one(
++    name: str, description: JSONContent, text: str
++):
+     """An option is its name, followed by its description when it has one."""
+     assert option_text(name, description) == text
+ 
+@@ -276,7 +280,7 @@ def test_choice_confidence_grows_with_the_winner():
+ 
+ 
+ @pytest.mark.parametrize("level", [0, 1, 2])
+-def test_score_confidence_is_one_when_certain(level):
++def test_score_confidence_is_one_when_certain(level: int):
+     """All the probability on one level is certainty, wherever the level is."""
+     p = [0.0, 0.0, 0.0]
+     p[level] = 1.0
+```
+
+</details>
+
+<details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
+
+```diff
+@@ -13,7 +13,7 @@ def run(monkeypatch: pytest.MonkeyPatch, *words):
+ 
+ @pytest.mark.parametrize("words", [(), ("help",), ("--help",), ("-h",)])
+ def test_help_is_printed_for_help_and_for_no_words(
+-    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str], words
++    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str], words: tuple[str, ...]
+ ):
+     """`babykev`, `babykev help`, `--help` and `-h` all print the help text, and nothing else."""
+     run(monkeypatch, *words)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/c013c8baacd52d63a1630e69c78623f829f741fc). [The code after it](https://github.com/rahuldave/babykev/tree/c013c8baacd52d63a1630e69c78623f829f741fc).
+
+<a id="tut-09.6"></a>
+
+### 9.6 The words of run are strings
+
+`ANN002`: `*words` in `run` gathers any number of words into a tuple. Its annotation is the type of each word, `str`,
+and not of the tuple.
+
+A patch to [`tests/unit/test_cli.py`](#tut-09.6-tests-unit-test_cli.py-44d4a0).
+
+In `tests/unit/test_cli.py`, line 8 is now `def run(monkeypatch: pytest.MonkeyPatch, *words: str):`.
+
+```bash
+just lint --statistics
+just lint --statistics --unsafe-fixes
+```
+
+`just lint --statistics` prints 31 problems, all `ANN201`. With `--unsafe-fixes`, it marks each of them `[*]`, and
+says `31 fixable with --fix`. Neither command changes a file.
+
+#### What changed
+
+- <a id="tut-09.6-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: the type of `*words`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/9175fdc06663a06b97dd170165a5b7dedc4c0038/tests/unit/test_cli.py).
+  - look at `def run(monkeypatch: pytest.MonkeyPatch, *words: str):`
+
+<details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
+
+```diff
+@@ -5,7 +5,7 @@ import pytest
+ from babykev.cli import HELP, main
+ 
+ 
+-def run(monkeypatch: pytest.MonkeyPatch, *words):
++def run(monkeypatch: pytest.MonkeyPatch, *words: str):
+     """Run `babykev` with these words as its command line."""
+     monkeypatch.setattr("sys.argv", ["babykev", *words])
+     main()
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9175fdc06663a06b97dd170165a5b7dedc4c0038). [The code after it](https://github.com/rahuldave/babykev/tree/9175fdc06663a06b97dd170165a5b7dedc4c0038).
+
+<a id="tut-09.7"></a>
+
+### 9.7 Just lint --fix --unsafe-fixes writes -> None
+
+The last 31 problems are functions of the tests with no `return`, which return `None`. ruff can add `-> None` to
+each of them. ruff marks this fix as unsafe, so `--fix` alone does not make it, and `--unsafe-fixes` lets it.
+
+This change came from running `just lint --fix --unsafe-fixes`.
+
+`just lint --fix --unsafe-fixes` prints `Found 31 errors (31 fixed, 0 remaining).`, and ends with exit code 0.
+
+In `tests/unit/test_api.py`, 28 signatures now end with `-> None:`, for example
+`def test_sample_line_fits_the_contract(line: dict[str, Any]) -> None:` on line 50. In `tests/unit/test_cli.py`,
+`run` and the two tests end with `-> None:`, on lines 8, 17 and 25.
+
+```bash
+just lint
+just fmt --check
+just test
+```
+
+`just lint` prints `All checks passed!`. `just fmt --check` prints `6 files already formatted`. No line passed 100
+characters with `-> None`. `just test` prints `53 passed`.
+
+#### What changed
+
+- <a id="tut-09.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: `-> None` on 28 functions. 28 lines added, 28 removed. It comes from `just lint --fix --unsafe-fixes`. [The file](https://github.com/rahuldave/babykev/blob/8346c6519e40c978efca61945dfa7f58c64b1c8e/tests/unit/test_api.py).
+  - look at `def test_sample_line_fits_the_contract(line: dict[str, Any]) -> None:`
+- <a id="tut-09.7-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: `-> None` on `run` and the two tests. 3 lines added, 3 removed. It comes from `just lint --fix --unsafe-fixes`. [The file](https://github.com/rahuldave/babykev/blob/8346c6519e40c978efca61945dfa7f58c64b1c8e/tests/unit/test_cli.py).
+  - look at `def run(monkeypatch: pytest.MonkeyPatch, *words: str) -> None:`
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -47,7 +47,7 @@ def cheese_request() -> SystemOneRequest:
+ 
+ 
+ @pytest.mark.parametrize("line", SAMPLE_LINES)
+-def test_sample_line_fits_the_contract(line: dict[str, Any]):
++def test_sample_line_fits_the_contract(line: dict[str, Any]) -> None:
+     """Every line of the sample data is a valid request, with one record question per question."""
+     request = SystemOneRequest.model_validate(line)
+     record, meta = to_record(request)
+@@ -57,7 +57,7 @@ def test_sample_line_fits_the_contract(line: dict[str, Any]):
+ 
+ 
+ @pytest.mark.parametrize("line", SAMPLE_LINES)
+-def test_sample_line_has_a_usable_label_on_every_question(line: dict[str, Any]):
++def test_sample_line_has_a_usable_label_on_every_question(line: dict[str, Any]) -> None:
+     """A label is a boolean for noul, an option name for choice, and a level index for score."""
+     for question in line["questions"].values():
+         label = question["label"]
+@@ -72,7 +72,7 @@ def test_sample_line_has_a_usable_label_on_every_question(line: dict[str, Any]):
+ # Validation
+ 
+ 
+-def test_request_holds_one_model_per_question_type():
++def test_request_holds_one_model_per_question_type() -> None:
+     """The `type` field decides which model a question becomes."""
+     questions = cheese_request().questions
+     assert isinstance(questions["blue"], Noul)
+@@ -80,31 +80,31 @@ def test_request_holds_one_model_per_question_type():
+     assert isinstance(questions["firmness"], Score)
+ 
+ 
+-def test_request_without_questions_is_rejected():
++def test_request_without_questions_is_rejected() -> None:
+     """A request must ask at least one question."""
+     with pytest.raises(ValidationError):
+         SystemOneRequest.model_validate({"state": "Brie", "questions": {}})
+ 
+ 
+-def test_unknown_question_type_is_rejected():
++def test_unknown_question_type_is_rejected() -> None:
+     """Only noul, choice and score exist."""
+     question = {"type": "essay", "instructions": "Describe this cheese."}
+     with pytest.raises(ValidationError):
+         SystemOneRequest.model_validate({"state": "Brie", "questions": {"q": question}})
+ 
+ 
+-def test_noul_needs_no_criteria():
++def test_noul_needs_no_criteria() -> None:
+     """A yes-or-no question may leave out what yes and no mean."""
+     assert Noul(type="noul", instructions="Is it blue?").criteria is None
+ 
+ 
+-def test_choice_without_options_is_rejected():
++def test_choice_without_options_is_rejected() -> None:
+     """A choice needs at least one option."""
+     with pytest.raises(ValidationError):
+         Choice(type="choice", instructions="Which milk?", criteria={})
+ 
+ 
+-def test_choice_accepts_the_largest_number_of_options_and_no_more():
++def test_choice_accepts_the_largest_number_of_options_and_no_more() -> None:
+     """The limit on options is exact."""
+     at_limit = {f"option{i}": None for i in range(MAX_OPTIONS)}
+     assert (
+@@ -114,7 +114,7 @@ def test_choice_accepts_the_largest_number_of_options_and_no_more():
+         Choice(type="choice", instructions="Which?", criteria={**at_limit, "one_more": None})
+ 
+ 
+-def test_score_with_one_level_is_rejected():
++def test_score_with_one_level_is_rejected() -> None:
+     """A scale needs at least two levels."""
+     with pytest.raises(ValidationError):
+         Score(type="score", instructions="How firm?", criteria=["Soft"])
+@@ -140,7 +140,7 @@ def test_score_with_one_level_is_rejected():
+         ([{"role": "customer", "content": "hello"}], "- role: customer\n  content: hello"),
+     ],
+ )
+-def test_render_flattens_json_into_text(value: JSONContent, text: str):
++def test_render_flattens_json_into_text(value: JSONContent, text: str) -> None:
+     """Strings, numbers, lists and objects all become the text the model reads."""
+     assert render(value) == text
+ 
+@@ -155,7 +155,7 @@ def test_render_flattens_json_into_text(value: JSONContent, text: str):
+ )
+ def test_option_text_adds_a_description_only_when_there_is_one(
+     name: str, description: JSONContent, text: str
+-):
++) -> None:
+     """An option is its name, followed by its description when it has one."""
+     assert option_text(name, description) == text
+ 
+@@ -163,7 +163,7 @@ def test_option_text_adds_a_description_only_when_there_is_one(
+ # From a request to a record
+ 
+ 
+-def test_record_keeps_the_state_and_the_order_of_questions():
++def test_record_keeps_the_state_and_the_order_of_questions() -> None:
+     """The state is rendered once and the questions stay in request order."""
+     record, meta = to_record(cheese_request())
+     assert record["state"] == "cheese: Roquefort\norigin: France"
+@@ -175,14 +175,14 @@ def test_record_keeps_the_state_and_the_order_of_questions():
+     ]
+ 
+ 
+-def test_noul_becomes_no_then_yes():
++def test_noul_becomes_no_then_yes() -> None:
+     """Option 0 is no and option 1 is yes, so the answer is the probability of option 1."""
+     record, meta = to_record(cheese_request())
+     assert record["questions"][0]["options"] == ["no", "yes"]
+     assert meta[0] == {"id": "blue", "type": "noul"}
+ 
+ 
+-def test_noul_criteria_describe_no_and_yes():
++def test_noul_criteria_describe_no_and_yes() -> None:
+     """The criteria under `false` and `true` become the descriptions of no and yes."""
+     criteria = {"true": "It has blue veins", "false": "It has none"}
+     question = {"type": "noul", "instructions": "Is it blue?", "criteria": criteria}
+@@ -191,7 +191,7 @@ def test_noul_criteria_describe_no_and_yes():
+     assert record["questions"][0]["options"] == ["no: It has none", "yes: It has blue veins"]
+ 
+ 
+-def test_choice_becomes_one_option_per_criterion_in_order():
++def test_choice_becomes_one_option_per_criterion_in_order() -> None:
+     """Options keep the order of the criteria, and the metadata remembers their names."""
+     record, meta = to_record(cheese_request())
+     assert record["questions"][1]["options"] == [
+@@ -203,7 +203,7 @@ def test_choice_becomes_one_option_per_criterion_in_order():
+     assert meta[1] == {"id": "milk", "type": "choice", "keys": ["cow", "goat", "sheep", "mixed"]}
+ 
+ 
+-def test_score_becomes_one_option_per_level_with_a_legend():
++def test_score_becomes_one_option_per_level_with_a_legend() -> None:
+     """Options are the levels in order, and the legend maps each index to its level."""
+     record, meta = to_record(cheese_request())
+     assert record["questions"][2]["options"] == FIRMNESS
+@@ -213,13 +213,13 @@ def test_score_becomes_one_option_per_level_with_a_legend():
+ # From probabilities to answers
+ 
+ 
+-def test_noul_answer_is_the_probability_of_yes():
++def test_noul_answer_is_the_probability_of_yes() -> None:
+     """The answer to a yes-or-no question is one number."""
+     answers = to_answers([[0.25, 0.75]], [{"id": "blue", "type": "noul"}])
+     assert answers == {"blue": {"type": "noul", "noul": 0.75}}
+ 
+ 
+-def test_choice_answer_names_the_most_likely_option():
++def test_choice_answer_names_the_most_likely_option() -> None:
+     """A choice answer has the winner, a probability for each option, and a confidence."""
+     meta = [{"id": "milk", "type": "choice", "keys": ["cow", "goat", "sheep"]}]
+     answer = to_answers([[0.1, 0.7, 0.2]], meta)["milk"]
+@@ -228,7 +228,7 @@ def test_choice_answer_names_the_most_likely_option():
+     assert answer["confidence"] == pytest.approx(0.55)
+ 
+ 
+-def test_score_answer_is_the_expected_level():
++def test_score_answer_is_the_expected_level() -> None:
+     """A score answer is the mean level under the probabilities, with the legend to read it by."""
+     legend = {"0": "Soft", "1": "Semi-soft", "2": "Hard"}
+     answer = to_answers([[0.1, 0.2, 0.7]], [{"id": "firmness", "type": "score", "legend": legend}])[
+@@ -239,7 +239,7 @@ def test_score_answer_is_the_expected_level():
+     assert answer["probabilities"] == {"0": 0.1, "1": 0.2, "2": 0.7}
+ 
+ 
+-def test_every_question_gets_an_answer_of_its_own_type():
++def test_every_question_gets_an_answer_of_its_own_type() -> None:
+     """Records and answers line up: one answer per question, under the question's id."""
+     record, meta = to_record(cheese_request())
+     uniform = [[1 / len(q["options"])] * len(q["options"]) for q in record["questions"]]
+@@ -251,7 +251,7 @@ def test_every_question_gets_an_answer_of_its_own_type():
+     }
+ 
+ 
+-def test_rounded_probabilities_still_sum_to_one():
++def test_rounded_probabilities_still_sum_to_one() -> None:
+     """Rounding for output must not lose probability, even with many options."""
+     keys = [f"intent{i}" for i in range(77)]
+     answer = to_answers([[1 / 77] * 77], [{"id": "intent", "type": "choice", "keys": keys}])[
+@@ -263,40 +263,40 @@ def test_rounded_probabilities_still_sum_to_one():
+ # Confidence
+ 
+ 
+-def test_choice_confidence_is_zero_for_a_guess():
++def test_choice_confidence_is_zero_for_a_guess() -> None:
+     """Equal probabilities are a guess, whatever the number of options."""
+     assert choice_confidence([0.25] * 4) == pytest.approx(0)
+ 
+ 
+-def test_choice_confidence_is_one_when_certain():
++def test_choice_confidence_is_one_when_certain() -> None:
+     """All the probability on one option is certainty."""
+     assert choice_confidence([0, 1, 0]) == pytest.approx(1)
+     assert choice_confidence([1.0]) == 1.0
+ 
+ 
+-def test_choice_confidence_grows_with_the_winner():
++def test_choice_confidence_grows_with_the_winner() -> None:
+     """Between a guess and certainty, confidence follows the winning probability."""
+     assert choice_confidence([0.5, 0.25, 0.25]) == pytest.approx(0.25)
+ 
+ 
+ @pytest.mark.parametrize("level", [0, 1, 2])
+-def test_score_confidence_is_one_when_certain(level: int):
++def test_score_confidence_is_one_when_certain(level: int) -> None:
+     """All the probability on one level is certainty, wherever the level is."""
+     p = [0.0, 0.0, 0.0]
+     p[level] = 1.0
+     assert score_confidence(p) == pytest.approx(1)
+ 
+ 
+-def test_score_confidence_prefers_neighbouring_levels():
++def test_score_confidence_prefers_neighbouring_levels() -> None:
+     """Doubt between adjacent levels is more confident than doubt between the two ends."""
+     assert score_confidence([0.5, 0.5, 0, 0]) > score_confidence([0.5, 0, 0, 0.5])
+ 
+ 
+-def test_score_confidence_is_zero_for_a_guess():
++def test_score_confidence_is_zero_for_a_guess() -> None:
+     """Equal probabilities over the levels are a guess, as they are for a choice."""
+     assert score_confidence([1 / 3] * 3) == pytest.approx(0)
+ 
+ 
+-def test_score_confidence_is_one_for_a_single_level():
++def test_score_confidence_is_one_for_a_single_level() -> None:
+     """One level leaves nothing to doubt. A request cannot have one, but the function answers it."""
+     assert score_confidence([1.0]) == 1.0
+```
+
+</details>
+
+<details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
+
+```diff
+@@ -5,7 +5,7 @@ import pytest
+ from babykev.cli import HELP, main
+ 
+ 
+-def run(monkeypatch: pytest.MonkeyPatch, *words: str):
++def run(monkeypatch: pytest.MonkeyPatch, *words: str) -> None:
+     """Run `babykev` with these words as its command line."""
+     monkeypatch.setattr("sys.argv", ["babykev", *words])
+     main()
+@@ -14,7 +14,7 @@ def run(monkeypatch: pytest.MonkeyPatch, *words: str):
+ @pytest.mark.parametrize("words", [(), ("help",), ("--help",), ("-h",)])
+ def test_help_is_printed_for_help_and_for_no_words(
+     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str], words: tuple[str, ...]
+-):
++) -> None:
+     """`babykev`, `babykev help`, `--help` and `-h` all print the help text, and nothing else."""
+     run(monkeypatch, *words)
+     assert capsys.readouterr().out == HELP
+@@ -22,7 +22,7 @@ def test_help_is_printed_for_help_and_for_no_words(
+ 
+ def test_an_unknown_command_is_refused_with_exit_code_2(
+     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+-):
++) -> None:
+     """A word that is not a command is named, the help is pointed to, and the exit code is 2."""
+     with pytest.raises(SystemExit) as exit_info:
+         run(monkeypatch, "train")
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/8346c6519e40c978efca61945dfa7f58c64b1c8e). [The code after it](https://github.com/rahuldave/babykev/tree/8346c6519e40c978efca61945dfa7f58c64b1c8e).
+
+<a id="tut-10"></a>
+
+## 10 Docstrings
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 15 packages`.
+
+A docstring says what a module, a class or a function is for. Python keeps it in `__doc__`, and `help()` and the
+editor show it. kev gave a docstring to some functions of `api.py`, and to none of its classes. The rules `D1` of
+ruff ask for a docstring on every public module, class and function. ruff cannot write one, so each comes by hand,
+one kind at a time.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/8346c6519e40c978efca61945dfa7f58c64b1c8e). [The code after it](https://github.com/rahuldave/babykev/tree/d606f7f46f6d3657a3da7383ef9a9cfc4e91458d).
+
+<a id="tut-10.1"></a>
+
+### 10.1 The rule that every public name has a docstring
+
+Nothing asks for docstrings yet. The rules `D1` of the family `D`, pydocstyle, join the list `select`. `D1` is the
+part of the family that asks whether a docstring is there. The rest of the family checks how a docstring is written,
+and stays off.
+
+A patch to [`pyproject.toml`](#tut-10.1-pyproject.toml-5d07e7).
+
+In `pyproject.toml`, the line of `"D1"` is now line 64, the last of the list `select`.
+
+```bash
+just lint --output-format concise
+```
+
+`--output-format concise` prints each problem on one line, with its file, line and column. `just lint` finds 8
+problems, and ends with exit code 1. `D104` is the package, `src/babykev/__init__.py`, which is empty. `D101` is
+four classes of `api.py`, on lines 16, 22, 34 and 43. `D103` is three functions, on lines 65, 94 and 120. `_check`
+is private, so it needs none.
+
+#### What changed
+
+- <a id="tut-10.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the rules `D1`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/aca746d3a7c6f8dba6b0d296c6561530a6e90583/pyproject.toml).
+  - look at `    "D1",  # pydocstyle: every public module, class and function has a docstring`
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -61,6 +61,7 @@ select = [
+     "S",   # bandit: security, from `assert` in the package to `eval`
+     "N",   # pep8-naming: classes in CamelCase, functions and variables in lower_case
+     "ANN", # annotations: every parameter and every return value has a type
++    "D1",  # pydocstyle: every public module, class and function has a docstring
+ ]
+ 
+ [tool.ruff.lint.per-file-ignores]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/aca746d3a7c6f8dba6b0d296c6561530a6e90583). [The code after it](https://github.com/rahuldave/babykev/tree/aca746d3a7c6f8dba6b0d296c6561530a6e90583).
+
+<a id="tut-10.2"></a>
+
+### 10.2 The docstring of the package
+
+`D104`: `src/babykev/__init__.py` is the package `babykev` itself, and it is empty. Its docstring says what babykev
+is, as the first line of the help of the command does.
+
+A patch to [`src/babykev/__init__.py`](#tut-10.2-src-babykev-__init__.py-a40393).
+
+`src/babykev/__init__.py` now has one line, the docstring of the package.
+
+```bash
+uv run python -c "import babykev; print(babykev.__doc__)"
+just test
+```
+
+`uv run python -c` prints the docstring, `babykev: a small decision model. A state, typed questions, and a probability
+for every answer.` `just test` prints `53 passed`. `__init__.py` still has 0 statements, because coverage does not
+count a docstring.
+
+#### What changed
+
+- <a id="tut-10.2-src-babykev-__init__.py-a40393"></a>`src/babykev/__init__.py`: the docstring of the package. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/985649e12f2c0e923fa7a475053c65785b2f3f34/src/babykev/__init__.py).
+  - look at `"""babykev: a small decision model. A state, typed questions, and a probability for every answer."""`
+
+<details><summary>The diff of <code>src/babykev/__init__.py</code></summary>
+
+```diff
+@@ -0,0 +1 @@
++"""babykev: a small decision model. A state, typed questions, and a probability for every answer."""
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/985649e12f2c0e923fa7a475053c65785b2f3f34). [The code after it](https://github.com/rahuldave/babykev/tree/985649e12f2c0e923fa7a475053c65785b2f3f34).
+
+<a id="tut-10.3"></a>
+
+### 10.3 The docstrings of the four classes of a request
+
+`D101`: `Noul`, `Choice`, `Score` and `SystemOneRequest` are the classes of a request, and none has a docstring.
+Each gets one line, under its `class` line, that says what it is.
+
+A patch to [`src/babykev/api.py`](#tut-10.3-src-babykev-api.py-2ea65f).
+
+In `src/babykev/api.py`, the docstrings of the classes are on lines 17, 25, 39 and 50, under the lines of `Noul`,
+`Choice`, `Score` and `SystemOneRequest`.
+
+```bash
+uv run python -c "from babykev.api import Score; print(Score.__doc__)"
+just lint --statistics
+```
+
+`uv run python -c` prints the docstring of `Score`, `A question answered by a level of a scale, whose criteria are
+the levels in order.` `just lint --statistics` prints 3 problems, all `D103`.
+
+#### What changed
+
+- <a id="tut-10.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring on each class of a request. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/f3874d618e5ac000a312cea0edee33703feedfbb/src/babykev/api.py).
+  - look at `    """A question answered by a level of a scale, whose criteria are the levels in order."""`
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -14,12 +14,16 @@ MAX_OPTIONS = 255
+ 
+ 
+ class Noul(BaseModel):
++    """A question of yes or no. Its criteria, if it has them, describe false and true."""
++
+     type: Literal["noul"]
+     instructions: JSONContent
+     criteria: dict[str, JSONContent] | None = None
+ 
+ 
+ class Choice(BaseModel):
++    """A question answered by one of its options, named in its criteria."""
++
+     type: Literal["choice"]
+     instructions: JSONContent
+     criteria: dict[str, JSONContent]
+@@ -32,6 +36,8 @@ class Choice(BaseModel):
+ 
+ 
+ class Score(BaseModel):
++    """A question answered by a level of a scale, whose criteria are the levels in order."""
++
+     type: Literal["score"]
+     instructions: JSONContent
+     criteria: list[JSONContent] = Field(min_length=2, max_length=MAX_OPTIONS)
+@@ -41,6 +47,8 @@ Question = Noul | Choice | Score
+ 
+ 
+ class SystemOneRequest(BaseModel):
++    """One request: a state, and the questions to answer about it, each by its name."""
++
+     state: JSONContent
+     questions: dict[str, Question] = Field(min_length=1)
+ 
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/f3874d618e5ac000a312cea0edee33703feedfbb). [The code after it](https://github.com/rahuldave/babykev/tree/f3874d618e5ac000a312cea0edee33703feedfbb).
+
+<a id="tut-10.4"></a>
+
+### 10.4 The docstrings of three functions
+
+`D103`: `option_text`, `choice_confidence` and `to_answers` have no docstring. Each gets one line, under its `def`
+line, that says what it does. The docstring of `choice_confidence` gives the two ends of its scale, as the docstring
+of `score_confidence` does.
+
+A patch to [`src/babykev/api.py`](#tut-10.4-src-babykev-api.py-2ea65f).
+
+In `src/babykev/api.py`, the docstrings of the functions are on lines 74, 104 and 131, under the lines of
+`option_text`, `choice_confidence` and `to_answers`.
+
+```bash
+uv run python -c "from babykev.api import choice_confidence; print(choice_confidence.__doc__)"
+just lint
+just fmt --check
+just test
+```
+
+`uv run python -c` prints `Measure how far the most likely option stands above a guess: 1 if certain, 0 for a
+guess.` `just lint` prints `All checks passed!`, and `just fmt --check` prints `6 files already formatted`. `just
+test` prints `53 passed`, and the total is 100%, 83 of 83 statements.
+
+#### What changed
+
+- <a id="tut-10.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring on each of the three functions. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/d606f7f46f6d3657a3da7383ef9a9cfc4e91458d/src/babykev/api.py).
+  - look at `    """Measure how far the most likely option stands above a guess: 1 if certain, 0 for a guess."""`
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -71,6 +71,7 @@ def render(v: JSONContent, indent: int = 0) -> str:
+ 
+ 
+ def option_text(name: str, desc: JSONContent) -> str:
++    """Write an option as its name, followed by its description when it has one."""
+     return name if desc is None or desc == "" else f"{name}: {render(desc)}"
+ 
+ 
+@@ -100,6 +101,7 @@ def to_record(req: SystemOneRequest) -> tuple[dict[str, Any], list[dict[str, Any
+ 
+ 
+ def choice_confidence(p: list[float]) -> float:
++    """Measure how far the most likely option stands above a guess: 1 if certain, 0 for a guess."""
+     k = len(p)
+     return 1.0 if k == 1 else (max(p) - 1 / k) / (1 - 1 / k)
+ 
+@@ -126,6 +128,7 @@ def round_prob(x: float) -> float:
+ 
+ 
+ def to_answers(probs: list[list[float]], meta: list[dict]) -> dict[str, Any]:
++    """Turn the probabilities of the model into an answer of the type of each question."""
+     out = {}
+     for p, m in zip(probs, meta, strict=True):
+         if m["type"] == "noul":
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d606f7f46f6d3657a3da7383ef9a9cfc4e91458d). [The code after it](https://github.com/rahuldave/babykev/tree/d606f7f46f6d3657a3da7383ef9a9cfc4e91458d).
