@@ -272,7 +272,7 @@ files:
 
 The command that sets up the project is `uv sync --locked`, and nobody should have to remember it. A `justfile` names
 each task of the project once. `just` reads the file. Each task is a recipe, a name and then the commands to run,
-indented. We run the command of the first recipe by hand first.
+indented. Before the justfile comes in, we run the command of the recipe `setup` by hand.
 
 $ uv sync --locked
 
@@ -306,8 +306,11 @@ files:
 ### tut-01.10 The recipe help
 
 `just` lists the recipes, but nothing explains one of them. A recipe `help` does. `just help setup` prints the line of
-the recipe `setup`, and `just help` alone prints the list. `help` reads the name of a recipe as `"$1"`. So
-`set positional-arguments` gives each word after the name of a recipe to its commands whole.
+the recipe `setup`, and `just help` alone prints the list.
+
+`help` needs the word after its name, for example `setup` in `just help setup`. The line
+`set positional-arguments` passes such words to the commands of a recipe. The first word becomes `"$1"` and the
+second `"$2"`, and a word with spaces in it stays one word. So `help` finds the name `setup` in `"$1"`.
 
 patch$ justfile
 
@@ -501,7 +504,8 @@ and so does `uv.lock`. Only the versions differ.
 
 ::: watch
 At the end of `pyproject.toml`, the new table `[dependency-groups]` has the group `test`, with the line
-`"pytest>=9.1.1",`. `uv.lock` has pytest and the four packages it needs.
+`"pytest>=9.1.1",`. `uv.lock` has pytest and the five packages it needs. One of them, colorama, is only for Windows,
+so on a Mac or on Linux uv installs the other four.
 :::
 
 $ uv run pytest
@@ -512,7 +516,7 @@ code 5. pytest uses exit code 5 to say that it found no test.
 files:
 - diff `pyproject.toml`: the group `test`, with pytest.
   show: `"pytest>=9.1.1",`
-- diff `uv.lock`: pytest and the four packages it needs.
+- diff `uv.lock`: pytest and the five packages it needs.
 
 ### tut-02.3 The recipe test
 
@@ -771,15 +775,15 @@ all 111 lines, so that we read his code before we change it.
 patch$ src/babykev/api.py
 
 ::: do
-Read lines 14 to 42 first. They are the classes of a request and its questions.
+Read lines 14 to 43 first. They are the classes of a request and its questions.
 :::
 
 ::: watch
-`src/babykev/api.py` is new. Lines 14 to 42 are the classes of a request. The functions after them turn a request into
+`src/babykev/api.py` is new. Lines 14 to 43 are the classes of a request. The functions after them turn a request into
 options, and probabilities into answers.
 :::
 
-$ sed -n '14,42p' src/babykev/api.py
+$ sed -n '14,43p' src/babykev/api.py
 
 Each class says what its data must look like. `Literal["score"]` accepts only the text `score`.
 `Field(min_length=2, max_length=MAX_OPTIONS)` asks a score for 2 to 255 levels. A `Choice` checks its number of options
@@ -1230,7 +1234,8 @@ files:
 
 ### tut-05.4 A noul becomes no, then yes
 
-A noul has two options, `no` first. So the answer to a noul is the probability of option 1, yes.
+A noul has two options, `no` first and `yes` second. The code counts the options from 0, so `yes` is option 1. The
+answer to a noul is the probability of option 1.
 
 patch$ tests/unit/test_api.py
 

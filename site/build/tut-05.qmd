@@ -240,7 +240,8 @@ git restore --source b0ac52637697 --staged -- :/ && git restore --source ada878e
 
 ## 5.4 A noul becomes no, then yes {#tut-05.4}
 
-A noul has two options, `no` first. So the answer to a noul is the probability of option 1, yes.
+A noul has two options, `no` first and `yes` second. The code counts the options from 0, so `yes` is option 1. The
+answer to a noul is the probability of option 1.
 
 Apply the patch to [`tests/unit/test_api.py`](#tut-05.4-tests-unit-test_api.py-58d97c), from the top of the project:
 

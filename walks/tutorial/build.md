@@ -8,14 +8,21 @@ Each part ends with a section called **What changed**. It lists every file that 
 
 In Build it yourself, a file that a command makes says which command. A diff that is open is a patch. Apply it with the command in the text, or make the same change in your editor.
 
-We build babykev, a small decision model, and the engineering around it. babykev reads a text and a set of typed
-questions about it, and gives a probability for every answer. Its contract and its model come from the first
-version of [kev](https://github.com/jaredpalmer/kev), by Jared Palmer. We add packaging with uv, one list of tasks
-in `just`, tests, format, lint, types, docs, and the tests of the model. The project is on the branch `tutorial`
-of [babykev](https://github.com/rahuldave/babykev/tree/tutorial).
+babykev is a small decision model. It reads a text and a set of questions about it, and gives a probability for
+every answer. A question asks for yes or no, for a choice between named options, or for a level on a scale. This
+part of the tutorial builds the project around the model, and not the model itself. babykev's contract and its
+model come from the first version of [kev](https://github.com/jaredpalmer/kev), by Jared Palmer. The contract is the
+set of rules for what a request and an answer hold.
 
-We make babykev in moves. A move is one small change, made by one patch or by one command. A patch changes a file,
-and a command such as `uv add` writes the files it needs.
+First, we use uv, a tool that installs Python and the packages a project needs, to make babykev a package. A
+package is a project that can be installed, so that its command `babykev` runs in a terminal. We add one list of
+tasks in `just`, a tool that runs each task by its name. Then we add tests. They check the command `babykev`, the
+contract, and the code that turns the model's probabilities into answers. The project is on the branch `tutorial` of
+[babykev](https://github.com/rahuldave/babykev/tree/tutorial).
+
+We make babykev in moves. A move is one small change, made by one patch or by one command. A patch changes a file.
+A command such as `uv add`, which adds a package to the project, changes the project's files itself, so its move
+needs no patch.
 
 There are two ways to follow. In do mode, you make each move, and the page checks your files against it. When they
 match, the move is made, and the next one starts. In watch mode, each change is already made, and the text says
@@ -1316,7 +1323,7 @@ git restore --source 292ddcc99a28 --staged -- :/ && git restore --source e32c7ba
 
 The command that sets up the project is `uv sync --locked`, and nobody should have to remember it. A `justfile` names
 each task of the project once. `just` reads the file. Each task is a recipe, a name and then the commands to run,
-indented. We run the command of the first recipe by hand first.
+indented. Before the justfile comes in, we run the command of the recipe `setup` by hand.
 
 ```bash
 uv sync --locked
@@ -1387,8 +1394,11 @@ git restore --source e32c7ba9f798 --staged -- :/ && git restore --source e14dffa
 ### 1.10 The recipe help
 
 `just` lists the recipes, but nothing explains one of them. A recipe `help` does. `just help setup` prints the line of
-the recipe `setup`, and `just help` alone prints the list. `help` reads the name of a recipe as `"$1"`. So
-`set positional-arguments` gives each word after the name of a recipe to its commands whole.
+the recipe `setup`, and `just help` alone prints the list.
+
+`help` needs the word after its name, for example `setup` in `just help setup`. The line
+`set positional-arguments` passes such words to the commands of a recipe. The first word becomes `"$1"` and the
+second `"$2"`, and a word with spaces in it stays one word. So `help` finds the name `setup` in `"$1"`.
 
 Apply the patch to [`justfile`](#tut-01.10-justfile-424f0b), from the top of the project:
 
@@ -1867,7 +1877,7 @@ git restore --source ad616a5cc1fc --staged -- :/ && git restore --source 966956d
 
 - <a id="tut-02.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the group `test`, with pytest. 5 lines added. It comes from `uv add --group test pytest`. [The file](https://github.com/rahuldave/babykev/blob/966956d738b58505e23586af60f05cd5daceb12f/pyproject.toml).
   - look at `"pytest>=9.1.1",`
-- <a id="tut-02.2-uv.lock-8356d8"></a>`uv.lock`: pytest and the four packages it needs. 71 lines added. It comes from `uv add --group test pytest`. [The file](https://github.com/rahuldave/babykev/blob/966956d738b58505e23586af60f05cd5daceb12f/uv.lock).
+- <a id="tut-02.2-uv.lock-8356d8"></a>`uv.lock`: pytest and the five packages it needs. 71 lines added. It comes from `uv add --group test pytest`. [The file](https://github.com/rahuldave/babykev/blob/966956d738b58505e23586af60f05cd5daceb12f/uv.lock).
 
 <details><summary>The diff that <code>uv add --group test pytest</code> makes in <code>pyproject.toml</code></summary>
 
@@ -2510,10 +2520,10 @@ Apply the patch to [`src/babykev/api.py`](#tut-03.2-src-babykev-api.py-2ea65f), 
 curl -fsSL https://github.com/rahuldave/babykev/commit/85ac48d80d3f558507cd04add56502a55228fdfb.diff | git apply --include=src/babykev/api.py
 ```
 
-Read lines 14 to 42 first. They are the classes of a request and its questions.
+Read lines 14 to 43 first. They are the classes of a request and its questions.
 
 ```bash
-sed -n '14,42p' src/babykev/api.py
+sed -n '14,43p' src/babykev/api.py
 ```
 
 Each class says what its data must look like. `Literal["score"]` accepts only the text `score`.
@@ -3850,7 +3860,8 @@ git restore --source b0ac52637697 --staged -- :/ && git restore --source ada878e
 
 ### 5.4 A noul becomes no, then yes
 
-A noul has two options, `no` first. So the answer to a noul is the probability of option 1, yes.
+A noul has two options, `no` first and `yes` second. The code counts the options from 0, so `yes` is option 1. The
+answer to a noul is the probability of option 1.
 
 Apply the patch to [`tests/unit/test_api.py`](#tut-05.4-tests-unit-test_api.py-58d97c), from the top of the project:
 

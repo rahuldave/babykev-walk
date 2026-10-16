@@ -31,7 +31,8 @@
 | Reproducibility | <u>Versioning</u> |
 | Production | <u>Jobs & Services</u>, <u>CI/CD workflows</u>, Monitoring, Data engineering |
 
-The table has 26 parts. The rows Data and Model hold nine of them, and the rest are engineering.
+The table has 26 parts. The rows Data and Model hold nine of them, and the rest are engineering. This class covers
+the underlined parts.
 
 ---
 
@@ -66,14 +67,12 @@ A machine-learning project is a software project with a model and data in it.
 | Step | What it adds | Tools |
 |---|---|---|
 | tut-01 | The project, its command and its justfile | **uv**, **just** |
-| tut-02 | The contract of the model, and its unit tests | **pydantic**, **pytest**, **pytest-cov** |
-| tut-03 | Format and lint | **ruff** |
-| tut-04 | `just check`, and a git hook that runs it | **pre-commit**, **yamllint**, **validate-pyproject** |
-| tut-05 | Documentation from the code | **smalldocs** |
-| tut-06 | The model, and a smoke run on the real model | **torch**, **transformers**, **peft**, **ty** |
-| tut-07 | The tests of the model | **hypothesis** |
-| tut-08 | Two images from one lockfile | **Docker**, **hadolint** |
-| tut-09 | The checks on GitHub, and the docs on Pages | **GitHub Actions** |
+| tut-02 | Tests of the command, and coverage | **pytest**, **pytest-cov** |
+| tut-03 | The contract, `api.py`, from the project kev | **pydantic** |
+| tut-04 | Tests of what a request is | **pytest** |
+| tut-05 | Tests of the text that the model reads, and of the answers made from its probabilities | **pytest** |
+| tut-06 | Two bugs of kev, each found by a test and then fixed | **pytest** |
+| Later | Format and lint, `just check` and a git hook, docs, the model and its tests, Docker images, checks and docs on GitHub | **ruff**, **pre-commit**, **smalldocs**, **torch**, **ty**, **hypothesis**, **Docker**, **GitHub Actions** |
 
 ---
 
@@ -135,8 +134,8 @@ The model reads all the questions in one sequence. A mask keeps each question fr
 | **uv** | Python itself, every dependency, running the program |
 | **just** | The recipes of the project. `just` lists them |
 
-The lockfile names everything else, for example pydantic, pytest, ruff, smalldocs and torch. `just setup` installs
-it.
+The lockfile is a file that uv writes, and it names every other tool with its exact version. In this tutorial it gains pytest, pytest-cov and pydantic, and later steps add
+tools such as ruff, smalldocs and torch. `just setup` installs everything that the lockfile names.
 
 ---
 
@@ -144,7 +143,7 @@ it.
 
 | File in the first commit of kev | Lines | What it does | Arrives at |
 |---|---|---|---|
-| `api.py` | 111 | The contract: what a request and an answer look like | tut-02 |
-| `model.py` | 101 | Packing, the mask, the pointer head | tut-06 |
+| `api.py` | 111 | The contract: what a request and an answer look like | tut-03 |
+| `model.py` | 101 | Packing, the mask, the pointer head | A later step |
 | `data.py`, `train.py`, `evaluate.py` | 446 | Training records, the loop, accuracy and calibration | The class on training |
 | `serve.py` | 170 | Inference | The class on CI/CD with GitHub Actions |

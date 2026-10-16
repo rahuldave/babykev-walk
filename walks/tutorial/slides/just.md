@@ -47,10 +47,10 @@ error: Justfile does not contain recipe `nosuch`
 
 ```
 just                 the list, grouped
-just help test       one recipe: its line, and the program's own help where there is one
+just help test       one recipe: the comment above it, and babykev's own help when the recipe runs babykev
 just test help       the same, the other way round
 just --show test     the recipe itself
 ```
 
-- A recipe gives its extra words to the tool behind it. For example, `just test -k render` gives `-k render` to pytest
-- People and agents run the same recipes. Later steps give the same recipes to a git hook and to CI
+- The recipe `test` gives its extra words to pytest. For example, `just test -k render` runs `uv run pytest -k render`
+- People and AI agents run the same recipes. Later, git runs them before each commit, and a server runs them each time we send our commits to GitHub

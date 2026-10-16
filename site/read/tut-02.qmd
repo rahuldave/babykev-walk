@@ -75,7 +75,8 @@ This change came from running `uv add --group test pytest`.
 `Resolved 7 packages`, and lists pytest and the four packages it needs.
 
 At the end of `pyproject.toml`, the new table `[dependency-groups]` has the group `test`, with the line
-`"pytest>=9.1.1",`. `uv.lock` has pytest and the four packages it needs.
+`"pytest>=9.1.1",`. `uv.lock` has pytest and the five packages it needs. One of them, colorama, is only for Windows,
+so on a Mac or on Linux uv installs the other four.
 
 ```bash
 uv run pytest
@@ -88,7 +89,7 @@ code 5. pytest uses exit code 5 to say that it found no test.
 
 - <a id="tut-02.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the group `test`, with pytest. 5 lines added. It comes from `uv add --group test pytest`. [The file](https://github.com/rahuldave/babykev/blob/966956d738b58505e23586af60f05cd5daceb12f/pyproject.toml).
   - look at `"pytest>=9.1.1",`
-- <a id="tut-02.2-uv.lock-8356d8"></a>`uv.lock`: pytest and the four packages it needs. 71 lines added. It comes from `uv add --group test pytest`. [The file](https://github.com/rahuldave/babykev/blob/966956d738b58505e23586af60f05cd5daceb12f/uv.lock).
+- <a id="tut-02.2-uv.lock-8356d8"></a>`uv.lock`: pytest and the five packages it needs. 71 lines added. It comes from `uv add --group test pytest`. [The file](https://github.com/rahuldave/babykev/blob/966956d738b58505e23586af60f05cd5daceb12f/uv.lock).
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 

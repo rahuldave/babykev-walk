@@ -370,7 +370,7 @@ uv run babykev
 
 The command that sets up the project is `uv sync --locked`, and nobody should have to remember it. A `justfile` names
 each task of the project once. `just` reads the file. Each task is a recipe, a name and then the commands to run,
-indented. We run the command of the first recipe by hand first.
+indented. Before the justfile comes in, we run the command of the recipe `setup` by hand.
 
 ```bash
 uv sync --locked
@@ -423,8 +423,11 @@ the one recipe, under `[setup]`.
 ## 1.10 The recipe help {#tut-01.10}
 
 `just` lists the recipes, but nothing explains one of them. A recipe `help` does. `just help setup` prints the line of
-the recipe `setup`, and `just help` alone prints the list. `help` reads the name of a recipe as `"$1"`. So
-`set positional-arguments` gives each word after the name of a recipe to its commands whole.
+the recipe `setup`, and `just help` alone prints the list.
+
+`help` needs the word after its name, for example `setup` in `just help setup`. The line
+`set positional-arguments` passes such words to the commands of a recipe. The first word becomes `"$1"` and the
+second `"$2"`, and a word with spaces in it stays one word. So `help` finds the name `setup` in `"$1"`.
 
 A patch to [`justfile`](#tut-01.10-justfile-424f0b).
 

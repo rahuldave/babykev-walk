@@ -71,11 +71,11 @@ all 111 lines, so that we read his code before we change it.
 
 A patch to [`src/babykev/api.py`](#tut-03.2-src-babykev-api.py-2ea65f).
 
-`src/babykev/api.py` is new. Lines 14 to 42 are the classes of a request. The functions after them turn a request into
+`src/babykev/api.py` is new. Lines 14 to 43 are the classes of a request. The functions after them turn a request into
 options, and probabilities into answers.
 
 ```bash
-sed -n '14,42p' src/babykev/api.py
+sed -n '14,43p' src/babykev/api.py
 ```
 
 Each class says what its data must look like. `Literal["score"]` accepts only the text `score`.

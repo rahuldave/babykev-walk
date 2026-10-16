@@ -3,7 +3,7 @@
 - **The contract** says what a request is and what an answer is. kev wrote it in one file, `api.py`
 - **pydantic** checks that the data of a request has the shape that the contract says
 - **pytest** runs the tests, and **pytest-cov** measures which lines of the code they run
-- Two tests find two bugs of kev, and the step fixes both
+- Later, two tests find two bugs of kev, and we fix both
 
 ---
 
@@ -11,7 +11,7 @@
 
 The contract says what a request is, as pydantic models, and what an answer is.
 
-- `SystemOneRequest`: a state, and questions by name. The next move removes kev's field `model`
+- `SystemOneRequest`: a state, and questions by name. A later move removes kev's field `model`
 - `render`: turn any JSON value into the text the model reads
 - `to_record`: turn a request into the record the model is given
 - `to_answers`: turn the probabilities of the model back into answers
@@ -128,7 +128,7 @@ def test_rounded_probabilities_still_sum_to_one():
 
 *Without its docstring.*
 
-**77 options with the same probability sum to 0.77.** kev rounds each probability to two decimals, so each
+**After rounding, 77 options with the same probability sum to 0.77.** kev rounds each probability to two decimals, so each
 1/77, about 0.013, becomes 0.01. pytest prints `assert 0.77 == 1 ± 0.02`.
 
 ---
@@ -142,7 +142,7 @@ def round_prob(x: float) -> float:
 
 *Without its docstring.*
 
-- `round_prob` rounds to four decimals, in place of the two of `r2`
+- `round_prob` rounds to four decimals. It takes the place of kev's function `r2`, which rounded to two
 - Each 1/77 becomes 0.013, and the 77 probabilities sum to 1.001
 - The test did not change. The code did
 
@@ -165,8 +165,9 @@ prints `assert 0.5 == 0 ± 1.0e-12`.
 
 ## The fix of confidence
 
-The confidence of a score divides `spread`, the spread around the most likely level, by a measure. The fix
-changes the measure. For a guess over three levels, each level has the probability 1/3:
+The confidence of a score is 1 minus a fraction. The fraction divides `spread` by a measure. For `spread`, take
+the distance of each level from the most likely level, and multiply it by the probability of that level. Then add
+the results. The fix changes the measure. For a guess over three levels, each level has the probability 1/3:
 
 - **`spread`.** All levels are equally likely, so `max` takes level 0 as the most likely. The levels are 0, 1
   and 2 steps from it, so `spread` is 1/3 × 0 + 1/3 × 1 + 1/3 × 2 = **1 step**
@@ -174,8 +175,8 @@ changes the measure. For a guess over three levels, each level has the probabili
 - **The new measure, `guess`,** is the spread of a guess around the middle level, 1/3 × 1 + 1/3 × 0 + 1/3 × 1 =
   **2/3 of a step**. So the confidence is 1 − 1 ÷ (2/3) = **−0.5**, and the code counts a value below 0 as **0**
 
-An answer as spread out as a guess also gets 0. For example, `[0.5, 0.25, 0.25]` gets 0, and `[0.8, 0.1, 0.1]`
-gets 0.55.
+Over three levels, any answer with a `spread` of 2/3 of a step or more also gets 0. For example, `[0.5, 0.25, 0.25]` has a `spread`
+of 0.75 and gets 0. `[0.8, 0.1, 0.1]` has a `spread` of 0.3 and gets 0.55.
 
 ---
 
