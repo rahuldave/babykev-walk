@@ -17,7 +17,7 @@ editor show it. kev gave a docstring to some functions of `api.py`, and to none 
 ruff ask for a docstring on every public module, class and function. ruff cannot write one, so each comes by hand,
 one kind at a time.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/8346c6519e40c978efca61945dfa7f58c64b1c8e). [The code after it](https://github.com/rahuldave/babykev/tree/d606f7f46f6d3657a3da7383ef9a9cfc4e91458d).
+[The code before this part](https://github.com/rahuldave/babykev/tree/b0e8dd74539e4d3b210defc5e0169f53b1670393). [The code after it](https://github.com/rahuldave/babykev/tree/ebd0888f135c00e29b583f6fad0575c290fd4876).
 
 ## 10.1 The rule that every public name has a docstring {#tut-10.1}
 
@@ -40,7 +40,7 @@ is private, so it needs none.
 
 ### What changed {#tut-10.1-what-changed-182c57}
 
-- <a id="tut-10.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the rules `D1`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/aca746d3a7c6f8dba6b0d296c6561530a6e90583/pyproject.toml).
+- <a id="tut-10.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the rules `D1`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/09ad56d2e465ac5b485ba5d1b077c540fd7c45ef/pyproject.toml).
   - look at `    "D1",  # pydocstyle: every public module, class and function has a docstring`
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
@@ -58,7 +58,7 @@ is private, so it needs none.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/aca746d3a7c6f8dba6b0d296c6561530a6e90583). [The code after it](https://github.com/rahuldave/babykev/tree/aca746d3a7c6f8dba6b0d296c6561530a6e90583).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/09ad56d2e465ac5b485ba5d1b077c540fd7c45ef). [The code after it](https://github.com/rahuldave/babykev/tree/09ad56d2e465ac5b485ba5d1b077c540fd7c45ef).
 
 ## 10.2 The docstring of the package {#tut-10.2}
 
@@ -80,7 +80,7 @@ count a docstring.
 
 ### What changed {#tut-10.2-what-changed-182c57}
 
-- <a id="tut-10.2-src-babykev-__init__.py-a40393"></a>`src/babykev/__init__.py`: the docstring of the package. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/985649e12f2c0e923fa7a475053c65785b2f3f34/src/babykev/__init__.py).
+- <a id="tut-10.2-src-babykev-__init__.py-a40393"></a>`src/babykev/__init__.py`: the docstring of the package. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/7943e585faa81e4c0400f5e2e9ca7b42ce4bf286/src/babykev/__init__.py).
   - look at `"""babykev: a small decision model. A state, typed questions, and a probability for every answer."""`
 
 <details><summary>The diff of <code>src/babykev/__init__.py</code></summary>
@@ -92,7 +92,7 @@ count a docstring.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/985649e12f2c0e923fa7a475053c65785b2f3f34). [The code after it](https://github.com/rahuldave/babykev/tree/985649e12f2c0e923fa7a475053c65785b2f3f34).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7943e585faa81e4c0400f5e2e9ca7b42ce4bf286). [The code after it](https://github.com/rahuldave/babykev/tree/7943e585faa81e4c0400f5e2e9ca7b42ce4bf286).
 
 ## 10.3 The docstrings of the four classes of a request {#tut-10.3}
 
@@ -114,7 +114,7 @@ the levels in order.` `just lint --statistics` prints 3 problems, all `D103`.
 
 ### What changed {#tut-10.3-what-changed-182c57}
 
-- <a id="tut-10.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring on each class of a request. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/f3874d618e5ac000a312cea0edee33703feedfbb/src/babykev/api.py).
+- <a id="tut-10.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring on each class of a request. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/9a769c7d9551fb181bf7c36d989f94f35f836c2d/src/babykev/api.py).
   - look at `    """A question answered by a level of a scale, whose criteria are the levels in order."""`
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
@@ -159,7 +159,7 @@ the levels in order.` `just lint --statistics` prints 3 problems, all `D103`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/f3874d618e5ac000a312cea0edee33703feedfbb). [The code after it](https://github.com/rahuldave/babykev/tree/f3874d618e5ac000a312cea0edee33703feedfbb).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9a769c7d9551fb181bf7c36d989f94f35f836c2d). [The code after it](https://github.com/rahuldave/babykev/tree/9a769c7d9551fb181bf7c36d989f94f35f836c2d).
 
 ## 10.4 The docstrings of three functions {#tut-10.4}
 
@@ -185,7 +185,7 @@ test` prints `53 passed`, and the total is 100%, 83 of 83 statements.
 
 ### What changed {#tut-10.4-what-changed-182c57}
 
-- <a id="tut-10.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring on each of the three functions. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/d606f7f46f6d3657a3da7383ef9a9cfc4e91458d/src/babykev/api.py).
+- <a id="tut-10.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring on each of the three functions. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/ebd0888f135c00e29b583f6fad0575c290fd4876/src/babykev/api.py).
   - look at `    """Measure how far the most likely option stands above a guess: 1 if certain, 0 for a guess."""`
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
@@ -219,4 +219,4 @@ test` prints `53 passed`, and the total is 100%, 83 of 83 statements.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/d606f7f46f6d3657a3da7383ef9a9cfc4e91458d). [The code after it](https://github.com/rahuldave/babykev/tree/d606f7f46f6d3657a3da7383ef9a9cfc4e91458d).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ebd0888f135c00e29b583f6fad0575c290fd4876). [The code after it](https://github.com/rahuldave/babykev/tree/ebd0888f135c00e29b583f6fad0575c290fd4876).

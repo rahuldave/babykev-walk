@@ -75,7 +75,7 @@ website:
             contents:
               - text: "3.1 Pydantic, the first dependency"
                 href: read/tut-03.qmd#tut-03.1
-              - text: "3.2 api.py of kev, as he wrote it"
+              - text: "3.2 api.py, the contract"
                 href: read/tut-03.qmd#tut-03.2
               - text: "3.3 The docstring of api.py names no server"
                 href: read/tut-03.qmd#tut-03.3
@@ -281,7 +281,7 @@ website:
             contents:
               - text: "3.1 Pydantic, the first dependency"
                 href: build/tut-03.qmd#tut-03.1
-              - text: "3.2 api.py of kev, as he wrote it"
+              - text: "3.2 api.py, the contract"
                 href: build/tut-03.qmd#tut-03.2
               - text: "3.3 The docstring of api.py names no server"
                 href: build/tut-03.qmd#tut-03.3

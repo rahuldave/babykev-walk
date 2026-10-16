@@ -731,7 +731,7 @@ files:
 $ just setup
 
 babykev will answer typed questions about a text, and its model comes later. First we fix what a request is and what
-an answer is. kev wrote this agreement in a file, `api.py`, and we call it the contract. It comes in as kev wrote it.
+an answer is. The agreement is a file from kev, `api.py`, and we call it the contract. It comes in whole.
 
 Then three parts that belong to kev's server go, one at a time. Five sample requests come last. No test reaches the
 contract yet, so coverage falls.
@@ -767,10 +767,10 @@ files:
   show: `"pydantic>=2.14.1",`
 - diff `uv.lock`: pydantic and the four packages it needs, each with its exact version.
 
-### tut-03.2 api.py of kev, as he wrote it
+### tut-03.2 api.py, the contract
 
-babykev has no contract yet. kev's `api.py` says what a request is and what an answer is. It comes in as kev wrote it,
-all 111 lines, so that we read his code before we change it.
+babykev has no contract yet. `api.py`, from kev, says what a request is and what an answer is. It comes in whole,
+all 111 lines, and we read it before we change it.
 
 patch$ src/babykev/api.py
 

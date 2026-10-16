@@ -9,7 +9,7 @@ title: "9 Types in every signature"
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
 
 ```bash
-git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 656823a9a807 --staged --worktree -- :/
+git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 7cdb1ba696a3 --staged --worktree -- :/
 ```
 
 ```bash
@@ -23,7 +23,7 @@ annotation says it, in the signature. Python does not check annotations when it 
 checker can, later. The family `ANN` of ruff asks for the type of every parameter and of every return value. A
 person writes each type that ruff cannot guess, and ruff writes the rest.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/656823a9a807e47a710a3671155dcc464138574d). [The code after it](https://github.com/rahuldave/babykev/tree/8346c6519e40c978efca61945dfa7f58c64b1c8e).
+[The code before this part](https://github.com/rahuldave/babykev/tree/7cdb1ba696a32050cba1c335892fccb68bb4fd24). [The code after it](https://github.com/rahuldave/babykev/tree/b0e8dd74539e4d3b210defc5e0169f53b1670393).
 
 ## 9.1 The rule that every function has types {#tut-09.1}
 
@@ -78,18 +78,18 @@ nothing.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check f486d9d06d42
+git check 902428993991
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 656823a9a807 --staged -- :/ && git restore --source f486d9d06d42 --staged --worktree -- :/
+git restore --source 7cdb1ba696a3 --staged -- :/ && git restore --source 902428993991 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-09.1-what-changed-182c57}
 
-- <a id="tut-09.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the family `ANN`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/f486d9d06d42f3379d0c8190ba0d6e38aa4d1d95/pyproject.toml).
+- <a id="tut-09.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the family `ANN`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/902428993991b5ffbb8ce7630556d7524f04f4ce/pyproject.toml).
   - look at `    "ANN", # annotations: every parameter and every return value has a type`
 
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
@@ -107,7 +107,7 @@ git restore --source 656823a9a807 --staged -- :/ && git restore --source f486d9d
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/f486d9d06d42f3379d0c8190ba0d6e38aa4d1d95). [The code after it](https://github.com/rahuldave/babykev/tree/f486d9d06d42f3379d0c8190ba0d6e38aa4d1d95).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/902428993991b5ffbb8ce7630556d7524f04f4ce). [The code after it](https://github.com/rahuldave/babykev/tree/902428993991b5ffbb8ce7630556d7524f04f4ce).
 
 ## 9.2 _check returns Self {#tut-09.2}
 
@@ -117,7 +117,7 @@ the type of the class that the method belongs to.
 Apply the patch to [`src/babykev/api.py`](#tut-09.2-src-babykev-api.py-2ea65f), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/863f01a05cf2a736103d443a2af4a56b5e88f6e1.diff | git apply --include=src/babykev/api.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/620ea02cd62d1dafd9014783e29d8fe85216175c.diff | git apply --include=src/babykev/api.py
 ```
 
 In `src/babykev/api.py`, the patch adds `Self` to the import of `typing` on line 8, and `-> Self` to the line of
@@ -134,18 +134,18 @@ their name, and prints `7 passed, 46 deselected`. Two of them check the limits t
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 863f01a05cf2
+git check 620ea02cd62d
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source f486d9d06d42 --staged -- :/ && git restore --source 863f01a05cf2 --staged --worktree -- :/
+git restore --source 902428993991 --staged -- :/ && git restore --source 620ea02cd62d --staged --worktree -- :/
 ```
 
 ### What changed {#tut-09.2-what-changed-182c57}
 
-- <a id="tut-09.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the return type of `_check`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/863f01a05cf2a736103d443a2af4a56b5e88f6e1/src/babykev/api.py).
+- <a id="tut-09.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the return type of `_check`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/620ea02cd62d1dafd9014783e29d8fe85216175c/src/babykev/api.py).
   - look at `    def _check(self) -> Self:`
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
@@ -173,7 +173,7 @@ git restore --source f486d9d06d42 --staged -- :/ && git restore --source 863f01a
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/863f01a05cf2a736103d443a2af4a56b5e88f6e1). [The code after it](https://github.com/rahuldave/babykev/tree/863f01a05cf2a736103d443a2af4a56b5e88f6e1).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/620ea02cd62d1dafd9014783e29d8fe85216175c). [The code after it](https://github.com/rahuldave/babykev/tree/620ea02cd62d1dafd9014783e29d8fe85216175c).
 
 ## 9.3 The two return types that ruff cannot guess {#tut-09.3}
 
@@ -185,13 +185,13 @@ dictionaries. `cheese_request` in the tests returns a `SystemOneRequest`.
 Apply the patch to [`src/babykev/api.py`](#tut-09.3-src-babykev-api.py-2ea65f), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/89e0678e567540c99e3b9bb27299824531b6e0ab.diff | git apply --include=src/babykev/api.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/36b5e61136c9bad356ca74b2d790edf10076fdcb.diff | git apply --include=src/babykev/api.py
 ```
 
 Apply the patch to [`tests/unit/test_api.py`](#tut-09.3-tests-unit-test_api.py-58d97c), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/89e0678e567540c99e3b9bb27299824531b6e0ab.diff | git apply --include=tests/unit/test_api.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/36b5e61136c9bad356ca74b2d790edf10076fdcb.diff | git apply --include=tests/unit/test_api.py
 ```
 
 In `src/babykev/api.py`, the patch adds the return type at the end of the line `def to_record(...)`. In
@@ -206,20 +206,20 @@ just lint --statistics
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 89e0678e5675
+git check 36b5e61136c9
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 863f01a05cf2 --staged -- :/ && git restore --source 89e0678e5675 --staged --worktree -- :/
+git restore --source 620ea02cd62d --staged -- :/ && git restore --source 36b5e61136c9 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-09.3-what-changed-182c57}
 
-- <a id="tut-09.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the return type of `to_record`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/89e0678e567540c99e3b9bb27299824531b6e0ab/src/babykev/api.py).
+- <a id="tut-09.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the return type of `to_record`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/36b5e61136c9bad356ca74b2d790edf10076fdcb/src/babykev/api.py).
   - look at `def to_record(req: SystemOneRequest) -> tuple[dict[str, Any], list[dict[str, Any]]]:`
-- <a id="tut-09.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the return type of `cheese_request`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/89e0678e567540c99e3b9bb27299824531b6e0ab/tests/unit/test_api.py).
+- <a id="tut-09.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the return type of `cheese_request`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/36b5e61136c9bad356ca74b2d790edf10076fdcb/tests/unit/test_api.py).
   - look at `def cheese_request() -> SystemOneRequest:`
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
@@ -254,7 +254,7 @@ git restore --source 863f01a05cf2 --staged -- :/ && git restore --source 89e0678
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/89e0678e567540c99e3b9bb27299824531b6e0ab). [The code after it](https://github.com/rahuldave/babykev/tree/89e0678e567540c99e3b9bb27299824531b6e0ab).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/36b5e61136c9bad356ca74b2d790edf10076fdcb). [The code after it](https://github.com/rahuldave/babykev/tree/36b5e61136c9bad356ca74b2d790edf10076fdcb).
 
 ## 9.4 The types of the fixtures of pytest {#tut-09.4}
 
@@ -266,7 +266,7 @@ lines, as the formatter splits it.
 Apply the patch to [`tests/unit/test_cli.py`](#tut-09.4-tests-unit-test_cli.py-44d4a0), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/7e8194b1498a4d533782cbec472c632279c95a02.diff | git apply --include=tests/unit/test_cli.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/ea931bef025598ffea0652a14e5051bffb491ef9.diff | git apply --include=tests/unit/test_cli.py
 ```
 
 In `tests/unit/test_cli.py`, the patch gives `monkeypatch` its type in `run`, and `monkeypatch` and `capsys` their
@@ -287,18 +287,18 @@ command passes with the types, as it did without them.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 7e8194b1498a
+git check ea931bef0255
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 89e0678e5675 --staged -- :/ && git restore --source 7e8194b1498a --staged --worktree -- :/
+git restore --source 36b5e61136c9 --staged -- :/ && git restore --source ea931bef0255 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-09.4-what-changed-182c57}
 
-- <a id="tut-09.4-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: the types of the fixtures. 7 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/7e8194b1498a4d533782cbec472c632279c95a02/tests/unit/test_cli.py).
+- <a id="tut-09.4-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: the types of the fixtures. 7 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/ea931bef025598ffea0652a14e5051bffb491ef9/tests/unit/test_cli.py).
   - look at `    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]`
 
 <details open><summary>The patch to <code>tests/unit/test_cli.py</code></summary>
@@ -336,7 +336,7 @@ git restore --source 89e0678e5675 --staged -- :/ && git restore --source 7e8194b
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/7e8194b1498a4d533782cbec472c632279c95a02). [The code after it](https://github.com/rahuldave/babykev/tree/7e8194b1498a4d533782cbec472c632279c95a02).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ea931bef025598ffea0652a14e5051bffb491ef9). [The code after it](https://github.com/rahuldave/babykev/tree/ea931bef025598ffea0652a14e5051bffb491ef9).
 
 ## 9.5 The types of the parameters of the tests {#tut-09.5}
 
@@ -352,13 +352,13 @@ values in its list.
 Apply the patch to [`tests/unit/test_api.py`](#tut-09.5-tests-unit-test_api.py-58d97c), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/c013c8baacd52d63a1630e69c78623f829f741fc.diff | git apply --include=tests/unit/test_api.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/e7648b1239e17f96443a9477a85ed36d8b1e6cc6.diff | git apply --include=tests/unit/test_api.py
 ```
 
 Apply the patch to [`tests/unit/test_cli.py`](#tut-09.5-tests-unit-test_cli.py-44d4a0), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/c013c8baacd52d63a1630e69c78623f829f741fc.diff | git apply --include=tests/unit/test_cli.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/e7648b1239e17f96443a9477a85ed36d8b1e6cc6.diff | git apply --include=tests/unit/test_cli.py
 ```
 
 In `tests/unit/test_api.py`, the patch adds `from typing import Any` under `from pathlib import Path`, and
@@ -375,20 +375,20 @@ just test
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check c013c8baacd5
+git check e7648b1239e1
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 7e8194b1498a --staged -- :/ && git restore --source c013c8baacd5 --staged --worktree -- :/
+git restore --source ea931bef0255 --staged -- :/ && git restore --source e7648b1239e1 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-09.5-what-changed-182c57}
 
-- <a id="tut-09.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the types of the parameters, and two imports. 9 lines added, 5 removed. [The file](https://github.com/rahuldave/babykev/blob/c013c8baacd52d63a1630e69c78623f829f741fc/tests/unit/test_api.py).
+- <a id="tut-09.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the types of the parameters, and two imports. 9 lines added, 5 removed. [The file](https://github.com/rahuldave/babykev/blob/e7648b1239e17f96443a9477a85ed36d8b1e6cc6/tests/unit/test_api.py).
   - look at `def test_render_flattens_json_into_text(value: JSONContent, text: str):`
-- <a id="tut-09.5-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: the type of `words`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/c013c8baacd52d63a1630e69c78623f829f741fc/tests/unit/test_cli.py).
+- <a id="tut-09.5-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: the type of `words`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/e7648b1239e17f96443a9477a85ed36d8b1e6cc6/tests/unit/test_cli.py).
   - look at `    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str], words: tuple[str, ...]`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -477,7 +477,7 @@ git restore --source 7e8194b1498a --staged -- :/ && git restore --source c013c8b
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/c013c8baacd52d63a1630e69c78623f829f741fc). [The code after it](https://github.com/rahuldave/babykev/tree/c013c8baacd52d63a1630e69c78623f829f741fc).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e7648b1239e17f96443a9477a85ed36d8b1e6cc6). [The code after it](https://github.com/rahuldave/babykev/tree/e7648b1239e17f96443a9477a85ed36d8b1e6cc6).
 
 ## 9.6 The words of run are strings {#tut-09.6}
 
@@ -487,7 +487,7 @@ and not of the tuple.
 Apply the patch to [`tests/unit/test_cli.py`](#tut-09.6-tests-unit-test_cli.py-44d4a0), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/9175fdc06663a06b97dd170165a5b7dedc4c0038.diff | git apply --include=tests/unit/test_cli.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/e0ff9f81ef10ee224eefb9a706f2903aa540463a.diff | git apply --include=tests/unit/test_cli.py
 ```
 
 In `tests/unit/test_cli.py`, the patch adds `: str` after `*words`, on line 8.
@@ -503,18 +503,18 @@ says `31 fixable with --fix`. Neither command changes a file.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 9175fdc06663
+git check e0ff9f81ef10
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source c013c8baacd5 --staged -- :/ && git restore --source 9175fdc06663 --staged --worktree -- :/
+git restore --source e7648b1239e1 --staged -- :/ && git restore --source e0ff9f81ef10 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-09.6-what-changed-182c57}
 
-- <a id="tut-09.6-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: the type of `*words`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/9175fdc06663a06b97dd170165a5b7dedc4c0038/tests/unit/test_cli.py).
+- <a id="tut-09.6-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: the type of `*words`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/e0ff9f81ef10ee224eefb9a706f2903aa540463a/tests/unit/test_cli.py).
   - look at `def run(monkeypatch: pytest.MonkeyPatch, *words: str):`
 
 <details open><summary>The patch to <code>tests/unit/test_cli.py</code></summary>
@@ -533,7 +533,7 @@ git restore --source c013c8baacd5 --staged -- :/ && git restore --source 9175fdc
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/9175fdc06663a06b97dd170165a5b7dedc4c0038). [The code after it](https://github.com/rahuldave/babykev/tree/9175fdc06663a06b97dd170165a5b7dedc4c0038).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e0ff9f81ef10ee224eefb9a706f2903aa540463a). [The code after it](https://github.com/rahuldave/babykev/tree/e0ff9f81ef10ee224eefb9a706f2903aa540463a).
 
 ## 9.7 Just lint --fix --unsafe-fixes writes -> None {#tut-09.7}
 
@@ -558,20 +558,20 @@ characters with `-> None`. `just test` prints `53 passed`.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 8346c6519e40
+git check b0e8dd74539e
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 9175fdc06663 --staged -- :/ && git restore --source 8346c6519e40 --staged --worktree -- :/
+git restore --source e0ff9f81ef10 --staged -- :/ && git restore --source b0e8dd74539e --staged --worktree -- :/
 ```
 
 ### What changed {#tut-09.7-what-changed-182c57}
 
-- <a id="tut-09.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: `-> None` on 28 functions. 28 lines added, 28 removed. It comes from `just lint --fix --unsafe-fixes`. [The file](https://github.com/rahuldave/babykev/blob/8346c6519e40c978efca61945dfa7f58c64b1c8e/tests/unit/test_api.py).
+- <a id="tut-09.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: `-> None` on 28 functions. 28 lines added, 28 removed. It comes from `just lint --fix --unsafe-fixes`. [The file](https://github.com/rahuldave/babykev/blob/b0e8dd74539e4d3b210defc5e0169f53b1670393/tests/unit/test_api.py).
   - look at `def test_sample_line_fits_the_contract(line: dict[str, Any]) -> None:`
-- <a id="tut-09.7-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: `-> None` on `run` and the two tests. 3 lines added, 3 removed. It comes from `just lint --fix --unsafe-fixes`. [The file](https://github.com/rahuldave/babykev/blob/8346c6519e40c978efca61945dfa7f58c64b1c8e/tests/unit/test_cli.py).
+- <a id="tut-09.7-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: `-> None` on `run` and the two tests. 3 lines added, 3 removed. It comes from `just lint --fix --unsafe-fixes`. [The file](https://github.com/rahuldave/babykev/blob/b0e8dd74539e4d3b210defc5e0169f53b1670393/tests/unit/test_cli.py).
   - look at `def run(monkeypatch: pytest.MonkeyPatch, *words: str) -> None:`
 
 <details><summary>The diff that <code>just lint --fix --unsafe-fixes</code> makes in <code>tests/unit/test_api.py</code></summary>
@@ -841,4 +841,4 @@ git restore --source 9175fdc06663 --staged -- :/ && git restore --source 8346c65
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/8346c6519e40c978efca61945dfa7f58c64b1c8e). [The code after it](https://github.com/rahuldave/babykev/tree/8346c6519e40c978efca61945dfa7f58c64b1c8e).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b0e8dd74539e4d3b210defc5e0169f53b1670393). [The code after it](https://github.com/rahuldave/babykev/tree/b0e8dd74539e4d3b210defc5e0169f53b1670393).

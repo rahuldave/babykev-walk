@@ -9,7 +9,7 @@ title: "10 Docstrings"
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
 
 ```bash
-git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 8346c6519e40 --staged --worktree -- :/
+git rm -rq --cached --ignore-unmatch -- :/ && git restore --source b0e8dd74539e --staged --worktree -- :/
 ```
 
 ```bash
@@ -23,7 +23,7 @@ editor show it. kev gave a docstring to some functions of `api.py`, and to none 
 ruff ask for a docstring on every public module, class and function. ruff cannot write one, so each comes by hand,
 one kind at a time.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/8346c6519e40c978efca61945dfa7f58c64b1c8e). [The code after it](https://github.com/rahuldave/babykev/tree/d606f7f46f6d3657a3da7383ef9a9cfc4e91458d).
+[The code before this part](https://github.com/rahuldave/babykev/tree/b0e8dd74539e4d3b210defc5e0169f53b1670393). [The code after it](https://github.com/rahuldave/babykev/tree/ebd0888f135c00e29b583f6fad0575c290fd4876).
 
 ## 10.1 The rule that every public name has a docstring {#tut-10.1}
 
@@ -74,18 +74,18 @@ is private, so it needs none.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check aca746d3a7c6
+git check 09ad56d2e465
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 8346c6519e40 --staged -- :/ && git restore --source aca746d3a7c6 --staged --worktree -- :/
+git restore --source b0e8dd74539e --staged -- :/ && git restore --source 09ad56d2e465 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-10.1-what-changed-182c57}
 
-- <a id="tut-10.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the rules `D1`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/aca746d3a7c6f8dba6b0d296c6561530a6e90583/pyproject.toml).
+- <a id="tut-10.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the rules `D1`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/09ad56d2e465ac5b485ba5d1b077c540fd7c45ef/pyproject.toml).
   - look at `    "D1",  # pydocstyle: every public module, class and function has a docstring`
 
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
@@ -103,7 +103,7 @@ git restore --source 8346c6519e40 --staged -- :/ && git restore --source aca746d
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/aca746d3a7c6f8dba6b0d296c6561530a6e90583). [The code after it](https://github.com/rahuldave/babykev/tree/aca746d3a7c6f8dba6b0d296c6561530a6e90583).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/09ad56d2e465ac5b485ba5d1b077c540fd7c45ef). [The code after it](https://github.com/rahuldave/babykev/tree/09ad56d2e465ac5b485ba5d1b077c540fd7c45ef).
 
 ## 10.2 The docstring of the package {#tut-10.2}
 
@@ -113,7 +113,7 @@ is, as the first line of the help of the command does.
 Apply the patch to [`src/babykev/__init__.py`](#tut-10.2-src-babykev-__init__.py-a40393), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/985649e12f2c0e923fa7a475053c65785b2f3f34.diff | git apply --include=src/babykev/__init__.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/7943e585faa81e4c0400f5e2e9ca7b42ce4bf286.diff | git apply --include=src/babykev/__init__.py
 ```
 
 The patch writes the one line of the file, a docstring.
@@ -130,18 +130,18 @@ count a docstring.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 985649e12f2c
+git check 7943e585faa8
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source aca746d3a7c6 --staged -- :/ && git restore --source 985649e12f2c --staged --worktree -- :/
+git restore --source 09ad56d2e465 --staged -- :/ && git restore --source 7943e585faa8 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-10.2-what-changed-182c57}
 
-- <a id="tut-10.2-src-babykev-__init__.py-a40393"></a>`src/babykev/__init__.py`: the docstring of the package. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/985649e12f2c0e923fa7a475053c65785b2f3f34/src/babykev/__init__.py).
+- <a id="tut-10.2-src-babykev-__init__.py-a40393"></a>`src/babykev/__init__.py`: the docstring of the package. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/7943e585faa81e4c0400f5e2e9ca7b42ce4bf286/src/babykev/__init__.py).
   - look at `"""babykev: a small decision model. A state, typed questions, and a probability for every answer."""`
 
 <details open><summary>The patch to <code>src/babykev/__init__.py</code></summary>
@@ -153,7 +153,7 @@ git restore --source aca746d3a7c6 --staged -- :/ && git restore --source 985649e
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/985649e12f2c0e923fa7a475053c65785b2f3f34). [The code after it](https://github.com/rahuldave/babykev/tree/985649e12f2c0e923fa7a475053c65785b2f3f34).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7943e585faa81e4c0400f5e2e9ca7b42ce4bf286). [The code after it](https://github.com/rahuldave/babykev/tree/7943e585faa81e4c0400f5e2e9ca7b42ce4bf286).
 
 ## 10.3 The docstrings of the four classes of a request {#tut-10.3}
 
@@ -163,7 +163,7 @@ Each gets one line, under its `class` line, that says what it is.
 Apply the patch to [`src/babykev/api.py`](#tut-10.3-src-babykev-api.py-2ea65f), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/f3874d618e5ac000a312cea0edee33703feedfbb.diff | git apply --include=src/babykev/api.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/9a769c7d9551fb181bf7c36d989f94f35f836c2d.diff | git apply --include=src/babykev/api.py
 ```
 
 In `src/babykev/api.py`, the patch adds a docstring and a blank line under each of the four lines `class ...`.
@@ -179,18 +179,18 @@ the levels in order.` `just lint --statistics` prints 3 problems, all `D103`.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check f3874d618e5a
+git check 9a769c7d9551
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 985649e12f2c --staged -- :/ && git restore --source f3874d618e5a --staged --worktree -- :/
+git restore --source 7943e585faa8 --staged -- :/ && git restore --source 9a769c7d9551 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-10.3-what-changed-182c57}
 
-- <a id="tut-10.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring on each class of a request. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/f3874d618e5ac000a312cea0edee33703feedfbb/src/babykev/api.py).
+- <a id="tut-10.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring on each class of a request. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/9a769c7d9551fb181bf7c36d989f94f35f836c2d/src/babykev/api.py).
   - look at `    """A question answered by a level of a scale, whose criteria are the levels in order."""`
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
@@ -235,7 +235,7 @@ git restore --source 985649e12f2c --staged -- :/ && git restore --source f3874d6
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/f3874d618e5ac000a312cea0edee33703feedfbb). [The code after it](https://github.com/rahuldave/babykev/tree/f3874d618e5ac000a312cea0edee33703feedfbb).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9a769c7d9551fb181bf7c36d989f94f35f836c2d). [The code after it](https://github.com/rahuldave/babykev/tree/9a769c7d9551fb181bf7c36d989f94f35f836c2d).
 
 ## 10.4 The docstrings of three functions {#tut-10.4}
 
@@ -246,7 +246,7 @@ of `score_confidence` does.
 Apply the patch to [`src/babykev/api.py`](#tut-10.4-src-babykev-api.py-2ea65f), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/d606f7f46f6d3657a3da7383ef9a9cfc4e91458d.diff | git apply --include=src/babykev/api.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/ebd0888f135c00e29b583f6fad0575c290fd4876.diff | git apply --include=src/babykev/api.py
 ```
 
 In `src/babykev/api.py`, the patch adds a docstring under each of the three lines `def ...`.
@@ -265,18 +265,18 @@ test` prints `53 passed`, and the total is 100%, 83 of 83 statements.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check d606f7f46f6d
+git check ebd0888f135c
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source f3874d618e5a --staged -- :/ && git restore --source d606f7f46f6d --staged --worktree -- :/
+git restore --source 9a769c7d9551 --staged -- :/ && git restore --source ebd0888f135c --staged --worktree -- :/
 ```
 
 ### What changed {#tut-10.4-what-changed-182c57}
 
-- <a id="tut-10.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring on each of the three functions. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/d606f7f46f6d3657a3da7383ef9a9cfc4e91458d/src/babykev/api.py).
+- <a id="tut-10.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring on each of the three functions. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/ebd0888f135c00e29b583f6fad0575c290fd4876/src/babykev/api.py).
   - look at `    """Measure how far the most likely option stands above a guess: 1 if certain, 0 for a guess."""`
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
@@ -310,4 +310,4 @@ git restore --source f3874d618e5a --staged -- :/ && git restore --source d606f7f
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/d606f7f46f6d3657a3da7383ef9a9cfc4e91458d). [The code after it](https://github.com/rahuldave/babykev/tree/d606f7f46f6d3657a3da7383ef9a9cfc4e91458d).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ebd0888f135c00e29b583f6fad0575c290fd4876). [The code after it](https://github.com/rahuldave/babykev/tree/ebd0888f135c00e29b583f6fad0575c290fd4876).

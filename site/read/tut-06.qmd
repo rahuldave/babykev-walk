@@ -13,7 +13,7 @@ just setup
 Every line of the contract runs in a test, and two of them are wrong. A test of rounding finds the first. The tests of
 confidence find the second. Each test fails, and the move after it fixes the code.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/c65ddf5484593bfa8c135f4bd5fddc4846cf80c1). [The code after it](https://github.com/rahuldave/babykev/tree/bb441c7fdf6f8fcd066dbcdd7f7bc03837a661ac).
+[The code before this part](https://github.com/rahuldave/babykev/tree/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f). [The code after it](https://github.com/rahuldave/babykev/tree/910716f0cec79c3f31afb34cf3a2593f0cd51315).
 
 ## 6.1 A test of rounding, which fails {#tut-06.1}
 
@@ -41,7 +41,7 @@ Lines 89 and 90 are `r2`, which rounds to two decimals. 1/77 is about 0.013, and
 
 ### What changed {#tut-06.1-what-changed-182c57}
 
-- <a id="tut-06.1-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the sum of the rounded probabilities. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/1beac4d6e9bca366e9a3411665e72a1ecdafd094/tests/unit/test_api.py).
+- <a id="tut-06.1-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the sum of the rounded probabilities. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/9012b28ceacd0bcc3971154a5df2f822e551443d/tests/unit/test_api.py).
   - look at `    assert sum(answer["probabilities"].values()) == pytest.approx(1, abs=0.02)`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -64,7 +64,7 @@ Lines 89 and 90 are `r2`, which rounds to two decimals. 1/77 is about 0.013, and
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/1beac4d6e9bca366e9a3411665e72a1ecdafd094). [The code after it](https://github.com/rahuldave/babykev/tree/1beac4d6e9bca366e9a3411665e72a1ecdafd094).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9012b28ceacd0bcc3971154a5df2f822e551443d). [The code after it](https://github.com/rahuldave/babykev/tree/9012b28ceacd0bcc3971154a5df2f822e551443d).
 
 ## 6.2 Probabilities rounded to four decimals {#tut-06.2}
 
@@ -84,7 +84,7 @@ just test
 
 ### What changed {#tut-06.2-what-changed-182c57}
 
-- <a id="tut-06.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: four decimals. 8 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/cd9e71dff5d72be00b049e50fc15b0db8235b705/src/babykev/api.py).
+- <a id="tut-06.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: four decimals. 8 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/27e93dd7ee76e609084a1d8a1c1cfbb4f7811da4/src/babykev/api.py).
   - look at `    return round(float(x), 4)`
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
@@ -122,7 +122,7 @@ just test
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/cd9e71dff5d72be00b049e50fc15b0db8235b705). [The code after it](https://github.com/rahuldave/babykev/tree/cd9e71dff5d72be00b049e50fc15b0db8235b705).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/27e93dd7ee76e609084a1d8a1c1cfbb4f7811da4). [The code after it](https://github.com/rahuldave/babykev/tree/27e93dd7ee76e609084a1d8a1c1cfbb4f7811da4).
 
 ## 6.3 A guess between options has confidence 0 {#tut-06.3}
 
@@ -141,7 +141,7 @@ pytest prints `1 passed`.
 
 ### What changed {#tut-06.3-what-changed-182c57}
 
-- <a id="tut-06.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a guess between four options. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/c30775de4338f1f7912dd178574536d0d6ac4d7b/tests/unit/test_api.py).
+- <a id="tut-06.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a guess between four options. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/27f1f23cc392446dd80918636dfc7a3c52692aae/tests/unit/test_api.py).
   - look at `assert choice_confidence([0.25] * 4) == pytest.approx(0)`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -171,7 +171,7 @@ pytest prints `1 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/c30775de4338f1f7912dd178574536d0d6ac4d7b). [The code after it](https://github.com/rahuldave/babykev/tree/c30775de4338f1f7912dd178574536d0d6ac4d7b).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/27f1f23cc392446dd80918636dfc7a3c52692aae). [The code after it](https://github.com/rahuldave/babykev/tree/27f1f23cc392446dd80918636dfc7a3c52692aae).
 
 ## 6.4 A certain choice has confidence 1 {#tut-06.4}
 
@@ -189,7 +189,7 @@ pytest prints `2 passed`.
 
 ### What changed {#tut-06.4-what-changed-182c57}
 
-- <a id="tut-06.4-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: certainty. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/490a244100c0a9ea6d3992ba31c49ca5b234e7f9/tests/unit/test_api.py).
+- <a id="tut-06.4-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: certainty. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/9ded0b3177719bb849eda76972daa2f5368af069/tests/unit/test_api.py).
   - look at `assert choice_confidence([0, 1, 0]) == pytest.approx(1)`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -209,7 +209,7 @@ pytest prints `2 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/490a244100c0a9ea6d3992ba31c49ca5b234e7f9). [The code after it](https://github.com/rahuldave/babykev/tree/490a244100c0a9ea6d3992ba31c49ca5b234e7f9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9ded0b3177719bb849eda76972daa2f5368af069). [The code after it](https://github.com/rahuldave/babykev/tree/9ded0b3177719bb849eda76972daa2f5368af069).
 
 ## 6.5 The confidence of a choice grows with its winner {#tut-06.5}
 
@@ -228,7 +228,7 @@ pytest prints `3 passed`.
 
 ### What changed {#tut-06.5-what-changed-182c57}
 
-- <a id="tut-06.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a confidence between 0 and 1. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/2e76bc0655ffb0458d1815154478fb3efae55b4c/tests/unit/test_api.py).
+- <a id="tut-06.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a confidence between 0 and 1. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/890fbe0900f6a0f59232ca9d94ce4cc439e21dde/tests/unit/test_api.py).
   - look at `assert choice_confidence([0.5, 0.25, 0.25]) == pytest.approx(0.25)`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -247,7 +247,7 @@ pytest prints `3 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/2e76bc0655ffb0458d1815154478fb3efae55b4c). [The code after it](https://github.com/rahuldave/babykev/tree/2e76bc0655ffb0458d1815154478fb3efae55b4c).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/890fbe0900f6a0f59232ca9d94ce4cc439e21dde). [The code after it](https://github.com/rahuldave/babykev/tree/890fbe0900f6a0f59232ca9d94ce4cc439e21dde).
 
 ## 6.6 A certain score has confidence 1 {#tut-06.6}
 
@@ -266,7 +266,7 @@ pytest prints `6 passed`.
 
 ### What changed {#tut-06.6-what-changed-182c57}
 
-- <a id="tut-06.6-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: certainty, on each level. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/e176a81dda2c6ae99a5095f67d3e909efda6630c/tests/unit/test_api.py).
+- <a id="tut-06.6-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: certainty, on each level. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/d2564e48ae134802f1d48cc079cfe3b92db14639/tests/unit/test_api.py).
   - look at `def test_score_confidence_is_one_when_certain(level):`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -296,7 +296,7 @@ pytest prints `6 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e176a81dda2c6ae99a5095f67d3e909efda6630c). [The code after it](https://github.com/rahuldave/babykev/tree/e176a81dda2c6ae99a5095f67d3e909efda6630c).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d2564e48ae134802f1d48cc079cfe3b92db14639). [The code after it](https://github.com/rahuldave/babykev/tree/d2564e48ae134802f1d48cc079cfe3b92db14639).
 
 ## 6.7 A score prefers neighbouring levels {#tut-06.7}
 
@@ -314,7 +314,7 @@ pytest prints `7 passed`.
 
 ### What changed {#tut-06.7-what-changed-182c57}
 
-- <a id="tut-06.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: near is better than far. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/63911fbe1251ada79de19a6314e43346fe8a30e6/tests/unit/test_api.py).
+- <a id="tut-06.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: near is better than far. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/795356b136ab4b1b1c22c8e63b8175a1a6f6d6de/tests/unit/test_api.py).
   - look at `assert score_confidence([0.5, 0.5, 0, 0]) > score_confidence([0.5, 0, 0, 0.5])`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -333,7 +333,7 @@ pytest prints `7 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/63911fbe1251ada79de19a6314e43346fe8a30e6). [The code after it](https://github.com/rahuldave/babykev/tree/63911fbe1251ada79de19a6314e43346fe8a30e6).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/795356b136ab4b1b1c22c8e63b8175a1a6f6d6de). [The code after it](https://github.com/rahuldave/babykev/tree/795356b136ab4b1b1c22c8e63b8175a1a6f6d6de).
 
 ## 6.8 A guess between levels has confidence 0, and the test fails {#tut-06.8}
 
@@ -365,7 +365,7 @@ places from it, so the spread is 1/3 × 0 + 1/3 × 1 + 1/3 × 2 = 1 place. The l
 
 ### What changed {#tut-06.8-what-changed-182c57}
 
-- <a id="tut-06.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a guess between three levels. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/f73a45e1526b08ffa60178134d837e21ff0db627/tests/unit/test_api.py).
+- <a id="tut-06.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a guess between three levels. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/72a00ec85ae4b6f3b591cf06fc65903a56f1f7fa/tests/unit/test_api.py).
   - look at `assert score_confidence([1 / 3] * 3) == pytest.approx(0)`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -384,7 +384,7 @@ places from it, so the spread is 1/3 × 0 + 1/3 × 1 + 1/3 × 2 = 1 place. The l
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/f73a45e1526b08ffa60178134d837e21ff0db627). [The code after it](https://github.com/rahuldave/babykev/tree/f73a45e1526b08ffa60178134d837e21ff0db627).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/72a00ec85ae4b6f3b591cf06fc65903a56f1f7fa). [The code after it](https://github.com/rahuldave/babykev/tree/72a00ec85ae4b6f3b591cf06fc65903a56f1f7fa).
 
 ## 6.9 The confidence of a score measures against a guess {#tut-06.9}
 
@@ -417,7 +417,7 @@ hold a scale of one level, so no test reaches it.
 
 ### What changed {#tut-06.9-what-changed-182c57}
 
-- <a id="tut-06.9-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the spread of a guess, as the measure. 12 lines added, 4 removed. [The file](https://github.com/rahuldave/babykev/blob/0ecccd50f6af3eebae1e00ad7a98f433e17f36e9/src/babykev/api.py).
+- <a id="tut-06.9-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the spread of a guess, as the measure. 12 lines added, 4 removed. [The file](https://github.com/rahuldave/babykev/blob/e97355545c4001a361257c532330f8784aa51b79/src/babykev/api.py).
   - look at `    guess = sum(abs(i - (L - 1) / 2) for i in range(L)) / L`
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
@@ -450,7 +450,7 @@ hold a scale of one level, so no test reaches it.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/0ecccd50f6af3eebae1e00ad7a98f433e17f36e9). [The code after it](https://github.com/rahuldave/babykev/tree/0ecccd50f6af3eebae1e00ad7a98f433e17f36e9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e97355545c4001a361257c532330f8784aa51b79). [The code after it](https://github.com/rahuldave/babykev/tree/e97355545c4001a361257c532330f8784aa51b79).
 
 ## 6.10 A test of a scale with one level {#tut-06.10}
 
@@ -469,7 +469,7 @@ just test
 
 ### What changed {#tut-06.10-what-changed-182c57}
 
-- <a id="tut-06.10-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the test calls the function itself. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/bb441c7fdf6f8fcd066dbcdd7f7bc03837a661ac/tests/unit/test_api.py).
+- <a id="tut-06.10-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the test calls the function itself. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/910716f0cec79c3f31afb34cf3a2593f0cd51315/tests/unit/test_api.py).
   - look at `    assert score_confidence([1.0]) == 1.0`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -488,4 +488,4 @@ just test
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/bb441c7fdf6f8fcd066dbcdd7f7bc03837a661ac). [The code after it](https://github.com/rahuldave/babykev/tree/bb441c7fdf6f8fcd066dbcdd7f7bc03837a661ac).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/910716f0cec79c3f31afb34cf3a2593f0cd51315). [The code after it](https://github.com/rahuldave/babykev/tree/910716f0cec79c3f31afb34cf3a2593f0cd51315).

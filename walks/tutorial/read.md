@@ -1787,12 +1787,12 @@ just setup
 ```
 
 babykev will answer typed questions about a text, and its model comes later. First we fix what a request is and what
-an answer is. kev wrote this agreement in a file, `api.py`, and we call it the contract. It comes in as kev wrote it.
+an answer is. The agreement is a file from kev, `api.py`, and we call it the contract. It comes in whole.
 
 Then three parts that belong to kev's server go, one at a time. Five sample requests come last. No test reaches the
 contract yet, so coverage falls.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/4640589d80e4f224a4b2c1fd9567e952f564f102). [The code after it](https://github.com/rahuldave/babykev/tree/a3fdba91adc19206debd74d87fa107603433b202).
+[The code before this part](https://github.com/rahuldave/babykev/tree/4640589d80e4f224a4b2c1fd9567e952f564f102). [The code after it](https://github.com/rahuldave/babykev/tree/56606771fb23f7a0a01825f477050d2980a47736).
 
 <a id="tut-03.1"></a>
 
@@ -1844,10 +1844,10 @@ uv tree --depth 1
 
 <a id="tut-03.2"></a>
 
-### 3.2 api.py of kev, as he wrote it
+### 3.2 api.py, the contract
 
-babykev has no contract yet. kev's `api.py` says what a request is and what an answer is. It comes in as kev wrote it,
-all 111 lines, so that we read his code before we change it.
+babykev has no contract yet. `api.py`, from kev, says what a request is and what an answer is. It comes in whole,
+all 111 lines, and we read it before we change it.
 
 A patch to [`src/babykev/api.py`](#tut-03.2-src-babykev-api.py-2ea65f).
 
@@ -1871,7 +1871,7 @@ The 5 tests pass, and coverage falls. `api.py` has 70 statements, and no test ru
 
 #### What changed
 
-- <a id="tut-03.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a request has a state and its questions by name. Each question is a `Noul`, a `Choice` or a `Score`, and its field `type` says which. New, 111 lines. [The file](https://github.com/rahuldave/babykev/blob/85ac48d80d3f558507cd04add56502a55228fdfb/src/babykev/api.py).
+- <a id="tut-03.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a request has a state and its questions by name. Each question is a `Noul`, a `Choice` or a `Score`, and its field `type` says which. New, 111 lines. [The file](https://github.com/rahuldave/babykev/blob/e8e2e72adad9364a58be21dadf6d757e84436b97/src/babykev/api.py).
   - look at `class SystemOneRequest(BaseModel):`
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
@@ -1993,7 +1993,7 @@ The 5 tests pass, and coverage falls. `api.py` has 70 statements, and no test ru
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/85ac48d80d3f558507cd04add56502a55228fdfb). [The code after it](https://github.com/rahuldave/babykev/tree/85ac48d80d3f558507cd04add56502a55228fdfb).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e8e2e72adad9364a58be21dadf6d757e84436b97). [The code after it](https://github.com/rahuldave/babykev/tree/e8e2e72adad9364a58be21dadf6d757e84436b97).
 
 <a id="tut-03.3"></a>
 
@@ -2014,7 +2014,7 @@ It prints the new first line.
 
 #### What changed
 
-- <a id="tut-03.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the docstring. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/7d02a86b5264734575f0ae987b83749c721c3b8a/src/babykev/api.py).
+- <a id="tut-03.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the docstring. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/93618951b784e928af3d3547f077bb49bff4d5da/src/babykev/api.py).
   - look at `"""The contract: request and answer shapes, mapped onto the single pointer primitive.`
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
@@ -2030,7 +2030,7 @@ It prints the new first line.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/7d02a86b5264734575f0ae987b83749c721c3b8a). [The code after it](https://github.com/rahuldave/babykev/tree/7d02a86b5264734575f0ae987b83749c721c3b8a).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/93618951b784e928af3d3547f077bb49bff4d5da). [The code after it](https://github.com/rahuldave/babykev/tree/93618951b784e928af3d3547f077bb49bff4d5da).
 
 <a id="tut-03.4"></a>
 
@@ -2050,7 +2050,7 @@ uv run python -c "from babykev.api import SystemOneRequest; print(sorted(SystemO
 
 #### What changed
 
-- <a id="tut-03.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a request has two fields, `state` and `questions`. 0 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/2413a8630c06aea68cbb29ab1600ff55416e21ed/src/babykev/api.py).
+- <a id="tut-03.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a request has two fields, `state` and `questions`. 0 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/5cce9c9e5025336d501298d244389b64c696737c/src/babykev/api.py).
   - look at `    questions: dict[str, Question] = Field(min_length=1)`
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
@@ -2068,7 +2068,7 @@ uv run python -c "from babykev.api import SystemOneRequest; print(sorted(SystemO
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/2413a8630c06aea68cbb29ab1600ff55416e21ed). [The code after it](https://github.com/rahuldave/babykev/tree/2413a8630c06aea68cbb29ab1600ff55416e21ed).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/5cce9c9e5025336d501298d244389b64c696737c). [The code after it](https://github.com/rahuldave/babykev/tree/5cce9c9e5025336d501298d244389b64c696737c).
 
 <a id="tut-03.5"></a>
 
@@ -2089,7 +2089,7 @@ just test
 
 #### What changed
 
-- <a id="tut-03.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the function goes. 0 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/f4639659192ee57606c516584434974f14dbe45b/src/babykev/api.py).
+- <a id="tut-03.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the function goes. 0 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/43b7ea4eda990f90abd605920e2fb1d9b376378d/src/babykev/api.py).
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -2108,7 +2108,7 @@ just test
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/f4639659192ee57606c516584434974f14dbe45b). [The code after it](https://github.com/rahuldave/babykev/tree/f4639659192ee57606c516584434974f14dbe45b).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/43b7ea4eda990f90abd605920e2fb1d9b376378d). [The code after it](https://github.com/rahuldave/babykev/tree/43b7ea4eda990f90abd605920e2fb1d9b376378d).
 
 <a id="tut-03.6"></a>
 
@@ -2131,7 +2131,7 @@ label `1`, the second level. `milk` is a `choice` of five options with the label
 
 #### What changed
 
-- <a id="tut-03.6-data-cheese-sample.jsonl-79f982"></a>`data/cheese/sample.jsonl`: each line is a request with a `state` and its `questions`. New, 5 lines. [The file](https://github.com/rahuldave/babykev/blob/a51a2eb1b7d9408614e8b1e61ccec561f12984e0/data/cheese/sample.jsonl).
+- <a id="tut-03.6-data-cheese-sample.jsonl-79f982"></a>`data/cheese/sample.jsonl`: each line is a request with a `state` and its `questions`. New, 5 lines. [The file](https://github.com/rahuldave/babykev/blob/abb4ece53e114b331e9e32d67309e1f54f9f964e/data/cheese/sample.jsonl).
 
 <details><summary>The diff of <code>data/cheese/sample.jsonl</code></summary>
 
@@ -2146,7 +2146,7 @@ label `1`, the second level. `milk` is a `choice` of five options with the label
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/a51a2eb1b7d9408614e8b1e61ccec561f12984e0). [The code after it](https://github.com/rahuldave/babykev/tree/a51a2eb1b7d9408614e8b1e61ccec561f12984e0).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/abb4ece53e114b331e9e32d67309e1f54f9f964e). [The code after it](https://github.com/rahuldave/babykev/tree/abb4ece53e114b331e9e32d67309e1f54f9f964e).
 
 <a id="tut-03.7"></a>
 
@@ -2168,7 +2168,7 @@ grep -n -E 'api.py|sample.jsonl' README.md
 
 #### What changed
 
-- <a id="tut-03.7-README.md-8ec9a0"></a>`README.md`: the rows of the contract and the data. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a3fdba91adc19206debd74d87fa107603433b202/README.md).
+- <a id="tut-03.7-README.md-8ec9a0"></a>`README.md`: the rows of the contract and the data. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/56606771fb23f7a0a01825f477050d2980a47736/README.md).
   - look at ``| `data/cheese/sample.jsonl` | Five requests about cheese, one on each line. Every question has a `label`, the right answer |``
 
 <details><summary>The diff of <code>README.md</code></summary>
@@ -2189,7 +2189,7 @@ grep -n -E 'api.py|sample.jsonl' README.md
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/a3fdba91adc19206debd74d87fa107603433b202). [The code after it](https://github.com/rahuldave/babykev/tree/a3fdba91adc19206debd74d87fa107603433b202).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/56606771fb23f7a0a01825f477050d2980a47736). [The code after it](https://github.com/rahuldave/babykev/tree/56606771fb23f7a0a01825f477050d2980a47736).
 
 <a id="tut-04"></a>
 
@@ -2203,7 +2203,7 @@ The contract says what a request is, and no test checks it. The tests of this pa
 against the contract. Then they check what the contract accepts and refuses, one rule at a time. They go in
 `tests/unit/test_api.py`, one test in each move.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/a3fdba91adc19206debd74d87fa107603433b202). [The code after it](https://github.com/rahuldave/babykev/tree/3fdf16e045d976c4351256b4d9ee60e36634d381).
+[The code before this part](https://github.com/rahuldave/babykev/tree/56606771fb23f7a0a01825f477050d2980a47736). [The code after it](https://github.com/rahuldave/babykev/tree/1fef13ae49e24d280d05c250289c41d5636feff7).
 
 <a id="tut-04.1"></a>
 
@@ -2227,7 +2227,7 @@ lines are the functions that turn probabilities into answers.
 
 #### What changed
 
-- <a id="tut-04.1-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the sample data, and the test that checks each line. New, 27 lines. [The file](https://github.com/rahuldave/babykev/blob/a4769b1cc4a199776e33def2db2d82ffe728e240/tests/unit/test_api.py).
+- <a id="tut-04.1-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the sample data, and the test that checks each line. New, 27 lines. [The file](https://github.com/rahuldave/babykev/blob/5e134165b7e1feeded775bcfb2269aec951ad39f/tests/unit/test_api.py).
   - look at `def test_sample_line_fits_the_contract(line):`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -2265,7 +2265,7 @@ lines are the functions that turn probabilities into answers.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/a4769b1cc4a199776e33def2db2d82ffe728e240). [The code after it](https://github.com/rahuldave/babykev/tree/a4769b1cc4a199776e33def2db2d82ffe728e240).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/5e134165b7e1feeded775bcfb2269aec951ad39f). [The code after it](https://github.com/rahuldave/babykev/tree/5e134165b7e1feeded775bcfb2269aec951ad39f).
 
 <a id="tut-04.2"></a>
 
@@ -2286,7 +2286,7 @@ pytest runs the new test once for each line, and prints `5 passed`.
 
 #### What changed
 
-- <a id="tut-04.2-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the labels of the sample data. 13 lines added. [The file](https://github.com/rahuldave/babykev/blob/41afeeabb4221287e3ae3f13f88f39a5639b27f5/tests/unit/test_api.py).
+- <a id="tut-04.2-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the labels of the sample data. 13 lines added. [The file](https://github.com/rahuldave/babykev/blob/1ca39523b4fdf6c75c244b8c0e0f2371593cfbff/tests/unit/test_api.py).
   - look at `def test_sample_line_has_a_usable_label_on_every_question(line):`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -2313,7 +2313,7 @@ pytest runs the new test once for each line, and prints `5 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/41afeeabb4221287e3ae3f13f88f39a5639b27f5). [The code after it](https://github.com/rahuldave/babykev/tree/41afeeabb4221287e3ae3f13f88f39a5639b27f5).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/1ca39523b4fdf6c75c244b8c0e0f2371593cfbff). [The code after it](https://github.com/rahuldave/babykev/tree/1ca39523b4fdf6c75c244b8c0e0f2371593cfbff).
 
 <a id="tut-04.3"></a>
 
@@ -2336,7 +2336,7 @@ pytest prints `1 passed`.
 
 #### What changed
 
-- <a id="tut-04.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the helper, and the test of the three types. 32 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/897d387a14f58ae3d2bb67e425e426226b04642f/tests/unit/test_api.py).
+- <a id="tut-04.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the helper, and the test of the three types. 32 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/847d160f4a2f014bd58eb06030268ce762577cbc/tests/unit/test_api.py).
   - look at `def test_request_holds_one_model_per_question_type():`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -2397,7 +2397,7 @@ pytest prints `1 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/897d387a14f58ae3d2bb67e425e426226b04642f). [The code after it](https://github.com/rahuldave/babykev/tree/897d387a14f58ae3d2bb67e425e426226b04642f).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/847d160f4a2f014bd58eb06030268ce762577cbc). [The code after it](https://github.com/rahuldave/babykev/tree/847d160f4a2f014bd58eb06030268ce762577cbc).
 
 <a id="tut-04.4"></a>
 
@@ -2418,7 +2418,7 @@ pytest prints `1 passed`.
 
 #### What changed
 
-- <a id="tut-04.4-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a request with no questions. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/20844ff36037001c1301da15bff6c65446aff65b/tests/unit/test_api.py).
+- <a id="tut-04.4-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a request with no questions. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/c2af99cdd8e0b6f40e33a1ebcf9aa602904a83ba/tests/unit/test_api.py).
   - look at `def test_request_without_questions_is_rejected():`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -2446,7 +2446,7 @@ pytest prints `1 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/20844ff36037001c1301da15bff6c65446aff65b). [The code after it](https://github.com/rahuldave/babykev/tree/20844ff36037001c1301da15bff6c65446aff65b).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/c2af99cdd8e0b6f40e33a1ebcf9aa602904a83ba). [The code after it](https://github.com/rahuldave/babykev/tree/c2af99cdd8e0b6f40e33a1ebcf9aa602904a83ba).
 
 <a id="tut-04.5"></a>
 
@@ -2466,7 +2466,7 @@ pytest prints `1 passed`.
 
 #### What changed
 
-- <a id="tut-04.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a type that does not exist. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/344ca5af25f758538a8ebaca51a0a88dd6ccc333/tests/unit/test_api.py).
+- <a id="tut-04.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a type that does not exist. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/6acc5e7d6f228ce76a9083d915f238c3d6696c85/tests/unit/test_api.py).
   - look at `question = {"type": "essay", "instructions": "Describe this cheese."}`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -2487,7 +2487,7 @@ pytest prints `1 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/344ca5af25f758538a8ebaca51a0a88dd6ccc333). [The code after it](https://github.com/rahuldave/babykev/tree/344ca5af25f758538a8ebaca51a0a88dd6ccc333).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/6acc5e7d6f228ce76a9083d915f238c3d6696c85). [The code after it](https://github.com/rahuldave/babykev/tree/6acc5e7d6f228ce76a9083d915f238c3d6696c85).
 
 <a id="tut-04.6"></a>
 
@@ -2508,7 +2508,7 @@ pytest prints `1 passed`.
 
 #### What changed
 
-- <a id="tut-04.6-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a noul without criteria. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/5128d9cf9dea8e7c76de31d5d67d27e692cfafc0/tests/unit/test_api.py).
+- <a id="tut-04.6-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a noul without criteria. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/3a99587d325837f9104661b3d06d9630679dc8eb/tests/unit/test_api.py).
   - look at `assert Noul(type="noul", instructions="Is it blue?").criteria is None`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -2527,7 +2527,7 @@ pytest prints `1 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/5128d9cf9dea8e7c76de31d5d67d27e692cfafc0). [The code after it](https://github.com/rahuldave/babykev/tree/5128d9cf9dea8e7c76de31d5d67d27e692cfafc0).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3a99587d325837f9104661b3d06d9630679dc8eb). [The code after it](https://github.com/rahuldave/babykev/tree/3a99587d325837f9104661b3d06d9630679dc8eb).
 
 <a id="tut-04.7"></a>
 
@@ -2547,7 +2547,7 @@ pytest prints `1 passed`.
 
 #### What changed
 
-- <a id="tut-04.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a choice of nothing. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/464e175952882fc67de86b90baaad51caf1a0801/tests/unit/test_api.py).
+- <a id="tut-04.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a choice of nothing. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/4653d298261d887195e59a2cf00593036151657c/tests/unit/test_api.py).
   - look at `def test_choice_without_options_is_rejected():`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -2567,7 +2567,7 @@ pytest prints `1 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/464e175952882fc67de86b90baaad51caf1a0801). [The code after it](https://github.com/rahuldave/babykev/tree/464e175952882fc67de86b90baaad51caf1a0801).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/4653d298261d887195e59a2cf00593036151657c). [The code after it](https://github.com/rahuldave/babykev/tree/4653d298261d887195e59a2cf00593036151657c).
 
 <a id="tut-04.8"></a>
 
@@ -2588,7 +2588,7 @@ pytest prints `1 passed`.
 
 #### What changed
 
-- <a id="tut-04.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the limit, from both sides. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/9f07f3752d1e1c2622310d6fa556c40cac43be00/tests/unit/test_api.py).
+- <a id="tut-04.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the limit, from both sides. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/3addf0f2bd69e0910ba506a41a240fec5218c77a/tests/unit/test_api.py).
   - look at `at_limit = {f"option{i}": None for i in range(MAX_OPTIONS)}`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -2620,7 +2620,7 @@ pytest prints `1 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/9f07f3752d1e1c2622310d6fa556c40cac43be00). [The code after it](https://github.com/rahuldave/babykev/tree/9f07f3752d1e1c2622310d6fa556c40cac43be00).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3addf0f2bd69e0910ba506a41a240fec5218c77a). [The code after it](https://github.com/rahuldave/babykev/tree/3addf0f2bd69e0910ba506a41a240fec5218c77a).
 
 <a id="tut-04.9"></a>
 
@@ -2641,7 +2641,7 @@ already.
 
 #### What changed
 
-- <a id="tut-04.9-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a scale of one level. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/5a07b57374e4863dee50efb07cc71a9ed848efc5/tests/unit/test_api.py).
+- <a id="tut-04.9-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a scale of one level. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/b9a4861a26a74623a6daf8c7c776cebe5f30a626/tests/unit/test_api.py).
   - look at `Score(type="score", instructions="How firm?", criteria=["Soft"])`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -2661,7 +2661,7 @@ already.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/5a07b57374e4863dee50efb07cc71a9ed848efc5). [The code after it](https://github.com/rahuldave/babykev/tree/5a07b57374e4863dee50efb07cc71a9ed848efc5).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b9a4861a26a74623a6daf8c7c776cebe5f30a626). [The code after it](https://github.com/rahuldave/babykev/tree/b9a4861a26a74623a6daf8c7c776cebe5f30a626).
 
 <a id="tut-04.10"></a>
 
@@ -2681,7 +2681,7 @@ grep -n 'tests/unit' README.md
 
 #### What changed
 
-- <a id="tut-04.10-README.md-8ec9a0"></a>`README.md`: the row of the tests. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/3fdf16e045d976c4351256b4d9ee60e36634d381/README.md).
+- <a id="tut-04.10-README.md-8ec9a0"></a>`README.md`: the row of the tests. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/1fef13ae49e24d280d05c250289c41d5636feff7/README.md).
   - look at ``| `tests/unit/` | The unit tests of the contract and of the command. One test checks every line of the sample data against the contract |``
 
 <details><summary>The diff of <code>README.md</code></summary>
@@ -2700,7 +2700,7 @@ grep -n 'tests/unit' README.md
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/3fdf16e045d976c4351256b4d9ee60e36634d381). [The code after it](https://github.com/rahuldave/babykev/tree/3fdf16e045d976c4351256b4d9ee60e36634d381).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/1fef13ae49e24d280d05c250289c41d5636feff7). [The code after it](https://github.com/rahuldave/babykev/tree/1fef13ae49e24d280d05c250289c41d5636feff7).
 
 <a id="tut-05"></a>
 
@@ -2714,7 +2714,7 @@ The contract also maps a request to what the model reads, and the model's probab
 turns JSON into text, `option_text` writes an option, `to_record` turns a request into a record, and `to_answers`
 turns probabilities into answers. Each test checks one of their rules.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/3fdf16e045d976c4351256b4d9ee60e36634d381). [The code after it](https://github.com/rahuldave/babykev/tree/c65ddf5484593bfa8c135f4bd5fddc4846cf80c1).
+[The code before this part](https://github.com/rahuldave/babykev/tree/1fef13ae49e24d280d05c250289c41d5636feff7). [The code after it](https://github.com/rahuldave/babykev/tree/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f).
 
 <a id="tut-05.1"></a>
 
@@ -2735,7 +2735,7 @@ pytest prints `9 passed`, one for each value.
 
 #### What changed
 
-- <a id="tut-05.1-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: nine values, and their text. 26 lines added. [The file](https://github.com/rahuldave/babykev/blob/2cb2323b0534d811117562d749046d2085f55da1/tests/unit/test_api.py).
+- <a id="tut-05.1-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: nine values, and their text. 26 lines added. [The file](https://github.com/rahuldave/babykev/blob/9f861048b50c3705e7e1195ccbd90a7b01e60180/tests/unit/test_api.py).
   - look at `def test_render_flattens_json_into_text(value, text):`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -2782,7 +2782,7 @@ pytest prints `9 passed`, one for each value.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/2cb2323b0534d811117562d749046d2085f55da1). [The code after it](https://github.com/rahuldave/babykev/tree/2cb2323b0534d811117562d749046d2085f55da1).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9f861048b50c3705e7e1195ccbd90a7b01e60180). [The code after it](https://github.com/rahuldave/babykev/tree/9f861048b50c3705e7e1195ccbd90a7b01e60180).
 
 <a id="tut-05.2"></a>
 
@@ -2803,7 +2803,7 @@ pytest prints `3 passed`.
 
 #### What changed
 
-- <a id="tut-05.2-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: three cases of an option. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/b0ac52637697336e97f8fc777ffb4c4398436d6b/tests/unit/test_api.py).
+- <a id="tut-05.2-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: three cases of an option. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/e6270727deb4467393c6c7b73cfaf0908392387f/tests/unit/test_api.py).
   - look at `def test_option_text_adds_a_description_only_when_there_is_one(name, description, text):`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -2838,7 +2838,7 @@ pytest prints `3 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/b0ac52637697336e97f8fc777ffb4c4398436d6b). [The code after it](https://github.com/rahuldave/babykev/tree/b0ac52637697336e97f8fc777ffb4c4398436d6b).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e6270727deb4467393c6c7b73cfaf0908392387f). [The code after it](https://github.com/rahuldave/babykev/tree/e6270727deb4467393c6c7b73cfaf0908392387f).
 
 <a id="tut-05.3"></a>
 
@@ -2859,7 +2859,7 @@ pytest prints `1 passed`.
 
 #### What changed
 
-- <a id="tut-05.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the state, and the order. 15 lines added. [The file](https://github.com/rahuldave/babykev/blob/ada878e14d24bf0c5831be23e1dd34ed81c2630b/tests/unit/test_api.py).
+- <a id="tut-05.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the state, and the order. 15 lines added. [The file](https://github.com/rahuldave/babykev/blob/3d272bd2edaf22b970b8888429dd23940ffd3f17/tests/unit/test_api.py).
   - look at `assert [m["id"] for m in meta] == ["blue", "milk", "firmness"]`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -2888,7 +2888,7 @@ pytest prints `1 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/ada878e14d24bf0c5831be23e1dd34ed81c2630b). [The code after it](https://github.com/rahuldave/babykev/tree/ada878e14d24bf0c5831be23e1dd34ed81c2630b).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3d272bd2edaf22b970b8888429dd23940ffd3f17). [The code after it](https://github.com/rahuldave/babykev/tree/3d272bd2edaf22b970b8888429dd23940ffd3f17).
 
 <a id="tut-05.4"></a>
 
@@ -2909,7 +2909,7 @@ pytest prints `1 passed`.
 
 #### What changed
 
-- <a id="tut-05.4-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the two options of a noul. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/1c76e1a38e54bd80383392e8205dd3318a1b17f1/tests/unit/test_api.py).
+- <a id="tut-05.4-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the two options of a noul. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/7dee26abd961a5a85d897f82332ae46e556e2f80/tests/unit/test_api.py).
   - look at `assert record["questions"][0]["options"] == ["no", "yes"]`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -2930,7 +2930,7 @@ pytest prints `1 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/1c76e1a38e54bd80383392e8205dd3318a1b17f1). [The code after it](https://github.com/rahuldave/babykev/tree/1c76e1a38e54bd80383392e8205dd3318a1b17f1).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7dee26abd961a5a85d897f82332ae46e556e2f80). [The code after it](https://github.com/rahuldave/babykev/tree/7dee26abd961a5a85d897f82332ae46e556e2f80).
 
 <a id="tut-05.5"></a>
 
@@ -2950,7 +2950,7 @@ pytest prints `1 passed`.
 
 #### What changed
 
-- <a id="tut-05.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the descriptions of no and yes. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/54d3e0602d9b2d96ba709955cb6672aeab9b1313/tests/unit/test_api.py).
+- <a id="tut-05.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the descriptions of no and yes. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/f9b390d64cc717326b28f9c7a6adbb88de59363f/tests/unit/test_api.py).
   - look at `def test_noul_criteria_describe_no_and_yes():`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -2973,7 +2973,7 @@ pytest prints `1 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/54d3e0602d9b2d96ba709955cb6672aeab9b1313). [The code after it](https://github.com/rahuldave/babykev/tree/54d3e0602d9b2d96ba709955cb6672aeab9b1313).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/f9b390d64cc717326b28f9c7a6adbb88de59363f). [The code after it](https://github.com/rahuldave/babykev/tree/f9b390d64cc717326b28f9c7a6adbb88de59363f).
 
 <a id="tut-05.6"></a>
 
@@ -2993,7 +2993,7 @@ pytest prints `1 passed`.
 
 #### What changed
 
-- <a id="tut-05.6-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the options of a choice. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/e10cddd3fcea261b3f72ae3b349d826e611bd714/tests/unit/test_api.py).
+- <a id="tut-05.6-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the options of a choice. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/0930c8de69e9710470eb60380b99cae5c3e82558/tests/unit/test_api.py).
   - look at `def test_choice_becomes_one_option_per_criterion_in_order():`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -3019,7 +3019,7 @@ pytest prints `1 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e10cddd3fcea261b3f72ae3b349d826e611bd714). [The code after it](https://github.com/rahuldave/babykev/tree/e10cddd3fcea261b3f72ae3b349d826e611bd714).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0930c8de69e9710470eb60380b99cae5c3e82558). [The code after it](https://github.com/rahuldave/babykev/tree/0930c8de69e9710470eb60380b99cae5c3e82558).
 
 <a id="tut-05.7"></a>
 
@@ -3039,7 +3039,7 @@ pytest prints `1 passed`.
 
 #### What changed
 
-- <a id="tut-05.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the levels, and the legend. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/a445bb427a4611ed18fc8683f2462c448f340cab/tests/unit/test_api.py).
+- <a id="tut-05.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the levels, and the legend. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/8368a8202dab8159f95043310e2bf22a24c1e474/tests/unit/test_api.py).
   - look at `def test_score_becomes_one_option_per_level_with_a_legend():`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -3060,7 +3060,7 @@ pytest prints `1 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/a445bb427a4611ed18fc8683f2462c448f340cab). [The code after it](https://github.com/rahuldave/babykev/tree/a445bb427a4611ed18fc8683f2462c448f340cab).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/8368a8202dab8159f95043310e2bf22a24c1e474). [The code after it](https://github.com/rahuldave/babykev/tree/8368a8202dab8159f95043310e2bf22a24c1e474).
 
 <a id="tut-05.8"></a>
 
@@ -3082,7 +3082,7 @@ just test
 
 #### What changed
 
-- <a id="tut-05.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the answer of a noul. 10 lines added. [The file](https://github.com/rahuldave/babykev/blob/17710a377cbe4978af0b17d0e5f275ebea3ebf31/tests/unit/test_api.py).
+- <a id="tut-05.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the answer of a noul. 10 lines added. [The file](https://github.com/rahuldave/babykev/blob/0740c2c246273e99e34494512152d5b97ea4f7b9/tests/unit/test_api.py).
   - look at `assert answers == {"blue": {"type": "noul", "noul": 0.75}}`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -3113,7 +3113,7 @@ just test
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/17710a377cbe4978af0b17d0e5f275ebea3ebf31). [The code after it](https://github.com/rahuldave/babykev/tree/17710a377cbe4978af0b17d0e5f275ebea3ebf31).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0740c2c246273e99e34494512152d5b97ea4f7b9). [The code after it](https://github.com/rahuldave/babykev/tree/0740c2c246273e99e34494512152d5b97ea4f7b9).
 
 <a id="tut-05.9"></a>
 
@@ -3133,7 +3133,7 @@ just test
 
 #### What changed
 
-- <a id="tut-05.9-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the answer of a choice. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/0ff7fb5056bc35a07820f54b2fb8341c45fff2f7/tests/unit/test_api.py).
+- <a id="tut-05.9-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the answer of a choice. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/a27b71f6a341bb12029a2d3471d6b3bc19d0d94c/tests/unit/test_api.py).
   - look at `assert answer["choice"] == "goat"`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -3156,7 +3156,7 @@ just test
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/0ff7fb5056bc35a07820f54b2fb8341c45fff2f7). [The code after it](https://github.com/rahuldave/babykev/tree/0ff7fb5056bc35a07820f54b2fb8341c45fff2f7).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a27b71f6a341bb12029a2d3471d6b3bc19d0d94c). [The code after it](https://github.com/rahuldave/babykev/tree/a27b71f6a341bb12029a2d3471d6b3bc19d0d94c).
 
 <a id="tut-05.10"></a>
 
@@ -3177,7 +3177,7 @@ just test
 
 #### What changed
 
-- <a id="tut-05.10-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the answer of a score. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/6f149fe7e2041c277c9f3b775f081e6e74fe8221/tests/unit/test_api.py).
+- <a id="tut-05.10-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the answer of a score. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/be8c681092973e7ac1e12bbd1817da81bea45e7e/tests/unit/test_api.py).
   - look at `assert answer["score"] == pytest.approx(1.6)`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -3202,7 +3202,7 @@ just test
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/6f149fe7e2041c277c9f3b775f081e6e74fe8221). [The code after it](https://github.com/rahuldave/babykev/tree/6f149fe7e2041c277c9f3b775f081e6e74fe8221).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/be8c681092973e7ac1e12bbd1817da81bea45e7e). [The code after it](https://github.com/rahuldave/babykev/tree/be8c681092973e7ac1e12bbd1817da81bea45e7e).
 
 <a id="tut-05.11"></a>
 
@@ -3224,7 +3224,7 @@ shows them. Coverage says which lines ran. It does not say that a test checked w
 
 #### What changed
 
-- <a id="tut-05.11-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: one answer for each question. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/c65ddf5484593bfa8c135f4bd5fddc4846cf80c1/tests/unit/test_api.py).
+- <a id="tut-05.11-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: one answer for each question. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f/tests/unit/test_api.py).
   - look at `def test_every_question_gets_an_answer_of_its_own_type():`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -3250,7 +3250,7 @@ shows them. Coverage says which lines ran. It does not say that a test checked w
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/c65ddf5484593bfa8c135f4bd5fddc4846cf80c1). [The code after it](https://github.com/rahuldave/babykev/tree/c65ddf5484593bfa8c135f4bd5fddc4846cf80c1).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f). [The code after it](https://github.com/rahuldave/babykev/tree/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f).
 
 <a id="tut-06"></a>
 
@@ -3263,7 +3263,7 @@ just setup
 Every line of the contract runs in a test, and two of them are wrong. A test of rounding finds the first. The tests of
 confidence find the second. Each test fails, and the move after it fixes the code.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/c65ddf5484593bfa8c135f4bd5fddc4846cf80c1). [The code after it](https://github.com/rahuldave/babykev/tree/bb441c7fdf6f8fcd066dbcdd7f7bc03837a661ac).
+[The code before this part](https://github.com/rahuldave/babykev/tree/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f). [The code after it](https://github.com/rahuldave/babykev/tree/910716f0cec79c3f31afb34cf3a2593f0cd51315).
 
 <a id="tut-06.1"></a>
 
@@ -3293,7 +3293,7 @@ Lines 89 and 90 are `r2`, which rounds to two decimals. 1/77 is about 0.013, and
 
 #### What changed
 
-- <a id="tut-06.1-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the sum of the rounded probabilities. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/1beac4d6e9bca366e9a3411665e72a1ecdafd094/tests/unit/test_api.py).
+- <a id="tut-06.1-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the sum of the rounded probabilities. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/9012b28ceacd0bcc3971154a5df2f822e551443d/tests/unit/test_api.py).
   - look at `    assert sum(answer["probabilities"].values()) == pytest.approx(1, abs=0.02)`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -3316,7 +3316,7 @@ Lines 89 and 90 are `r2`, which rounds to two decimals. 1/77 is about 0.013, and
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/1beac4d6e9bca366e9a3411665e72a1ecdafd094). [The code after it](https://github.com/rahuldave/babykev/tree/1beac4d6e9bca366e9a3411665e72a1ecdafd094).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9012b28ceacd0bcc3971154a5df2f822e551443d). [The code after it](https://github.com/rahuldave/babykev/tree/9012b28ceacd0bcc3971154a5df2f822e551443d).
 
 <a id="tut-06.2"></a>
 
@@ -3338,7 +3338,7 @@ just test
 
 #### What changed
 
-- <a id="tut-06.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: four decimals. 8 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/cd9e71dff5d72be00b049e50fc15b0db8235b705/src/babykev/api.py).
+- <a id="tut-06.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: four decimals. 8 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/27e93dd7ee76e609084a1d8a1c1cfbb4f7811da4/src/babykev/api.py).
   - look at `    return round(float(x), 4)`
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
@@ -3376,7 +3376,7 @@ just test
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/cd9e71dff5d72be00b049e50fc15b0db8235b705). [The code after it](https://github.com/rahuldave/babykev/tree/cd9e71dff5d72be00b049e50fc15b0db8235b705).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/27e93dd7ee76e609084a1d8a1c1cfbb4f7811da4). [The code after it](https://github.com/rahuldave/babykev/tree/27e93dd7ee76e609084a1d8a1c1cfbb4f7811da4).
 
 <a id="tut-06.3"></a>
 
@@ -3397,7 +3397,7 @@ pytest prints `1 passed`.
 
 #### What changed
 
-- <a id="tut-06.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a guess between four options. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/c30775de4338f1f7912dd178574536d0d6ac4d7b/tests/unit/test_api.py).
+- <a id="tut-06.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a guess between four options. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/27f1f23cc392446dd80918636dfc7a3c52692aae/tests/unit/test_api.py).
   - look at `assert choice_confidence([0.25] * 4) == pytest.approx(0)`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -3427,7 +3427,7 @@ pytest prints `1 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/c30775de4338f1f7912dd178574536d0d6ac4d7b). [The code after it](https://github.com/rahuldave/babykev/tree/c30775de4338f1f7912dd178574536d0d6ac4d7b).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/27f1f23cc392446dd80918636dfc7a3c52692aae). [The code after it](https://github.com/rahuldave/babykev/tree/27f1f23cc392446dd80918636dfc7a3c52692aae).
 
 <a id="tut-06.4"></a>
 
@@ -3447,7 +3447,7 @@ pytest prints `2 passed`.
 
 #### What changed
 
-- <a id="tut-06.4-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: certainty. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/490a244100c0a9ea6d3992ba31c49ca5b234e7f9/tests/unit/test_api.py).
+- <a id="tut-06.4-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: certainty. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/9ded0b3177719bb849eda76972daa2f5368af069/tests/unit/test_api.py).
   - look at `assert choice_confidence([0, 1, 0]) == pytest.approx(1)`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -3467,7 +3467,7 @@ pytest prints `2 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/490a244100c0a9ea6d3992ba31c49ca5b234e7f9). [The code after it](https://github.com/rahuldave/babykev/tree/490a244100c0a9ea6d3992ba31c49ca5b234e7f9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9ded0b3177719bb849eda76972daa2f5368af069). [The code after it](https://github.com/rahuldave/babykev/tree/9ded0b3177719bb849eda76972daa2f5368af069).
 
 <a id="tut-06.5"></a>
 
@@ -3488,7 +3488,7 @@ pytest prints `3 passed`.
 
 #### What changed
 
-- <a id="tut-06.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a confidence between 0 and 1. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/2e76bc0655ffb0458d1815154478fb3efae55b4c/tests/unit/test_api.py).
+- <a id="tut-06.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a confidence between 0 and 1. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/890fbe0900f6a0f59232ca9d94ce4cc439e21dde/tests/unit/test_api.py).
   - look at `assert choice_confidence([0.5, 0.25, 0.25]) == pytest.approx(0.25)`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -3507,7 +3507,7 @@ pytest prints `3 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/2e76bc0655ffb0458d1815154478fb3efae55b4c). [The code after it](https://github.com/rahuldave/babykev/tree/2e76bc0655ffb0458d1815154478fb3efae55b4c).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/890fbe0900f6a0f59232ca9d94ce4cc439e21dde). [The code after it](https://github.com/rahuldave/babykev/tree/890fbe0900f6a0f59232ca9d94ce4cc439e21dde).
 
 <a id="tut-06.6"></a>
 
@@ -3528,7 +3528,7 @@ pytest prints `6 passed`.
 
 #### What changed
 
-- <a id="tut-06.6-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: certainty, on each level. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/e176a81dda2c6ae99a5095f67d3e909efda6630c/tests/unit/test_api.py).
+- <a id="tut-06.6-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: certainty, on each level. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/d2564e48ae134802f1d48cc079cfe3b92db14639/tests/unit/test_api.py).
   - look at `def test_score_confidence_is_one_when_certain(level):`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -3558,7 +3558,7 @@ pytest prints `6 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e176a81dda2c6ae99a5095f67d3e909efda6630c). [The code after it](https://github.com/rahuldave/babykev/tree/e176a81dda2c6ae99a5095f67d3e909efda6630c).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d2564e48ae134802f1d48cc079cfe3b92db14639). [The code after it](https://github.com/rahuldave/babykev/tree/d2564e48ae134802f1d48cc079cfe3b92db14639).
 
 <a id="tut-06.7"></a>
 
@@ -3578,7 +3578,7 @@ pytest prints `7 passed`.
 
 #### What changed
 
-- <a id="tut-06.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: near is better than far. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/63911fbe1251ada79de19a6314e43346fe8a30e6/tests/unit/test_api.py).
+- <a id="tut-06.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: near is better than far. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/795356b136ab4b1b1c22c8e63b8175a1a6f6d6de/tests/unit/test_api.py).
   - look at `assert score_confidence([0.5, 0.5, 0, 0]) > score_confidence([0.5, 0, 0, 0.5])`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -3597,7 +3597,7 @@ pytest prints `7 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/63911fbe1251ada79de19a6314e43346fe8a30e6). [The code after it](https://github.com/rahuldave/babykev/tree/63911fbe1251ada79de19a6314e43346fe8a30e6).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/795356b136ab4b1b1c22c8e63b8175a1a6f6d6de). [The code after it](https://github.com/rahuldave/babykev/tree/795356b136ab4b1b1c22c8e63b8175a1a6f6d6de).
 
 <a id="tut-06.8"></a>
 
@@ -3631,7 +3631,7 @@ places from it, so the spread is 1/3 × 0 + 1/3 × 1 + 1/3 × 2 = 1 place. The l
 
 #### What changed
 
-- <a id="tut-06.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a guess between three levels. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/f73a45e1526b08ffa60178134d837e21ff0db627/tests/unit/test_api.py).
+- <a id="tut-06.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a guess between three levels. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/72a00ec85ae4b6f3b591cf06fc65903a56f1f7fa/tests/unit/test_api.py).
   - look at `assert score_confidence([1 / 3] * 3) == pytest.approx(0)`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -3650,7 +3650,7 @@ places from it, so the spread is 1/3 × 0 + 1/3 × 1 + 1/3 × 2 = 1 place. The l
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/f73a45e1526b08ffa60178134d837e21ff0db627). [The code after it](https://github.com/rahuldave/babykev/tree/f73a45e1526b08ffa60178134d837e21ff0db627).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/72a00ec85ae4b6f3b591cf06fc65903a56f1f7fa). [The code after it](https://github.com/rahuldave/babykev/tree/72a00ec85ae4b6f3b591cf06fc65903a56f1f7fa).
 
 <a id="tut-06.9"></a>
 
@@ -3685,7 +3685,7 @@ hold a scale of one level, so no test reaches it.
 
 #### What changed
 
-- <a id="tut-06.9-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the spread of a guess, as the measure. 12 lines added, 4 removed. [The file](https://github.com/rahuldave/babykev/blob/0ecccd50f6af3eebae1e00ad7a98f433e17f36e9/src/babykev/api.py).
+- <a id="tut-06.9-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the spread of a guess, as the measure. 12 lines added, 4 removed. [The file](https://github.com/rahuldave/babykev/blob/e97355545c4001a361257c532330f8784aa51b79/src/babykev/api.py).
   - look at `    guess = sum(abs(i - (L - 1) / 2) for i in range(L)) / L`
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
@@ -3718,7 +3718,7 @@ hold a scale of one level, so no test reaches it.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/0ecccd50f6af3eebae1e00ad7a98f433e17f36e9). [The code after it](https://github.com/rahuldave/babykev/tree/0ecccd50f6af3eebae1e00ad7a98f433e17f36e9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e97355545c4001a361257c532330f8784aa51b79). [The code after it](https://github.com/rahuldave/babykev/tree/e97355545c4001a361257c532330f8784aa51b79).
 
 <a id="tut-06.10"></a>
 
@@ -3739,7 +3739,7 @@ just test
 
 #### What changed
 
-- <a id="tut-06.10-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the test calls the function itself. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/bb441c7fdf6f8fcd066dbcdd7f7bc03837a661ac/tests/unit/test_api.py).
+- <a id="tut-06.10-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the test calls the function itself. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/910716f0cec79c3f31afb34cf3a2593f0cd51315/tests/unit/test_api.py).
   - look at `    assert score_confidence([1.0]) == 1.0`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -3758,7 +3758,7 @@ just test
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/bb441c7fdf6f8fcd066dbcdd7f7bc03837a661ac). [The code after it](https://github.com/rahuldave/babykev/tree/bb441c7fdf6f8fcd066dbcdd7f7bc03837a661ac).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/910716f0cec79c3f31afb34cf3a2593f0cd51315). [The code after it](https://github.com/rahuldave/babykev/tree/910716f0cec79c3f31afb34cf3a2593f0cd51315).
 
 <a id="tut-07"></a>
 
@@ -3776,7 +3776,7 @@ in one style, so that a later change shows only what changed, and no fight over 
 first into the project, then its settings and a recipe. Then the check fails on `api.py`, and the formatter
 rewrites the file.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/bb441c7fdf6f8fcd066dbcdd7f7bc03837a661ac). [The code after it](https://github.com/rahuldave/babykev/tree/8bd029109219433f96ccabc5d2d5e21d4e4255c7).
+[The code before this part](https://github.com/rahuldave/babykev/tree/910716f0cec79c3f31afb34cf3a2593f0cd51315). [The code after it](https://github.com/rahuldave/babykev/tree/84b3ac0ce858d907d8d59ffdc9c9096ab8cb2ac4).
 
 <a id="tut-07.1"></a>
 
@@ -3807,9 +3807,9 @@ line run to 88 characters. Line 19 of `cli.py` has 94 characters, so ruff would 
 
 #### What changed
 
-- <a id="tut-07.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the group `lint`, with ruff. 3 lines added. It comes from `uv add --group lint ruff`. [The file](https://github.com/rahuldave/babykev/blob/45771bcdecc5e973af574e40cdb5591c7b19fcef/pyproject.toml).
+- <a id="tut-07.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the group `lint`, with ruff. 3 lines added. It comes from `uv add --group lint ruff`. [The file](https://github.com/rahuldave/babykev/blob/5085d2a6ae47a58d6259dfa06679bb2a9be692e1/pyproject.toml).
   - look at `"ruff>=0.17.1",`
-- <a id="tut-07.1-uv.lock-8356d8"></a>`uv.lock`: ruff, at its exact version. 29 lines added. It comes from `uv add --group lint ruff`. [The file](https://github.com/rahuldave/babykev/blob/45771bcdecc5e973af574e40cdb5591c7b19fcef/uv.lock).
+- <a id="tut-07.1-uv.lock-8356d8"></a>`uv.lock`: ruff, at its exact version. 29 lines added. It comes from `uv add --group lint ruff`. [The file](https://github.com/rahuldave/babykev/blob/5085d2a6ae47a58d6259dfa06679bb2a9be692e1/uv.lock).
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -3828,7 +3828,7 @@ line run to 88 characters. Line 19 of `cli.py` has 94 characters, so ruff would 
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/45771bcdecc5e973af574e40cdb5591c7b19fcef). [The code after it](https://github.com/rahuldave/babykev/tree/45771bcdecc5e973af574e40cdb5591c7b19fcef).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/5085d2a6ae47a58d6259dfa06679bb2a9be692e1). [The code after it](https://github.com/rahuldave/babykev/tree/5085d2a6ae47a58d6259dfa06679bb2a9be692e1).
 
 <a id="tut-07.2"></a>
 
@@ -3854,7 +3854,7 @@ are split, one key on each line.
 
 #### What changed
 
-- <a id="tut-07.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the table `[tool.ruff]`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/21a99b6aee94eed322ee349a3363d5db3abbaed9/pyproject.toml).
+- <a id="tut-07.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the table `[tool.ruff]`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/58d9bddfeea6344a159569664ac9f9ff489173a6/pyproject.toml).
   - look at `line-length = 100`
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
@@ -3872,7 +3872,7 @@ are split, one key on each line.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/21a99b6aee94eed322ee349a3363d5db3abbaed9). [The code after it](https://github.com/rahuldave/babykev/tree/21a99b6aee94eed322ee349a3363d5db3abbaed9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/58d9bddfeea6344a159569664ac9f9ff489173a6). [The code after it](https://github.com/rahuldave/babykev/tree/58d9bddfeea6344a159569664ac9f9ff489173a6).
 
 <a id="tut-07.3"></a>
 
@@ -3899,7 +3899,7 @@ defaults, so nothing changes.
 
 #### What changed
 
-- <a id="tut-07.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: the five settings of the formatter. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/51375ef9bd0fbbc697fad0d65a4a375bd7de975c/pyproject.toml).
+- <a id="tut-07.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: the five settings of the formatter. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/ff4c6545868df1f51d5aa04277cd16b868550f14/pyproject.toml).
   - look at `quote-style = "double"            # "text", not 'text'`
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
@@ -3921,7 +3921,7 @@ defaults, so nothing changes.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/51375ef9bd0fbbc697fad0d65a4a375bd7de975c). [The code after it](https://github.com/rahuldave/babykev/tree/51375ef9bd0fbbc697fad0d65a4a375bd7de975c).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ff4c6545868df1f51d5aa04277cd16b868550f14). [The code after it](https://github.com/rahuldave/babykev/tree/ff4c6545868df1f51d5aa04277cd16b868550f14).
 
 <a id="tut-07.4"></a>
 
@@ -3950,7 +3950,7 @@ its own. `just help fmt` prints the line of the recipe.
 
 #### What changed
 
-- <a id="tut-07.4-justfile-424f0b"></a>`justfile`: the recipe `fmt`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/925c6099a919f02b6a58fe6b2ce6752a3527e488/justfile).
+- <a id="tut-07.4-justfile-424f0b"></a>`justfile`: the recipe `fmt`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/03e6443db4c837a51df4786117a33b1d20040c88/justfile).
   - look at `fmt *args:`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -3973,7 +3973,7 @@ its own. `just help fmt` prints the line of the recipe.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/925c6099a919f02b6a58fe6b2ce6752a3527e488). [The code after it](https://github.com/rahuldave/babykev/tree/925c6099a919f02b6a58fe6b2ce6752a3527e488).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/03e6443db4c837a51df4786117a33b1d20040c88). [The code after it](https://github.com/rahuldave/babykev/tree/03e6443db4c837a51df4786117a33b1d20040c88).
 
 <a id="tut-07.5"></a>
 
@@ -4002,7 +4002,7 @@ with a statement.
 
 #### What changed
 
-- <a id="tut-07.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the same code, in the style of the formatter. 35 lines added, 8 removed. It comes from `just fmt`. [The file](https://github.com/rahuldave/babykev/blob/8bd029109219433f96ccabc5d2d5e21d4e4255c7/src/babykev/api.py).
+- <a id="tut-07.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the same code, in the style of the formatter. 35 lines added, 8 removed. It comes from `just fmt`. [The file](https://github.com/rahuldave/babykev/blob/84b3ac0ce858d907d8d59ffdc9c9096ab8cb2ac4/src/babykev/api.py).
   - look at `        if not 1 <= len(self.criteria) <= MAX_OPTIONS:`
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
@@ -4090,7 +4090,7 @@ with a statement.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/8bd029109219433f96ccabc5d2d5e21d4e4255c7). [The code after it](https://github.com/rahuldave/babykev/tree/8bd029109219433f96ccabc5d2d5e21d4e4255c7).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/84b3ac0ce858d907d8d59ffdc9c9096ab8cb2ac4). [The code after it](https://github.com/rahuldave/babykev/tree/84b3ac0ce858d907d8d59ffdc9c9096ab8cb2ac4).
 
 <a id="tut-08"></a>
 
@@ -4107,7 +4107,7 @@ and reports what breaks them, from an import that nobody uses to a `zip` that dr
 linter too, and the families of rules come first. The linter finds 8 problems in `api.py`, and each rule then gets
 a fix of its own. ruff makes the last fix itself.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/8bd029109219433f96ccabc5d2d5e21d4e4255c7). [The code after it](https://github.com/rahuldave/babykev/tree/656823a9a807e47a710a3671155dcc464138574d).
+[The code before this part](https://github.com/rahuldave/babykev/tree/84b3ac0ce858d907d8d59ffdc9c9096ab8cb2ac4). [The code after it](https://github.com/rahuldave/babykev/tree/7cdb1ba696a32050cba1c335892fccb68bb4fd24).
 
 <a id="tut-08.1"></a>
 
@@ -4133,7 +4133,7 @@ with `assert`. The other 8 are in `api.py`.
 
 #### What changed
 
-- <a id="tut-08.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: a family of rules on each line. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/4c3dbecd082193666339419018d7785ab26c601b/pyproject.toml).
+- <a id="tut-08.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: a family of rules on each line. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/1a067ec6d90256e2f0142390db307c537909c047/pyproject.toml).
   - look at `    "B",   # bugbear: code that is likely a bug, such as a zip that drops items silently`
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
@@ -4161,7 +4161,7 @@ with `assert`. The other 8 are in `api.py`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/4c3dbecd082193666339419018d7785ab26c601b). [The code after it](https://github.com/rahuldave/babykev/tree/4c3dbecd082193666339419018d7785ab26c601b).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/1a067ec6d90256e2f0142390db307c537909c047). [The code after it](https://github.com/rahuldave/babykev/tree/1a067ec6d90256e2f0142390db307c537909c047).
 
 <a id="tut-08.2"></a>
 
@@ -4185,7 +4185,7 @@ once each. The last line says that `--fix` can fix one, and that 2 unsafe fixes 
 
 #### What changed
 
-- <a id="tut-08.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the tests may use `assert`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/9ab2109f36fe30ed9e0072766c2a5525c0d5d449/pyproject.toml).
+- <a id="tut-08.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the tests may use `assert`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/a6325da466f16c6379613b62554e1e4cf2144e7e/pyproject.toml).
   - look at `"tests/**" = ["S101"]`
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
@@ -4203,7 +4203,7 @@ once each. The last line says that `--fix` can fix one, and that 2 unsafe fixes 
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/9ab2109f36fe30ed9e0072766c2a5525c0d5d449). [The code after it](https://github.com/rahuldave/babykev/tree/9ab2109f36fe30ed9e0072766c2a5525c0d5d449).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a6325da466f16c6379613b62554e1e4cf2144e7e). [The code after it](https://github.com/rahuldave/babykev/tree/a6325da466f16c6379613b62554e1e4cf2144e7e).
 
 <a id="tut-08.3"></a>
 
@@ -4239,7 +4239,7 @@ the recipe. The next parts fix the problems one code at a time, by hand. ruff fi
 
 #### What changed
 
-- <a id="tut-08.3-justfile-424f0b"></a>`justfile`: the recipe `lint`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/8f9cf3da94d518b8d64d08c2bf56439ea8020d22/justfile).
+- <a id="tut-08.3-justfile-424f0b"></a>`justfile`: the recipe `lint`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/58d6ece95cf464e01996ad8dbed1d98e92bcc502/justfile).
   - look at `lint *args:`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -4262,7 +4262,7 @@ the recipe. The next parts fix the problems one code at a time, by hand. ruff fi
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/8f9cf3da94d518b8d64d08c2bf56439ea8020d22). [The code after it](https://github.com/rahuldave/babykev/tree/8f9cf3da94d518b8d64d08c2bf56439ea8020d22).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/58d6ece95cf464e01996ad8dbed1d98e92bcc502). [The code after it](https://github.com/rahuldave/babykev/tree/58d6ece95cf464e01996ad8dbed1d98e92bcc502).
 
 <a id="tut-08.4"></a>
 
@@ -4287,7 +4287,7 @@ The formatter leaves the text of a docstring as it is.
 
 #### What changed
 
-- <a id="tut-08.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the table of the docstring, in 97 characters. 3 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/538471b714ed2a7ff04298aa5a8222bf888435ad/src/babykev/api.py).
+- <a id="tut-08.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the table of the docstring, in 97 characters. 3 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/4a25204449af75e24305189a1395c418ec0295d3/src/babykev/api.py).
   - look at `Score  -> options = the levels, in order; answer = expected level, legend, probabilities by index`
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
@@ -4309,7 +4309,7 @@ The formatter leaves the text of a docstring as it is.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/538471b714ed2a7ff04298aa5a8222bf888435ad). [The code after it](https://github.com/rahuldave/babykev/tree/538471b714ed2a7ff04298aa5a8222bf888435ad).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/4a25204449af75e24305189a1395c418ec0295d3). [The code after it](https://github.com/rahuldave/babykev/tree/4a25204449af75e24305189a1395c418ec0295d3).
 
 <a id="tut-08.5"></a>
 
@@ -4337,7 +4337,7 @@ pydantic reads `X | Y` as it read `Union`.
 
 #### What changed
 
-- <a id="tut-08.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: two unions, written with `|`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/a4c44c0ab664fe98a2920dad133b3675ff0b396d/src/babykev/api.py).
+- <a id="tut-08.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: two unions, written with `|`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/01c4956b31ad768bd11dc5da0c13128a7a3ab0fc/src/babykev/api.py).
   - look at `JSONContent = str | dict | list | int | float | bool | None`
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
@@ -4365,7 +4365,7 @@ pydantic reads `X | Y` as it read `Union`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/a4c44c0ab664fe98a2920dad133b3675ff0b396d). [The code after it](https://github.com/rahuldave/babykev/tree/a4c44c0ab664fe98a2920dad133b3675ff0b396d).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/01c4956b31ad768bd11dc5da0c13128a7a3ab0fc). [The code after it](https://github.com/rahuldave/babykev/tree/01c4956b31ad768bd11dc5da0c13128a7a3ab0fc).
 
 <a id="tut-08.6"></a>
 
@@ -4390,7 +4390,7 @@ functions, and prints `9 passed, 44 deselected`. A new name changes nothing that
 
 #### What changed
 
-- <a id="tut-08.6-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: two names, in lower case. 6 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/f2ef0988cef13622a0bf8f5f773ada48e4573d2f/src/babykev/api.py).
+- <a id="tut-08.6-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: two names, in lower case. 6 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/37fed4d2a9bff48f0a928851c8eb640736c7e313/src/babykev/api.py).
   - look at `    n = len(p)`
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
@@ -4428,7 +4428,7 @@ functions, and prints `9 passed, 44 deselected`. A new name changes nothing that
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/f2ef0988cef13622a0bf8f5f773ada48e4573d2f). [The code after it](https://github.com/rahuldave/babykev/tree/f2ef0988cef13622a0bf8f5f773ada48e4573d2f).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/37fed4d2a9bff48f0a928851c8eb640736c7e313). [The code after it](https://github.com/rahuldave/babykev/tree/37fed4d2a9bff48f0a928851c8eb640736c7e313).
 
 <a id="tut-08.7"></a>
 
@@ -4458,7 +4458,7 @@ lengths, so nothing raises.
 
 #### What changed
 
-- <a id="tut-08.7-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: two calls of `zip`, with `strict=True`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/253db887cb1c30fd556959c42bd9af598787d985/src/babykev/api.py).
+- <a id="tut-08.7-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: two calls of `zip`, with `strict=True`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/ca9cfc3b70b7a0c926c9407336c217e3f04c73aa/src/babykev/api.py).
   - look at `    for p, m in zip(probs, meta, strict=True):`
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
@@ -4482,7 +4482,7 @@ lengths, so nothing raises.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/253db887cb1c30fd556959c42bd9af598787d985). [The code after it](https://github.com/rahuldave/babykev/tree/253db887cb1c30fd556959c42bd9af598787d985).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ca9cfc3b70b7a0c926c9407336c217e3f04c73aa). [The code after it](https://github.com/rahuldave/babykev/tree/ca9cfc3b70b7a0c926c9407336c217e3f04c73aa).
 
 <a id="tut-08.8"></a>
 
@@ -4511,7 +4511,7 @@ prints `53 passed`.
 
 #### What changed
 
-- <a id="tut-08.8-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the imports, sorted. 2 lines added, 1 removed. It comes from `just lint --fix`. [The file](https://github.com/rahuldave/babykev/blob/656823a9a807e47a710a3671155dcc464138574d/src/babykev/api.py).
+- <a id="tut-08.8-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the imports, sorted. 2 lines added, 1 removed. It comes from `just lint --fix`. [The file](https://github.com/rahuldave/babykev/blob/7cdb1ba696a32050cba1c335892fccb68bb4fd24/src/babykev/api.py).
   - look at `from typing import Any, Literal`
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
@@ -4531,7 +4531,7 @@ prints `53 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/656823a9a807e47a710a3671155dcc464138574d). [The code after it](https://github.com/rahuldave/babykev/tree/656823a9a807e47a710a3671155dcc464138574d).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7cdb1ba696a32050cba1c335892fccb68bb4fd24). [The code after it](https://github.com/rahuldave/babykev/tree/7cdb1ba696a32050cba1c335892fccb68bb4fd24).
 
 <a id="tut-09"></a>
 
@@ -4548,7 +4548,7 @@ annotation says it, in the signature. Python does not check annotations when it 
 checker can, later. The family `ANN` of ruff asks for the type of every parameter and of every return value. A
 person writes each type that ruff cannot guess, and ruff writes the rest.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/656823a9a807e47a710a3671155dcc464138574d). [The code after it](https://github.com/rahuldave/babykev/tree/8346c6519e40c978efca61945dfa7f58c64b1c8e).
+[The code before this part](https://github.com/rahuldave/babykev/tree/7cdb1ba696a32050cba1c335892fccb68bb4fd24). [The code after it](https://github.com/rahuldave/babykev/tree/b0e8dd74539e4d3b210defc5e0169f53b1670393).
 
 <a id="tut-09.1"></a>
 
@@ -4578,7 +4578,7 @@ nothing.
 
 #### What changed
 
-- <a id="tut-09.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the family `ANN`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/f486d9d06d42f3379d0c8190ba0d6e38aa4d1d95/pyproject.toml).
+- <a id="tut-09.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the family `ANN`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/902428993991b5ffbb8ce7630556d7524f04f4ce/pyproject.toml).
   - look at `    "ANN", # annotations: every parameter and every return value has a type`
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
@@ -4596,7 +4596,7 @@ nothing.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/f486d9d06d42f3379d0c8190ba0d6e38aa4d1d95). [The code after it](https://github.com/rahuldave/babykev/tree/f486d9d06d42f3379d0c8190ba0d6e38aa4d1d95).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/902428993991b5ffbb8ce7630556d7524f04f4ce). [The code after it](https://github.com/rahuldave/babykev/tree/902428993991b5ffbb8ce7630556d7524f04f4ce).
 
 <a id="tut-09.2"></a>
 
@@ -4619,7 +4619,7 @@ their name, and prints `7 passed, 46 deselected`. Two of them check the limits t
 
 #### What changed
 
-- <a id="tut-09.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the return type of `_check`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/863f01a05cf2a736103d443a2af4a56b5e88f6e1/src/babykev/api.py).
+- <a id="tut-09.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the return type of `_check`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/620ea02cd62d1dafd9014783e29d8fe85216175c/src/babykev/api.py).
   - look at `    def _check(self) -> Self:`
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
@@ -4647,7 +4647,7 @@ their name, and prints `7 passed, 46 deselected`. Two of them check the limits t
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/863f01a05cf2a736103d443a2af4a56b5e88f6e1). [The code after it](https://github.com/rahuldave/babykev/tree/863f01a05cf2a736103d443a2af4a56b5e88f6e1).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/620ea02cd62d1dafd9014783e29d8fe85216175c). [The code after it](https://github.com/rahuldave/babykev/tree/620ea02cd62d1dafd9014783e29d8fe85216175c).
 
 <a id="tut-09.3"></a>
 
@@ -4673,9 +4673,9 @@ just lint --statistics
 
 #### What changed
 
-- <a id="tut-09.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the return type of `to_record`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/89e0678e567540c99e3b9bb27299824531b6e0ab/src/babykev/api.py).
+- <a id="tut-09.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the return type of `to_record`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/36b5e61136c9bad356ca74b2d790edf10076fdcb/src/babykev/api.py).
   - look at `def to_record(req: SystemOneRequest) -> tuple[dict[str, Any], list[dict[str, Any]]]:`
-- <a id="tut-09.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the return type of `cheese_request`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/89e0678e567540c99e3b9bb27299824531b6e0ab/tests/unit/test_api.py).
+- <a id="tut-09.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the return type of `cheese_request`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/36b5e61136c9bad356ca74b2d790edf10076fdcb/tests/unit/test_api.py).
   - look at `def cheese_request() -> SystemOneRequest:`
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
@@ -4710,7 +4710,7 @@ just lint --statistics
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/89e0678e567540c99e3b9bb27299824531b6e0ab). [The code after it](https://github.com/rahuldave/babykev/tree/89e0678e567540c99e3b9bb27299824531b6e0ab).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/36b5e61136c9bad356ca74b2d790edf10076fdcb). [The code after it](https://github.com/rahuldave/babykev/tree/36b5e61136c9bad356ca74b2d790edf10076fdcb).
 
 <a id="tut-09.4"></a>
 
@@ -4740,7 +4740,7 @@ command passes with the types, as it did without them.
 
 #### What changed
 
-- <a id="tut-09.4-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: the types of the fixtures. 7 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/7e8194b1498a4d533782cbec472c632279c95a02/tests/unit/test_cli.py).
+- <a id="tut-09.4-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: the types of the fixtures. 7 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/ea931bef025598ffea0652a14e5051bffb491ef9/tests/unit/test_cli.py).
   - look at `    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]`
 
 <details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
@@ -4778,7 +4778,7 @@ command passes with the types, as it did without them.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/7e8194b1498a4d533782cbec472c632279c95a02). [The code after it](https://github.com/rahuldave/babykev/tree/7e8194b1498a4d533782cbec472c632279c95a02).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ea931bef025598ffea0652a14e5051bffb491ef9). [The code after it](https://github.com/rahuldave/babykev/tree/ea931bef025598ffea0652a14e5051bffb491ef9).
 
 <a id="tut-09.5"></a>
 
@@ -4811,9 +4811,9 @@ just test
 
 #### What changed
 
-- <a id="tut-09.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the types of the parameters, and two imports. 9 lines added, 5 removed. [The file](https://github.com/rahuldave/babykev/blob/c013c8baacd52d63a1630e69c78623f829f741fc/tests/unit/test_api.py).
+- <a id="tut-09.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the types of the parameters, and two imports. 9 lines added, 5 removed. [The file](https://github.com/rahuldave/babykev/blob/e7648b1239e17f96443a9477a85ed36d8b1e6cc6/tests/unit/test_api.py).
   - look at `def test_render_flattens_json_into_text(value: JSONContent, text: str):`
-- <a id="tut-09.5-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: the type of `words`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/c013c8baacd52d63a1630e69c78623f829f741fc/tests/unit/test_cli.py).
+- <a id="tut-09.5-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: the type of `words`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/e7648b1239e17f96443a9477a85ed36d8b1e6cc6/tests/unit/test_cli.py).
   - look at `    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str], words: tuple[str, ...]`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -4902,7 +4902,7 @@ just test
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/c013c8baacd52d63a1630e69c78623f829f741fc). [The code after it](https://github.com/rahuldave/babykev/tree/c013c8baacd52d63a1630e69c78623f829f741fc).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e7648b1239e17f96443a9477a85ed36d8b1e6cc6). [The code after it](https://github.com/rahuldave/babykev/tree/e7648b1239e17f96443a9477a85ed36d8b1e6cc6).
 
 <a id="tut-09.6"></a>
 
@@ -4925,7 +4925,7 @@ says `31 fixable with --fix`. Neither command changes a file.
 
 #### What changed
 
-- <a id="tut-09.6-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: the type of `*words`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/9175fdc06663a06b97dd170165a5b7dedc4c0038/tests/unit/test_cli.py).
+- <a id="tut-09.6-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: the type of `*words`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/e0ff9f81ef10ee224eefb9a706f2903aa540463a/tests/unit/test_cli.py).
   - look at `def run(monkeypatch: pytest.MonkeyPatch, *words: str):`
 
 <details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
@@ -4944,7 +4944,7 @@ says `31 fixable with --fix`. Neither command changes a file.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/9175fdc06663a06b97dd170165a5b7dedc4c0038). [The code after it](https://github.com/rahuldave/babykev/tree/9175fdc06663a06b97dd170165a5b7dedc4c0038).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e0ff9f81ef10ee224eefb9a706f2903aa540463a). [The code after it](https://github.com/rahuldave/babykev/tree/e0ff9f81ef10ee224eefb9a706f2903aa540463a).
 
 <a id="tut-09.7"></a>
 
@@ -4972,9 +4972,9 @@ characters with `-> None`. `just test` prints `53 passed`.
 
 #### What changed
 
-- <a id="tut-09.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: `-> None` on 28 functions. 28 lines added, 28 removed. It comes from `just lint --fix --unsafe-fixes`. [The file](https://github.com/rahuldave/babykev/blob/8346c6519e40c978efca61945dfa7f58c64b1c8e/tests/unit/test_api.py).
+- <a id="tut-09.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: `-> None` on 28 functions. 28 lines added, 28 removed. It comes from `just lint --fix --unsafe-fixes`. [The file](https://github.com/rahuldave/babykev/blob/b0e8dd74539e4d3b210defc5e0169f53b1670393/tests/unit/test_api.py).
   - look at `def test_sample_line_fits_the_contract(line: dict[str, Any]) -> None:`
-- <a id="tut-09.7-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: `-> None` on `run` and the two tests. 3 lines added, 3 removed. It comes from `just lint --fix --unsafe-fixes`. [The file](https://github.com/rahuldave/babykev/blob/8346c6519e40c978efca61945dfa7f58c64b1c8e/tests/unit/test_cli.py).
+- <a id="tut-09.7-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: `-> None` on `run` and the two tests. 3 lines added, 3 removed. It comes from `just lint --fix --unsafe-fixes`. [The file](https://github.com/rahuldave/babykev/blob/b0e8dd74539e4d3b210defc5e0169f53b1670393/tests/unit/test_cli.py).
   - look at `def run(monkeypatch: pytest.MonkeyPatch, *words: str) -> None:`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -5244,7 +5244,7 @@ characters with `-> None`. `just test` prints `53 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/8346c6519e40c978efca61945dfa7f58c64b1c8e). [The code after it](https://github.com/rahuldave/babykev/tree/8346c6519e40c978efca61945dfa7f58c64b1c8e).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b0e8dd74539e4d3b210defc5e0169f53b1670393). [The code after it](https://github.com/rahuldave/babykev/tree/b0e8dd74539e4d3b210defc5e0169f53b1670393).
 
 <a id="tut-10"></a>
 
@@ -5261,7 +5261,7 @@ editor show it. kev gave a docstring to some functions of `api.py`, and to none 
 ruff ask for a docstring on every public module, class and function. ruff cannot write one, so each comes by hand,
 one kind at a time.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/8346c6519e40c978efca61945dfa7f58c64b1c8e). [The code after it](https://github.com/rahuldave/babykev/tree/d606f7f46f6d3657a3da7383ef9a9cfc4e91458d).
+[The code before this part](https://github.com/rahuldave/babykev/tree/b0e8dd74539e4d3b210defc5e0169f53b1670393). [The code after it](https://github.com/rahuldave/babykev/tree/ebd0888f135c00e29b583f6fad0575c290fd4876).
 
 <a id="tut-10.1"></a>
 
@@ -5286,7 +5286,7 @@ is private, so it needs none.
 
 #### What changed
 
-- <a id="tut-10.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the rules `D1`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/aca746d3a7c6f8dba6b0d296c6561530a6e90583/pyproject.toml).
+- <a id="tut-10.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the rules `D1`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/09ad56d2e465ac5b485ba5d1b077c540fd7c45ef/pyproject.toml).
   - look at `    "D1",  # pydocstyle: every public module, class and function has a docstring`
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
@@ -5304,7 +5304,7 @@ is private, so it needs none.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/aca746d3a7c6f8dba6b0d296c6561530a6e90583). [The code after it](https://github.com/rahuldave/babykev/tree/aca746d3a7c6f8dba6b0d296c6561530a6e90583).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/09ad56d2e465ac5b485ba5d1b077c540fd7c45ef). [The code after it](https://github.com/rahuldave/babykev/tree/09ad56d2e465ac5b485ba5d1b077c540fd7c45ef).
 
 <a id="tut-10.2"></a>
 
@@ -5328,7 +5328,7 @@ count a docstring.
 
 #### What changed
 
-- <a id="tut-10.2-src-babykev-__init__.py-a40393"></a>`src/babykev/__init__.py`: the docstring of the package. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/985649e12f2c0e923fa7a475053c65785b2f3f34/src/babykev/__init__.py).
+- <a id="tut-10.2-src-babykev-__init__.py-a40393"></a>`src/babykev/__init__.py`: the docstring of the package. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/7943e585faa81e4c0400f5e2e9ca7b42ce4bf286/src/babykev/__init__.py).
   - look at `"""babykev: a small decision model. A state, typed questions, and a probability for every answer."""`
 
 <details><summary>The diff of <code>src/babykev/__init__.py</code></summary>
@@ -5340,7 +5340,7 @@ count a docstring.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/985649e12f2c0e923fa7a475053c65785b2f3f34). [The code after it](https://github.com/rahuldave/babykev/tree/985649e12f2c0e923fa7a475053c65785b2f3f34).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7943e585faa81e4c0400f5e2e9ca7b42ce4bf286). [The code after it](https://github.com/rahuldave/babykev/tree/7943e585faa81e4c0400f5e2e9ca7b42ce4bf286).
 
 <a id="tut-10.3"></a>
 
@@ -5364,7 +5364,7 @@ the levels in order.` `just lint --statistics` prints 3 problems, all `D103`.
 
 #### What changed
 
-- <a id="tut-10.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring on each class of a request. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/f3874d618e5ac000a312cea0edee33703feedfbb/src/babykev/api.py).
+- <a id="tut-10.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring on each class of a request. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/9a769c7d9551fb181bf7c36d989f94f35f836c2d/src/babykev/api.py).
   - look at `    """A question answered by a level of a scale, whose criteria are the levels in order."""`
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
@@ -5409,7 +5409,7 @@ the levels in order.` `just lint --statistics` prints 3 problems, all `D103`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/f3874d618e5ac000a312cea0edee33703feedfbb). [The code after it](https://github.com/rahuldave/babykev/tree/f3874d618e5ac000a312cea0edee33703feedfbb).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9a769c7d9551fb181bf7c36d989f94f35f836c2d). [The code after it](https://github.com/rahuldave/babykev/tree/9a769c7d9551fb181bf7c36d989f94f35f836c2d).
 
 <a id="tut-10.4"></a>
 
@@ -5437,7 +5437,7 @@ test` prints `53 passed`, and the total is 100%, 83 of 83 statements.
 
 #### What changed
 
-- <a id="tut-10.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring on each of the three functions. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/d606f7f46f6d3657a3da7383ef9a9cfc4e91458d/src/babykev/api.py).
+- <a id="tut-10.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring on each of the three functions. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/ebd0888f135c00e29b583f6fad0575c290fd4876/src/babykev/api.py).
   - look at `    """Measure how far the most likely option stands above a guess: 1 if certain, 0 for a guess."""`
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
@@ -5471,4 +5471,4 @@ test` prints `53 passed`, and the total is 100%, 83 of 83 statements.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/d606f7f46f6d3657a3da7383ef9a9cfc4e91458d). [The code after it](https://github.com/rahuldave/babykev/tree/d606f7f46f6d3657a3da7383ef9a9cfc4e91458d).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ebd0888f135c00e29b583f6fad0575c290fd4876). [The code after it](https://github.com/rahuldave/babykev/tree/ebd0888f135c00e29b583f6fad0575c290fd4876).

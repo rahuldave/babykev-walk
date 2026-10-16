@@ -9,7 +9,7 @@ title: "6 Kev's two bugs"
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
 
 ```bash
-git rm -rq --cached --ignore-unmatch -- :/ && git restore --source c65ddf548459 --staged --worktree -- :/
+git rm -rq --cached --ignore-unmatch -- :/ && git restore --source c2f89d37a513 --staged --worktree -- :/
 ```
 
 ```bash
@@ -19,7 +19,7 @@ just setup
 Every line of the contract runs in a test, and two of them are wrong. A test of rounding finds the first. The tests of
 confidence find the second. Each test fails, and the move after it fixes the code.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/c65ddf5484593bfa8c135f4bd5fddc4846cf80c1). [The code after it](https://github.com/rahuldave/babykev/tree/bb441c7fdf6f8fcd066dbcdd7f7bc03837a661ac).
+[The code before this part](https://github.com/rahuldave/babykev/tree/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f). [The code after it](https://github.com/rahuldave/babykev/tree/910716f0cec79c3f31afb34cf3a2593f0cd51315).
 
 ## 6.1 A test of rounding, which fails {#tut-06.1}
 
@@ -30,7 +30,7 @@ a bug of kev.
 Apply the patch to [`tests/unit/test_api.py`](#tut-06.1-tests-unit-test_api.py-58d97c), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/1beac4d6e9bca366e9a3411665e72a1ecdafd094.diff | git apply --include=tests/unit/test_api.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/9012b28ceacd0bcc3971154a5df2f822e551443d.diff | git apply --include=tests/unit/test_api.py
 ```
 
 The patch adds the test at the end of the file.
@@ -52,18 +52,18 @@ Lines 89 and 90 are `r2`, which rounds to two decimals. 1/77 is about 0.013, and
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 1beac4d6e9bc
+git check 9012b28ceacd
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source c65ddf548459 --staged -- :/ && git restore --source 1beac4d6e9bc --staged --worktree -- :/
+git restore --source c2f89d37a513 --staged -- :/ && git restore --source 9012b28ceacd --staged --worktree -- :/
 ```
 
 ### What changed {#tut-06.1-what-changed-182c57}
 
-- <a id="tut-06.1-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the sum of the rounded probabilities. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/1beac4d6e9bca366e9a3411665e72a1ecdafd094/tests/unit/test_api.py).
+- <a id="tut-06.1-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the sum of the rounded probabilities. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/9012b28ceacd0bcc3971154a5df2f822e551443d/tests/unit/test_api.py).
   - look at `    assert sum(answer["probabilities"].values()) == pytest.approx(1, abs=0.02)`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -86,7 +86,7 @@ git restore --source c65ddf548459 --staged -- :/ && git restore --source 1beac4d
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/1beac4d6e9bca366e9a3411665e72a1ecdafd094). [The code after it](https://github.com/rahuldave/babykev/tree/1beac4d6e9bca366e9a3411665e72a1ecdafd094).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9012b28ceacd0bcc3971154a5df2f822e551443d). [The code after it](https://github.com/rahuldave/babykev/tree/9012b28ceacd0bcc3971154a5df2f822e551443d).
 
 ## 6.2 Probabilities rounded to four decimals {#tut-06.2}
 
@@ -96,7 +96,7 @@ decimals. Each 1/77 becomes 0.013, and the 77 probabilities sum to 1.001, within
 Apply the patch to [`src/babykev/api.py`](#tut-06.2-src-babykev-api.py-2ea65f), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/cd9e71dff5d72be00b049e50fc15b0db8235b705.diff | git apply --include=src/babykev/api.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/27e93dd7ee76e609084a1d8a1c1cfbb4f7811da4.diff | git apply --include=src/babykev/api.py
 ```
 
 The patch puts `round_prob` in place of the function `r2`. In `to_answers`, each `r2(` becomes `round_prob(`, six
@@ -112,18 +112,18 @@ just test
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check cd9e71dff5d7
+git check 27e93dd7ee76
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 1beac4d6e9bc --staged -- :/ && git restore --source cd9e71dff5d7 --staged --worktree -- :/
+git restore --source 9012b28ceacd --staged -- :/ && git restore --source 27e93dd7ee76 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-06.2-what-changed-182c57}
 
-- <a id="tut-06.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: four decimals. 8 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/cd9e71dff5d72be00b049e50fc15b0db8235b705/src/babykev/api.py).
+- <a id="tut-06.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: four decimals. 8 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/27e93dd7ee76e609084a1d8a1c1cfbb4f7811da4/src/babykev/api.py).
   - look at `    return round(float(x), 4)`
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
@@ -161,7 +161,7 @@ git restore --source 1beac4d6e9bc --staged -- :/ && git restore --source cd9e71d
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/cd9e71dff5d72be00b049e50fc15b0db8235b705). [The code after it](https://github.com/rahuldave/babykev/tree/cd9e71dff5d72be00b049e50fc15b0db8235b705).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/27e93dd7ee76e609084a1d8a1c1cfbb4f7811da4). [The code after it](https://github.com/rahuldave/babykev/tree/27e93dd7ee76e609084a1d8a1c1cfbb4f7811da4).
 
 ## 6.3 A guess between options has confidence 0 {#tut-06.3}
 
@@ -171,7 +171,7 @@ probability is a guess.
 Apply the patch to [`tests/unit/test_api.py`](#tut-06.3-tests-unit-test_api.py-58d97c), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/c30775de4338f1f7912dd178574536d0d6ac4d7b.diff | git apply --include=tests/unit/test_api.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/27f1f23cc392446dd80918636dfc7a3c52692aae.diff | git apply --include=tests/unit/test_api.py
 ```
 
 The patch adds the section `# Confidence` and its test at the end of the file, and `choice_confidence` to the import.
@@ -185,18 +185,18 @@ pytest prints `1 passed`.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check c30775de4338
+git check 27f1f23cc392
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source cd9e71dff5d7 --staged -- :/ && git restore --source c30775de4338 --staged --worktree -- :/
+git restore --source 27e93dd7ee76 --staged -- :/ && git restore --source 27f1f23cc392 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-06.3-what-changed-182c57}
 
-- <a id="tut-06.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a guess between four options. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/c30775de4338f1f7912dd178574536d0d6ac4d7b/tests/unit/test_api.py).
+- <a id="tut-06.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a guess between four options. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/27f1f23cc392446dd80918636dfc7a3c52692aae/tests/unit/test_api.py).
   - look at `assert choice_confidence([0.25] * 4) == pytest.approx(0)`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -226,7 +226,7 @@ git restore --source cd9e71dff5d7 --staged -- :/ && git restore --source c30775d
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/c30775de4338f1f7912dd178574536d0d6ac4d7b). [The code after it](https://github.com/rahuldave/babykev/tree/c30775de4338f1f7912dd178574536d0d6ac4d7b).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/27f1f23cc392446dd80918636dfc7a3c52692aae). [The code after it](https://github.com/rahuldave/babykev/tree/27f1f23cc392446dd80918636dfc7a3c52692aae).
 
 ## 6.4 A certain choice has confidence 1 {#tut-06.4}
 
@@ -235,7 +235,7 @@ All the probability on one option is certainty, with three options or with one.
 Apply the patch to [`tests/unit/test_api.py`](#tut-06.4-tests-unit-test_api.py-58d97c), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/490a244100c0a9ea6d3992ba31c49ca5b234e7f9.diff | git apply --include=tests/unit/test_api.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/9ded0b3177719bb849eda76972daa2f5368af069.diff | git apply --include=tests/unit/test_api.py
 ```
 
 The patch adds the test at the end of the file.
@@ -249,18 +249,18 @@ pytest prints `2 passed`.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 490a244100c0
+git check 9ded0b317771
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source c30775de4338 --staged -- :/ && git restore --source 490a244100c0 --staged --worktree -- :/
+git restore --source 27f1f23cc392 --staged -- :/ && git restore --source 9ded0b317771 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-06.4-what-changed-182c57}
 
-- <a id="tut-06.4-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: certainty. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/490a244100c0a9ea6d3992ba31c49ca5b234e7f9/tests/unit/test_api.py).
+- <a id="tut-06.4-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: certainty. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/9ded0b3177719bb849eda76972daa2f5368af069/tests/unit/test_api.py).
   - look at `assert choice_confidence([0, 1, 0]) == pytest.approx(1)`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -280,7 +280,7 @@ git restore --source c30775de4338 --staged -- :/ && git restore --source 490a244
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/490a244100c0a9ea6d3992ba31c49ca5b234e7f9). [The code after it](https://github.com/rahuldave/babykev/tree/490a244100c0a9ea6d3992ba31c49ca5b234e7f9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9ded0b3177719bb849eda76972daa2f5368af069). [The code after it](https://github.com/rahuldave/babykev/tree/9ded0b3177719bb849eda76972daa2f5368af069).
 
 ## 6.5 The confidence of a choice grows with its winner {#tut-06.5}
 
@@ -290,7 +290,7 @@ Between a guess and certainty, confidence follows the probability of the most li
 Apply the patch to [`tests/unit/test_api.py`](#tut-06.5-tests-unit-test_api.py-58d97c), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/2e76bc0655ffb0458d1815154478fb3efae55b4c.diff | git apply --include=tests/unit/test_api.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/890fbe0900f6a0f59232ca9d94ce4cc439e21dde.diff | git apply --include=tests/unit/test_api.py
 ```
 
 The patch adds the test at the end of the file.
@@ -304,18 +304,18 @@ pytest prints `3 passed`.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 2e76bc0655ff
+git check 890fbe0900f6
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 490a244100c0 --staged -- :/ && git restore --source 2e76bc0655ff --staged --worktree -- :/
+git restore --source 9ded0b317771 --staged -- :/ && git restore --source 890fbe0900f6 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-06.5-what-changed-182c57}
 
-- <a id="tut-06.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a confidence between 0 and 1. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/2e76bc0655ffb0458d1815154478fb3efae55b4c/tests/unit/test_api.py).
+- <a id="tut-06.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a confidence between 0 and 1. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/890fbe0900f6a0f59232ca9d94ce4cc439e21dde/tests/unit/test_api.py).
   - look at `assert choice_confidence([0.5, 0.25, 0.25]) == pytest.approx(0.25)`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -334,7 +334,7 @@ git restore --source 490a244100c0 --staged -- :/ && git restore --source 2e76bc0
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/2e76bc0655ffb0458d1815154478fb3efae55b4c). [The code after it](https://github.com/rahuldave/babykev/tree/2e76bc0655ffb0458d1815154478fb3efae55b4c).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/890fbe0900f6a0f59232ca9d94ce4cc439e21dde). [The code after it](https://github.com/rahuldave/babykev/tree/890fbe0900f6a0f59232ca9d94ce4cc439e21dde).
 
 ## 6.6 A certain score has confidence 1 {#tut-06.6}
 
@@ -344,7 +344,7 @@ probability on one level is certainty, wherever the level is. The test runs for 
 Apply the patch to [`tests/unit/test_api.py`](#tut-06.6-tests-unit-test_api.py-58d97c), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/e176a81dda2c6ae99a5095f67d3e909efda6630c.diff | git apply --include=tests/unit/test_api.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/d2564e48ae134802f1d48cc079cfe3b92db14639.diff | git apply --include=tests/unit/test_api.py
 ```
 
 The patch adds the test at the end of the file, and `score_confidence` to the import.
@@ -358,18 +358,18 @@ pytest prints `6 passed`.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check e176a81dda2c
+git check d2564e48ae13
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 2e76bc0655ff --staged -- :/ && git restore --source e176a81dda2c --staged --worktree -- :/
+git restore --source 890fbe0900f6 --staged -- :/ && git restore --source d2564e48ae13 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-06.6-what-changed-182c57}
 
-- <a id="tut-06.6-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: certainty, on each level. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/e176a81dda2c6ae99a5095f67d3e909efda6630c/tests/unit/test_api.py).
+- <a id="tut-06.6-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: certainty, on each level. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/d2564e48ae134802f1d48cc079cfe3b92db14639/tests/unit/test_api.py).
   - look at `def test_score_confidence_is_one_when_certain(level):`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -399,7 +399,7 @@ git restore --source 2e76bc0655ff --staged -- :/ && git restore --source e176a81
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e176a81dda2c6ae99a5095f67d3e909efda6630c). [The code after it](https://github.com/rahuldave/babykev/tree/e176a81dda2c6ae99a5095f67d3e909efda6630c).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d2564e48ae134802f1d48cc079cfe3b92db14639). [The code after it](https://github.com/rahuldave/babykev/tree/d2564e48ae134802f1d48cc079cfe3b92db14639).
 
 ## 6.7 A score prefers neighbouring levels {#tut-06.7}
 
@@ -408,7 +408,7 @@ Doubt between two neighbouring levels is closer to certain than doubt between th
 Apply the patch to [`tests/unit/test_api.py`](#tut-06.7-tests-unit-test_api.py-58d97c), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/63911fbe1251ada79de19a6314e43346fe8a30e6.diff | git apply --include=tests/unit/test_api.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/795356b136ab4b1b1c22c8e63b8175a1a6f6d6de.diff | git apply --include=tests/unit/test_api.py
 ```
 
 The patch adds the test at the end of the file.
@@ -422,18 +422,18 @@ pytest prints `7 passed`.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 63911fbe1251
+git check 795356b136ab
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source e176a81dda2c --staged -- :/ && git restore --source 63911fbe1251 --staged --worktree -- :/
+git restore --source d2564e48ae13 --staged -- :/ && git restore --source 795356b136ab --staged --worktree -- :/
 ```
 
 ### What changed {#tut-06.7-what-changed-182c57}
 
-- <a id="tut-06.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: near is better than far. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/63911fbe1251ada79de19a6314e43346fe8a30e6/tests/unit/test_api.py).
+- <a id="tut-06.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: near is better than far. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/795356b136ab4b1b1c22c8e63b8175a1a6f6d6de/tests/unit/test_api.py).
   - look at `assert score_confidence([0.5, 0.5, 0, 0]) > score_confidence([0.5, 0, 0, 0.5])`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -452,7 +452,7 @@ git restore --source e176a81dda2c --staged -- :/ && git restore --source 63911fb
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/63911fbe1251ada79de19a6314e43346fe8a30e6). [The code after it](https://github.com/rahuldave/babykev/tree/63911fbe1251ada79de19a6314e43346fe8a30e6).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/795356b136ab4b1b1c22c8e63b8175a1a6f6d6de). [The code after it](https://github.com/rahuldave/babykev/tree/795356b136ab4b1b1c22c8e63b8175a1a6f6d6de).
 
 ## 6.8 A guess between levels has confidence 0, and the test fails {#tut-06.8}
 
@@ -462,7 +462,7 @@ The test fails on purpose, because it finds the second bug of kev.
 Apply the patch to [`tests/unit/test_api.py`](#tut-06.8-tests-unit-test_api.py-58d97c), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/f73a45e1526b08ffa60178134d837e21ff0db627.diff | git apply --include=tests/unit/test_api.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/72a00ec85ae4b6f3b591cf06fc65903a56f1f7fa.diff | git apply --include=tests/unit/test_api.py
 ```
 
 The patch adds the test at the end of the file.
@@ -489,18 +489,18 @@ places from it, so the spread is 1/3 × 0 + 1/3 × 1 + 1/3 × 2 = 1 place. The l
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check f73a45e1526b
+git check 72a00ec85ae4
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 63911fbe1251 --staged -- :/ && git restore --source f73a45e1526b --staged --worktree -- :/
+git restore --source 795356b136ab --staged -- :/ && git restore --source 72a00ec85ae4 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-06.8-what-changed-182c57}
 
-- <a id="tut-06.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a guess between three levels. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/f73a45e1526b08ffa60178134d837e21ff0db627/tests/unit/test_api.py).
+- <a id="tut-06.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a guess between three levels. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/72a00ec85ae4b6f3b591cf06fc65903a56f1f7fa/tests/unit/test_api.py).
   - look at `assert score_confidence([1 / 3] * 3) == pytest.approx(0)`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -519,7 +519,7 @@ git restore --source 63911fbe1251 --staged -- :/ && git restore --source f73a45e
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/f73a45e1526b08ffa60178134d837e21ff0db627). [The code after it](https://github.com/rahuldave/babykev/tree/f73a45e1526b08ffa60178134d837e21ff0db627).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/72a00ec85ae4b6f3b591cf06fc65903a56f1f7fa). [The code after it](https://github.com/rahuldave/babykev/tree/72a00ec85ae4b6f3b591cf06fc65903a56f1f7fa).
 
 ## 6.9 The confidence of a score measures against a guess {#tut-06.9}
 
@@ -529,7 +529,7 @@ against the spread of a guess around the middle level.
 Apply the patch to [`src/babykev/api.py`](#tut-06.9-src-babykev-api.py-2ea65f), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/0ecccd50f6af3eebae1e00ad7a98f433e17f36e9.diff | git apply --include=src/babykev/api.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/e97355545c4001a361257c532330f8784aa51b79.diff | git apply --include=src/babykev/api.py
 ```
 
 The patch writes `score_confidence` again, in place of the old one. Read its docstring first.
@@ -557,18 +557,18 @@ hold a scale of one level, so no test reaches it.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 0ecccd50f6af
+git check e97355545c40
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source f73a45e1526b --staged -- :/ && git restore --source 0ecccd50f6af --staged --worktree -- :/
+git restore --source 72a00ec85ae4 --staged -- :/ && git restore --source e97355545c40 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-06.9-what-changed-182c57}
 
-- <a id="tut-06.9-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the spread of a guess, as the measure. 12 lines added, 4 removed. [The file](https://github.com/rahuldave/babykev/blob/0ecccd50f6af3eebae1e00ad7a98f433e17f36e9/src/babykev/api.py).
+- <a id="tut-06.9-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the spread of a guess, as the measure. 12 lines added, 4 removed. [The file](https://github.com/rahuldave/babykev/blob/e97355545c4001a361257c532330f8784aa51b79/src/babykev/api.py).
   - look at `    guess = sum(abs(i - (L - 1) / 2) for i in range(L)) / L`
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
@@ -601,7 +601,7 @@ git restore --source f73a45e1526b --staged -- :/ && git restore --source 0ecccd5
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/0ecccd50f6af3eebae1e00ad7a98f433e17f36e9). [The code after it](https://github.com/rahuldave/babykev/tree/0ecccd50f6af3eebae1e00ad7a98f433e17f36e9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e97355545c4001a361257c532330f8784aa51b79). [The code after it](https://github.com/rahuldave/babykev/tree/e97355545c4001a361257c532330f8784aa51b79).
 
 ## 6.10 A test of a scale with one level {#tut-06.10}
 
@@ -611,7 +611,7 @@ Line 90 runs in no test. A scale of one level leaves nothing to doubt, so its co
 Apply the patch to [`tests/unit/test_api.py`](#tut-06.10-tests-unit-test_api.py-58d97c), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/bb441c7fdf6f8fcd066dbcdd7f7bc03837a661ac.diff | git apply --include=tests/unit/test_api.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/910716f0cec79c3f31afb34cf3a2593f0cd51315.diff | git apply --include=tests/unit/test_api.py
 ```
 
 The patch adds the test at the end of the file.
@@ -625,18 +625,18 @@ just test
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check bb441c7fdf6f
+git check 910716f0cec7
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 0ecccd50f6af --staged -- :/ && git restore --source bb441c7fdf6f --staged --worktree -- :/
+git restore --source e97355545c40 --staged -- :/ && git restore --source 910716f0cec7 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-06.10-what-changed-182c57}
 
-- <a id="tut-06.10-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the test calls the function itself. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/bb441c7fdf6f8fcd066dbcdd7f7bc03837a661ac/tests/unit/test_api.py).
+- <a id="tut-06.10-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the test calls the function itself. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/910716f0cec79c3f31afb34cf3a2593f0cd51315/tests/unit/test_api.py).
   - look at `    assert score_confidence([1.0]) == 1.0`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -655,4 +655,4 @@ git restore --source 0ecccd50f6af --staged -- :/ && git restore --source bb441c7
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/bb441c7fdf6f8fcd066dbcdd7f7bc03837a661ac). [The code after it](https://github.com/rahuldave/babykev/tree/bb441c7fdf6f8fcd066dbcdd7f7bc03837a661ac).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/910716f0cec79c3f31afb34cf3a2593f0cd51315). [The code after it](https://github.com/rahuldave/babykev/tree/910716f0cec79c3f31afb34cf3a2593f0cd51315).

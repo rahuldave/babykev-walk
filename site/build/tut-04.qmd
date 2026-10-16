@@ -9,7 +9,7 @@ title: "4 What a request is"
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
 
 ```bash
-git rm -rq --cached --ignore-unmatch -- :/ && git restore --source a3fdba91adc1 --staged --worktree -- :/
+git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 56606771fb23 --staged --worktree -- :/
 ```
 
 ```bash
@@ -20,7 +20,7 @@ The contract says what a request is, and no test checks it. The tests of this pa
 against the contract. Then they check what the contract accepts and refuses, one rule at a time. They go in
 `tests/unit/test_api.py`, one test in each move.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/a3fdba91adc19206debd74d87fa107603433b202). [The code after it](https://github.com/rahuldave/babykev/tree/3fdf16e045d976c4351256b4d9ee60e36634d381).
+[The code before this part](https://github.com/rahuldave/babykev/tree/56606771fb23f7a0a01825f477050d2980a47736). [The code after it](https://github.com/rahuldave/babykev/tree/1fef13ae49e24d280d05c250289c41d5636feff7).
 
 ## 4.1 Every line of the sample data fits the contract {#tut-04.1}
 
@@ -31,7 +31,7 @@ not fit.
 Apply the patch to [`tests/unit/test_api.py`](#tut-04.1-tests-unit-test_api.py-58d97c), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/a4769b1cc4a199776e33def2db2d82ffe728e240.diff | git apply --include=tests/unit/test_api.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/5e134165b7e1feeded775bcfb2269aec951ad39f.diff | git apply --include=tests/unit/test_api.py
 ```
 
 The patch makes the file. Read `SAMPLE_LINES`, then the test.
@@ -46,18 +46,18 @@ lines are the functions that turn probabilities into answers.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check a4769b1cc4a1
+git check 5e134165b7e1
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source a3fdba91adc1 --staged -- :/ && git restore --source a4769b1cc4a1 --staged --worktree -- :/
+git restore --source 56606771fb23 --staged -- :/ && git restore --source 5e134165b7e1 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-04.1-what-changed-182c57}
 
-- <a id="tut-04.1-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the sample data, and the test that checks each line. New, 27 lines. [The file](https://github.com/rahuldave/babykev/blob/a4769b1cc4a199776e33def2db2d82ffe728e240/tests/unit/test_api.py).
+- <a id="tut-04.1-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the sample data, and the test that checks each line. New, 27 lines. [The file](https://github.com/rahuldave/babykev/blob/5e134165b7e1feeded775bcfb2269aec951ad39f/tests/unit/test_api.py).
   - look at `def test_sample_line_fits_the_contract(line):`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -95,7 +95,7 @@ git restore --source a3fdba91adc1 --staged -- :/ && git restore --source a4769b1
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/a4769b1cc4a199776e33def2db2d82ffe728e240). [The code after it](https://github.com/rahuldave/babykev/tree/a4769b1cc4a199776e33def2db2d82ffe728e240).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/5e134165b7e1feeded775bcfb2269aec951ad39f). [The code after it](https://github.com/rahuldave/babykev/tree/5e134165b7e1feeded775bcfb2269aec951ad39f).
 
 ## 4.2 Every question of the sample data has a label {#tut-04.2}
 
@@ -105,7 +105,7 @@ the name of an option for a choice, and the number of a level for a score.
 Apply the patch to [`tests/unit/test_api.py`](#tut-04.2-tests-unit-test_api.py-58d97c), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/41afeeabb4221287e3ae3f13f88f39a5639b27f5.diff | git apply --include=tests/unit/test_api.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/1ca39523b4fdf6c75c244b8c0e0f2371593cfbff.diff | git apply --include=tests/unit/test_api.py
 ```
 
 The patch adds the test at the end of the file.
@@ -119,18 +119,18 @@ pytest runs the new test once for each line, and prints `5 passed`.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 41afeeabb422
+git check 1ca39523b4fd
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source a4769b1cc4a1 --staged -- :/ && git restore --source 41afeeabb422 --staged --worktree -- :/
+git restore --source 5e134165b7e1 --staged -- :/ && git restore --source 1ca39523b4fd --staged --worktree -- :/
 ```
 
 ### What changed {#tut-04.2-what-changed-182c57}
 
-- <a id="tut-04.2-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the labels of the sample data. 13 lines added. [The file](https://github.com/rahuldave/babykev/blob/41afeeabb4221287e3ae3f13f88f39a5639b27f5/tests/unit/test_api.py).
+- <a id="tut-04.2-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the labels of the sample data. 13 lines added. [The file](https://github.com/rahuldave/babykev/blob/1ca39523b4fdf6c75c244b8c0e0f2371593cfbff/tests/unit/test_api.py).
   - look at `def test_sample_line_has_a_usable_label_on_every_question(line):`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -157,7 +157,7 @@ git restore --source a4769b1cc4a1 --staged -- :/ && git restore --source 41afeea
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/41afeeabb4221287e3ae3f13f88f39a5639b27f5). [The code after it](https://github.com/rahuldave/babykev/tree/41afeeabb4221287e3ae3f13f88f39a5639b27f5).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/1ca39523b4fdf6c75c244b8c0e0f2371593cfbff). [The code after it](https://github.com/rahuldave/babykev/tree/1ca39523b4fdf6c75c244b8c0e0f2371593cfbff).
 
 ## 4.3 A request holds one model for each type of question {#tut-04.3}
 
@@ -168,7 +168,7 @@ request with a question of each type, for the tests to share. The test checks th
 Apply the patch to [`tests/unit/test_api.py`](#tut-04.3-tests-unit-test_api.py-58d97c), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/897d387a14f58ae3d2bb67e425e426226b04642f.diff | git apply --include=tests/unit/test_api.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/847d160f4a2f014bd58eb06030268ce762577cbc.diff | git apply --include=tests/unit/test_api.py
 ```
 
 The patch adds `MILKS`, `FIRMNESS` and `cheese_request` under `SAMPLE_LINES`. It adds the section `# Validation` and
@@ -183,18 +183,18 @@ pytest prints `1 passed`.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 897d387a14f5
+git check 847d160f4a2f
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 41afeeabb422 --staged -- :/ && git restore --source 897d387a14f5 --staged --worktree -- :/
+git restore --source 1ca39523b4fd --staged -- :/ && git restore --source 847d160f4a2f --staged --worktree -- :/
 ```
 
 ### What changed {#tut-04.3-what-changed-182c57}
 
-- <a id="tut-04.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the helper, and the test of the three types. 32 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/897d387a14f58ae3d2bb67e425e426226b04642f/tests/unit/test_api.py).
+- <a id="tut-04.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the helper, and the test of the three types. 32 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/847d160f4a2f014bd58eb06030268ce762577cbc/tests/unit/test_api.py).
   - look at `def test_request_holds_one_model_per_question_type():`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -255,7 +255,7 @@ git restore --source 41afeeabb422 --staged -- :/ && git restore --source 897d387
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/897d387a14f58ae3d2bb67e425e426226b04642f). [The code after it](https://github.com/rahuldave/babykev/tree/897d387a14f58ae3d2bb67e425e426226b04642f).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/847d160f4a2f014bd58eb06030268ce762577cbc). [The code after it](https://github.com/rahuldave/babykev/tree/847d160f4a2f014bd58eb06030268ce762577cbc).
 
 ## 4.4 A request without questions is refused {#tut-04.4}
 
@@ -265,7 +265,7 @@ refuses a request with none.
 Apply the patch to [`tests/unit/test_api.py`](#tut-04.4-tests-unit-test_api.py-58d97c), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/20844ff36037001c1301da15bff6c65446aff65b.diff | git apply --include=tests/unit/test_api.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/c2af99cdd8e0b6f40e33a1ebcf9aa602904a83ba.diff | git apply --include=tests/unit/test_api.py
 ```
 
 The patch adds the test at the end of the file, and `ValidationError` to the imports.
@@ -279,18 +279,18 @@ pytest prints `1 passed`.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 20844ff36037
+git check c2af99cdd8e0
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 897d387a14f5 --staged -- :/ && git restore --source 20844ff36037 --staged --worktree -- :/
+git restore --source 847d160f4a2f --staged -- :/ && git restore --source c2af99cdd8e0 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-04.4-what-changed-182c57}
 
-- <a id="tut-04.4-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a request with no questions. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/20844ff36037001c1301da15bff6c65446aff65b/tests/unit/test_api.py).
+- <a id="tut-04.4-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a request with no questions. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/c2af99cdd8e0b6f40e33a1ebcf9aa602904a83ba/tests/unit/test_api.py).
   - look at `def test_request_without_questions_is_rejected():`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -318,7 +318,7 @@ git restore --source 897d387a14f5 --staged -- :/ && git restore --source 20844ff
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/20844ff36037001c1301da15bff6c65446aff65b). [The code after it](https://github.com/rahuldave/babykev/tree/20844ff36037001c1301da15bff6c65446aff65b).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/c2af99cdd8e0b6f40e33a1ebcf9aa602904a83ba). [The code after it](https://github.com/rahuldave/babykev/tree/c2af99cdd8e0b6f40e33a1ebcf9aa602904a83ba).
 
 ## 4.5 An unknown type of question is refused {#tut-04.5}
 
@@ -327,7 +327,7 @@ Only noul, choice and score exist. The test gives a question the type `essay`, a
 Apply the patch to [`tests/unit/test_api.py`](#tut-04.5-tests-unit-test_api.py-58d97c), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/344ca5af25f758538a8ebaca51a0a88dd6ccc333.diff | git apply --include=tests/unit/test_api.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/6acc5e7d6f228ce76a9083d915f238c3d6696c85.diff | git apply --include=tests/unit/test_api.py
 ```
 
 The patch adds the test at the end of the file.
@@ -341,18 +341,18 @@ pytest prints `1 passed`.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 344ca5af25f7
+git check 6acc5e7d6f22
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 20844ff36037 --staged -- :/ && git restore --source 344ca5af25f7 --staged --worktree -- :/
+git restore --source c2af99cdd8e0 --staged -- :/ && git restore --source 6acc5e7d6f22 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-04.5-what-changed-182c57}
 
-- <a id="tut-04.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a type that does not exist. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/344ca5af25f758538a8ebaca51a0a88dd6ccc333/tests/unit/test_api.py).
+- <a id="tut-04.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a type that does not exist. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/6acc5e7d6f228ce76a9083d915f238c3d6696c85/tests/unit/test_api.py).
   - look at `question = {"type": "essay", "instructions": "Describe this cheese."}`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -373,7 +373,7 @@ git restore --source 20844ff36037 --staged -- :/ && git restore --source 344ca5a
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/344ca5af25f758538a8ebaca51a0a88dd6ccc333). [The code after it](https://github.com/rahuldave/babykev/tree/344ca5af25f758538a8ebaca51a0a88dd6ccc333).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/6acc5e7d6f228ce76a9083d915f238c3d6696c85). [The code after it](https://github.com/rahuldave/babykev/tree/6acc5e7d6f228ce76a9083d915f238c3d6696c85).
 
 ## 4.6 A noul needs no criteria {#tut-04.6}
 
@@ -383,7 +383,7 @@ its criteria are `None`.
 Apply the patch to [`tests/unit/test_api.py`](#tut-04.6-tests-unit-test_api.py-58d97c), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/5128d9cf9dea8e7c76de31d5d67d27e692cfafc0.diff | git apply --include=tests/unit/test_api.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/3a99587d325837f9104661b3d06d9630679dc8eb.diff | git apply --include=tests/unit/test_api.py
 ```
 
 The patch adds the test at the end of the file.
@@ -397,18 +397,18 @@ pytest prints `1 passed`.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 5128d9cf9dea
+git check 3a99587d3258
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 344ca5af25f7 --staged -- :/ && git restore --source 5128d9cf9dea --staged --worktree -- :/
+git restore --source 6acc5e7d6f22 --staged -- :/ && git restore --source 3a99587d3258 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-04.6-what-changed-182c57}
 
-- <a id="tut-04.6-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a noul without criteria. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/5128d9cf9dea8e7c76de31d5d67d27e692cfafc0/tests/unit/test_api.py).
+- <a id="tut-04.6-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a noul without criteria. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/3a99587d325837f9104661b3d06d9630679dc8eb/tests/unit/test_api.py).
   - look at `assert Noul(type="noul", instructions="Is it blue?").criteria is None`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -427,7 +427,7 @@ git restore --source 344ca5af25f7 --staged -- :/ && git restore --source 5128d9c
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/5128d9cf9dea8e7c76de31d5d67d27e692cfafc0). [The code after it](https://github.com/rahuldave/babykev/tree/5128d9cf9dea8e7c76de31d5d67d27e692cfafc0).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3a99587d325837f9104661b3d06d9630679dc8eb). [The code after it](https://github.com/rahuldave/babykev/tree/3a99587d325837f9104661b3d06d9630679dc8eb).
 
 ## 4.7 A choice without options is refused {#tut-04.7}
 
@@ -436,7 +436,7 @@ A choice needs at least one option. The test gives a `Choice` empty criteria, an
 Apply the patch to [`tests/unit/test_api.py`](#tut-04.7-tests-unit-test_api.py-58d97c), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/464e175952882fc67de86b90baaad51caf1a0801.diff | git apply --include=tests/unit/test_api.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/4653d298261d887195e59a2cf00593036151657c.diff | git apply --include=tests/unit/test_api.py
 ```
 
 The patch adds the test at the end of the file.
@@ -450,18 +450,18 @@ pytest prints `1 passed`.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 464e17595288
+git check 4653d298261d
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 5128d9cf9dea --staged -- :/ && git restore --source 464e17595288 --staged --worktree -- :/
+git restore --source 3a99587d3258 --staged -- :/ && git restore --source 4653d298261d --staged --worktree -- :/
 ```
 
 ### What changed {#tut-04.7-what-changed-182c57}
 
-- <a id="tut-04.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a choice of nothing. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/464e175952882fc67de86b90baaad51caf1a0801/tests/unit/test_api.py).
+- <a id="tut-04.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a choice of nothing. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/4653d298261d887195e59a2cf00593036151657c/tests/unit/test_api.py).
   - look at `def test_choice_without_options_is_rejected():`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -481,7 +481,7 @@ git restore --source 5128d9cf9dea --staged -- :/ && git restore --source 464e175
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/464e175952882fc67de86b90baaad51caf1a0801). [The code after it](https://github.com/rahuldave/babykev/tree/464e175952882fc67de86b90baaad51caf1a0801).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/4653d298261d887195e59a2cf00593036151657c). [The code after it](https://github.com/rahuldave/babykev/tree/4653d298261d887195e59a2cf00593036151657c).
 
 ## 4.8 A choice has at most MAX_OPTIONS options {#tut-04.8}
 
@@ -491,7 +491,7 @@ refused. A limit is tested on both of its sides.
 Apply the patch to [`tests/unit/test_api.py`](#tut-04.8-tests-unit-test_api.py-58d97c), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/9f07f3752d1e1c2622310d6fa556c40cac43be00.diff | git apply --include=tests/unit/test_api.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/3addf0f2bd69e0910ba506a41a240fec5218c77a.diff | git apply --include=tests/unit/test_api.py
 ```
 
 The patch adds the test at the end of the file, and `MAX_OPTIONS` to the import from `babykev.api`.
@@ -505,18 +505,18 @@ pytest prints `1 passed`.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 9f07f3752d1e
+git check 3addf0f2bd69
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 464e17595288 --staged -- :/ && git restore --source 9f07f3752d1e --staged --worktree -- :/
+git restore --source 4653d298261d --staged -- :/ && git restore --source 3addf0f2bd69 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-04.8-what-changed-182c57}
 
-- <a id="tut-04.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the limit, from both sides. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/9f07f3752d1e1c2622310d6fa556c40cac43be00/tests/unit/test_api.py).
+- <a id="tut-04.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the limit, from both sides. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/3addf0f2bd69e0910ba506a41a240fec5218c77a/tests/unit/test_api.py).
   - look at `at_limit = {f"option{i}": None for i in range(MAX_OPTIONS)}`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -548,7 +548,7 @@ git restore --source 464e17595288 --staged -- :/ && git restore --source 9f07f37
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/9f07f3752d1e1c2622310d6fa556c40cac43be00). [The code after it](https://github.com/rahuldave/babykev/tree/9f07f3752d1e1c2622310d6fa556c40cac43be00).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3addf0f2bd69e0910ba506a41a240fec5218c77a). [The code after it](https://github.com/rahuldave/babykev/tree/3addf0f2bd69e0910ba506a41a240fec5218c77a).
 
 ## 4.9 A score of one level is refused {#tut-04.9}
 
@@ -557,7 +557,7 @@ A scale needs two levels at least, or it measures nothing. The test gives a `Sco
 Apply the patch to [`tests/unit/test_api.py`](#tut-04.9-tests-unit-test_api.py-58d97c), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/5a07b57374e4863dee50efb07cc71a9ed848efc5.diff | git apply --include=tests/unit/test_api.py
+curl -fsSL https://github.com/rahuldave/babykev/commit/b9a4861a26a74623a6daf8c7c776cebe5f30a626.diff | git apply --include=tests/unit/test_api.py
 ```
 
 The patch adds the test at the end of the file.
@@ -572,18 +572,18 @@ already.
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 5a07b57374e4
+git check b9a4861a26a7
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 9f07f3752d1e --staged -- :/ && git restore --source 5a07b57374e4 --staged --worktree -- :/
+git restore --source 3addf0f2bd69 --staged -- :/ && git restore --source b9a4861a26a7 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-04.9-what-changed-182c57}
 
-- <a id="tut-04.9-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a scale of one level. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/5a07b57374e4863dee50efb07cc71a9ed848efc5/tests/unit/test_api.py).
+- <a id="tut-04.9-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a scale of one level. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/b9a4861a26a74623a6daf8c7c776cebe5f30a626/tests/unit/test_api.py).
   - look at `Score(type="score", instructions="How firm?", criteria=["Soft"])`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -603,7 +603,7 @@ git restore --source 9f07f3752d1e --staged -- :/ && git restore --source 5a07b57
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/5a07b57374e4863dee50efb07cc71a9ed848efc5). [The code after it](https://github.com/rahuldave/babykev/tree/5a07b57374e4863dee50efb07cc71a9ed848efc5).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b9a4861a26a74623a6daf8c7c776cebe5f30a626). [The code after it](https://github.com/rahuldave/babykev/tree/b9a4861a26a74623a6daf8c7c776cebe5f30a626).
 
 ## 4.10 The README names the tests of the contract {#tut-04.10}
 
@@ -612,7 +612,7 @@ The row of `tests/unit/` names only the tests of the command. It now names the t
 Apply the patch to [`README.md`](#tut-04.10-README.md-8ec9a0), from the top of the project:
 
 ```bash
-curl -fsSL https://github.com/rahuldave/babykev/commit/3fdf16e045d976c4351256b4d9ee60e36634d381.diff | git apply --include=README.md
+curl -fsSL https://github.com/rahuldave/babykev/commit/1fef13ae49e24d280d05c250289c41d5636feff7.diff | git apply --include=README.md
 ```
 
 The patch changes the row of `tests/unit/`.
@@ -626,18 +626,18 @@ grep -n 'tests/unit' README.md
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
-git check 3fdf16e045d9
+git check 1fef13ae49e2
 ```
 
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 5a07b57374e4 --staged -- :/ && git restore --source 3fdf16e045d9 --staged --worktree -- :/
+git restore --source b9a4861a26a7 --staged -- :/ && git restore --source 1fef13ae49e2 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-04.10-what-changed-182c57}
 
-- <a id="tut-04.10-README.md-8ec9a0"></a>`README.md`: the row of the tests. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/3fdf16e045d976c4351256b4d9ee60e36634d381/README.md).
+- <a id="tut-04.10-README.md-8ec9a0"></a>`README.md`: the row of the tests. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/1fef13ae49e24d280d05c250289c41d5636feff7/README.md).
   - look at ``| `tests/unit/` | The unit tests of the contract and of the command. One test checks every line of the sample data against the contract |``
 
 <details open><summary>The patch to <code>README.md</code></summary>
@@ -656,4 +656,4 @@ git restore --source 5a07b57374e4 --staged -- :/ && git restore --source 3fdf16e
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/3fdf16e045d976c4351256b4d9ee60e36634d381). [The code after it](https://github.com/rahuldave/babykev/tree/3fdf16e045d976c4351256b4d9ee60e36634d381).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/1fef13ae49e24d280d05c250289c41d5636feff7). [The code after it](https://github.com/rahuldave/babykev/tree/1fef13ae49e24d280d05c250289c41d5636feff7).

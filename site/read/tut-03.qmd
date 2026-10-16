@@ -11,12 +11,12 @@ just setup
 ```
 
 babykev will answer typed questions about a text, and its model comes later. First we fix what a request is and what
-an answer is. kev wrote this agreement in a file, `api.py`, and we call it the contract. It comes in as kev wrote it.
+an answer is. The agreement is a file from kev, `api.py`, and we call it the contract. It comes in whole.
 
 Then three parts that belong to kev's server go, one at a time. Five sample requests come last. No test reaches the
 contract yet, so coverage falls.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/4640589d80e4f224a4b2c1fd9567e952f564f102). [The code after it](https://github.com/rahuldave/babykev/tree/a3fdba91adc19206debd74d87fa107603433b202).
+[The code before this part](https://github.com/rahuldave/babykev/tree/4640589d80e4f224a4b2c1fd9567e952f564f102). [The code after it](https://github.com/rahuldave/babykev/tree/56606771fb23f7a0a01825f477050d2980a47736).
 
 ## 3.1 Pydantic, the first dependency {#tut-03.1}
 
@@ -64,10 +64,10 @@ uv tree --depth 1
 
 [This change on GitHub](https://github.com/rahuldave/babykev/commit/96502df0a92f6f7090d6f624cda901a271dac9a7). [The code after it](https://github.com/rahuldave/babykev/tree/96502df0a92f6f7090d6f624cda901a271dac9a7).
 
-## 3.2 api.py of kev, as he wrote it {#tut-03.2}
+## 3.2 api.py, the contract {#tut-03.2}
 
-babykev has no contract yet. kev's `api.py` says what a request is and what an answer is. It comes in as kev wrote it,
-all 111 lines, so that we read his code before we change it.
+babykev has no contract yet. `api.py`, from kev, says what a request is and what an answer is. It comes in whole,
+all 111 lines, and we read it before we change it.
 
 A patch to [`src/babykev/api.py`](#tut-03.2-src-babykev-api.py-2ea65f).
 
@@ -91,7 +91,7 @@ The 5 tests pass, and coverage falls. `api.py` has 70 statements, and no test ru
 
 ### What changed {#tut-03.2-what-changed-182c57}
 
-- <a id="tut-03.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a request has a state and its questions by name. Each question is a `Noul`, a `Choice` or a `Score`, and its field `type` says which. New, 111 lines. [The file](https://github.com/rahuldave/babykev/blob/85ac48d80d3f558507cd04add56502a55228fdfb/src/babykev/api.py).
+- <a id="tut-03.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a request has a state and its questions by name. Each question is a `Noul`, a `Choice` or a `Score`, and its field `type` says which. New, 111 lines. [The file](https://github.com/rahuldave/babykev/blob/e8e2e72adad9364a58be21dadf6d757e84436b97/src/babykev/api.py).
   - look at `class SystemOneRequest(BaseModel):`
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
@@ -213,7 +213,7 @@ The 5 tests pass, and coverage falls. `api.py` has 70 statements, and no test ru
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/85ac48d80d3f558507cd04add56502a55228fdfb). [The code after it](https://github.com/rahuldave/babykev/tree/85ac48d80d3f558507cd04add56502a55228fdfb).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e8e2e72adad9364a58be21dadf6d757e84436b97). [The code after it](https://github.com/rahuldave/babykev/tree/e8e2e72adad9364a58be21dadf6d757e84436b97).
 
 ## 3.3 The docstring of api.py names no server {#tut-03.3}
 
@@ -232,7 +232,7 @@ It prints the new first line.
 
 ### What changed {#tut-03.3-what-changed-182c57}
 
-- <a id="tut-03.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the docstring. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/7d02a86b5264734575f0ae987b83749c721c3b8a/src/babykev/api.py).
+- <a id="tut-03.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the docstring. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/93618951b784e928af3d3547f077bb49bff4d5da/src/babykev/api.py).
   - look at `"""The contract: request and answer shapes, mapped onto the single pointer primitive.`
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
@@ -248,7 +248,7 @@ It prints the new first line.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/7d02a86b5264734575f0ae987b83749c721c3b8a). [The code after it](https://github.com/rahuldave/babykev/tree/7d02a86b5264734575f0ae987b83749c721c3b8a).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/93618951b784e928af3d3547f077bb49bff4d5da). [The code after it](https://github.com/rahuldave/babykev/tree/93618951b784e928af3d3547f077bb49bff4d5da).
 
 ## 3.4 A request names no model {#tut-03.4}
 
@@ -266,7 +266,7 @@ uv run python -c "from babykev.api import SystemOneRequest; print(sorted(SystemO
 
 ### What changed {#tut-03.4-what-changed-182c57}
 
-- <a id="tut-03.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a request has two fields, `state` and `questions`. 0 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/2413a8630c06aea68cbb29ab1600ff55416e21ed/src/babykev/api.py).
+- <a id="tut-03.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a request has two fields, `state` and `questions`. 0 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/5cce9c9e5025336d501298d244389b64c696737c/src/babykev/api.py).
   - look at `    questions: dict[str, Question] = Field(min_length=1)`
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
@@ -284,7 +284,7 @@ uv run python -c "from babykev.api import SystemOneRequest; print(sorted(SystemO
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/2413a8630c06aea68cbb29ab1600ff55416e21ed). [The code after it](https://github.com/rahuldave/babykev/tree/2413a8630c06aea68cbb29ab1600ff55416e21ed).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/5cce9c9e5025336d501298d244389b64c696737c). [The code after it](https://github.com/rahuldave/babykev/tree/5cce9c9e5025336d501298d244389b64c696737c).
 
 ## 3.5 output_tokens goes {#tut-03.5}
 
@@ -303,7 +303,7 @@ just test
 
 ### What changed {#tut-03.5-what-changed-182c57}
 
-- <a id="tut-03.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the function goes. 0 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/f4639659192ee57606c516584434974f14dbe45b/src/babykev/api.py).
+- <a id="tut-03.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the function goes. 0 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/43b7ea4eda990f90abd605920e2fb1d9b376378d/src/babykev/api.py).
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -322,7 +322,7 @@ just test
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/f4639659192ee57606c516584434974f14dbe45b). [The code after it](https://github.com/rahuldave/babykev/tree/f4639659192ee57606c516584434974f14dbe45b).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/43b7ea4eda990f90abd605920e2fb1d9b376378d). [The code after it](https://github.com/rahuldave/babykev/tree/43b7ea4eda990f90abd605920e2fb1d9b376378d).
 
 ## 3.6 Five requests about cheese, as sample data {#tut-03.6}
 
@@ -343,7 +343,7 @@ label `1`, the second level. `milk` is a `choice` of five options with the label
 
 ### What changed {#tut-03.6-what-changed-182c57}
 
-- <a id="tut-03.6-data-cheese-sample.jsonl-79f982"></a>`data/cheese/sample.jsonl`: each line is a request with a `state` and its `questions`. New, 5 lines. [The file](https://github.com/rahuldave/babykev/blob/a51a2eb1b7d9408614e8b1e61ccec561f12984e0/data/cheese/sample.jsonl).
+- <a id="tut-03.6-data-cheese-sample.jsonl-79f982"></a>`data/cheese/sample.jsonl`: each line is a request with a `state` and its `questions`. New, 5 lines. [The file](https://github.com/rahuldave/babykev/blob/abb4ece53e114b331e9e32d67309e1f54f9f964e/data/cheese/sample.jsonl).
 
 <details><summary>The diff of <code>data/cheese/sample.jsonl</code></summary>
 
@@ -358,7 +358,7 @@ label `1`, the second level. `milk` is a `choice` of five options with the label
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/a51a2eb1b7d9408614e8b1e61ccec561f12984e0). [The code after it](https://github.com/rahuldave/babykev/tree/a51a2eb1b7d9408614e8b1e61ccec561f12984e0).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/abb4ece53e114b331e9e32d67309e1f54f9f964e). [The code after it](https://github.com/rahuldave/babykev/tree/abb4ece53e114b331e9e32d67309e1f54f9f964e).
 
 ## 3.7 The README names the contract and the data {#tut-03.7}
 
@@ -378,7 +378,7 @@ grep -n -E 'api.py|sample.jsonl' README.md
 
 ### What changed {#tut-03.7-what-changed-182c57}
 
-- <a id="tut-03.7-README.md-8ec9a0"></a>`README.md`: the rows of the contract and the data. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a3fdba91adc19206debd74d87fa107603433b202/README.md).
+- <a id="tut-03.7-README.md-8ec9a0"></a>`README.md`: the rows of the contract and the data. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/56606771fb23f7a0a01825f477050d2980a47736/README.md).
   - look at ``| `data/cheese/sample.jsonl` | Five requests about cheese, one on each line. Every question has a `label`, the right answer |``
 
 <details><summary>The diff of <code>README.md</code></summary>
@@ -399,4 +399,4 @@ grep -n -E 'api.py|sample.jsonl' README.md
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/a3fdba91adc19206debd74d87fa107603433b202). [The code after it](https://github.com/rahuldave/babykev/tree/a3fdba91adc19206debd74d87fa107603433b202).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/56606771fb23f7a0a01825f477050d2980a47736). [The code after it](https://github.com/rahuldave/babykev/tree/56606771fb23f7a0a01825f477050d2980a47736).

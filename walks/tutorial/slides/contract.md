@@ -1,6 +1,6 @@
 ## The contract, and its tests
 
-- **The contract** says what a request is and what an answer is. kev wrote it in one file, `api.py`
+- **The contract** says what a request is and what an answer is. It comes from kev, in one file, `api.py`
 - **pydantic** checks that the data of a request has the shape that the contract says
 - **pytest** runs the tests, and **pytest-cov** measures which lines of the code they run
 - Later, two tests find two bugs of kev, and we fix both
