@@ -64,7 +64,8 @@ uv sync --locked
 ```
 
 `uv sync` makes `.venv` exactly as `uv.lock` says. `--locked` makes it refuse a `uv.lock` that no longer matches
-`pyproject.toml`. Here it prints `Resolved 1 package` and `Checked 1 package`, because `.venv` is already right.
+`pyproject.toml`. It prints `Resolved 1 package`. When `.venv` is already right, it then prints `Checked 1 package`, and changes
+nothing. In a new clone, it first prints `Creating virtual environment at: .venv`, and then installs babykev.
 
 A patch to [`justfile`](#tut-01.9-justfile-424f0b).
 
@@ -425,7 +426,7 @@ and a user of the package does not need it. So it goes in a second dependency gr
 
 This change came from running `uv add --group lint ruff`.
 
-`uv add` prints `Resolved 15 packages`, and installs `ruff==0.17.1`. ruff is one program, and needs no other
+`uv add` prints `Resolved 15 packages`, and installs ruff. ruff is one program, and needs no other
 package.
 
 In `pyproject.toml`, the new group `lint` is on lines 26 to 28, above the group `test`, with the line
@@ -436,7 +437,7 @@ uv run ruff --version
 uv run ruff format --check
 ```
 
-`uv run ruff --version` prints `ruff 0.17.1`. `ruff format --check` changes nothing. It prints what it would
+`uv run ruff --version` prints the version of ruff that uv installed. `ruff format --check` changes nothing. It prints what it would
 change in each file, and ends with `3 files would be reformatted, 3 files already formatted`, and exit code 1. The
 three files are `src/babykev/api.py`, `src/babykev/cli.py` and `tests/unit/test_api.py`. By default, ruff lets a
 line run to 88 characters. Line 19 of `cli.py` has 94 characters, so ruff would split it.
@@ -631,10 +632,12 @@ just fmt --check
 just test
 ```
 
-`just fmt --check` prints `6 files already formatted`, and ends with exit code 0. `just test` prints `53 passed`, as
-before. The total is still 100%, of 83 statements in place of 79. `api.py` has 75 statements, 4 more than before.
-The four one-line `if` statements of `_check` and `render` each became two lines, and coverage counts each line
-with a statement.
+`just fmt --check` prints `6 files already formatted`, and ends with exit code 0. `just test` prints `53 passed`, and
+a total of 100%, of 83 statements. `api.py` has 75 of them. Coverage counts each line with a statement, and each of
+the four one-line `if` statements of `_check` and `render` is now two lines.
+
+At tut-06, before `just fmt`, `just test` counted 79 statements, and 71 in `api.py`. The four new lines are the four
+new statements.
 
 #### What changed
 
@@ -855,8 +858,8 @@ just help lint
 ```
 
 `just --show lint` prints the recipe. `just lint`, with no words, prints each problem with the lines around it, and
-ends with `Found 8 errors.` and exit code 1. All 8 are in `src/babykev/api.py`. Each one starts with its code, and
-a `help:` line says what would fix it.
+ends with `Found 8 errors.` and exit code 1. All 8 are in `src/babykev/api.py`. Each one starts with its code. Under
+I001, UP007 and B905, a `help:` line says what would fix it.
 
 - `E501` is line 5, of 103 characters, in the docstring. The formatter does not split the text of a docstring.
 - `I001` is on line 8. The imports need a blank line between the standard library and pydantic. Its `[*]` says
@@ -1059,7 +1062,7 @@ file of settings names. It is for working on babykev, so it goes in the group `l
 
 This change came from running `uv add --group lint pre-commit`.
 
-`uv add` prints `Resolved 25 packages`, and installs `pre-commit==4.7.0` and the 9 packages that it needs, such as
+`uv add` prints `Resolved 25 packages`, and installs pre-commit and the 9 packages that it needs, such as
 `pyyaml` and `virtualenv`.
 
 In `pyproject.toml`, the group `lint` now starts with `"pre-commit>=4.7.0",`, on line 27, above ruff. uv sorts the
@@ -1069,7 +1072,7 @@ names of a group. `uv.lock` has the exact version of pre-commit, and of the pack
 uv run pre-commit --version
 ```
 
-It prints `pre-commit 4.7.0`, or a newer version. No hook is installed yet.
+It prints the version of pre-commit that uv installed. No hook is installed yet.
 
 #### What changed
 
@@ -1490,7 +1493,7 @@ is. validate-pyproject checks the file against the standard. It goes in the grou
 
 This change came from running `uv add --group lint validate-pyproject`.
 
-`uv add` prints `Resolved 27 packages`, and installs `validate-pyproject==0.26` and `fastjsonschema`, which it needs.
+`uv add` prints `Resolved 27 packages`, and installs validate-pyproject and `fastjsonschema`, which it needs.
 
 In `pyproject.toml`, the group `lint` now ends with `"validate-pyproject>=0.26",`, on line 29. `uv.lock` has its
 exact version, and that of `fastjsonschema`.
@@ -1499,7 +1502,7 @@ exact version, and that of `fastjsonschema`.
 uv run validate-pyproject --version
 ```
 
-It prints `validate_pyproject 0.26`, or a newer version. Nothing runs it yet.
+It prints the version of validate-pyproject that uv installed. Nothing runs it yet.
 
 #### What changed
 
@@ -1544,10 +1547,7 @@ just lint-config
 just help lint-config
 ```
 
-`validate-pyproject` prints `Valid file: pyproject.toml`, and ends with exit code 0. A misspelt key fails. With
-`requires_python` in place of `requires-python`, it prints
-``[ERROR] `project` must not contain {'requires_python'} properties``. Then it prints
-`Invalid file: pyproject.toml`, and ends with exit code 1.
+`validate-pyproject` prints `Valid file: pyproject.toml`, and ends with exit code 0.
 
 `just --show lint-config` prints the recipe, and `just lint-config` prints the same line as the command.
 `just help lint-config` prints the line of the recipe.
@@ -1738,7 +1738,7 @@ checks YAML files, for their syntax and for their style. It goes in the group `l
 
 This change came from running `uv add --group lint yamllint`.
 
-`uv add` prints `Resolved 29 packages`, and installs `yamllint==1.38.0` and `pathspec`, which it needs.
+`uv add` prints `Resolved 29 packages`, and installs yamllint and `pathspec`, which it needs.
 
 In `pyproject.toml`, the group `lint` now ends with `"yamllint>=1.38.0",`, on line 30. `uv.lock` has its exact
 version, and that of `pathspec`.
@@ -1747,7 +1747,7 @@ version, and that of `pathspec`.
 uv run yamllint --version
 ```
 
-It prints `yamllint 1.38.0`, or a newer version.
+It prints the version of yamllint that uv installed.
 
 #### What changed
 
@@ -2406,7 +2406,7 @@ ty is for working on babykev, so it goes in the group `lint`.
 
 This change came from running `uv add --group lint ty`.
 
-`uv add` prints `Resolved 67 packages`, and installs `ty==0.0.88`, which needs no other package.
+`uv add` prints `Resolved 67 packages`, and installs ty, which needs no other package.
 
 In `pyproject.toml`, the group `lint` has `"ty>=0.0.88",` on line 46, under ruff. `uv.lock` has its exact version.
 
@@ -2414,7 +2414,7 @@ In `pyproject.toml`, the group `lint` has `"ty>=0.0.88",` on line 46, under ruff
 uv run ty --version
 ```
 
-It prints `ty 0.0.88`, or a newer version. A newer ty can find more, or less, than these notes show.
+It prints the version of ty that uv installed. A newer ty can find more, or less, than these notes show.
 
 #### What changed
 
@@ -2800,6 +2800,9 @@ The whole tutorial then finds a bug in the mask of the model with tests of hypot
 the real model, marked `system`. `-m 'not system'` in `pyproject.toml` leaves that test out of `just test`, and so out
 of `just check` and the hook. `just test -m system` runs it. Then the docs get a guide to the model.
 
+The fix of the mask changes the answers of the smoke. In this section, the smoke prints `4 of 15 right`, where `just
+smoke` printed `6 of 15 right` above, with the old mask. The mask changed the answers, and not the device.
+
 A `Dockerfile` comes in, with two images. The commands that build and run them get one recipe, `image`. hadolint
 checks the `Dockerfile`, as a line of `just lint-config`. This section needs Docker.
 
@@ -2853,12 +2856,16 @@ The image takes about 1.1 GB, and torch is most of it.
 
 ```bash
 docker run --rm -v ~/.cache/huggingface:/hf babykev-run smoke
+uv run babykev smoke
 ```
 
 `-v` mounts the cache of the Hugging Face Hub of this Mac at `/hf`, where `HF_HOME` on line 33 sends the library. So
-the base model is not downloaded again. The smoke says `on cpu`. A container on a Mac runs Linux in a virtual
-machine, and sees no GPU of Apple. It prints `4 of 15 right`, and the fifteen answers are those of `just smoke` on
-`mps`, with the same two decimals. Each request takes about 3 seconds, where it took about 220 ms on `mps`.
+the base model is not downloaded again.
+
+The smoke in the container says `on cpu`. A container on a Mac runs Linux in a virtual
+machine, and sees no GPU of Apple. `uv run babykev smoke` runs the same smoke on this Mac, on `mps`. Both print
+`4 of 15 right`, and the same fifteen answers, with the same two decimals. A request takes much longer in the
+container than on `mps`, and the milliseconds change from run to run.
 
 #### What changed
 
@@ -3137,7 +3144,8 @@ just image run smoke
 just image shell -- just test -q
 ```
 
-`just image build run` builds the run image from the cache, in a few seconds. `just image run smoke` prints
+`just image build run` builds the run image. Docker takes each layer that it has built before from its cache, and
+builds the others. `just image run smoke` prints
 `4 of 15 right` again. `just image shell -- just test -q` prints `82 passed, 1 deselected`. Typed alone, `just image
 shell` starts a shell in the image, where `exit` ends it.
 
@@ -3203,7 +3211,7 @@ hadolint is a linter for a `Dockerfile`. The package `hadolint-bin` holds its pr
 
 This change came from running `uv add --group lint hadolint-bin`.
 
-`uv add` prints `Resolved 70 packages`, and installs `hadolint-bin==2.15.1`.
+`uv add` prints `Resolved 70 packages`, and installs hadolint-bin.
 
 In `pyproject.toml`, the group `lint` has `"hadolint-bin>=2.15.1",` on line 44. `uv.lock` has its exact version.
 
@@ -3211,7 +3219,7 @@ In `pyproject.toml`, the group `lint` has `"hadolint-bin>=2.15.1",` on line 44. 
 uv run hadolint --version
 ```
 
-It prints `Haskell Dockerfile Linter 2.15.1`.
+It prints `Haskell Dockerfile Linter` and its version.
 
 #### What changed
 
@@ -3350,7 +3358,7 @@ network at all.
 just image shell --network none -- just check
 ```
 
-It fails before any check runs. uv cannot download `hadolint-bin==2.15.1`, with `dns error`. The dev image was built
+It fails before any check runs. uv cannot download hadolint-bin, with `dns error`. The dev image was built
 before hadolint came into `uv.lock`, and `UV_LOCKED` makes uv install the packages of the lockfile first. An image
 holds the packages of the lockfile at the time of its build.
 
@@ -3538,7 +3546,7 @@ built for each system.
 
 This change came from running `uv add --group lint actionlint-py`.
 
-`uv add` prints `Resolved 71 packages`, and installs `actionlint-py==1.7.12.25`.
+`uv add` prints `Resolved 71 packages`, and installs actionlint-py.
 
 In `pyproject.toml`, the group `lint` has `"actionlint-py>=1.7.12.25",` on line 44. `uv.lock` has its exact version.
 
@@ -3546,7 +3554,7 @@ In `pyproject.toml`, the group `lint` has `"actionlint-py>=1.7.12.25",` on line 
 uv run actionlint --version
 ```
 
-The first line is `1.7.12`.
+The first line is the version of actionlint.
 
 #### What changed
 

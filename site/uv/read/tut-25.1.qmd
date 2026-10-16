@@ -48,12 +48,16 @@ The image takes about 1.1 GB, and torch is most of it.
 
 ```bash
 docker run --rm -v ~/.cache/huggingface:/hf babykev-run smoke
+uv run babykev smoke
 ```
 
 `-v` mounts the cache of the Hugging Face Hub of this Mac at `/hf`, where `HF_HOME` on line 33 sends the library. So
-the base model is not downloaded again. The smoke says `on cpu`. A container on a Mac runs Linux in a virtual
-machine, and sees no GPU of Apple. It prints `4 of 15 right`, and the fifteen answers are those of `just smoke` on
-`mps`, with the same two decimals. Each request takes about 3 seconds, where it took about 220 ms on `mps`.
+the base model is not downloaded again.
+
+The smoke in the container says `on cpu`. A container on a Mac runs Linux in a virtual
+machine, and sees no GPU of Apple. `uv run babykev smoke` runs the same smoke on this Mac, on `mps`. Both print
+`4 of 15 right`, and the same fifteen answers, with the same two decimals. A request takes much longer in the
+container than on `mps`, and the milliseconds change from run to run.
 
 The stage `build` runs `uv sync --locked --no-default-groups`. `--no-default-groups` overrides
 `default-groups = "all"`, so `/opt/venv` gets the dependencies of the project, and no group.

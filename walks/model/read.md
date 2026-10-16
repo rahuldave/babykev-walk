@@ -102,9 +102,10 @@ just docs check
 ```
 
 `just fmt --check` prints `7 files already formatted`, and `just lint` prints `All checks passed!`. `just docs check`
-first prints a note of torch, `NOTE: Redirects are currently not supported in MacOs.` smalldocs imports `model.py` to
-read it. On a Mac, the import of peft makes torch print the note, and it is not an error. Then `just docs check`
-prints `babykev.model 15 of 15`, and `60 of 60 functions, methods and classes are typed and documented`.
+prints a note of torch, `NOTE: Redirects are currently not supported in MacOs.` smalldocs imports `model.py` to
+read it. On a Mac, the import of peft makes torch print the note, and it is not an error. The note goes to the
+standard error, so where it shows among the other lines can vary. `just docs check` also prints
+`babykev.model 15 of 15`, and `60 of 60 functions, methods and classes are typed and documented`.
 
 ```bash
 just test
@@ -500,8 +501,10 @@ just test --fixtures-per-test -k probabilities_sum
 just test
 ```
 
-`just test` prints `54 passed`. `model.py` goes from 33% to 85%, and the total from 45% to 67%, 178 of 267. One test
-runs the packing, the mask, the backbone and the head.
+`just test` prints `54 passed`. `model.py` is at 85%, and the total at 67%, 178 of 267. One test runs the
+packing, the mask, the backbone and the head.
+
+In tut-19.5, before this test, `model.py` was at 33%, and the total at 45%.
 
 Every test in the rest of this walk asks for these fixtures, and runs on the tiny model.
 
@@ -850,8 +853,10 @@ five times.
 just test
 ```
 
-`just test` prints `64 passed`. `model.py` is still at 87%, with the same 14 lines missing. The test of the
+`just test` prints `64 passed`. `model.py` is at 87%, with 14 lines missing. The test of the
 probabilities had run `user_tokens` already, and checked nothing about it.
+
+The 14 lines are the same as at the end of tut-20.4, so the two new tests add no line to the coverage.
 
 ```bash
 sed -n '76,83p' tests/unit/test_model.py
@@ -1034,7 +1039,7 @@ just test --cov-fail-under=90
 
 `--cov-fail-under=90` makes pytest fail when the total is under 90%. It prints `73 passed`, then `FAIL Required test
 coverage of 90% not reached. Total coverage: 83.52%`, and ends with exit code 1. `model.py` is at 94%, and lines 211 to
-218 and 277 have run. The missing lines of `smoke.py` are the same as before.
+218 and 277 have run. `smoke.py` is at 48%, and misses lines `35-36, 45-49, 78-92, 105-119`.
 
 ```bash
 uv run python -c "from tests.tiny import tiny_tokenizer, tiny_backbone; from babykev.model import DecisionModel; m = DecisionModel('tiny', 'cpu', lora=4, backbone=tiny_backbone(len(tiny_tokenizer()))); print(sum(p.numel() for p in m.parameters()), sum(p.numel() for p in m.trainable_parameters()), sum(p.numel() for p in m.head.parameters()))"
@@ -1282,7 +1287,7 @@ a library for tests. A test states a rule, and hypothesis draws many inputs and 
 
 This change came from running `uv add --group test hypothesis`.
 
-`uv add` prints `Resolved 69 packages`, and installs `hypothesis==6.170.0` and `sortedcontainers==2.4.0`, which
+`uv add` prints `Resolved 69 packages`, and installs hypothesis and sortedcontainers, which
 hypothesis needs.
 
 In `pyproject.toml`, the group `test` has `"hypothesis>=6.170.0",` on line 51. `uv.lock` has the exact versions.
@@ -1291,7 +1296,7 @@ In `pyproject.toml`, the group `test` has `"hypothesis>=6.170.0",` on line 51. `
 uv run python -c "import hypothesis; print(hypothesis.__version__)"
 ```
 
-It prints `6.170.0`, or a newer version.
+It prints the version of hypothesis that uv installed.
 
 #### What changed
 
@@ -1612,6 +1617,17 @@ The test fails on question 1. In the reverse order it comes last, and sees the t
 probabilities go from `[0.5016, 0.4984]` to `[0.5007, 0.4993]`. `-k order_of_questions` would also choose a test of
 `test_api.py`, so the command names the end of the test.
 
+The tests of the rule are in, and line 159 still has the old mask. The smoke runs the real model on the sample with
+it, one last time. The recipe `smoke` runs `uv run babykev smoke`.
+
+```bash
+just --show smoke
+just smoke
+```
+
+`just --show smoke` prints the recipe. The smoke prints `6 of 15 right`. The next two moves fix the mask, and the
+smoke runs again after them.
+
 #### What changed
 
 - <a id="tut-22.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the questions in the reverse order. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/c3e2706e2b1fbc58bda631e173e26145256bc47e/tests/unit/test_model.py).
@@ -1707,7 +1723,7 @@ In `src/babykev/model.py`, line 159 is `same = (s[None, :] == s[:, None]) | (s[N
 just test
 ```
 
-`just test` prints `82 passed`, and the total of 92%, as before the tests of the mask. A test of what the mask allows adds no line
+`just test` prints `82 passed`, and the total of 92%. A test of what the mask allows adds no line
 to the coverage. `branch_mask` was covered all along.
 
 The smoke runs the real model on the sample again, with the right mask.
@@ -1716,12 +1732,12 @@ The smoke runs the real model on the sample again, with the right mask.
 just smoke
 ```
 
-The smoke prints `4 of 15 right`, where it printed `6 of 15 right` with the old mask. The first question of each
-request keeps its answer, with the same two decimals. It comes first, so it saw only the state with either mask.
+The smoke prints `4 of 15 right`. Questions 2 and 3 of each request now read only the state and themselves, and not
+the questions before them. The model is untrained, so the count is a guess, and a right answer is chance.
 
-Nine of the ten other answers changed. With the old mask, questions 2 and 3 read the questions before them. Now each
-reads only the state and itself. The model is untrained, so both counts are guesses, and a right answer in either is
-chance.
+In tut-18, with the old mask, the smoke printed `6 of 15 right`. The first question of each request keeps its answer,
+with the same two decimals. It comes first, so it saw only the state with either mask. Nine of the ten other answers
+changed. Both counts are guesses.
 
 The small request shows the fix too.
 
@@ -1732,9 +1748,15 @@ uv run python -c "import torch; from tests.tiny import tiny_tokenizer, tiny_back
 Both questions now get `[0.5089, 0.4911]`, and `torch.equal` prints `True`. Question 1 kept its numbers, because it
 comes first and saw only the state with either mask. Question 2 now gets exactly what question 1 gets.
 
-The smoke went from 6 of 15 right to 4 of 15 right, after a fix that every test says is right. The count fell, and
-the fix is still right. Nothing is trained, so each answer is a guess. The next command counts the right answers that a guess
-gets on average, with one chance in K for a question of K options.
+The smoke went from `6 of 15 right` with the old mask to `4 of 15 right` with the fix, and every test says that the
+fix is right. The first question of each request kept its answer, with the same two decimals. It comes first, so it
+saw only the state with either mask. Nine of the ten other answers changed.
+
+The milk of Coquetdale went from `buffalo` to `cow`, which is right. The milk and the firmness of Amou, and the
+intensity of Loma Alta, were right with the old mask, and are wrong now. The count fell, and the fix is still right.
+
+Nothing is trained, so each answer is a guess. The next command counts the right answers that a guess gets on average,
+with one chance in K for a question of K options.
 
 ```bash
 uv run python -c "import json; qs = [q for line in open('data/cheese/sample.jsonl') for q in json.loads(line)['questions'].values()]; print(len(qs), round(sum(1 / (2 if q['type'] == 'noul' else len(q['criteria'])) for q in qs), 2))"

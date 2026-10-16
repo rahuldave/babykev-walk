@@ -75,8 +75,10 @@ just test --fixtures-per-test -k probabilities_sum
 just test
 ```
 
-`just test` prints `54 passed`. `model.py` goes from 33% to 85%, and the total from 45% to 67%, 178 of 267. One test
-runs the packing, the mask, the backbone and the head.
+`just test` prints `54 passed`. `model.py` is at 85%, and the total at 67%, 178 of 267. One test runs the
+packing, the mask, the backbone and the head.
+
+In tut-19.5, before this test, `model.py` was at 33%, and the total at 45%.
 
 Every test in the rest of this walk asks for these fixtures, and runs on the tiny model.
 

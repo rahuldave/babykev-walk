@@ -33,13 +33,13 @@ ty is for working on babykev, so it goes in the group `lint`.
 uv add --group lint ty
 ```
 
-`uv add` prints `Resolved 67 packages`, and installs `ty==0.0.88`, which needs no other package.
+`uv add` prints `Resolved 67 packages`, and installs ty, which needs no other package.
 
 ```bash
 uv run ty --version
 ```
 
-It prints `ty 0.0.88`, or a newer version. A newer ty can find more, or less, than these notes show.
+It prints the version of ty that uv installed. A newer ty can find more, or less, than these notes show.
 
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 

@@ -51,7 +51,7 @@ just test --cov-fail-under=90
 
 `--cov-fail-under=90` makes pytest fail when the total is under 90%. It prints `73 passed`, then `FAIL Required test
 coverage of 90% not reached. Total coverage: 83.52%`, and ends with exit code 1. `model.py` is at 94%, and lines 211 to
-218 and 277 have run. The missing lines of `smoke.py` are the same as before.
+218 and 277 have run. `smoke.py` is at 48%, and misses lines `35-36, 45-49, 78-92, 105-119`.
 
 ```bash
 uv run python -c "from tests.tiny import tiny_tokenizer, tiny_backbone; from babykev.model import DecisionModel; m = DecisionModel('tiny', 'cpu', lora=4, backbone=tiny_backbone(len(tiny_tokenizer()))); print(sum(p.numel() for p in m.parameters()), sum(p.numel() for p in m.trainable_parameters()), sum(p.numel() for p in m.head.parameters()))"

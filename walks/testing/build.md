@@ -152,7 +152,8 @@ Then coverage counts the lines of babykev that the tests run.
 just setup
 ```
 
-`just setup` prints `Resolved 1 package` and `Checked 1 package`, because `.venv` already matches `uv.lock`.
+`just setup` prints `Resolved 1 package`, and `Checked 1 package` when `.venv` already matches `uv.lock`. In a new
+clone, it first makes `.venv`, and installs babykev.
 
 We cannot tell whether `babykev` still works after a change, unless we run it by hand and read what it prints. Tests
 run it for us. pytest finds the tests and runs them, and a recipe `just test` runs pytest. The first tests are of the
@@ -2823,8 +2824,8 @@ just test --fixtures-per-test -k probabilities_sum
 just test
 ```
 
-`just test` prints `54 passed`. `model.py` goes from 33% to 85%, and the total from 45% to 67%, 178 of 267. One test
-runs the packing, the mask, the backbone and the head.
+`just test` prints `54 passed`. `model.py` is at 85%, and the total at 67%, 178 of 267. One test runs the
+packing, the mask, the backbone and the head.
 
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
@@ -3180,8 +3181,8 @@ The patch adds the test at the end of the file.
 just test -k state_that_does_not_fit
 ```
 
-pytest prints `1 passed`. Line 117, the other `raise` of `encode`, has run, and the column Missing of `model.py`
-starts again at 118.
+pytest prints `1 passed`. Line 117, the other `raise` of `encode`, has run. In the column Missing of `model.py`, the
+range of `encode` starts at 118 again.
 
 ```bash
 just test
@@ -3326,7 +3327,7 @@ five times.
 just test
 ```
 
-`just test` prints `64 passed`. `model.py` is still at 87%, with the same 14 lines missing. The test of the
+`just test` prints `64 passed`. `model.py` is at 87%, with 14 lines missing. The test of the
 probabilities had run `user_tokens` already, and checked nothing about it.
 
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
@@ -4011,7 +4012,7 @@ just test --cov-fail-under=90
 
 `--cov-fail-under=90` makes pytest fail when the total is under 90%. It prints `73 passed`, then `FAIL Required test
 coverage of 90% not reached. Total coverage: 83.52%`, and ends with exit code 1. `model.py` is at 94%, and lines 211 to
-218 and 277 have run. The missing lines of `smoke.py` are the same as before.
+218 and 277 have run. `smoke.py` is at 48%, and misses lines `35-36, 45-49, 78-92, 105-119`.
 
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
@@ -4471,14 +4472,14 @@ a library for tests. A test states a rule, and hypothesis draws many inputs and 
 uv add --group test hypothesis
 ```
 
-`uv add` prints `Resolved 69 packages`, and installs `hypothesis==6.170.0` and `sortedcontainers==2.4.0`, which
+`uv add` prints `Resolved 69 packages`, and installs hypothesis and sortedcontainers, which
 hypothesis needs.
 
 ```bash
 uv run python -c "import hypothesis; print(hypothesis.__version__)"
 ```
 
-It prints `6.170.0`, or a newer version.
+It prints the version of hypothesis that uv installed.
 
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
@@ -5021,7 +5022,7 @@ The patch changes line 159 of `src/babykev/model.py` again.
 just test
 ```
 
-`just test` prints `82 passed`, and the total of 92%, as before the tests of the mask. A test of what the mask allows adds no line
+`just test` prints `82 passed`, and the total of 92%. A test of what the mask allows adds no line
 to the coverage. `branch_mask` was covered all along.
 
 The smoke runs the real model on the sample again, with the right mask.
@@ -5030,12 +5031,8 @@ The smoke runs the real model on the sample again, with the right mask.
 just smoke
 ```
 
-The smoke prints `4 of 15 right`, where it printed `6 of 15 right` with the old mask. The first question of each
-request keeps its answer, with the same two decimals. It comes first, so it saw only the state with either mask.
-
-Nine of the ten other answers changed. With the old mask, questions 2 and 3 read the questions before them. Now each
-reads only the state and itself. The model is untrained, so both counts are guesses, and a right answer in either is
-chance.
+The smoke prints `4 of 15 right`. Questions 2 and 3 of each request now read only the state and themselves, and not
+the questions before them. The model is untrained, so the count is a guess, and a right answer is chance.
 
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 

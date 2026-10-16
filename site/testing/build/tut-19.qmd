@@ -613,8 +613,8 @@ just test --fixtures-per-test -k probabilities_sum
 just test
 ```
 
-`just test` prints `54 passed`. `model.py` goes from 33% to 85%, and the total from 45% to 67%, 178 of 267. One test
-runs the packing, the mask, the backbone and the head.
+`just test` prints `54 passed`. `model.py` is at 85%, and the total at 67%, 178 of 267. One test runs the
+packing, the mask, the backbone and the head.
 
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 

@@ -49,7 +49,7 @@ uv tree --depth 1
 ```
 
 `uv tree` prints the dependencies as a tree. `--depth 1` keeps the packages that babykev names itself. It prints
-`pydantic v2.14.1`, and the group `test` with pytest and pytest-cov.
+pydantic and its version, and the group `test` with pytest and pytest-cov.
 
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 

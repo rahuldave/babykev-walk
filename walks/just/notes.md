@@ -173,6 +173,9 @@ The whole tutorial then finds a bug in the mask of the model with tests of hypot
 the real model, marked `system`. `-m 'not system'` in `pyproject.toml` leaves that test out of `just test`, and so out
 of `just check` and the hook. `just test -m system` runs it. Then the docs get a guide to the model.
 
+The fix of the mask changes the answers of the smoke. In this section, the smoke prints `4 of 15 right`, where `just
+smoke` printed `6 of 15 right` above, with the old mask. The mask changed the answers, and not the device.
+
 A `Dockerfile` comes in, with two images. The commands that build and run them get one recipe, `image`. hadolint
 checks the `Dockerfile`, as a line of `just lint-config`. This section needs Docker.
 

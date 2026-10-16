@@ -248,8 +248,8 @@ The patch adds the test at the end of the file.
 just test -k state_that_does_not_fit
 ```
 
-pytest prints `1 passed`. Line 117, the other `raise` of `encode`, has run, and the column Missing of `model.py`
-starts again at 118.
+pytest prints `1 passed`. Line 117, the other `raise` of `encode`, has run. In the column Missing of `model.py`, the
+range of `encode` starts at 118 again.
 
 ```bash
 just test
@@ -390,7 +390,7 @@ five times.
 just test
 ```
 
-`just test` prints `64 passed`. `model.py` is still at 87%, with the same 14 lines missing. The test of the
+`just test` prints `64 passed`. `model.py` is at 87%, with 14 lines missing. The test of the
 probabilities had run `user_tokens` already, and checked nothing about it.
 
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:

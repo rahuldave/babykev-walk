@@ -25,7 +25,7 @@ and a user of the package does not need it. So it goes in a second dependency gr
 
 This change came from running `uv add --group lint ruff`.
 
-`uv add` prints `Resolved 15 packages`, and installs `ruff==0.17.1`. ruff is one program, and needs no other
+`uv add` prints `Resolved 15 packages`, and installs ruff. ruff is one program, and needs no other
 package.
 
 In `pyproject.toml`, the new group `lint` is on lines 26 to 28, above the group `test`, with the line
@@ -36,7 +36,7 @@ uv run ruff --version
 uv run ruff format --check
 ```
 
-`uv run ruff --version` prints `ruff 0.17.1`. `ruff format --check` changes nothing. It prints what it would
+`uv run ruff --version` prints the version of ruff that uv installed. `ruff format --check` changes nothing. It prints what it would
 change in each file, and ends with `3 files would be reformatted, 3 files already formatted`, and exit code 1. The
 three files are `src/babykev/api.py`, `src/babykev/cli.py` and `tests/unit/test_api.py`. By default, ruff lets a
 line run to 88 characters. Line 19 of `cli.py` has 94 characters, so ruff would split it.

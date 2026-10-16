@@ -115,14 +115,14 @@ file of settings names. It is for working on babykev, so it goes in the group `l
 uv add --group lint pre-commit
 ```
 
-`uv add` prints `Resolved 25 packages`, and installs `pre-commit==4.7.0` and the 9 packages that it needs, such as
+`uv add` prints `Resolved 25 packages`, and installs pre-commit and the 9 packages that it needs, such as
 `pyyaml` and `virtualenv`.
 
 ```bash
 uv run pre-commit --version
 ```
 
-It prints `pre-commit 4.7.0`, or a newer version. No hook is installed yet.
+It prints the version of pre-commit that uv installed. No hook is installed yet.
 
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 

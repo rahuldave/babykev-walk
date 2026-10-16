@@ -157,13 +157,13 @@ built for each system.
 uv add --group lint actionlint-py
 ```
 
-`uv add` prints `Resolved 71 packages`, and installs `actionlint-py==1.7.12.25`.
+`uv add` prints `Resolved 71 packages`, and installs actionlint-py.
 
 ```bash
 uv run actionlint --version
 ```
 
-The first line is `1.7.12`.
+The first line is the version of actionlint.
 
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 

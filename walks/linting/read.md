@@ -638,7 +638,7 @@ and a user of the package does not need it. So it goes in a second dependency gr
 
 This change came from running `uv add --group lint ruff`.
 
-`uv add` prints `Resolved 15 packages`, and installs `ruff==0.17.1`. ruff is one program, and needs no other
+`uv add` prints `Resolved 15 packages`, and installs ruff. ruff is one program, and needs no other
 package.
 
 In `pyproject.toml`, the new group `lint` is on lines 26 to 28, above the group `test`, with the line
@@ -649,7 +649,7 @@ uv run ruff --version
 uv run ruff format --check
 ```
 
-`uv run ruff --version` prints `ruff 0.17.1`. `ruff format --check` changes nothing. It prints what it would
+`uv run ruff --version` prints the version of ruff that uv installed. `ruff format --check` changes nothing. It prints what it would
 change in each file, and ends with `3 files would be reformatted, 3 files already formatted`, and exit code 1. The
 three files are `src/babykev/api.py`, `src/babykev/cli.py` and `tests/unit/test_api.py`. By default, ruff lets a
 line run to 88 characters. Line 19 of `cli.py` has 94 characters, so ruff would split it.
@@ -844,10 +844,12 @@ just fmt --check
 just test
 ```
 
-`just fmt --check` prints `6 files already formatted`, and ends with exit code 0. `just test` prints `53 passed`, as
-before. The total is still 100%, of 83 statements in place of 79. `api.py` has 75 statements, 4 more than before.
-The four one-line `if` statements of `_check` and `render` each became two lines, and coverage counts each line
-with a statement.
+`just fmt --check` prints `6 files already formatted`, and ends with exit code 0. `just test` prints `53 passed`, and
+a total of 100%, of 83 statements. `api.py` has 75 of them. Coverage counts each line with a statement, and each of
+the four one-line `if` statements of `_check` and `render` is now two lines.
+
+At tut-06, before `just fmt`, `just test` counted 79 statements, and 71 in `api.py`. The four new lines are the four
+new statements.
 
 #### What changed
 
@@ -1072,8 +1074,8 @@ just help lint
 ```
 
 `just --show lint` prints the recipe. `just lint`, with no words, prints each problem with the lines around it, and
-ends with `Found 8 errors.` and exit code 1. All 8 are in `src/babykev/api.py`. Each one starts with its code, and
-a `help:` line says what would fix it.
+ends with `Found 8 errors.` and exit code 1. All 8 are in `src/babykev/api.py`. Each one starts with its code. Under
+I001, UP007 and B905, a `help:` line says what would fix it.
 
 - `E501` is line 5, of 103 characters, in the docstring. The formatter does not split the text of a docstring.
 - `I001` is on line 8. The imports need a blank line between the standard library and pydantic. Its `[*]` says
@@ -2416,7 +2418,7 @@ file of settings names. It is for working on babykev, so it goes in the group `l
 
 This change came from running `uv add --group lint pre-commit`.
 
-`uv add` prints `Resolved 25 packages`, and installs `pre-commit==4.7.0` and the 9 packages that it needs, such as
+`uv add` prints `Resolved 25 packages`, and installs pre-commit and the 9 packages that it needs, such as
 `pyyaml` and `virtualenv`.
 
 In `pyproject.toml`, the group `lint` now starts with `"pre-commit>=4.7.0",`, on line 27, above ruff. uv sorts the
@@ -2426,7 +2428,7 @@ names of a group. `uv.lock` has the exact version of pre-commit, and of the pack
 uv run pre-commit --version
 ```
 
-It prints `pre-commit 4.7.0`, or a newer version. No hook is installed yet.
+It prints the version of pre-commit that uv installed. No hook is installed yet.
 
 #### What changed
 
@@ -2844,7 +2846,7 @@ is. validate-pyproject checks the file against the standard. It goes in the grou
 
 This change came from running `uv add --group lint validate-pyproject`.
 
-`uv add` prints `Resolved 27 packages`, and installs `validate-pyproject==0.26` and `fastjsonschema`, which it needs.
+`uv add` prints `Resolved 27 packages`, and installs validate-pyproject and `fastjsonschema`, which it needs.
 
 In `pyproject.toml`, the group `lint` now ends with `"validate-pyproject>=0.26",`, on line 29. `uv.lock` has its
 exact version, and that of `fastjsonschema`.
@@ -2853,7 +2855,7 @@ exact version, and that of `fastjsonschema`.
 uv run validate-pyproject --version
 ```
 
-It prints `validate_pyproject 0.26`, or a newer version. Nothing runs it yet.
+It prints the version of validate-pyproject that uv installed. Nothing runs it yet.
 
 #### What changed
 
@@ -2898,10 +2900,7 @@ just lint-config
 just help lint-config
 ```
 
-`validate-pyproject` prints `Valid file: pyproject.toml`, and ends with exit code 0. A misspelt key fails. With
-`requires_python` in place of `requires-python`, it prints
-``[ERROR] `project` must not contain {'requires_python'} properties``. Then it prints
-`Invalid file: pyproject.toml`, and ends with exit code 1.
+`validate-pyproject` prints `Valid file: pyproject.toml`, and ends with exit code 0.
 
 `just --show lint-config` prints the recipe, and `just lint-config` prints the same line as the command.
 `just help lint-config` prints the line of the recipe.
@@ -3092,7 +3091,7 @@ checks YAML files, for their syntax and for their style. It goes in the group `l
 
 This change came from running `uv add --group lint yamllint`.
 
-`uv add` prints `Resolved 29 packages`, and installs `yamllint==1.38.0` and `pathspec`, which it needs.
+`uv add` prints `Resolved 29 packages`, and installs yamllint and `pathspec`, which it needs.
 
 In `pyproject.toml`, the group `lint` now ends with `"yamllint>=1.38.0",`, on line 30. `uv.lock` has its exact
 version, and that of `pathspec`.
@@ -3101,7 +3100,7 @@ version, and that of `pathspec`.
 uv run yamllint --version
 ```
 
-It prints `yamllint 1.38.0`, or a newer version.
+It prints the version of yamllint that uv installed.
 
 #### What changed
 
@@ -3413,7 +3412,7 @@ ty is for working on babykev, so it goes in the group `lint`.
 
 This change came from running `uv add --group lint ty`.
 
-`uv add` prints `Resolved 67 packages`, and installs `ty==0.0.88`, which needs no other package.
+`uv add` prints `Resolved 67 packages`, and installs ty, which needs no other package.
 
 In `pyproject.toml`, the group `lint` has `"ty>=0.0.88",` on line 46, under ruff. `uv.lock` has its exact version.
 
@@ -3421,7 +3420,7 @@ In `pyproject.toml`, the group `lint` has `"ty>=0.0.88",` on line 46, under ruff
 uv run ty --version
 ```
 
-It prints `ty 0.0.88`, or a newer version. A newer ty can find more, or less, than these notes show.
+It prints the version of ty that uv installed. A newer ty can find more, or less, than these notes show.
 
 #### What changed
 

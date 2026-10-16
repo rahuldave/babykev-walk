@@ -288,7 +288,18 @@ $ sed -n '158,160p' src/babykev/model.py
 alone. The model came in with the mask of a plain decoder. The code runs, its types are right, and its lines are
 covered. It does the wrong thing for its task.
 
-{{include tut-22.2..tut-22.10}}
+{{include tut-22.2..tut-22.8}}
+
+The tests of the rule are in, and line 159 still has the old mask. The smoke runs the real model on the sample with
+it, one last time. The recipe `smoke` runs `uv run babykev smoke`.
+
+$ just --show smoke
+$ just smoke
+
+`just --show smoke` prints the recipe. The smoke prints `6 of 15 right`. The next two moves fix the mask, and the
+smoke runs again after them.
+
+{{include tut-22.9..tut-22.10}}
 
 The small request shows the fix too.
 
@@ -297,9 +308,15 @@ $ uv run python -c "import torch; from tests.tiny import tiny_tokenizer, tiny_ba
 Both questions now get `[0.5089, 0.4911]`, and `torch.equal` prints `True`. Question 1 kept its numbers, because it
 comes first and saw only the state with either mask. Question 2 now gets exactly what question 1 gets.
 
-The smoke went from 6 of 15 right to 4 of 15 right, after a fix that every test says is right. The count fell, and
-the fix is still right. Nothing is trained, so each answer is a guess. The next command counts the right answers that a guess
-gets on average, with one chance in K for a question of K options.
+The smoke went from `6 of 15 right` with the old mask to `4 of 15 right` with the fix, and every test says that the
+fix is right. The first question of each request kept its answer, with the same two decimals. It comes first, so it
+saw only the state with either mask. Nine of the ten other answers changed.
+
+The milk of Coquetdale went from `buffalo` to `cow`, which is right. The milk and the firmness of Amou, and the
+intensity of Loma Alta, were right with the old mask, and are wrong now. The count fell, and the fix is still right.
+
+Nothing is trained, so each answer is a guess. The next command counts the right answers that a guess gets on average,
+with one chance in K for a question of K options.
 
 $ uv run python -c "import json; qs = [q for line in open('data/cheese/sample.jsonl') for q in json.loads(line)['questions'].values()]; print(len(qs), round(sum(1 / (2 if q['type'] == 'noul' else len(q['criteria'])) for q in qs), 2))"
 

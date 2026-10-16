@@ -26,7 +26,7 @@ is. validate-pyproject checks the file against the standard. It goes in the grou
 
 This change came from running `uv add --group lint validate-pyproject`.
 
-`uv add` prints `Resolved 27 packages`, and installs `validate-pyproject==0.26` and `fastjsonschema`, which it needs.
+`uv add` prints `Resolved 27 packages`, and installs validate-pyproject and `fastjsonschema`, which it needs.
 
 In `pyproject.toml`, the group `lint` now ends with `"validate-pyproject>=0.26",`, on line 29. `uv.lock` has its
 exact version, and that of `fastjsonschema`.
@@ -35,7 +35,7 @@ exact version, and that of `fastjsonschema`.
 uv run validate-pyproject --version
 ```
 
-It prints `validate_pyproject 0.26`, or a newer version. Nothing runs it yet.
+It prints the version of validate-pyproject that uv installed. Nothing runs it yet.
 
 ### What changed {#tut-12.1-what-changed-182c57}
 
@@ -78,10 +78,7 @@ just lint-config
 just help lint-config
 ```
 
-`validate-pyproject` prints `Valid file: pyproject.toml`, and ends with exit code 0. A misspelt key fails. With
-`requires_python` in place of `requires-python`, it prints
-``[ERROR] `project` must not contain {'requires_python'} properties``. Then it prints
-`Invalid file: pyproject.toml`, and ends with exit code 1.
+`validate-pyproject` prints `Valid file: pyproject.toml`, and ends with exit code 0.
 
 `just --show lint-config` prints the recipe, and `just lint-config` prints the same line as the command.
 `just help lint-config` prints the line of the recipe.
@@ -264,7 +261,7 @@ checks YAML files, for their syntax and for their style. It goes in the group `l
 
 This change came from running `uv add --group lint yamllint`.
 
-`uv add` prints `Resolved 29 packages`, and installs `yamllint==1.38.0` and `pathspec`, which it needs.
+`uv add` prints `Resolved 29 packages`, and installs yamllint and `pathspec`, which it needs.
 
 In `pyproject.toml`, the group `lint` now ends with `"yamllint>=1.38.0",`, on line 30. `uv.lock` has its exact
 version, and that of `pathspec`.
@@ -273,7 +270,7 @@ version, and that of `pathspec`.
 uv run yamllint --version
 ```
 
-It prints `yamllint 1.38.0`, or a newer version.
+It prints the version of yamllint that uv installed.
 
 ### What changed {#tut-12.6-what-changed-182c57}
 

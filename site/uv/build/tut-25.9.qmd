@@ -50,7 +50,7 @@ network at all.
 just image shell --network none -- just check
 ```
 
-It fails before any check runs. uv cannot download `hadolint-bin==2.15.1`, with `dns error`. The dev image was built
+It fails before any check runs. uv cannot download hadolint-bin, with `dns error`. The dev image was built
 before hadolint came into `uv.lock`, and `UV_LOCKED` makes uv install the packages of the lockfile first. An image
 holds the packages of the lockfile at the time of its build.
 

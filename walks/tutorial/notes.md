@@ -277,7 +277,8 @@ indented. Before the justfile comes in, we run the command of the recipe `setup`
 $ uv sync --locked
 
 `uv sync` makes `.venv` exactly as `uv.lock` says. `--locked` makes it refuse a `uv.lock` that no longer matches
-`pyproject.toml`. Here it prints `Resolved 1 package` and `Checked 1 package`, because `.venv` is already right.
+`pyproject.toml`. It prints `Resolved 1 package`. When `.venv` is already right, it then prints `Checked 1 package`, and changes
+nothing. In a new clone, it first prints `Creating virtual environment at: .venv`, and then installs babykev.
 
 patch$ justfile
 
@@ -448,7 +449,8 @@ files:
 
 $ just setup
 
-`just setup` prints `Resolved 1 package` and `Checked 1 package`, because `.venv` already matches `uv.lock`.
+`just setup` prints `Resolved 1 package`, and `Checked 1 package` when `.venv` already matches `uv.lock`. In a new
+clone, it first makes `.venv`, and installs babykev.
 
 We cannot tell whether `babykev` still works after a change, unless we run it by hand and read what it prints. Tests
 run it for us. pytest finds the tests and runs them, and a recipe `just test` runs pytest. The first tests are of the
@@ -759,7 +761,7 @@ one exact version.
 $ uv tree --depth 1
 
 `uv tree` prints the dependencies as a tree. `--depth 1` keeps the packages that babykev names itself. It prints
-`pydantic v2.14.1`, and the group `test` with pytest and pytest-cov.
+pydantic and its version, and the group `test` with pytest and pytest-cov.
 
 files:
 - diff `pyproject.toml`: the first dependency. `>=2.14.1` is the version that `uv add` found, as the lowest version to
@@ -1703,7 +1705,7 @@ and a user of the package does not need it. So it goes in a second dependency gr
 
 do$ uv add --group lint ruff
 
-`uv add` prints `Resolved 15 packages`, and installs `ruff==0.17.1`. ruff is one program, and needs no other
+`uv add` prints `Resolved 15 packages`, and installs ruff. ruff is one program, and needs no other
 package.
 
 ::: do
@@ -1719,7 +1721,7 @@ In `pyproject.toml`, the new group `lint` is on lines 26 to 28, above the group 
 $ uv run ruff --version
 $ uv run ruff format --check
 
-`uv run ruff --version` prints `ruff 0.17.1`. `ruff format --check` changes nothing. It prints what it would
+`uv run ruff --version` prints the version of ruff that uv installed. `ruff format --check` changes nothing. It prints what it would
 change in each file, and ends with `3 files would be reformatted, 3 files already formatted`, and exit code 1. The
 three files are `src/babykev/api.py`, `src/babykev/cli.py` and `tests/unit/test_api.py`. By default, ruff lets a
 line run to 88 characters. Line 19 of `cli.py` has 94 characters, so ruff would split it.
@@ -1835,10 +1837,14 @@ of `render`, `to_record` and `to_answers` are split, one part or one key on each
 $ just fmt --check
 $ just test
 
-`just fmt --check` prints `6 files already formatted`, and ends with exit code 0. `just test` prints `53 passed`, as
-before. The total is still 100%, of 83 statements in place of 79. `api.py` has 75 statements, 4 more than before.
-The four one-line `if` statements of `_check` and `render` each became two lines, and coverage counts each line
-with a statement.
+`just fmt --check` prints `6 files already formatted`, and ends with exit code 0. `just test` prints `53 passed`, and
+a total of 100%, of 83 statements. `api.py` has 75 of them. Coverage counts each line with a statement, and each of
+the four one-line `if` statements of `_check` and `render` is now two lines.
+
+::: watch
+At tut-06, before `just fmt`, `just test` counted 79 statements, and 71 in `api.py`. The four new lines are the four
+new statements.
+:::
 
 files:
 - diff `src/babykev/api.py`: the same code, in the style of the formatter.
@@ -1929,8 +1935,8 @@ $ just lint
 $ just help lint
 
 `just --show lint` prints the recipe. `just lint`, with no words, prints each problem with the lines around it, and
-ends with `Found 8 errors.` and exit code 1. All 8 are in `src/babykev/api.py`. Each one starts with its code, and
-a `help:` line says what would fix it.
+ends with `Found 8 errors.` and exit code 1. All 8 are in `src/babykev/api.py`. Each one starts with its code. Under
+I001, UP007 and B905, a `help:` line says what would fix it.
 
 - `E501` is line 5, of 103 characters, in the docstring. The formatter does not split the text of a docstring.
 - `I001` is on line 8. The imports need a blank line between the standard library and pydantic. Its `[*]` says
@@ -2499,7 +2505,7 @@ file of settings names. It is for working on babykev, so it goes in the group `l
 
 do$ uv add --group lint pre-commit
 
-`uv add` prints `Resolved 25 packages`, and installs `pre-commit==4.7.0` and the 9 packages that it needs, such as
+`uv add` prints `Resolved 25 packages`, and installs pre-commit and the 9 packages that it needs, such as
 `pyyaml` and `virtualenv`.
 
 ::: watch
@@ -2509,7 +2515,7 @@ names of a group. `uv.lock` has the exact version of pre-commit, and of the pack
 
 $ uv run pre-commit --version
 
-It prints `pre-commit 4.7.0`, or a newer version. No hook is installed yet.
+It prints the version of pre-commit that uv installed. No hook is installed yet.
 
 files:
 - diff `pyproject.toml`: pre-commit, in the group `lint`.
@@ -2747,7 +2753,7 @@ is. validate-pyproject checks the file against the standard. It goes in the grou
 
 do$ uv add --group lint validate-pyproject
 
-`uv add` prints `Resolved 27 packages`, and installs `validate-pyproject==0.26` and `fastjsonschema`, which it needs.
+`uv add` prints `Resolved 27 packages`, and installs validate-pyproject and `fastjsonschema`, which it needs.
 
 ::: watch
 In `pyproject.toml`, the group `lint` now ends with `"validate-pyproject>=0.26",`, on line 29. `uv.lock` has its
@@ -2756,7 +2762,7 @@ exact version, and that of `fastjsonschema`.
 
 $ uv run validate-pyproject --version
 
-It prints `validate_pyproject 0.26`, or a newer version. Nothing runs it yet.
+It prints the version of validate-pyproject that uv installed. Nothing runs it yet.
 
 files:
 - diff `pyproject.toml`: validate-pyproject, in the group `lint`.
@@ -2785,10 +2791,7 @@ $ just --show lint-config
 $ just lint-config
 $ just help lint-config
 
-`validate-pyproject` prints `Valid file: pyproject.toml`, and ends with exit code 0. A misspelt key fails. With
-`requires_python` in place of `requires-python`, it prints
-``[ERROR] `project` must not contain {'requires_python'} properties``. Then it prints
-`Invalid file: pyproject.toml`, and ends with exit code 1.
+`validate-pyproject` prints `Valid file: pyproject.toml`, and ends with exit code 0.
 
 `just --show lint-config` prints the recipe, and `just lint-config` prints the same line as the command.
 `just help lint-config` prints the line of the recipe.
@@ -2885,7 +2888,7 @@ checks YAML files, for their syntax and for their style. It goes in the group `l
 
 do$ uv add --group lint yamllint
 
-`uv add` prints `Resolved 29 packages`, and installs `yamllint==1.38.0` and `pathspec`, which it needs.
+`uv add` prints `Resolved 29 packages`, and installs yamllint and `pathspec`, which it needs.
 
 ::: watch
 In `pyproject.toml`, the group `lint` now ends with `"yamllint>=1.38.0",`, on line 30. `uv.lock` has its exact
@@ -2894,7 +2897,7 @@ version, and that of `pathspec`.
 
 $ uv run yamllint --version
 
-It prints `yamllint 1.38.0`, or a newer version.
+It prints the version of yamllint that uv installed.
 
 files:
 - diff `pyproject.toml`: yamllint, in the group `lint`.
@@ -3665,8 +3668,9 @@ files:
 
 do$ uv lock
 
-`uv lock` prints `Resolved 43 packages`, and eight lines `Added`. torch is `Added torch v2.14.1, v2.14.1+cpu`, two
-builds. The seven packages that it needs, among them `sympy` and `networkx`, are the other seven. `uv lock` writes
+`uv lock` prints `Resolved 43 packages`, and eight lines `Added`. The line of torch,
+`Added torch`, names two versions, one of them with `+cpu`. They are two
+builds of torch. The seven packages that it needs, among them `sympy` and `networkx`, are the other seven. `uv lock` writes
 `uv.lock` and installs nothing.
 
 ::: watch
@@ -3678,8 +3682,8 @@ $ grep -n -A5 '^name = "torch"' uv.lock
 $ grep -B2 'registry = "https://download.pytorch.org/whl/cpu" }$' uv.lock | grep '^name'
 
 `uv lock --check` prints `Resolved 43 packages`, and ends with exit code 0. The first `grep` prints the two entries
-of torch, on lines 701 and 725. Both come from `https://download.pytorch.org/whl/cpu`. The first is version
-`2.14.1`, for `sys_platform == 'darwin'`, a Mac. The second is version `2.14.1+cpu`, for every other system. The
+of torch, on lines 701 and 725. Both come from `https://download.pytorch.org/whl/cpu`. The first is for
+`sys_platform == 'darwin'`, a Mac. The second, whose version ends in `+cpu`, is for every other system. The
 second `grep` prints the name of every package from the index of PyTorch, and it prints `name = "torch"` twice and
 nothing more.
 
@@ -3687,7 +3691,7 @@ $ uv run python -c "import torch; print(torch.__version__, torch.backends.mps.is
 
 `uv run` first installs what `uv.lock` now has, 9 packages. torch then prints a warning, `UserWarning: Failed to
 initialize NumPy: No module named 'numpy'`. torch works without numpy, and says so. The last line is
-`2.14.1 True`. `True` means that torch finds MPS, the GPU of Apple, so on a Mac the build for the CPU runs on the GPU
+the version of torch and `True`. `True` means that torch finds MPS, the GPU of Apple, so on a Mac the build for the CPU runs on the GPU
 too.
 
 files:
@@ -3699,7 +3703,7 @@ The base model of kev, and its tokenizer, are on the Hugging Face Hub. transform
 
 do$ uv add transformers
 
-`uv add` prints `Resolved 63 packages`, and installs `transformers==5.20.0` and 18 packages that it needs, among
+`uv add` prints `Resolved 63 packages`, and installs transformers and 18 packages that it needs, among
 them `huggingface-hub`, `tokenizers`, `numpy` and `safetensors`.
 
 ::: watch
@@ -3709,7 +3713,7 @@ packages that it needs.
 
 $ uv run python -c "import torch, transformers; print(transformers.__version__)"
 
-It prints `5.20.0`, and no warning. numpy came with transformers, so torch no longer warns.
+It prints the version of transformers, and no warning. numpy came with transformers, so torch no longer warns.
 
 files:
 - diff `pyproject.toml`: transformers, in the dependencies.
@@ -3722,7 +3726,7 @@ The base model stays as it is, and a small adapter, LoRA, learns the task. peft 
 
 do$ uv add peft
 
-`uv add` prints `Resolved 66 packages`, and installs `peft==0.21.2`, `accelerate` and `psutil`.
+`uv add` prints `Resolved 66 packages`, and installs peft, `accelerate` and `psutil`.
 
 ::: watch
 In `pyproject.toml`, line 11 is now `"peft>=0.21.2",`, above pydantic. uv sorts the names. `uv.lock` has peft, and
@@ -3732,12 +3736,11 @@ the two packages that it needs.
 $ uv tree --invert --package torch --depth 1
 
 `uv tree --invert` prints the packages that need torch, in place of the packages that torch needs. The first line is
-`Resolved 66 packages`. Under `torch v2.14.1` come `accelerate`, `babykev` and `peft`. peft needs torch, and
+`Resolved 66 packages`. Under torch come `accelerate`, `babykev` and `peft`. peft needs torch, and
 torch was already here, from the index of PyTorch.
 
-Had peft come first, uv would have taken torch from PyPI, with the libraries of CUDA for Linux. In a copy of the
-project with the index alone, `uv add peft` resolved 84 packages, and 15 of them were packages of NVIDIA. So torch comes
-first, from its index.
+Had peft come first, uv would have taken torch from PyPI, with the libraries of CUDA for Linux. So torch comes first,
+from its index.
 
 files:
 - diff `pyproject.toml`: peft, in the dependencies.
@@ -3762,7 +3765,7 @@ among the dependencies of babykev.
 
 $ uv tree --invert --package safetensors --depth 1
 
-Under `safetensors v0.8.0` come `accelerate`, `babykev`, `peft` and `transformers`. Before the move, the list had
+Under safetensors come `accelerate`, `babykev`, `peft` and `transformers`. Before the move, the list had
 no `babykev`.
 
 files:
@@ -3854,9 +3857,10 @@ $ just lint
 $ just docs check
 
 `just fmt --check` prints `7 files already formatted`, and `just lint` prints `All checks passed!`. `just docs check`
-first prints a note of torch, `NOTE: Redirects are currently not supported in MacOs.` smalldocs imports `model.py` to
-read it. On a Mac, the import of peft makes torch print the note, and it is not an error. Then `just docs check`
-prints `babykev.model 15 of 15`, and `60 of 60 functions, methods and classes are typed and documented`.
+prints a note of torch, `NOTE: Redirects are currently not supported in MacOs.` smalldocs imports `model.py` to
+read it. On a Mac, the import of peft makes torch print the note, and it is not an error. The note goes to the
+standard error, so where it shows among the other lines can vary. `just docs check` also prints
+`babykev.model 15 of 15`, and `60 of 60 functions, methods and classes are typed and documented`.
 
 $ just test
 
@@ -3889,7 +3893,7 @@ the function.
 $ just docs
 $ grep -o 'href="api/model.html#[^"]*"' docs/_site/index.html
 
-`just docs` prints the note of torch, then `wrote 4 page(s) to docs/_site`. The fourth page is the reference of
+`just docs` prints `wrote 4 page(s) to docs/_site`, and the note of torch. The fourth page is the reference of
 `model.py`. `grep -o` prints the two links of the front page into it, `#encode` and `#DecisionModel`.
 
 files:
@@ -3935,7 +3939,7 @@ ty is for working on babykev, so it goes in the group `lint`.
 
 do$ uv add --group lint ty
 
-`uv add` prints `Resolved 67 packages`, and installs `ty==0.0.88`, which needs no other package.
+`uv add` prints `Resolved 67 packages`, and installs ty, which needs no other package.
 
 ::: watch
 In `pyproject.toml`, the group `lint` has `"ty>=0.0.88",` on line 46, under ruff. `uv.lock` has its exact version.
@@ -3943,7 +3947,7 @@ In `pyproject.toml`, the group `lint` has `"ty>=0.0.88",` on line 46, under ruff
 
 $ uv run ty --version
 
-It prints `ty 0.0.88`, or a newer version. A newer ty can find more, or less, than these notes show.
+It prints the version of ty that uv installed. A newer ty can find more, or less, than these notes show.
 
 files:
 - diff `pyproject.toml`: ty, in the group `lint`.
@@ -4172,8 +4176,7 @@ In `src/babykev/smoke.py`, `verdict` is on lines 44 to 61.
 $ uv run python -c "from babykev.smoke import verdict; print(verdict({'type': 'noul', 'label': True}, {'type': 'noul', 'noul': 0.78}))"
 
 It prints `('yes (0.78)', 'yes', True)`. The three values are what the model said, what the label says, and whether
-they agree.
-`smoke.py` imports `model.py`, so the note of torch comes after it.
+they agree. `smoke.py` imports `model.py`, so torch prints its note too.
 
 files:
 - diff `src/babykev/smoke.py`: one answer beside its label.
@@ -4226,11 +4229,12 @@ $ uv run python -c "import sys; from babykev.smoke import main; sys.exit(main([]
 
 The first time on a machine, transformers downloads the base model into `~/.cache/huggingface`, about 1 GB. On this
 Mac, the run takes about 10 seconds. It prints `babykev smoke: Qwen/Qwen2.5-0.5B on mps`, where `mps` is the GPU of
-Apple. Then it prints `loaded in 3.8 s: 503M parameters, 9.3M of them trainable`.
+Apple. Then it prints the seconds of the load, and `503M parameters, 9.3M of them trainable`.
 
 The report has a line for each of the five requests, with its tokens, 162, 145, 158, 115 and 156, and its time. Under
-each are its three questions. The last lines are `6 of 15 right, 246 ms a request.` and `Nothing is trained yet: these are guesses.`, and the note of
-torch comes at the end.
+each are its three questions. The last lines are `6 of 15 right`, with the milliseconds of a typical request, and
+`Nothing is trained yet: these are guesses.`. torch prints its
+note too.
 
 Some numbers are fixed, and some can vary. The parameters, the tokens and the answers come from the same weights at
 every run, because of the seed. On this Mac, a run on the CPU said `6 of 15 right` too. The seconds to load and the
@@ -4331,7 +4335,7 @@ In `docs/index.qmd`, line 15 says `four modules`, and the item of `babykev.smoke
 $ just docs
 $ grep -o 'href="api/smoke.html#[^"]*"' docs/_site/index.html
 
-`just docs` prints the note of torch, then `wrote 5 page(s) to docs/_site`. The fifth page is the reference of
+`just docs` prints `wrote 5 page(s) to docs/_site`, and the note of torch. The fifth page is the reference of
 `smoke.py`. `grep -o` prints the link of `smoke()` into it, `#smoke`.
 
 files:
@@ -4597,8 +4601,12 @@ $ just test --fixtures-per-test -k probabilities_sum
 
 $ just test
 
-`just test` prints `54 passed`. `model.py` goes from 33% to 85%, and the total from 45% to 67%, 178 of 267. One test
-runs the packing, the mask, the backbone and the head.
+`just test` prints `54 passed`. `model.py` is at 85%, and the total at 67%, 178 of 267. One test runs the
+packing, the mask, the backbone and the head.
+
+::: watch
+In tut-19.5, before this test, `model.py` was at 33%, and the total at 45%.
+:::
 
 files:
 - file `tests/unit/test_model.py`: the first test of the model, on the tiny model.
@@ -4735,8 +4743,8 @@ In `tests/unit/test_model.py`, the new test is on lines 59 to 65.
 
 $ just test -k state_that_does_not_fit
 
-pytest prints `1 passed`. Line 117, the other `raise` of `encode`, has run, and the column Missing of `model.py`
-starts again at 118.
+pytest prints `1 passed`. Line 117, the other `raise` of `encode`, has run. In the column Missing of `model.py`, the
+range of `encode` starts at 118 again.
 
 $ just test
 
@@ -4795,8 +4803,12 @@ five times.
 
 $ just test
 
-`just test` prints `64 passed`. `model.py` is still at 87%, with the same 14 lines missing. The test of the
+`just test` prints `64 passed`. `model.py` is at 87%, with 14 lines missing. The test of the
 probabilities had run `user_tokens` already, and checked nothing about it.
+
+::: watch
+The 14 lines are the same as at the end of tut-20.4, so the two new tests add no line to the coverage.
+:::
 
 files:
 - diff `tests/unit/test_model.py`: the defence, for each of the five delimiters.
@@ -5063,7 +5075,7 @@ $ just test --cov-fail-under=90
 
 `--cov-fail-under=90` makes pytest fail when the total is under 90%. It prints `73 passed`, then `FAIL Required test
 coverage of 90% not reached. Total coverage: 83.52%`, and ends with exit code 1. `model.py` is at 94%, and lines 211 to
-218 and 277 have run. The missing lines of `smoke.py` are the same as before.
+218 and 277 have run. `smoke.py` is at 48%, and misses lines `35-36, 45-49, 78-92, 105-119`.
 
 files:
 - diff `tests/unit/test_model.py`: one backward pass with an adapter.
@@ -5227,7 +5239,7 @@ a library for tests. A test states a rule, and hypothesis draws many inputs and 
 
 do$ uv add --group test hypothesis
 
-`uv add` prints `Resolved 69 packages`, and installs `hypothesis==6.170.0` and `sortedcontainers==2.4.0`, which
+`uv add` prints `Resolved 69 packages`, and installs hypothesis and sortedcontainers, which
 hypothesis needs.
 
 ::: watch
@@ -5236,7 +5248,7 @@ In `pyproject.toml`, the group `test` has `"hypothesis>=6.170.0",` on line 51. `
 
 $ uv run python -c "import hypothesis; print(hypothesis.__version__)"
 
-It prints `6.170.0`, or a newer version.
+It prints the version of hypothesis that uv installed.
 
 files:
 - diff `pyproject.toml`: hypothesis, in the group `test`.
@@ -5456,19 +5468,21 @@ In `src/babykev/model.py`, line 159 is `same = (s[None, :] == s[:, None]) | (s[N
 
 $ just test
 
-`just test` prints `82 passed`, and the total of 92%, as before the tests of the mask. A test of what the mask allows adds no line
+`just test` prints `82 passed`, and the total of 92%. A test of what the mask allows adds no line
 to the coverage. `branch_mask` was covered all along.
 
 The smoke runs the real model on the sample again, with the right mask.
 
 $ just smoke
 
-The smoke prints `4 of 15 right`, where it printed `6 of 15 right` with the old mask. The first question of each
-request keeps its answer, with the same two decimals. It comes first, so it saw only the state with either mask.
+The smoke prints `4 of 15 right`. Questions 2 and 3 of each request now read only the state and themselves, and not
+the questions before them. The model is untrained, so the count is a guess, and a right answer is chance.
 
-Nine of the ten other answers changed. With the old mask, questions 2 and 3 read the questions before them. Now each
-reads only the state and itself. The model is untrained, so both counts are guesses, and a right answer in either is
-chance.
+::: watch
+In tut-18, with the old mask, the smoke printed `6 of 15 right`. The first question of each request keeps its answer,
+with the same two decimals. It comes first, so it saw only the state with either mask. Nine of the ten other answers
+changed. Both counts are guesses.
+:::
 
 files:
 - diff `src/babykev/model.py`: the state, or the same question.
@@ -5830,11 +5844,15 @@ $ docker image ls babykev-run:latest
 The image takes about 1.1 GB, and torch is most of it.
 
 $ docker run --rm -v ~/.cache/huggingface:/hf babykev-run smoke
+$ uv run babykev smoke
 
 `-v` mounts the cache of the Hugging Face Hub of this Mac at `/hf`, where `HF_HOME` on line 33 sends the library. So
-the base model is not downloaded again. The smoke says `on cpu`. A container on a Mac runs Linux in a virtual
-machine, and sees no GPU of Apple. It prints `4 of 15 right`, and the fifteen answers are those of `just smoke` on
-`mps`, with the same two decimals. Each request takes about 3 seconds, where it took about 220 ms on `mps`.
+the base model is not downloaded again.
+
+The smoke in the container says `on cpu`. A container on a Mac runs Linux in a virtual
+machine, and sees no GPU of Apple. `uv run babykev smoke` runs the same smoke on this Mac, on `mps`. Both print
+`4 of 15 right`, and the same fifteen answers, with the same two decimals. A request takes much longer in the
+container than on `mps`, and the milliseconds change from run to run.
 
 files:
 - file `Dockerfile`: the stages `uv`, `build` and `run`.
@@ -5961,7 +5979,8 @@ $ just image build run
 $ just image run smoke
 $ just image shell -- just test -q
 
-`just image build run` builds the run image from the cache, in a few seconds. `just image run smoke` prints
+`just image build run` builds the run image. Docker takes each layer that it has built before from its cache, and
+builds the others. `just image run smoke` prints
 `4 of 15 right` again. `just image shell -- just test -q` prints `82 passed, 1 deselected`. Typed alone, `just image
 shell` starts a shell in the image, where `exit` ends it.
 
@@ -5975,7 +5994,7 @@ hadolint is a linter for a `Dockerfile`. The package `hadolint-bin` holds its pr
 
 do$ uv add --group lint hadolint-bin
 
-`uv add` prints `Resolved 70 packages`, and installs `hadolint-bin==2.15.1`.
+`uv add` prints `Resolved 70 packages`, and installs hadolint-bin.
 
 ::: watch
 In `pyproject.toml`, the group `lint` has `"hadolint-bin>=2.15.1",` on line 44. `uv.lock` has its exact version.
@@ -5983,7 +6002,7 @@ In `pyproject.toml`, the group `lint` has `"hadolint-bin>=2.15.1",` on line 44. 
 
 $ uv run hadolint --version
 
-It prints `Haskell Dockerfile Linter 2.15.1`.
+It prints `Haskell Dockerfile Linter` and its version.
 
 files:
 - diff `pyproject.toml`: hadolint, in the group `lint`.
@@ -6064,7 +6083,7 @@ network at all.
 
 $ just image shell --network none -- just check
 
-It fails before any check runs. uv cannot download `hadolint-bin==2.15.1`, with `dns error`. The dev image was built
+It fails before any check runs. uv cannot download hadolint-bin, with `dns error`. The dev image was built
 before hadolint came into `uv.lock`, and `UV_LOCKED` makes uv install the packages of the lockfile first. An image
 holds the packages of the lockfile at the time of its build.
 
@@ -6148,7 +6167,7 @@ built for each system.
 
 do$ uv add --group lint actionlint-py
 
-`uv add` prints `Resolved 71 packages`, and installs `actionlint-py==1.7.12.25`.
+`uv add` prints `Resolved 71 packages`, and installs actionlint-py.
 
 ::: watch
 In `pyproject.toml`, the group `lint` has `"actionlint-py>=1.7.12.25",` on line 44. `uv.lock` has its exact version.
@@ -6156,7 +6175,7 @@ In `pyproject.toml`, the group `lint` has `"actionlint-py>=1.7.12.25",` on line 
 
 $ uv run actionlint --version
 
-The first line is `1.7.12`.
+The first line is the version of actionlint.
 
 files:
 - diff `pyproject.toml`: actionlint, in the group `lint`.

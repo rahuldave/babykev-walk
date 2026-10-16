@@ -37,13 +37,13 @@ is. validate-pyproject checks the file against the standard. It goes in the grou
 uv add --group lint validate-pyproject
 ```
 
-`uv add` prints `Resolved 27 packages`, and installs `validate-pyproject==0.26` and `fastjsonschema`, which it needs.
+`uv add` prints `Resolved 27 packages`, and installs validate-pyproject and `fastjsonschema`, which it needs.
 
 ```bash
 uv run validate-pyproject --version
 ```
 
-It prints `validate_pyproject 0.26`, or a newer version. Nothing runs it yet.
+It prints the version of validate-pyproject that uv installed. Nothing runs it yet.
 
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
@@ -101,10 +101,7 @@ just lint-config
 just help lint-config
 ```
 
-`validate-pyproject` prints `Valid file: pyproject.toml`, and ends with exit code 0. A misspelt key fails. With
-`requires_python` in place of `requires-python`, it prints
-``[ERROR] `project` must not contain {'requires_python'} properties``. Then it prints
-`Invalid file: pyproject.toml`, and ends with exit code 1.
+`validate-pyproject` prints `Valid file: pyproject.toml`, and ends with exit code 0.
 
 `just --show lint-config` prints the recipe, and `just lint-config` prints the same line as the command.
 `just help lint-config` prints the line of the recipe.
@@ -349,13 +346,13 @@ checks YAML files, for their syntax and for their style. It goes in the group `l
 uv add --group lint yamllint
 ```
 
-`uv add` prints `Resolved 29 packages`, and installs `yamllint==1.38.0` and `pathspec`, which it needs.
+`uv add` prints `Resolved 29 packages`, and installs yamllint and `pathspec`, which it needs.
 
 ```bash
 uv run yamllint --version
 ```
 
-It prints `yamllint 1.38.0`, or a newer version.
+It prints the version of yamllint that uv installed.
 
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 

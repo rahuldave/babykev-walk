@@ -798,7 +798,7 @@ uv tree --depth 1
 ```
 
 `uv tree` prints the dependencies as a tree. `--depth 1` keeps the packages that babykev names itself. It prints
-`pydantic v2.14.1`, and the group `test` with pytest and pytest-cov.
+pydantic and its version, and the group `test` with pytest and pytest-cov.
 
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
@@ -869,7 +869,7 @@ and a user of the package does not need it. So it goes in a second dependency gr
 uv add --group lint ruff
 ```
 
-`uv add` prints `Resolved 15 packages`, and installs `ruff==0.17.1`. ruff is one program, and needs no other
+`uv add` prints `Resolved 15 packages`, and installs ruff. ruff is one program, and needs no other
 package.
 
 If a newer ruff is out, `uv add` writes its version as the lower bound. That line then differs from the one here,
@@ -880,7 +880,7 @@ uv run ruff --version
 uv run ruff format --check
 ```
 
-`uv run ruff --version` prints `ruff 0.17.1`. `ruff format --check` changes nothing. It prints what it would
+`uv run ruff --version` prints the version of ruff that uv installed. `ruff format --check` changes nothing. It prints what it would
 change in each file, and ends with `3 files would be reformatted, 3 files already formatted`, and exit code 1. The
 three files are `src/babykev/api.py`, `src/babykev/cli.py` and `tests/unit/test_api.py`. By default, ruff lets a
 line run to 88 characters. Line 19 of `cli.py` has 94 characters, so ruff would split it.
@@ -1115,8 +1115,9 @@ git restore --source b44da7cc2f35 --staged -- :/ && git restore --source a263314
 uv lock
 ```
 
-`uv lock` prints `Resolved 43 packages`, and eight lines `Added`. torch is `Added torch v2.14.1, v2.14.1+cpu`, two
-builds. The seven packages that it needs, among them `sympy` and `networkx`, are the other seven. `uv lock` writes
+`uv lock` prints `Resolved 43 packages`, and eight lines `Added`. The line of torch,
+`Added torch`, names two versions, one of them with `+cpu`. They are two
+builds of torch. The seven packages that it needs, among them `sympy` and `networkx`, are the other seven. `uv lock` writes
 `uv.lock` and installs nothing.
 
 ```bash
@@ -1126,8 +1127,8 @@ grep -B2 'registry = "https://download.pytorch.org/whl/cpu" }$' uv.lock | grep '
 ```
 
 `uv lock --check` prints `Resolved 43 packages`, and ends with exit code 0. The first `grep` prints the two entries
-of torch, on lines 701 and 725. Both come from `https://download.pytorch.org/whl/cpu`. The first is version
-`2.14.1`, for `sys_platform == 'darwin'`, a Mac. The second is version `2.14.1+cpu`, for every other system. The
+of torch, on lines 701 and 725. Both come from `https://download.pytorch.org/whl/cpu`. The first is for
+`sys_platform == 'darwin'`, a Mac. The second, whose version ends in `+cpu`, is for every other system. The
 second `grep` prints the name of every package from the index of PyTorch, and it prints `name = "torch"` twice and
 nothing more.
 
@@ -1137,7 +1138,7 @@ uv run python -c "import torch; print(torch.__version__, torch.backends.mps.is_a
 
 `uv run` first installs what `uv.lock` now has, 9 packages. torch then prints a warning, `UserWarning: Failed to
 initialize NumPy: No module named 'numpy'`. torch works without numpy, and says so. The last line is
-`2.14.1 True`. `True` means that torch finds MPS, the GPU of Apple, so on a Mac the build for the CPU runs on the GPU
+the version of torch and `True`. `True` means that torch finds MPS, the GPU of Apple, so on a Mac the build for the CPU runs on the GPU
 too.
 
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
@@ -1168,14 +1169,14 @@ The base model of kev, and its tokenizer, are on the Hugging Face Hub. transform
 uv add transformers
 ```
 
-`uv add` prints `Resolved 63 packages`, and installs `transformers==5.20.0` and 18 packages that it needs, among
+`uv add` prints `Resolved 63 packages`, and installs transformers and 18 packages that it needs, among
 them `huggingface-hub`, `tokenizers`, `numpy` and `safetensors`.
 
 ```bash
 uv run python -c "import torch, transformers; print(transformers.__version__)"
 ```
 
-It prints `5.20.0`, and no warning. numpy came with transformers, so torch no longer warns.
+It prints the version of transformers, and no warning. numpy came with transformers, so torch no longer warns.
 
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
@@ -1222,19 +1223,18 @@ The base model stays as it is, and a small adapter, LoRA, learns the task. peft 
 uv add peft
 ```
 
-`uv add` prints `Resolved 66 packages`, and installs `peft==0.21.2`, `accelerate` and `psutil`.
+`uv add` prints `Resolved 66 packages`, and installs peft, `accelerate` and `psutil`.
 
 ```bash
 uv tree --invert --package torch --depth 1
 ```
 
 `uv tree --invert` prints the packages that need torch, in place of the packages that torch needs. The first line is
-`Resolved 66 packages`. Under `torch v2.14.1` come `accelerate`, `babykev` and `peft`. peft needs torch, and
+`Resolved 66 packages`. Under torch come `accelerate`, `babykev` and `peft`. peft needs torch, and
 torch was already here, from the index of PyTorch.
 
-Had peft come first, uv would have taken torch from PyPI, with the libraries of CUDA for Linux. In a copy of the
-project with the index alone, `uv add peft` resolved 84 packages, and 15 of them were packages of NVIDIA. So torch comes
-first, from its index.
+Had peft come first, uv would have taken torch from PyPI, with the libraries of CUDA for Linux. So torch comes first,
+from its index.
 
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
@@ -1290,7 +1290,7 @@ again, with its new list of dependencies.
 uv tree --invert --package safetensors --depth 1
 ```
 
-Under `safetensors v0.8.0` come `accelerate`, `babykev`, `peft` and `transformers`. Before the move, the list had
+Under safetensors come `accelerate`, `babykev`, `peft` and `transformers`. Before the move, the list had
 no `babykev`.
 
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
@@ -1443,12 +1443,16 @@ The image takes about 1.1 GB, and torch is most of it.
 
 ```bash
 docker run --rm -v ~/.cache/huggingface:/hf babykev-run smoke
+uv run babykev smoke
 ```
 
 `-v` mounts the cache of the Hugging Face Hub of this Mac at `/hf`, where `HF_HOME` on line 33 sends the library. So
-the base model is not downloaded again. The smoke says `on cpu`. A container on a Mac runs Linux in a virtual
-machine, and sees no GPU of Apple. It prints `4 of 15 right`, and the fifteen answers are those of `just smoke` on
-`mps`, with the same two decimals. Each request takes about 3 seconds, where it took about 220 ms on `mps`.
+the base model is not downloaded again.
+
+The smoke in the container says `on cpu`. A container on a Mac runs Linux in a virtual
+machine, and sees no GPU of Apple. `uv run babykev smoke` runs the same smoke on this Mac, on `mps`. Both print
+`4 of 15 right`, and the same fifteen answers, with the same two decimals. A request takes much longer in the
+container than on `mps`, and the milliseconds change from run to run.
 
 The stage `build` runs `uv sync --locked --no-default-groups`. `--no-default-groups` overrides
 `default-groups = "all"`, so `/opt/venv` gets the dependencies of the project, and no group.
@@ -1747,7 +1751,7 @@ network at all.
 just image shell --network none -- just check
 ```
 
-It fails before any check runs. uv cannot download `hadolint-bin==2.15.1`, with `dns error`. The dev image was built
+It fails before any check runs. uv cannot download hadolint-bin, with `dns error`. The dev image was built
 before hadolint came into `uv.lock`, and `UV_LOCKED` makes uv install the packages of the lockfile first. An image
 holds the packages of the lockfile at the time of its build.
 

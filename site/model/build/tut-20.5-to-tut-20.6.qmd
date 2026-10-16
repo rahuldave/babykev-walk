@@ -139,7 +139,7 @@ five times.
 just test
 ```
 
-`just test` prints `64 passed`. `model.py` is still at 87%, with the same 14 lines missing. The test of the
+`just test` prints `64 passed`. `model.py` is at 87%, with 14 lines missing. The test of the
 probabilities had run `user_tokens` already, and checked nothing about it.
 
 ```bash

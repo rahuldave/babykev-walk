@@ -213,8 +213,8 @@ just help lint
 ```
 
 `just --show lint` prints the recipe. `just lint`, with no words, prints each problem with the lines around it, and
-ends with `Found 8 errors.` and exit code 1. All 8 are in `src/babykev/api.py`. Each one starts with its code, and
-a `help:` line says what would fix it.
+ends with `Found 8 errors.` and exit code 1. All 8 are in `src/babykev/api.py`. Each one starts with its code. Under
+I001, UP007 and B905, a `help:` line says what would fix it.
 
 - `E501` is line 5, of 103 characters, in the docstring. The formatter does not split the text of a docstring.
 - `I001` is on line 8. The imports need a blank line between the standard library and pydantic. Its `[*]` says

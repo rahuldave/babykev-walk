@@ -54,12 +54,16 @@ The image takes about 1.1 GB, and torch is most of it.
 
 ```bash
 docker run --rm -v ~/.cache/huggingface:/hf babykev-run smoke
+uv run babykev smoke
 ```
 
 `-v` mounts the cache of the Hugging Face Hub of this Mac at `/hf`, where `HF_HOME` on line 33 sends the library. So
-the base model is not downloaded again. The smoke says `on cpu`. A container on a Mac runs Linux in a virtual
-machine, and sees no GPU of Apple. It prints `4 of 15 right`, and the fifteen answers are those of `just smoke` on
-`mps`, with the same two decimals. Each request takes about 3 seconds, where it took about 220 ms on `mps`.
+the base model is not downloaded again.
+
+The smoke in the container says `on cpu`. A container on a Mac runs Linux in a virtual
+machine, and sees no GPU of Apple. `uv run babykev smoke` runs the same smoke on this Mac, on `mps`. Both print
+`4 of 15 right`, and the same fifteen answers, with the same two decimals. A request takes much longer in the
+container than on `mps`, and the milliseconds change from run to run.
 
 ### What changed {#tut-25.1-what-changed-182c57}
 
@@ -330,7 +334,8 @@ just image run smoke
 just image shell -- just test -q
 ```
 
-`just image build run` builds the run image from the cache, in a few seconds. `just image run smoke` prints
+`just image build run` builds the run image. Docker takes each layer that it has built before from its cache, and
+builds the others. `just image run smoke` prints
 `4 of 15 right` again. `just image shell -- just test -q` prints `82 passed, 1 deselected`. Typed alone, `just image
 shell` starts a shell in the image, where `exit` ends it.
 
@@ -394,7 +399,7 @@ hadolint is a linter for a `Dockerfile`. The package `hadolint-bin` holds its pr
 
 This change came from running `uv add --group lint hadolint-bin`.
 
-`uv add` prints `Resolved 70 packages`, and installs `hadolint-bin==2.15.1`.
+`uv add` prints `Resolved 70 packages`, and installs hadolint-bin.
 
 In `pyproject.toml`, the group `lint` has `"hadolint-bin>=2.15.1",` on line 44. `uv.lock` has its exact version.
 
@@ -402,7 +407,7 @@ In `pyproject.toml`, the group `lint` has `"hadolint-bin>=2.15.1",` on line 44. 
 uv run hadolint --version
 ```
 
-It prints `Haskell Dockerfile Linter 2.15.1`.
+It prints `Haskell Dockerfile Linter` and its version.
 
 ### What changed {#tut-25.6-what-changed-182c57}
 
@@ -535,7 +540,7 @@ network at all.
 just image shell --network none -- just check
 ```
 
-It fails before any check runs. uv cannot download `hadolint-bin==2.15.1`, with `dns error`. The dev image was built
+It fails before any check runs. uv cannot download hadolint-bin, with `dns error`. The dev image was built
 before hadolint came into `uv.lock`, and `UV_LOCKED` makes uv install the packages of the lockfile first. An image
 holds the packages of the lockfile at the time of its build.
 

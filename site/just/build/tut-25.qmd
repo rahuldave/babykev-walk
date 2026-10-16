@@ -22,6 +22,9 @@ The whole tutorial then finds a bug in the mask of the model with tests of hypot
 the real model, marked `system`. `-m 'not system'` in `pyproject.toml` leaves that test out of `just test`, and so out
 of `just check` and the hook. `just test -m system` runs it. Then the docs get a guide to the model.
 
+The fix of the mask changes the answers of the smoke. In this section, the smoke prints `4 of 15 right`, where `just
+smoke` printed `6 of 15 right` above, with the old mask. The mask changed the answers, and not the device.
+
 A `Dockerfile` comes in, with two images. The commands that build and run them get one recipe, `image`. hadolint
 checks the `Dockerfile`, as a line of `just lint-config`. This section needs Docker.
 
@@ -76,12 +79,16 @@ The image takes about 1.1 GB, and torch is most of it.
 
 ```bash
 docker run --rm -v ~/.cache/huggingface:/hf babykev-run smoke
+uv run babykev smoke
 ```
 
 `-v` mounts the cache of the Hugging Face Hub of this Mac at `/hf`, where `HF_HOME` on line 33 sends the library. So
-the base model is not downloaded again. The smoke says `on cpu`. A container on a Mac runs Linux in a virtual
-machine, and sees no GPU of Apple. It prints `4 of 15 right`, and the fifteen answers are those of `just smoke` on
-`mps`, with the same two decimals. Each request takes about 3 seconds, where it took about 220 ms on `mps`.
+the base model is not downloaded again.
+
+The smoke in the container says `on cpu`. A container on a Mac runs Linux in a virtual
+machine, and sees no GPU of Apple. `uv run babykev smoke` runs the same smoke on this Mac, on `mps`. Both print
+`4 of 15 right`, and the same fifteen answers, with the same two decimals. A request takes much longer in the
+container than on `mps`, and the milliseconds change from run to run.
 
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
@@ -415,7 +422,8 @@ just image run smoke
 just image shell -- just test -q
 ```
 
-`just image build run` builds the run image from the cache, in a few seconds. `just image run smoke` prints
+`just image build run` builds the run image. Docker takes each layer that it has built before from its cache, and
+builds the others. `just image run smoke` prints
 `4 of 15 right` again. `just image shell -- just test -q` prints `82 passed, 1 deselected`. Typed alone, `just image
 shell` starts a shell in the image, where `exit` ends it.
 
@@ -493,13 +501,13 @@ hadolint is a linter for a `Dockerfile`. The package `hadolint-bin` holds its pr
 uv add --group lint hadolint-bin
 ```
 
-`uv add` prints `Resolved 70 packages`, and installs `hadolint-bin==2.15.1`.
+`uv add` prints `Resolved 70 packages`, and installs hadolint-bin.
 
 ```bash
 uv run hadolint --version
 ```
 
-It prints `Haskell Dockerfile Linter 2.15.1`.
+It prints `Haskell Dockerfile Linter` and its version.
 
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
@@ -682,7 +690,7 @@ network at all.
 just image shell --network none -- just check
 ```
 
-It fails before any check runs. uv cannot download `hadolint-bin==2.15.1`, with `dns error`. The dev image was built
+It fails before any check runs. uv cannot download hadolint-bin, with `dns error`. The dev image was built
 before hadolint came into `uv.lock`, and `UV_LOCKED` makes uv install the packages of the lockfile first. An image
 holds the packages of the lockfile at the time of its build.
 

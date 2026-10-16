@@ -54,7 +54,7 @@ just test --cov-fail-under=90
 
 `--cov-fail-under=90` makes pytest fail when the total is under 90%. It prints `73 passed`, then `FAIL Required test
 coverage of 90% not reached. Total coverage: 83.52%`, and ends with exit code 1. `model.py` is at 94%, and lines 211 to
-218 and 277 have run. The missing lines of `smoke.py` are the same as before.
+218 and 277 have run. `smoke.py` is at 48%, and misses lines `35-36, 45-49, 78-92, 105-119`.
 
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 

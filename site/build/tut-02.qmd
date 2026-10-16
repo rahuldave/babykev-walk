@@ -16,7 +16,8 @@ git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 7ad3a06605fa 
 just setup
 ```
 
-`just setup` prints `Resolved 1 package` and `Checked 1 package`, because `.venv` already matches `uv.lock`.
+`just setup` prints `Resolved 1 package`, and `Checked 1 package` when `.venv` already matches `uv.lock`. In a new
+clone, it first makes `.venv`, and installs babykev.
 
 We cannot tell whether `babykev` still works after a change, unless we run it by hand and read what it prints. Tests
 run it for us. pytest finds the tests and runs them, and a recipe `just test` runs pytest. The first tests are of the

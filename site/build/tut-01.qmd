@@ -596,7 +596,8 @@ uv sync --locked
 ```
 
 `uv sync` makes `.venv` exactly as `uv.lock` says. `--locked` makes it refuse a `uv.lock` that no longer matches
-`pyproject.toml`. Here it prints `Resolved 1 package` and `Checked 1 package`, because `.venv` is already right.
+`pyproject.toml`. It prints `Resolved 1 package`. When `.venv` is already right, it then prints `Checked 1 package`, and changes
+nothing. In a new clone, it first prints `Creating virtual environment at: .venv`, and then installs babykev.
 
 Apply the patch to [`justfile`](#tut-01.9-justfile-424f0b), from the top of the project:
 

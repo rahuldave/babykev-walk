@@ -121,7 +121,7 @@ built for each system.
 
 This change came from running `uv add --group lint actionlint-py`.
 
-`uv add` prints `Resolved 71 packages`, and installs `actionlint-py==1.7.12.25`.
+`uv add` prints `Resolved 71 packages`, and installs actionlint-py.
 
 In `pyproject.toml`, the group `lint` has `"actionlint-py>=1.7.12.25",` on line 44. `uv.lock` has its exact version.
 
@@ -129,7 +129,7 @@ In `pyproject.toml`, the group `lint` has `"actionlint-py>=1.7.12.25",` on line 
 uv run actionlint --version
 ```
 
-The first line is `1.7.12`.
+The first line is the version of actionlint.
 
 ### What changed {#tut-26.3-what-changed-182c57}
 

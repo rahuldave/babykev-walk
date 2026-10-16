@@ -145,14 +145,14 @@ a library for tests. A test states a rule, and hypothesis draws many inputs and 
 uv add --group test hypothesis
 ```
 
-`uv add` prints `Resolved 69 packages`, and installs `hypothesis==6.170.0` and `sortedcontainers==2.4.0`, which
+`uv add` prints `Resolved 69 packages`, and installs hypothesis and sortedcontainers, which
 hypothesis needs.
 
 ```bash
 uv run python -c "import hypothesis; print(hypothesis.__version__)"
 ```
 
-It prints `6.170.0`, or a newer version.
+It prints the version of hypothesis that uv installed.
 
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
@@ -557,6 +557,17 @@ The test fails on question 1. In the reverse order it comes last, and sees the t
 probabilities go from `[0.5016, 0.4984]` to `[0.5007, 0.4993]`. `-k order_of_questions` would also choose a test of
 `test_api.py`, so the command names the end of the test.
 
+The tests of the rule are in, and line 159 still has the old mask. The smoke runs the real model on the sample with
+it, one last time. The recipe `smoke` runs `uv run babykev smoke`.
+
+```bash
+just --show smoke
+just smoke
+```
+
+`just --show smoke` prints the recipe. The smoke prints `6 of 15 right`. The next two moves fix the mask, and the
+smoke runs again after them.
+
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
@@ -679,7 +690,7 @@ The patch changes line 159 of `src/babykev/model.py` again.
 just test
 ```
 
-`just test` prints `82 passed`, and the total of 92%, as before the tests of the mask. A test of what the mask allows adds no line
+`just test` prints `82 passed`, and the total of 92%. A test of what the mask allows adds no line
 to the coverage. `branch_mask` was covered all along.
 
 The smoke runs the real model on the sample again, with the right mask.
@@ -688,12 +699,8 @@ The smoke runs the real model on the sample again, with the right mask.
 just smoke
 ```
 
-The smoke prints `4 of 15 right`, where it printed `6 of 15 right` with the old mask. The first question of each
-request keeps its answer, with the same two decimals. It comes first, so it saw only the state with either mask.
-
-Nine of the ten other answers changed. With the old mask, questions 2 and 3 read the questions before them. Now each
-reads only the state and itself. The model is untrained, so both counts are guesses, and a right answer in either is
-chance.
+The smoke prints `4 of 15 right`. Questions 2 and 3 of each request now read only the state and themselves, and not
+the questions before them. The model is untrained, so the count is a guess, and a right answer is chance.
 
 The small request shows the fix too.
 
@@ -704,9 +711,15 @@ uv run python -c "import torch; from tests.tiny import tiny_tokenizer, tiny_back
 Both questions now get `[0.5089, 0.4911]`, and `torch.equal` prints `True`. Question 1 kept its numbers, because it
 comes first and saw only the state with either mask. Question 2 now gets exactly what question 1 gets.
 
-The smoke went from 6 of 15 right to 4 of 15 right, after a fix that every test says is right. The count fell, and
-the fix is still right. Nothing is trained, so each answer is a guess. The next command counts the right answers that a guess
-gets on average, with one chance in K for a question of K options.
+The smoke went from `6 of 15 right` with the old mask to `4 of 15 right` with the fix, and every test says that the
+fix is right. The first question of each request kept its answer, with the same two decimals. It comes first, so it
+saw only the state with either mask. Nine of the ten other answers changed.
+
+The milk of Coquetdale went from `buffalo` to `cow`, which is right. The milk and the firmness of Amou, and the
+intensity of Loma Alta, were right with the old mask, and are wrong now. The count fell, and the fix is still right.
+
+Nothing is trained, so each answer is a guess. The next command counts the right answers that a guess gets on average,
+with one chance in K for a question of K options.
 
 ```bash
 uv run python -c "import json; qs = [q for line in open('data/cheese/sample.jsonl') for q in json.loads(line)['questions'].values()]; print(len(qs), round(sum(1 / (2 if q['type'] == 'noul' else len(q['criteria'])) for q in qs), 2))"

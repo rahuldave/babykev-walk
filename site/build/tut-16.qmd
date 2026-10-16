@@ -79,9 +79,10 @@ just docs check
 ```
 
 `just fmt --check` prints `7 files already formatted`, and `just lint` prints `All checks passed!`. `just docs check`
-first prints a note of torch, `NOTE: Redirects are currently not supported in MacOs.` smalldocs imports `model.py` to
-read it. On a Mac, the import of peft makes torch print the note, and it is not an error. Then `just docs check`
-prints `babykev.model 15 of 15`, and `60 of 60 functions, methods and classes are typed and documented`.
+prints a note of torch, `NOTE: Redirects are currently not supported in MacOs.` smalldocs imports `model.py` to
+read it. On a Mac, the import of peft makes torch print the note, and it is not an error. The note goes to the
+standard error, so where it shows among the other lines can vary. `just docs check` also prints
+`babykev.model 15 of 15`, and `60 of 60 functions, methods and classes are typed and documented`.
 
 ```bash
 just test
@@ -413,7 +414,7 @@ just docs
 grep -o 'href="api/model.html#[^"]*"' docs/_site/index.html
 ```
 
-`just docs` prints the note of torch, then `wrote 4 page(s) to docs/_site`. The fourth page is the reference of
+`just docs` prints `wrote 4 page(s) to docs/_site`, and the note of torch. The fourth page is the reference of
 `model.py`. `grep -o` prints the two links of the front page into it, `#encode` and `#DecisionModel`.
 
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:

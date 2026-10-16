@@ -47,7 +47,7 @@ and a user of the package does not need it. So it goes in a second dependency gr
 uv add --group lint ruff
 ```
 
-`uv add` prints `Resolved 15 packages`, and installs `ruff==0.17.1`. ruff is one program, and needs no other
+`uv add` prints `Resolved 15 packages`, and installs ruff. ruff is one program, and needs no other
 package.
 
 If a newer ruff is out, `uv add` writes its version as the lower bound. That line then differs from the one here,
@@ -58,7 +58,7 @@ uv run ruff --version
 uv run ruff format --check
 ```
 
-`uv run ruff --version` prints `ruff 0.17.1`. `ruff format --check` changes nothing. It prints what it would
+`uv run ruff --version` prints the version of ruff that uv installed. `ruff format --check` changes nothing. It prints what it would
 change in each file, and ends with `3 files would be reformatted, 3 files already formatted`, and exit code 1. The
 three files are `src/babykev/api.py`, `src/babykev/cli.py` and `tests/unit/test_api.py`. By default, ruff lets a
 line run to 88 characters. Line 19 of `cli.py` has 94 characters, so ruff would split it.
@@ -351,10 +351,9 @@ just fmt --check
 just test
 ```
 
-`just fmt --check` prints `6 files already formatted`, and ends with exit code 0. `just test` prints `53 passed`, as
-before. The total is still 100%, of 83 statements in place of 79. `api.py` has 75 statements, 4 more than before.
-The four one-line `if` statements of `_check` and `render` each became two lines, and coverage counts each line
-with a statement.
+`just fmt --check` prints `6 files already formatted`, and ends with exit code 0. `just test` prints `53 passed`, and
+a total of 100%, of 83 statements. `api.py` has 75 of them. Coverage counts each line with a statement, and each of
+the four one-line `if` statements of `_check` and `render` is now two lines.
 
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
