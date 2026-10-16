@@ -218,6 +218,96 @@ website:
                 href: read/tut-10.qmd#tut-10.3
               - text: "10.4 The docstrings of three functions"
                 href: read/tut-10.qmd#tut-10.4
+          - section: "11 The gate and the hook"
+            href: read/tut-11.qmd
+            contents:
+              - text: "11.1 The recipe check"
+                href: read/tut-11.qmd#tut-11.1
+              - text: "11.2 Pre-commit, in the group lint"
+                href: read/tut-11.qmd#tut-11.2
+              - text: "11.3 A hook that runs just check"
+                href: read/tut-11.qmd#tut-11.3
+              - text: "11.4 The recipe hook"
+                href: read/tut-11.qmd#tut-11.4
+              - text: "11.5 No file over 1 MB"
+                href: read/tut-11.qmd#tut-11.5
+              - text: "11.6 No merge-conflict markers"
+                href: read/tut-11.qmd#tut-11.6
+              - text: "11.7 No .env file"
+                href: read/tut-11.qmd#tut-11.7
+              - text: "11.8 An unused import, on purpose"
+                href: read/tut-11.qmd#tut-11.8
+              - text: "11.9 The import goes"
+                href: read/tut-11.qmd#tut-11.9
+              - text: "11.10 The README names the hook"
+                href: read/tut-11.qmd#tut-11.10
+          - section: "12 The config files are checked"
+            href: read/tut-12.qmd
+            contents:
+              - text: "12.1 Validate-pyproject, in the group lint"
+                href: read/tut-12.qmd#tut-12.1
+              - text: "12.2 The recipe lint-config, with validate-pyproject"
+                href: read/tut-12.qmd#tut-12.2
+              - text: "12.3 Lint-config checks the lockfile"
+                href: read/tut-12.qmd#tut-12.3
+              - text: "12.4 Recipes refuse an old lockfile"
+                href: read/tut-12.qmd#tut-12.4
+              - text: "12.5 Lint-config checks the justfile"
+                href: read/tut-12.qmd#tut-12.5
+              - text: "12.6 Yamllint, in the group lint"
+                href: read/tut-12.qmd#tut-12.6
+              - text: "12.7 Lint-config runs yamllint, and fails"
+                href: read/tut-12.qmd#tut-12.7
+              - text: "12.8 Yamllint skips what git ignores"
+                href: read/tut-12.qmd#tut-12.8
+              - text: "12.9 A YAML file need not start with three dashes"
+                href: read/tut-12.qmd#tut-12.9
+              - text: "12.10 Lines of up to 100 characters in YAML"
+                href: read/tut-12.qmd#tut-12.10
+              - text: "12.11 The gate checks the config files"
+                href: read/tut-12.qmd#tut-12.11
+              - text: "12.12 The README names .yamllint"
+                href: read/tut-12.qmd#tut-12.12
+          - section: "13 Documentation in the code"
+            href: read/tut-13.qmd
+            contents:
+              - text: "13.1 Smalldocs, in the group docs"
+                href: read/tut-13.qmd#tut-13.1
+              - text: "13.2 The settings of smalldocs"
+                href: read/tut-13.qmd#tut-13.2
+              - text: "13.3 The recipe docs"
+                href: read/tut-13.qmd#tut-13.3
+              - text: "13.4 Docments on the functions of api.py"
+                href: read/tut-13.qmd#tut-13.4
+              - text: "13.5 _check says what it checks"
+                href: read/tut-13.qmd#tut-13.5
+              - text: "13.6 A description on every field of a request"
+                href: read/tut-13.qmd#tut-13.6
+              - text: "13.7 Docments on the tests of the command"
+                href: read/tut-13.qmd#tut-13.7
+              - text: "13.8 Docments on the tests of the contract"
+                href: read/tut-13.qmd#tut-13.8
+              - text: "13.9 A docment too long for its line, on purpose"
+                href: read/tut-13.qmd#tut-13.9
+              - text: "13.10 Just fmt wraps the return type"
+                href: read/tut-13.qmd#tut-13.10
+              - text: "13.11 The docment, short enough"
+                href: read/tut-13.qmd#tut-13.11
+              - text: "13.12 The gate checks the docs"
+                href: read/tut-13.qmd#tut-13.12
+          - section: "14 The docs site"
+            href: read/tut-14.qmd
+            contents:
+              - text: "14.1 Just docs, alone, builds the site"
+                href: read/tut-14.qmd#tut-14.1
+              - text: "14.2 Git ignores what a build of the docs makes"
+                href: read/tut-14.qmd#tut-14.2
+              - text: "14.3 The settings of the site"
+                href: read/tut-14.qmd#tut-14.3
+              - text: "14.4 A front page"
+                href: read/tut-14.qmd#tut-14.4
+              - text: "14.5 The README names the docs"
+                href: read/tut-14.qmd#tut-14.5
       - section: "Build it yourself"
         contents:
           - text: "0 Where we start"
@@ -424,6 +514,96 @@ website:
                 href: build/tut-10.qmd#tut-10.3
               - text: "10.4 The docstrings of three functions"
                 href: build/tut-10.qmd#tut-10.4
+          - section: "11 The gate and the hook"
+            href: build/tut-11.qmd
+            contents:
+              - text: "11.1 The recipe check"
+                href: build/tut-11.qmd#tut-11.1
+              - text: "11.2 Pre-commit, in the group lint"
+                href: build/tut-11.qmd#tut-11.2
+              - text: "11.3 A hook that runs just check"
+                href: build/tut-11.qmd#tut-11.3
+              - text: "11.4 The recipe hook"
+                href: build/tut-11.qmd#tut-11.4
+              - text: "11.5 No file over 1 MB"
+                href: build/tut-11.qmd#tut-11.5
+              - text: "11.6 No merge-conflict markers"
+                href: build/tut-11.qmd#tut-11.6
+              - text: "11.7 No .env file"
+                href: build/tut-11.qmd#tut-11.7
+              - text: "11.8 An unused import, on purpose"
+                href: build/tut-11.qmd#tut-11.8
+              - text: "11.9 The import goes"
+                href: build/tut-11.qmd#tut-11.9
+              - text: "11.10 The README names the hook"
+                href: build/tut-11.qmd#tut-11.10
+          - section: "12 The config files are checked"
+            href: build/tut-12.qmd
+            contents:
+              - text: "12.1 Validate-pyproject, in the group lint"
+                href: build/tut-12.qmd#tut-12.1
+              - text: "12.2 The recipe lint-config, with validate-pyproject"
+                href: build/tut-12.qmd#tut-12.2
+              - text: "12.3 Lint-config checks the lockfile"
+                href: build/tut-12.qmd#tut-12.3
+              - text: "12.4 Recipes refuse an old lockfile"
+                href: build/tut-12.qmd#tut-12.4
+              - text: "12.5 Lint-config checks the justfile"
+                href: build/tut-12.qmd#tut-12.5
+              - text: "12.6 Yamllint, in the group lint"
+                href: build/tut-12.qmd#tut-12.6
+              - text: "12.7 Lint-config runs yamllint, and fails"
+                href: build/tut-12.qmd#tut-12.7
+              - text: "12.8 Yamllint skips what git ignores"
+                href: build/tut-12.qmd#tut-12.8
+              - text: "12.9 A YAML file need not start with three dashes"
+                href: build/tut-12.qmd#tut-12.9
+              - text: "12.10 Lines of up to 100 characters in YAML"
+                href: build/tut-12.qmd#tut-12.10
+              - text: "12.11 The gate checks the config files"
+                href: build/tut-12.qmd#tut-12.11
+              - text: "12.12 The README names .yamllint"
+                href: build/tut-12.qmd#tut-12.12
+          - section: "13 Documentation in the code"
+            href: build/tut-13.qmd
+            contents:
+              - text: "13.1 Smalldocs, in the group docs"
+                href: build/tut-13.qmd#tut-13.1
+              - text: "13.2 The settings of smalldocs"
+                href: build/tut-13.qmd#tut-13.2
+              - text: "13.3 The recipe docs"
+                href: build/tut-13.qmd#tut-13.3
+              - text: "13.4 Docments on the functions of api.py"
+                href: build/tut-13.qmd#tut-13.4
+              - text: "13.5 _check says what it checks"
+                href: build/tut-13.qmd#tut-13.5
+              - text: "13.6 A description on every field of a request"
+                href: build/tut-13.qmd#tut-13.6
+              - text: "13.7 Docments on the tests of the command"
+                href: build/tut-13.qmd#tut-13.7
+              - text: "13.8 Docments on the tests of the contract"
+                href: build/tut-13.qmd#tut-13.8
+              - text: "13.9 A docment too long for its line, on purpose"
+                href: build/tut-13.qmd#tut-13.9
+              - text: "13.10 Just fmt wraps the return type"
+                href: build/tut-13.qmd#tut-13.10
+              - text: "13.11 The docment, short enough"
+                href: build/tut-13.qmd#tut-13.11
+              - text: "13.12 The gate checks the docs"
+                href: build/tut-13.qmd#tut-13.12
+          - section: "14 The docs site"
+            href: build/tut-14.qmd
+            contents:
+              - text: "14.1 Just docs, alone, builds the site"
+                href: build/tut-14.qmd#tut-14.1
+              - text: "14.2 Git ignores what a build of the docs makes"
+                href: build/tut-14.qmd#tut-14.2
+              - text: "14.3 The settings of the site"
+                href: build/tut-14.qmd#tut-14.3
+              - text: "14.4 A front page"
+                href: build/tut-14.qmd#tut-14.4
+              - text: "14.5 The README names the docs"
+                href: build/tut-14.qmd#tut-14.5
 
 theme: cosmo
 css: styles.css

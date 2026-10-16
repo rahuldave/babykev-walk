@@ -48,6 +48,10 @@ Each change explained, with the code to look at.
 - [8 Lint](read/tut-08.qmd)
 - [9 Types in every signature](read/tut-09.qmd)
 - [10 Docstrings](read/tut-10.qmd)
+- [11 The gate and the hook](read/tut-11.qmd)
+- [12 The config files are checked](read/tut-12.qmd)
+- [13 Documentation in the code](read/tut-13.qmd)
+- [14 The docs site](read/tut-14.qmd)
 
 ## Build it yourself
 
@@ -177,6 +181,10 @@ git config alias.check '!f() { i="$(git rev-parse --git-path check-index)" && { 
 - [8 Lint](build/tut-08.qmd)
 - [9 Types in every signature](build/tut-09.qmd)
 - [10 Docstrings](build/tut-10.qmd)
+- [11 The gate and the hook](build/tut-11.qmd)
+- [12 The config files are checked](build/tut-12.qmd)
+- [13 Documentation in the code](build/tut-13.qmd)
+- [14 The docs site](build/tut-14.qmd)
 
 ## The other walks
 

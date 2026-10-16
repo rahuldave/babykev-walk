@@ -5472,3 +5472,2140 @@ test` prints `53 passed`, and the total is 100%, 83 of 83 statements.
 </details>
 
 [This change on GitHub](https://github.com/rahuldave/babykev/commit/ebd0888f135c00e29b583f6fad0575c290fd4876). [The code after it](https://github.com/rahuldave/babykev/tree/ebd0888f135c00e29b583f6fad0575c290fd4876).
+
+<a id="tut-11"></a>
+
+## 11 The gate and the hook
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 15 packages`.
+
+The project has three checks, `just fmt --check`, `just lint` and `just test`. A person must remember to run each
+of them before each `git commit`. One recipe, `check`, runs them all, in order. git then runs that recipe itself
+before each `git commit`, through a hook that pre-commit installs. A check that git runs before it records a change
+is a gate, and a change that fails it does not go in.
+
+Three more hooks keep out a large file, the markers of a merge conflict and a `.env` file. Last, a mistake on purpose
+shows the gate at work.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/ebd0888f135c00e29b583f6fad0575c290fd4876). [The code after it](https://github.com/rahuldave/babykev/tree/cab87c139ebd3b72771ed6db08b02dd7646c7d02).
+
+<a id="tut-11.1"></a>
+
+### 11.1 The recipe check
+
+The three checks are three commands, and a person can forget one. The recipe `check` runs them one after another.
+`set -e` stops it at the first that fails, so the last line that it prints names the check that failed.
+
+A patch to [`justfile`](#tut-11.1-justfile-424f0b).
+
+At the end of the `justfile`, the recipe `check` is on lines 46 to 55, in the group `quality`. Its body is a script
+of `sh`. `set -e` is on line 51, and the three checks are on lines 53 to 55.
+
+`just check` has no floor on the coverage yet, such as `--cov-fail-under=90`. Later, the model comes in with no tests
+of its own, and the coverage then falls under 90%. The floor joins the gate after the tests of the model.
+
+The commands behind the recipe come first.
+
+```bash
+just fmt --check
+just lint
+just test -q
+```
+
+`just fmt --check` prints `6 files already formatted`, and `just lint` prints `All checks passed!`. `just test -q`
+prints a dot for each test, the table of coverage, and `53 passed`. The total is 100%, 83 of 83 statements.
+
+```bash
+just --show check
+just check
+just help check
+```
+
+`just --show check` prints the recipe. `just check` prints the same lines as the three commands, one after another,
+and ends with exit code 0. `just help check` prints the line of the recipe.
+
+#### What changed
+
+- <a id="tut-11.1-justfile-424f0b"></a>`justfile`: the recipe `check`, with three checks. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/dbfc285a2adeb4900fc68c863c4850b84004a04e/justfile).
+  - look at `    just test -q`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -42,3 +42,14 @@ lint *args:
+ [no-exit-message]
+ test *args:
+     @{{ if args == "help" { "just help test" } else { 'uv run pytest "$@"' } }}
++
++# Run the checks one after another, and stop at the first that fails: the format, the linter, the tests
++[group('quality')]
++[no-exit-message]
++check *args:
++    #!/usr/bin/env sh
++    set -e
++    if [ "$*" = help ]; then just help check; exit 0; fi
++    just fmt --check
++    just lint
++    just test -q
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/dbfc285a2adeb4900fc68c863c4850b84004a04e). [The code after it](https://github.com/rahuldave/babykev/tree/dbfc285a2adeb4900fc68c863c4850b84004a04e).
+
+<a id="tut-11.2"></a>
+
+### 11.2 Pre-commit, in the group lint
+
+`just check` still waits for a person to run it. git can run a program of its own before it records a change, a
+hook. If the program fails, `git commit` records nothing. pre-commit installs such a hook, and runs the checks that a
+file of settings names. It is for working on babykev, so it goes in the group `lint`.
+
+This change came from running `uv add --group lint pre-commit`.
+
+`uv add` prints `Resolved 25 packages`, and installs `pre-commit==4.7.0` and the 9 packages that it needs, such as
+`pyyaml` and `virtualenv`.
+
+In `pyproject.toml`, the group `lint` now starts with `"pre-commit>=4.7.0",`, on line 27, above ruff. uv sorts the
+names of a group. `uv.lock` has the exact version of pre-commit, and of the packages that it needs.
+
+```bash
+uv run pre-commit --version
+```
+
+It prints `pre-commit 4.7.0`, or a newer version. No hook is installed yet.
+
+#### What changed
+
+- <a id="tut-11.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: pre-commit, in the group `lint`. 1 line added. It comes from `uv add --group lint pre-commit`. [The file](https://github.com/rahuldave/babykev/blob/56dee300cda2e0f34bfb18be026897e83bf6981a/pyproject.toml).
+  - look at `"pre-commit>=4.7.0",`
+- <a id="tut-11.2-uv.lock-8356d8"></a>`uv.lock`: the exact version of pre-commit, and of the packages that it needs. 139 lines added, 1 removed. It comes from `uv add --group lint pre-commit`. [The file](https://github.com/rahuldave/babykev/blob/56dee300cda2e0f34bfb18be026897e83bf6981a/uv.lock).
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -24,6 +24,7 @@ default-groups = "all"
+ 
+ [dependency-groups]
+ lint = [
++    "pre-commit>=4.7.0",
+     "ruff>=0.17.1",
+ ]
+ test = [
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/56dee300cda2e0f34bfb18be026897e83bf6981a). [The code after it](https://github.com/rahuldave/babykev/tree/56dee300cda2e0f34bfb18be026897e83bf6981a).
+
+<a id="tut-11.3"></a>
+
+### 11.3 A hook that runs just check
+
+pre-commit reads its hooks from a file, `.pre-commit-config.yaml`. The first hook is local, which means that it is
+a command of the project itself, `just check`. So the hook and the terminal run the same checks. The file is new,
+and comes whole, as a patch.
+
+A patch to [`.pre-commit-config.yaml`](#tut-11.3-.pre-commit-config.yaml-e7d14d).
+
+The new file `.pre-commit-config.yaml` has 14 lines. The hook is on lines 9 to 14. `entry: just check`, on line 11,
+is the command. `pass_filenames: false` gives `just check` no file names, and `always_run: true` runs it for any
+change, whatever its files.
+
+With this hook, `just check` is the gate. The hook is not installed yet, and pre-commit can still run every hook
+by hand.
+
+```bash
+uv run pre-commit run --all-files
+```
+
+`pre-commit run --all-files` runs every hook on every file that git tracks, as `git commit` would. It prints one
+line for the hook, `just check....Passed`. A hook that passes prints nothing more.
+
+#### What changed
+
+- <a id="tut-11.3-.pre-commit-config.yaml-e7d14d"></a>`.pre-commit-config.yaml`: one hook, which runs `just check`. New, 14 lines. [The file](https://github.com/rahuldave/babykev/blob/0c645eb0a770a34bf7fe3f055dfc9ab4c19aa6fe/.pre-commit-config.yaml).
+  - look at `        entry: just check`
+
+<details><summary>The diff of <code>.pre-commit-config.yaml</code></summary>
+
+```diff
+@@ -0,0 +1,14 @@
++# The hooks that git runs before each commit, once pre-commit is installed in the clone. If a hook
++# fails, git makes no commit.
++#
++# The project's own checks are one hook that runs `just check`, so the hook and the terminal run the
++# same thing.
++repos:
++  - repo: local
++    hooks:
++      - id: check
++        name: just check
++        entry: just check
++        language: system
++        pass_filenames: false
++        always_run: true
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0c645eb0a770a34bf7fe3f055dfc9ab4c19aa6fe). [The code after it](https://github.com/rahuldave/babykev/tree/0c645eb0a770a34bf7fe3f055dfc9ab4c19aa6fe).
+
+<a id="tut-11.4"></a>
+
+### 11.4 The recipe hook
+
+`pre-commit install` writes the hook into the folder of the hooks of the clone, `.git/hooks`. git does not track
+that folder, so each clone installs its own hook, once. The recipe `hook` runs the command. It is a recipe of its own,
+because `just setup` runs often, and never touches git.
+
+A patch to [`justfile`](#tut-11.4-justfile-424f0b).
+
+In the `justfile`, the recipe `hook` is on lines 28 to 31, under `setup`. It runs `uv run pre-commit install`.
+
+```bash
+uv run pre-commit install
+just --show hook
+just hook
+ls "$(git rev-parse --git-path hooks)"
+```
+
+`uv run pre-commit install` prints `pre-commit installed at .git/hooks/pre-commit`. `just --show hook` prints the
+recipe, and `just hook` prints the same line as the command. A second install writes the same file again.
+
+`git rev-parse --git-path hooks` names the folder of the hooks of this clone, and `ls` lists it. git puts a file
+`NAME.sample` there for each hook, and runs none of them. The new file `pre-commit`, with no `.sample`, is the one
+that `git commit` runs first.
+
+#### What changed
+
+- <a id="tut-11.4-justfile-424f0b"></a>`justfile`: the recipe `hook`. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/fbe4cca80366ec49c7fa9c23a11af8b4e1a2bde3/justfile).
+  - look at `hook *args:`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -25,6 +25,11 @@ help *verb:
+ setup *args:
+     @{{ if args == "help" { "just help setup" } else { "uv sync --locked" } }}
+ 
++# Install the git hook, which runs just check before each commit. Once in each clone: just setup never touches git
++[group('setup')]
++hook *args:
++    @{{ if args == "help" { "just help hook" } else { "uv run pre-commit install" } }}
++
+ # Write the Python of the project in one style. Extra words go to ruff: just fmt --check
+ [group('quality')]
+ [no-exit-message]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/fbe4cca80366ec49c7fa9c23a11af8b4e1a2bde3). [The code after it](https://github.com/rahuldave/babykev/tree/fbe4cca80366ec49c7fa9c23a11af8b4e1a2bde3).
+
+<a id="tut-11.5"></a>
+
+### 11.5 No file over 1 MB
+
+A model's weights or a large file of data does not belong in git. Once git records it, it stays in the history,
+and every clone downloads it. pre-commit-hooks is pre-commit's own collection of hooks, and its hook
+`check-added-large-files` refuses a file over a size. `--maxkb=1000` sets the size, 1000 KB.
+
+A patch to [`.pre-commit-config.yaml`](#tut-11.5-.pre-commit-config.yaml-e7d14d).
+
+In `.pre-commit-config.yaml`, the new repository is on lines 7 to 11, above `repo: local`. `rev: v6.0.0` is the tag
+of the collection that pre-commit uses.
+
+```bash
+uv run pre-commit run --all-files
+```
+
+The first time on a machine, pre-commit prints lines that start with `[INFO]` while it downloads the collection, into a
+folder of its own. Then it prints two lines, `check for added large files....Passed` and `just check....Passed`.
+
+#### What changed
+
+- <a id="tut-11.5-.pre-commit-config.yaml-e7d14d"></a>`.pre-commit-config.yaml`: the hook of large files. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/352e33d87006028ec33ed46ba0e53d48255b3d66/.pre-commit-config.yaml).
+  - look at `        args: [--maxkb=1000]`
+
+<details><summary>The diff of <code>.pre-commit-config.yaml</code></summary>
+
+```diff
+@@ -4,6 +4,11 @@
+ # The project's own checks are one hook that runs `just check`, so the hook and the terminal run the
+ # same thing.
+ repos:
++  - repo: https://github.com/pre-commit/pre-commit-hooks
++    rev: v6.0.0
++    hooks:
++      - id: check-added-large-files
++        args: [--maxkb=1000]
+   - repo: local
+     hooks:
+       - id: check
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/352e33d87006028ec33ed46ba0e53d48255b3d66). [The code after it](https://github.com/rahuldave/babykev/tree/352e33d87006028ec33ed46ba0e53d48255b3d66).
+
+<a id="tut-11.6"></a>
+
+### 11.6 No merge-conflict markers
+
+When git cannot merge two changes to the same lines, it writes both into the file, between the markers `<<<<<<<`,
+`=======` and `>>>>>>>`. A person must choose, and remove the markers. The hook `check-merge-conflict` refuses a file
+that still has them.
+
+A patch to [`.pre-commit-config.yaml`](#tut-11.6-.pre-commit-config.yaml-e7d14d).
+
+In `.pre-commit-config.yaml`, line 12 is the new hook, `- id: check-merge-conflict`.
+
+```bash
+uv run pre-commit run --all-files
+```
+
+pre-commit prints three lines, each `Passed`. The new one is `check for merge conflicts`.
+
+#### What changed
+
+- <a id="tut-11.6-.pre-commit-config.yaml-e7d14d"></a>`.pre-commit-config.yaml`: the hook of merge conflicts. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/64d0f4f781da1a8520315f899c4231645623280c/.pre-commit-config.yaml).
+  - look at `      - id: check-merge-conflict`
+
+<details><summary>The diff of <code>.pre-commit-config.yaml</code></summary>
+
+```diff
+@@ -9,6 +9,7 @@ repos:
+     hooks:
+       - id: check-added-large-files
+         args: [--maxkb=1000]
++      - id: check-merge-conflict
+   - repo: local
+     hooks:
+       - id: check
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/64d0f4f781da1a8520315f899c4231645623280c). [The code after it](https://github.com/rahuldave/babykev/tree/64d0f4f781da1a8520315f899c4231645623280c).
+
+<a id="tut-11.7"></a>
+
+### 11.7 No .env file
+
+A `.env` file holds the settings and secrets of one machine, such as a token. `.gitignore` ignores it already, but
+`git add -f .env` would still add it. A local hook with `language: fail` fails for every file that it is given, and
+prints its `entry` as the reason. `files:` gives it only the files named `.env`.
+
+A patch to [`.pre-commit-config.yaml`](#tut-11.7-.pre-commit-config.yaml-e7d14d).
+
+In `.pre-commit-config.yaml`, the hook `no-env-file` is on lines 15 to 19. `files: (^|/)\.env$`, on line 19, matches
+a file named `.env` in any folder.
+
+```bash
+uv run pre-commit run --all-files
+```
+
+pre-commit prints four lines. The new one ends `(no files to check)Skipped`, because git tracks no `.env` file. The
+other three pass.
+
+#### What changed
+
+- <a id="tut-11.7-.pre-commit-config.yaml-e7d14d"></a>`.pre-commit-config.yaml`: the hook that refuses a `.env` file. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/2d080c9e228f2f9959f4eeed801726ea402e66a3/.pre-commit-config.yaml).
+  - look at `        language: fail`
+
+<details><summary>The diff of <code>.pre-commit-config.yaml</code></summary>
+
+```diff
+@@ -12,6 +12,11 @@ repos:
+       - id: check-merge-conflict
+   - repo: local
+     hooks:
++      - id: no-env-file
++        name: no .env file
++        entry: A .env file holds the settings and secrets of one machine. It is never committed
++        language: fail
++        files: (^|/)\.env$
+       - id: check
+         name: just check
+         entry: just check
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/2d080c9e228f2f9959f4eeed801726ea402e66a3). [The code after it](https://github.com/rahuldave/babykev/tree/2d080c9e228f2f9959f4eeed801726ea402e66a3).
+
+<a id="tut-11.8"></a>
+
+### 11.8 An unused import, on purpose
+
+The hook works only if it fails on a mistake. This move makes one on purpose. `cli.py` imports `os`, and never uses
+it. The next move removes it.
+
+A patch to [`src/babykev/cli.py`](#tut-11.8-src-babykev-cli.py-a9e184).
+
+In `src/babykev/cli.py`, line 3 is now `import os`, and nothing in the file uses `os`.
+
+```bash
+uv run pre-commit run --all-files
+```
+
+The first three hooks pass or skip, as before. `just check....Failed` follows, with `- exit code: 1` and the output of
+`just check`. `just fmt --check` prints `6 files already formatted`, because the import is in its place. Then
+`just lint` finds `F401`, `` `os` imported but unused ``, at line 3, column 8 of `src/babykev/cli.py`.
+
+`set -e` stops `just check` there, so the tests do not run. pre-commit ends with exit code 1. A `git commit` would
+stop here, and record nothing.
+
+#### What changed
+
+- <a id="tut-11.8-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: an import that nothing uses, on purpose. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/f4fabd3272713cb5ac1c26021e4c23fa33ab15e6/src/babykev/cli.py).
+  - look at `import os`
+
+<details><summary>The diff of <code>src/babykev/cli.py</code></summary>
+
+```diff
+@@ -1,5 +1,6 @@
+ """The babykev command. `babykev help` says what it can do; every command arrives here."""
+ 
++import os
+ import sys
+ 
+ HELP = """\
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/f4fabd3272713cb5ac1c26021e4c23fa33ab15e6). [The code after it](https://github.com/rahuldave/babykev/tree/f4fabd3272713cb5ac1c26021e4c23fa33ab15e6).
+
+<a id="tut-11.9"></a>
+
+### 11.9 The import goes
+
+The linter said what is wrong, and that `--fix` can remove the line. The move removes it by hand.
+
+A patch to [`src/babykev/cli.py`](#tut-11.9-src-babykev-cli.py-a9e184).
+
+In `src/babykev/cli.py`, `import sys` is on line 3 again.
+
+```bash
+uv run pre-commit run --all-files
+```
+
+The four hooks pass or skip, and pre-commit ends with exit code 0. A `git commit` would now record the change.
+
+#### What changed
+
+- <a id="tut-11.9-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: the import of `os` goes. 0 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/054c40b6cc1839f8b35dfab81f9f2ae7c9f1aaf0/src/babykev/cli.py).
+  - look at `import os`
+
+<details><summary>The diff of <code>src/babykev/cli.py</code></summary>
+
+```diff
+@@ -1,6 +1,5 @@
+ """The babykev command. `babykev help` says what it can do; every command arrives here."""
+ 
+-import os
+ import sys
+ 
+ HELP = """\
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/054c40b6cc1839f8b35dfab81f9f2ae7c9f1aaf0). [The code after it](https://github.com/rahuldave/babykev/tree/054c40b6cc1839f8b35dfab81f9f2ae7c9f1aaf0).
+
+<a id="tut-11.10"></a>
+
+### 11.10 The README names the hook
+
+A new clone has no hook until someone runs `just hook`. The README says so, under "Start", and its table names the
+file of the hooks.
+
+A patch to [`README.md`](#tut-11.10-README.md-8ec9a0).
+
+In `README.md`, the new paragraph is on lines 61 to 63, and the row of `.pre-commit-config.yaml` is on line 79.
+
+```bash
+grep -n 'just hook' README.md
+```
+
+`grep` prints line 61, the first line of the paragraph, and line 79, the row of the table.
+
+#### What changed
+
+- <a id="tut-11.10-README.md-8ec9a0"></a>`README.md`: a paragraph on `just hook`, and a row of the table. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/cab87c139ebd3b72771ed6db08b02dd7646c7d02/README.md).
+  - look at ``Run `just hook` once in each clone. It installs a git hook, which runs `just check` before each commit.``
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+```diff
+@@ -58,6 +58,10 @@ Then run `just test`. `just` lists the tasks, `just help VERB` explains one, and
+ help of the program itself. A recipe gives its extra words to the tool behind it. For example,
+ `just test -k help` runs only the tests with `help` in their name.
+ 
++Run `just hook` once in each clone. It installs a git hook, which runs `just check` before each commit.
++`just check` runs every check of the project, and if one fails, git makes no commit. You can run `just check`
++yourself at any time.
++
+ ## What is here
+ 
+ | Path | What it is |
+@@ -72,6 +76,7 @@ help of the program itself. A recipe gives its extra words to the tool behind it
+ | `LICENSE`, `NOTICE` | The licence, and the credit to kev |
+ | `.python-version` | The version of Python that the project uses |
+ | `.gitignore` | The files that git does not track, for example `.venv` |
++| `.pre-commit-config.yaml` | The hooks that git runs before each commit, once `just hook` installs them. The last runs `just check` |
+ 
+ ## How the history is organised
+ 
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/cab87c139ebd3b72771ed6db08b02dd7646c7d02). [The code after it](https://github.com/rahuldave/babykev/tree/cab87c139ebd3b72771ed6db08b02dd7646c7d02).
+
+<a id="tut-12"></a>
+
+## 12 The config files are checked
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 25 packages`.
+
+The gate checks the Python of the project. The files that are not Python, the config files, have no check. A
+misspelt key in `pyproject.toml`, a lockfile that no longer matches it, or a YAML file that pre-commit cannot read
+passes the gate. A recipe `lint-config` checks each kind of config file, with one checker per move. One checker
+fails on its defaults, for real, and its settings fix it. Then the gate runs `lint-config` too.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/cab87c139ebd3b72771ed6db08b02dd7646c7d02). [The code after it](https://github.com/rahuldave/babykev/tree/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac).
+
+<a id="tut-12.1"></a>
+
+### 12.1 Validate-pyproject, in the group lint
+
+`pyproject.toml` has a standard, which says which tables it has, which keys each table may hold, and what each value
+is. validate-pyproject checks the file against the standard. It goes in the group `lint`.
+
+This change came from running `uv add --group lint validate-pyproject`.
+
+`uv add` prints `Resolved 27 packages`, and installs `validate-pyproject==0.26` and `fastjsonschema`, which it needs.
+
+In `pyproject.toml`, the group `lint` now ends with `"validate-pyproject>=0.26",`, on line 29. `uv.lock` has its
+exact version, and that of `fastjsonschema`.
+
+```bash
+uv run validate-pyproject --version
+```
+
+It prints `validate_pyproject 0.26`, or a newer version. Nothing runs it yet.
+
+#### What changed
+
+- <a id="tut-12.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: validate-pyproject, in the group `lint`. 1 line added. It comes from `uv add --group lint validate-pyproject`. [The file](https://github.com/rahuldave/babykev/blob/7506fb7a39f80397361a8e97ceb816f4b6931cd1/pyproject.toml).
+  - look at `"validate-pyproject>=0.26",`
+- <a id="tut-12.1-uv.lock-8356d8"></a>`uv.lock`: the exact version of validate-pyproject, and of `fastjsonschema`. 23 lines added. It comes from `uv add --group lint validate-pyproject`. [The file](https://github.com/rahuldave/babykev/blob/7506fb7a39f80397361a8e97ceb816f4b6931cd1/uv.lock).
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -26,6 +26,7 @@ default-groups = "all"
+ lint = [
+     "pre-commit>=4.7.0",
+     "ruff>=0.17.1",
++    "validate-pyproject>=0.26",
+ ]
+ test = [
+     "pytest>=9.1.1",
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7506fb7a39f80397361a8e97ceb816f4b6931cd1). [The code after it](https://github.com/rahuldave/babykev/tree/7506fb7a39f80397361a8e97ceb816f4b6931cd1).
+
+<a id="tut-12.2"></a>
+
+### 12.2 The recipe lint-config, with validate-pyproject
+
+A recipe `lint-config` will run a check for each kind of config file. Its first check is validate-pyproject on
+`pyproject.toml`. Its body is a script, with `set -e`, as in `check`, so that the next checks can come one line at a
+time.
+
+A patch to [`justfile`](#tut-12.2-justfile-424f0b).
+
+In the `justfile`, the recipe `lint-config` is on lines 45 to 52, between `lint` and `test`. Line 52 runs
+`uv run validate-pyproject pyproject.toml`.
+
+```bash
+uv run validate-pyproject pyproject.toml
+just --show lint-config
+just lint-config
+just help lint-config
+```
+
+`validate-pyproject` prints `Valid file: pyproject.toml`, and ends with exit code 0. A misspelt key fails. With
+`requires_python` in place of `requires-python`, it prints
+``[ERROR] `project` must not contain {'requires_python'} properties``. Then it prints
+`Invalid file: pyproject.toml`, and ends with exit code 1.
+
+`just --show lint-config` prints the recipe, and `just lint-config` prints the same line as the command.
+`just help lint-config` prints the line of the recipe.
+
+#### What changed
+
+- <a id="tut-12.2-justfile-424f0b"></a>`justfile`: the recipe `lint-config`, with its first check. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/64b71c6c0bdb792769aeef413b2ccead2be00ac4/justfile).
+  - look at `lint-config *args:`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -42,6 +42,15 @@ fmt *args:
+ lint *args:
+     @{{ if args == "help" { "just help lint" } else { 'uv run ruff check "$@"' } }}
+ 
++# Check the config files: pyproject.toml against the standard
++[group('quality')]
++[no-exit-message]
++lint-config *args:
++    #!/usr/bin/env sh
++    set -e
++    if [ "$*" = help ]; then just help lint-config; exit 0; fi
++    uv run validate-pyproject pyproject.toml
++
+ # Run the tests. Extra words go to pytest: just test -k render
+ [group('quality')]
+ [no-exit-message]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/64b71c6c0bdb792769aeef413b2ccead2be00ac4). [The code after it](https://github.com/rahuldave/babykev/tree/64b71c6c0bdb792769aeef413b2ccead2be00ac4).
+
+<a id="tut-12.3"></a>
+
+### 12.3 Lint-config checks the lockfile
+
+`uv.lock` must match `pyproject.toml`. When a person changes a dependency in `pyproject.toml` and does not run
+`uv lock`, they disagree. `uv lock --check` resolves the dependencies again, compares the result with `uv.lock`, and
+fails if they differ. It changes no file.
+
+A patch to [`justfile`](#tut-12.3-justfile-424f0b).
+
+In the `justfile`, `uv lock --check` is line 53, the second check of `lint-config`. The comment on line 45 now names
+the lockfile too.
+
+```bash
+uv lock --check
+just lint-config
+```
+
+`uv lock --check` prints `Resolved 27 packages`, and ends with exit code 0. `just lint-config` prints
+`Valid file: pyproject.toml`, then the same line.
+
+#### What changed
+
+- <a id="tut-12.3-justfile-424f0b"></a>`justfile`: the check of the lockfile. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/4308e46ddc44bbe18fb2ec528e4573e956219a16/justfile).
+  - look at `    uv lock --check`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -42,7 +42,7 @@ fmt *args:
+ lint *args:
+     @{{ if args == "help" { "just help lint" } else { 'uv run ruff check "$@"' } }}
+ 
+-# Check the config files: pyproject.toml against the standard
++# Check the config files: pyproject.toml against the standard, and the lockfile against it
+ [group('quality')]
+ [no-exit-message]
+ lint-config *args:
+@@ -50,6 +50,7 @@ lint-config *args:
+     set -e
+     if [ "$*" = help ]; then just help lint-config; exit 0; fi
+     uv run validate-pyproject pyproject.toml
++    uv lock --check
+ 
+ # Run the tests. Extra words go to pytest: just test -k render
+ [group('quality')]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/4308e46ddc44bbe18fb2ec528e4573e956219a16). [The code after it](https://github.com/rahuldave/babykev/tree/4308e46ddc44bbe18fb2ec528e4573e956219a16).
+
+<a id="tut-12.4"></a>
+
+### 12.4 Recipes refuse an old lockfile
+
+When `pyproject.toml` changes and `uv.lock` does not, `uv run` writes a new `uv.lock` itself, and says nothing. Any
+recipe can then change the lockfile, and the person who ran it does not see the change. The variable `UV_LOCKED` makes
+every `uv run` refuse a lockfile that is out of date, in place of writing it. The `justfile` exports it to every
+recipe.
+
+A patch to [`justfile`](#tut-12.4-justfile-424f0b).
+
+Near the top of the `justfile`, `export UV_LOCKED := "1"` is on line 9, under its comment.
+
+```bash
+just --evaluate UV_LOCKED
+```
+
+It prints `1`. `just` puts the variable in the environment of each command of each recipe, so every `uv run` of a
+recipe sees it.
+
+#### What changed
+
+- <a id="tut-12.4-justfile-424f0b"></a>`justfile`: one line, which exports `UV_LOCKED` to every recipe. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/9f70971667e9a2fc6cbc1767fe58061ad9f26e22/justfile).
+  - look at `export UV_LOCKED := "1"`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -5,6 +5,9 @@ program := "babykev"
+ # Each word after a recipe's name reaches its commands whole, as "$1", "$2" and so on; "$@" is all of them
+ set positional-arguments
+ 
++# Every uv run in a recipe refuses a lockfile that is out of date, in place of writing a new one
++export UV_LOCKED := "1"
++
+ [private]
+ default:
+     @just --list --unsorted
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9f70971667e9a2fc6cbc1767fe58061ad9f26e22). [The code after it](https://github.com/rahuldave/babykev/tree/9f70971667e9a2fc6cbc1767fe58061ad9f26e22).
+
+<a id="tut-12.5"></a>
+
+### 12.5 Lint-config checks the justfile
+
+The `justfile` is a config file too. just has a formatter of its own, `just --fmt`. With `--check`, it writes nothing,
+and fails if the file is not in its format. just still calls the formatter unstable, so it needs `--unstable`.
+
+A patch to [`justfile`](#tut-12.5-justfile-424f0b).
+
+In the `justfile`, `just --fmt --check --unstable` is line 57, the third check of `lint-config`. The comment on line
+48 names the `justfile`.
+
+```bash
+just --fmt --check --unstable
+just lint-config
+```
+
+`just --fmt --check --unstable` prints nothing, and ends with exit code 0. We wrote the recipes of this tutorial
+in the format of just. `just lint-config` prints the same two lines as before.
+
+#### What changed
+
+- <a id="tut-12.5-justfile-424f0b"></a>`justfile`: the check of the `justfile`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/284e4b7e241387e68463cb96fde80f81603f99c3/justfile).
+  - look at `    just --fmt --check --unstable`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -45,7 +45,7 @@ fmt *args:
+ lint *args:
+     @{{ if args == "help" { "just help lint" } else { 'uv run ruff check "$@"' } }}
+ 
+-# Check the config files: pyproject.toml against the standard, and the lockfile against it
++# Check the config files: pyproject.toml against the standard, the lockfile against it, and this justfile
+ [group('quality')]
+ [no-exit-message]
+ lint-config *args:
+@@ -54,6 +54,7 @@ lint-config *args:
+     if [ "$*" = help ]; then just help lint-config; exit 0; fi
+     uv run validate-pyproject pyproject.toml
+     uv lock --check
++    just --fmt --check --unstable
+ 
+ # Run the tests. Extra words go to pytest: just test -k render
+ [group('quality')]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/284e4b7e241387e68463cb96fde80f81603f99c3). [The code after it](https://github.com/rahuldave/babykev/tree/284e4b7e241387e68463cb96fde80f81603f99c3).
+
+<a id="tut-12.6"></a>
+
+### 12.6 Yamllint, in the group lint
+
+`.pre-commit-config.yaml` is YAML. A mistake of indentation there breaks the hook, and with it every `git commit`. yamllint
+checks YAML files, for their syntax and for their style. It goes in the group `lint`.
+
+This change came from running `uv add --group lint yamllint`.
+
+`uv add` prints `Resolved 29 packages`, and installs `yamllint==1.38.0` and `pathspec`, which it needs.
+
+In `pyproject.toml`, the group `lint` now ends with `"yamllint>=1.38.0",`, on line 30. `uv.lock` has its exact
+version, and that of `pathspec`.
+
+```bash
+uv run yamllint --version
+```
+
+It prints `yamllint 1.38.0`, or a newer version.
+
+#### What changed
+
+- <a id="tut-12.6-pyproject.toml-5d07e7"></a>`pyproject.toml`: yamllint, in the group `lint`. 1 line added. It comes from `uv add --group lint yamllint`. [The file](https://github.com/rahuldave/babykev/blob/304e0a2564ddf8d95a9b3964d6b5b8536032d79d/pyproject.toml).
+  - look at `"yamllint>=1.38.0",`
+- <a id="tut-12.6-uv.lock-8356d8"></a>`uv.lock`: the exact version of yamllint, and of `pathspec`. 24 lines added. It comes from `uv add --group lint yamllint`. [The file](https://github.com/rahuldave/babykev/blob/304e0a2564ddf8d95a9b3964d6b5b8536032d79d/uv.lock).
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -27,6 +27,7 @@ lint = [
+     "pre-commit>=4.7.0",
+     "ruff>=0.17.1",
+     "validate-pyproject>=0.26",
++    "yamllint>=1.38.0",
+ ]
+ test = [
+     "pytest>=9.1.1",
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/304e0a2564ddf8d95a9b3964d6b5b8536032d79d). [The code after it](https://github.com/rahuldave/babykev/tree/304e0a2564ddf8d95a9b3964d6b5b8536032d79d).
+
+<a id="tut-12.7"></a>
+
+### 12.7 Lint-config runs yamllint, and fails
+
+`yamllint --strict .` checks every YAML file under the folder. `--strict` makes a warning fail, as an error does. It is the fourth check of `lint-config`. yamllint has no settings yet, and it fails on its defaults. The next
+moves give it settings.
+
+A patch to [`justfile`](#tut-12.7-justfile-424f0b).
+
+In the `justfile`, `uv run yamllint --strict .` is line 58, the last check of `lint-config`.
+
+```bash
+uv run yamllint --strict .
+just lint-config
+```
+
+yamllint finds problems in three files, and ends with exit code 1. In `.pre-commit-config.yaml`, lines 1, 4 and 17
+are errors, `line too long`, of 98, 100 and 95 characters. By default, a line of YAML has at most 80 characters. Line
+6 is a warning, `missing document start "---"`.
+
+The other two files are in `.venv`, inside the package pre-commit, `empty_template_pubspec.yaml` and
+`empty_template_environment.yml`. Each has the same warning. yamllint reads every folder, `.venv` too, and those
+files are not ours.
+
+`just lint-config` passes its first three checks, and then fails with the same findings. `just check` does not run
+`lint-config` yet, so the gate still passes.
+
+#### What changed
+
+- <a id="tut-12.7-justfile-424f0b"></a>`justfile`: yamllint, the fourth check. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/8786cb9f3dd685412d3c315e4b25d7023dc0ad15/justfile).
+  - look at `    uv run yamllint --strict .`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -45,7 +45,7 @@ fmt *args:
+ lint *args:
+     @{{ if args == "help" { "just help lint" } else { 'uv run ruff check "$@"' } }}
+ 
+-# Check the config files: pyproject.toml against the standard, the lockfile against it, and this justfile
++# Check the config files: pyproject.toml, the lockfile, this justfile, and every YAML file
+ [group('quality')]
+ [no-exit-message]
+ lint-config *args:
+@@ -55,6 +55,7 @@ lint-config *args:
+     uv run validate-pyproject pyproject.toml
+     uv lock --check
+     just --fmt --check --unstable
++    uv run yamllint --strict .
+ 
+ # Run the tests. Extra words go to pytest: just test -k render
+ [group('quality')]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/8786cb9f3dd685412d3c315e4b25d7023dc0ad15). [The code after it](https://github.com/rahuldave/babykev/tree/8786cb9f3dd685412d3c315e4b25d7023dc0ad15).
+
+<a id="tut-12.8"></a>
+
+### 12.8 Yamllint skips what git ignores
+
+yamllint reads its settings from a file `.yamllint`. `extends: default` keeps its default rules.
+`ignore-from-file: .gitignore` skips each file that git ignores, `.venv` among them. The file is new, and comes
+whole, as a patch.
+
+A patch to [`.yamllint`](#tut-12.8-.yamllint-dfe50a).
+
+The new file `.yamllint` has 3 lines. Line 3 is `ignore-from-file: .gitignore`, with a comment.
+
+```bash
+uv run yamllint --strict .
+```
+
+yamllint now finds problems in two files, and ends with exit code 1. The two files in `.venv` are gone. The four
+findings of `.pre-commit-config.yaml` stay. `.yamllint` is YAML too, and yamllint checks it. Line 2 has the warning
+`missing document start "---"`, and line 3 has 87 characters.
+
+#### What changed
+
+- <a id="tut-12.8-.yamllint-dfe50a"></a>`.yamllint`: the settings of yamllint. New, 3 lines. [The file](https://github.com/rahuldave/babykev/blob/aee8ff779a7d2889f24a61ab979558405a9c3007/.yamllint).
+  - look at `ignore-from-file: .gitignore  # the files that git ignores, such as everything in .venv`
+
+<details><summary>The diff of <code>.yamllint</code></summary>
+
+```diff
+@@ -0,0 +1,3 @@
++# The settings of yamllint, which checks every YAML file of the project
++extends: default
++ignore-from-file: .gitignore  # the files that git ignores, such as everything in .venv
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/aee8ff779a7d2889f24a61ab979558405a9c3007). [The code after it](https://github.com/rahuldave/babykev/tree/aee8ff779a7d2889f24a61ab979558405a9c3007).
+
+<a id="tut-12.9"></a>
+
+### 12.9 A YAML file need not start with three dashes
+
+A line `---` marks the start of a document, in a YAML file that holds several. Our files hold one each, and pre-commit
+does not ask for the line. The rule `document-start` goes off.
+
+A patch to [`.yamllint`](#tut-12.9-.yamllint-dfe50a).
+
+In `.yamllint`, `rules:` is on line 4, and line 5 is `document-start: disable`, with a comment.
+
+```bash
+uv run yamllint --strict .
+```
+
+yamllint finds four problems, and ends with exit code 1. The four are the lines too long, lines 1, 4 and 17 of
+`.pre-commit-config.yaml`, and line 3 of `.yamllint`. The warnings are gone.
+
+#### What changed
+
+- <a id="tut-12.9-.yamllint-dfe50a"></a>`.yamllint`: the rule `document-start`, off. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/44f6865153ebeff1c321b4da65ace21285161796/.yamllint).
+  - look at `  document-start: disable  # a file need not start with a line of three dashes`
+
+<details><summary>The diff of <code>.yamllint</code></summary>
+
+```diff
+@@ -1,3 +1,5 @@
+ # The settings of yamllint, which checks every YAML file of the project
+ extends: default
+ ignore-from-file: .gitignore  # the files that git ignores, such as everything in .venv
++rules:
++  document-start: disable  # a file need not start with a line of three dashes
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/44f6865153ebeff1c321b4da65ace21285161796). [The code after it](https://github.com/rahuldave/babykev/tree/44f6865153ebeff1c321b4da65ace21285161796).
+
+<a id="tut-12.10"></a>
+
+### 12.10 Lines of up to 100 characters in YAML
+
+The Python of the project has lines of up to 100 characters, and the comments of the YAML files follow it. The rule
+`line-length` lets a line have 100 characters, as `line-length = 100` in `[tool.ruff]` does for ruff.
+
+A patch to [`.yamllint`](#tut-12.10-.yamllint-dfe50a).
+
+In `.yamllint`, line 6 is `line-length: {max: 100}`, with a comment.
+
+```bash
+just lint-config
+```
+
+yamllint prints nothing, and `just lint-config` passes. It prints `Valid file: pyproject.toml` and
+`Resolved 29 packages`, and ends with exit code 0.
+
+#### What changed
+
+- <a id="tut-12.10-.yamllint-dfe50a"></a>`.yamllint`: lines of up to 100 characters. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/063c1a9ec17bea160da66c14711bb87eb1f54ddb/.yamllint).
+  - look at `  line-length: {max: 100}  # as long as a line of the Python code`
+
+<details><summary>The diff of <code>.yamllint</code></summary>
+
+```diff
+@@ -3,3 +3,4 @@ extends: default
+ ignore-from-file: .gitignore  # the files that git ignores, such as everything in .venv
+ rules:
+   document-start: disable  # a file need not start with a line of three dashes
++  line-length: {max: 100}  # as long as a line of the Python code
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/063c1a9ec17bea160da66c14711bb87eb1f54ddb). [The code after it](https://github.com/rahuldave/babykev/tree/063c1a9ec17bea160da66c14711bb87eb1f54ddb).
+
+<a id="tut-12.11"></a>
+
+### 12.11 The gate checks the config files
+
+`just lint-config` passes, but only when a person runs it. As the last line of `check`, it runs before each
+`git commit`, through the hook.
+
+A patch to [`justfile`](#tut-12.11-justfile-424f0b).
+
+In the `justfile`, `just lint-config` is line 76, the last line of `check`. The comment on line 66 names the config
+files.
+
+```bash
+just --show check
+just check
+```
+
+`just --show check` prints the recipe, with four checks. `just check` prints the output of the format, the linter and
+the tests, as before, then `Valid file: pyproject.toml` and `Resolved 29 packages`. It ends with exit code 0.
+
+#### What changed
+
+- <a id="tut-12.11-justfile-424f0b"></a>`justfile`: `lint-config`, the last check of the gate. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a7699bdb248aa3ff3816137433e5d4482424f3ed/justfile).
+  - look at `    just lint-config`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -63,7 +63,7 @@ lint-config *args:
+ test *args:
+     @{{ if args == "help" { "just help test" } else { 'uv run pytest "$@"' } }}
+ 
+-# Run the checks one after another, and stop at the first that fails: the format, the linter, the tests
++# Run the checks one after another, and stop at the first that fails: the format, the linter, the tests, the config files
+ [group('quality')]
+ [no-exit-message]
+ check *args:
+@@ -73,3 +73,4 @@ check *args:
+     just fmt --check
+     just lint
+     just test -q
++    just lint-config
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a7699bdb248aa3ff3816137433e5d4482424f3ed). [The code after it](https://github.com/rahuldave/babykev/tree/a7699bdb248aa3ff3816137433e5d4482424f3ed).
+
+<a id="tut-12.12"></a>
+
+### 12.12 The README names .yamllint
+
+The table of the README names every config file of the project. `.yamllint` gets a row.
+
+A patch to [`README.md`](#tut-12.12-README.md-8ec9a0).
+
+In `README.md`, the row of `.yamllint` is on line 80, the last row of the table.
+
+```bash
+grep -n yamllint README.md
+```
+
+`grep` prints line 80, the new row.
+
+#### What changed
+
+- <a id="tut-12.12-README.md-8ec9a0"></a>`README.md`: a row for `.yamllint`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac/README.md).
+  - look at ``| `.yamllint` | The settings of yamllint, which `just lint-config` runs on every YAML file |``
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+```diff
+@@ -77,6 +77,7 @@ yourself at any time.
+ | `.python-version` | The version of Python that the project uses |
+ | `.gitignore` | The files that git does not track, for example `.venv` |
+ | `.pre-commit-config.yaml` | The hooks that git runs before each commit, once `just hook` installs them. The last runs `just check` |
++| `.yamllint` | The settings of yamllint, which `just lint-config` runs on every YAML file |
+ 
+ ## How the history is organised
+ 
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac). [The code after it](https://github.com/rahuldave/babykev/tree/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac).
+
+<a id="tut-13"></a>
+
+## 13 Documentation in the code
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 29 packages`.
+
+The signature of `render` gives the types of its parameters, and its docstring says what it does. Neither says what
+`indent` means, or what the text that `render` returns is for. A docment says it. A docment is a comment beside a
+parameter, a return type or a field, on the same line.
+
+smalldocs reads the signature, the docstring and the docments, and writes the reference of the code from them. It
+also lists what has no documentation, as coverage lists the lines that no test runs. The gaps close one part at a
+time. A long docment then shows what the formatter can do to one, and the gate runs the check.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac). [The code after it](https://github.com/rahuldave/babykev/tree/005b87bdfa2e70c6ceca52dc07197c69702f00be).
+
+<a id="tut-13.1"></a>
+
+### 13.1 Smalldocs, in the group docs
+
+Nothing reads the documentation of the code yet. smalldocs is a Python package, so uv installs it like any other. It
+is for the documentation, so it goes in a third dependency group, `docs`.
+
+This change came from running `uv add --group docs smalldocs`.
+
+`uv add` prints `Resolved 34 packages`, and installs `smalldocs==0.1.5` and four packages that it needs, among them
+fastcore and markdown-it-py.
+
+In `pyproject.toml`, the new group `docs` is on lines 26 to 28, above the group `lint`. uv sorts the groups by name.
+`uv.lock` has the exact version of smalldocs, and of the packages that it needs.
+
+`default-groups = "all"`, on line 23 of `pyproject.toml`, makes uv install every group. So `just setup` installs
+smalldocs, with no other change.
+
+```bash
+uv run smalldocs --version
+uv tree --only-group docs
+```
+
+`uv run smalldocs --version` prints `smalldocs 0.1.5`, or a newer version. `uv tree` prints smalldocs `(group: docs)`,
+and under it fastcore, markdown-it-py, mdit-py-plugins, pygments and pyyaml. mdurl is under markdown-it-py.
+
+#### What changed
+
+- <a id="tut-13.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the group `docs`, with smalldocs. 3 lines added. It comes from `uv add --group docs smalldocs`. [The file](https://github.com/rahuldave/babykev/blob/609d58ce5f8c0fb8e7b60548c8ee097766446ff5/pyproject.toml).
+  - look at `"smalldocs>=0.1.5",`
+- <a id="tut-13.1-uv.lock-8356d8"></a>`uv.lock`: the exact version of smalldocs, and of the packages that it needs. 62 lines added. It comes from `uv add --group docs smalldocs`. [The file](https://github.com/rahuldave/babykev/blob/609d58ce5f8c0fb8e7b60548c8ee097766446ff5/uv.lock).
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -23,6 +23,9 @@ build-backend = "uv_build"
+ default-groups = "all"
+ 
+ [dependency-groups]
++docs = [
++    "smalldocs>=0.1.5",
++]
+ lint = [
+     "pre-commit>=4.7.0",
+     "ruff>=0.17.1",
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/609d58ce5f8c0fb8e7b60548c8ee097766446ff5). [The code after it](https://github.com/rahuldave/babykev/tree/609d58ce5f8c0fb8e7b60548c8ee097766446ff5).
+
+<a id="tut-13.2"></a>
+
+### 13.2 The settings of smalldocs
+
+smalldocs needs to know which package to document. It reads its settings from `docs/_smalldocs.yml`. For now the file
+has one section, `api`, the reference. It names the package and the address of its source on GitHub. It also names
+the files of the tests, which smalldocs holds to the same rule as the package. The file is new, and comes whole, as a
+patch.
+
+A patch to [`docs/_smalldocs.yml`](#tut-13.2-docs-_smalldocs.yml-4b0b48).
+
+The new file `docs/_smalldocs.yml` has 5 lines. Line 3 names the package, `babykev`, and line 5 names the tests,
+`tests/**/*.py`.
+
+```bash
+uv run smalldocs api check --dir docs
+```
+
+`smalldocs api check` lists the gaps, and `--dir docs` names the folder of the settings. It holds every function,
+method and class to one rule, with four parts.
+
+- a type and a docment on every parameter
+- a type and a docment on the return, unless it is `None`
+- a docstring
+- a description on every field of a pydantic model
+
+The first lines of the output count the complete ones in each module and each file of tests.
+
+- `babykev.api`, 0 of 12
+- `babykev.cli`, 1 of 1
+- `tests/unit/test_api.py`, 23 of 29
+- `tests/unit/test_cli.py`, 0 of 3
+
+Then come 46 lines, one for each gap, and the last line, `24 of 45 functions, methods and classes are typed and
+documented`. The command ends with exit code 1. The linter asks already for every type and for every docstring of a
+public name, so 45 of the 46 gaps are docments and descriptions. The other one is the docstring of `_check`, a private
+method, which the linter does not ask for.
+
+#### What changed
+
+- <a id="tut-13.2-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the package to document, and the tests to check. New, 5 lines. [The file](https://github.com/rahuldave/babykev/blob/4444b1e809427e92a5dc08a9e9fdbbddab7de830/docs/_smalldocs.yml).
+  - look at `  packages: [babykev]`
+
+<details><summary>The diff of <code>docs/_smalldocs.yml</code></summary>
+
+```diff
+@@ -0,0 +1,5 @@
++# The settings of smalldocs. `api` is the reference, made from the code of the package
++api:
++  packages: [babykev]
++  source: https://github.com/rahuldave/babykev/blob/tutorial  # each entry links to its line here
++  check: ["tests/**/*.py"]  # the tests are held to the same rule as the package
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/4444b1e809427e92a5dc08a9e9fdbbddab7de830). [The code after it](https://github.com/rahuldave/babykev/tree/4444b1e809427e92a5dc08a9e9fdbbddab7de830).
+
+<a id="tut-13.3"></a>
+
+### 13.3 The recipe docs
+
+The command that lists the gaps is long. The recipe `docs` gives its words to `smalldocs api`, and adds `--dir docs`.
+
+A patch to [`justfile`](#tut-13.3-justfile-424f0b).
+
+At the end of the `justfile`, the recipe `docs` is on lines 78 to 82. Line 82 runs `uv run smalldocs api "$@" --dir
+docs`.
+
+```bash
+just --show docs
+just docs check
+just help docs
+```
+
+`just --show docs` prints the recipe. `just docs check` prints the same as `smalldocs api check` above, and ends with
+`24 of 45` and exit code 1. `just help docs` prints the line of the recipe.
+
+#### What changed
+
+- <a id="tut-13.3-justfile-424f0b"></a>`justfile`: the recipe `docs`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/a582ad38e75bb188174b75a5e80405cebcd1259d/justfile).
+  - look at `docs *args:`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -74,3 +74,9 @@ check *args:
+     just lint
+     just test -q
+     just lint-config
++
++# The reference of the code, by smalldocs. Words go to smalldocs api: just docs check, just docs module api
++[group('docs')]
++[no-exit-message]
++docs *args:
++    @{{ if args == "help" { "just help docs" } else { 'uv run smalldocs api "$@" --dir docs' } }}
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a582ad38e75bb188174b75a5e80405cebcd1259d). [The code after it](https://github.com/rahuldave/babykev/tree/a582ad38e75bb188174b75a5e80405cebcd1259d).
+
+<a id="tut-13.4"></a>
+
+### 13.4 Docments on the functions of api.py
+
+`babykev.api` has seven functions, from `render` to `to_answers`, and none has a docment. Each function now has one
+parameter on a line, with its docment beside it, and a docment on its return type, after `-> TYPE:`. The type says
+`int`, and the docment says what the number means.
+
+A patch to [`src/babykev/api.py`](#tut-13.4-src-babykev-api.py-2ea65f).
+
+In `src/babykev/api.py`, the signature of `render` is on lines 56 to 59. `indent: int = 0,  # How deeply the value is
+nested. Each level indents by two spaces` is line 58, and `) -> str:  # The text that the model sees` is line 59. The
+six other functions follow the same pattern, down to `to_answers` on lines 144 to 147.
+
+`just docs module api` prints the reference of the module, as Markdown. `sed` keeps the part of `render`.
+
+```bash
+just docs module api | sed -n '/^## render$/,/^## option_text$/p'
+just docs check
+```
+
+The reference of `render` has its signature, its docstring, and a table with a row for `v`, for `indent` and for
+`returns`. The column Description holds the docments. `just docs check` prints `babykev.api 7 of 12`, and
+`31 of 45`, with exit code 1. The 7 are the seven functions. The five left in `babykev.api` are the four classes and
+`_check`.
+
+#### What changed
+
+- <a id="tut-13.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docment on each parameter and each return of seven functions. 24 lines added, 7 removed. [The file](https://github.com/rahuldave/babykev/blob/ae28dff704c768a862e416a894ac42443ab3468c/src/babykev/api.py).
+  - look at `) -> str:  # The text that the model sees`
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -53,7 +53,10 @@ class SystemOneRequest(BaseModel):
+     questions: dict[str, Question] = Field(min_length=1)
+ 
+ 
+-def render(v: JSONContent, indent: int = 0) -> str:
++def render(
++    v: JSONContent,  # Text, a number, a list or an object, from a request
++    indent: int = 0,  # How deeply the value is nested. Each level indents by two spaces
++) -> str:  # The text that the model sees
+     """Flatten str | object | array into text the model sees. Field names are kept as labels."""
+     pad = "  " * indent
+     if v is None:
+@@ -70,12 +73,17 @@ def render(v: JSONContent, indent: int = 0) -> str:
+     )
+ 
+ 
+-def option_text(name: str, desc: JSONContent) -> str:
++def option_text(
++    name: str,  # The name of the option
++    desc: JSONContent,  # Its description, or None or "" when the name says enough
++) -> str:  # The name alone, or the name and the description
+     """Write an option as its name, followed by its description when it has one."""
+     return name if desc is None or desc == "" else f"{name}: {render(desc)}"
+ 
+ 
+-def to_record(req: SystemOneRequest) -> tuple[dict[str, Any], list[dict[str, Any]]]:
++def to_record(
++    req: SystemOneRequest,  # A request that the contract has accepted
++) -> tuple[dict[str, Any], list[dict[str, Any]]]:  # The record, and the metadata of each question
+     """-> internal record for encode(), plus per-question metadata to map probabilities back."""
+     qs, meta = [], []
+     for qid, q in req.questions.items():
+@@ -100,13 +108,17 @@ def to_record(req: SystemOneRequest) -> tuple[dict[str, Any], list[dict[str, Any
+     return {"state": render(req.state), "questions": qs}, meta
+ 
+ 
+-def choice_confidence(p: list[float]) -> float:
++def choice_confidence(
++    p: list[float],  # The probability of each option
++) -> float:  # From 0 for a guess to 1 when one option has all the probability
+     """Measure how far the most likely option stands above a guess: 1 if certain, 0 for a guess."""
+     k = len(p)
+     return 1.0 if k == 1 else (max(p) - 1 / k) / (1 - 1 / k)
+ 
+ 
+-def score_confidence(p: list[float]) -> float:
++def score_confidence(
++    p: list[float],  # The probability of each level, the lowest level first
++) -> float:  # From 0 for a guess to 1 when one level has all the probability
+     """How closely the probabilities sit around the most likely level: 1 if certain, 0 for a guess.
+ 
+     `spread` is the expected distance from the most likely level. `guess` is the spread of a guess,
+@@ -121,13 +133,18 @@ def score_confidence(p: list[float]) -> float:
+     return max(0.0, 1.0 - spread / guess)
+ 
+ 
+-def round_prob(x: float) -> float:
++def round_prob(
++    x: float,  # A probability, or a number made from probabilities
++) -> float:  # The same number, to four decimals
+     """Round a number for output. Four decimals keep the sum of a distribution within 0.02 of 1,
+     even with MAX_OPTIONS options. Two decimals did not: 77 equal options summed to 0.77."""
+     return round(float(x), 4)
+ 
+ 
+-def to_answers(probs: list[list[float]], meta: list[dict]) -> dict[str, Any]:
++def to_answers(
++    probs: list[list[float]],  # For each question, the probability of each of its options
++    meta: list[dict],  # The metadata of the questions, as to_record returns it
++) -> dict[str, Any]:  # The answer to each question, under its name
+     """Turn the probabilities of the model into an answer of the type of each question."""
+     out = {}
+     for p, m in zip(probs, meta, strict=True):
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ae28dff704c768a862e416a894ac42443ab3468c). [The code after it](https://github.com/rahuldave/babykev/tree/ae28dff704c768a862e416a894ac42443ab3468c).
+
+<a id="tut-13.5"></a>
+
+### 13.5 _check says what it checks
+
+`_check` is the validator of `Choice`. Its name starts with `_`, so the linter asks for no docstring, and the
+reference leaves it out. smalldocs checks it still, because a reader of the code needs to know what it does. It gets
+a docstring, and a docment on its return, the choice itself.
+
+A patch to [`src/babykev/api.py`](#tut-13.5-src-babykev-api.py-2ea65f).
+
+In `src/babykev/api.py`, line 32 is now `def _check(self) -> Self:  # The choice itself, unchanged`, and line 33 is its
+docstring.
+
+```bash
+just docs check
+```
+
+`just docs check` prints `babykev.api 8 of 12`, and `32 of 45`. The gaps of `_check` are gone.
+
+#### What changed
+
+- <a id="tut-13.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring and a docment for `_check`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a064e34557be7fc006863c995c8cd39e85491b31/src/babykev/api.py).
+  - look at `    def _check(self) -> Self:  # The choice itself, unchanged`
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -29,7 +29,8 @@ class Choice(BaseModel):
+     criteria: dict[str, JSONContent]
+ 
+     @model_validator(mode="after")
+-    def _check(self) -> Self:
++    def _check(self) -> Self:  # The choice itself, unchanged
++        """Refuse a choice with no options, or with more than MAX_OPTIONS."""
+         if not 1 <= len(self.criteria) <= MAX_OPTIONS:
+             raise ValueError(f"criteria must have 1..{MAX_OPTIONS} options")
+         return self
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a064e34557be7fc006863c995c8cd39e85491b31). [The code after it](https://github.com/rahuldave/babykev/tree/a064e34557be7fc006863c995c8cd39e85491b31).
+
+<a id="tut-13.6"></a>
+
+### 13.6 A description on every field of a request
+
+The four classes of a request have no signature to put a docment on. Each field is a line of the class, such as
+`type: Literal["noul"]`. pydantic takes a description of a field in `Field(description="...")`. It keeps the
+description in the schema of the model, which other programs read, and smalldocs puts it in the reference.
+
+A patch to [`src/babykev/api.py`](#tut-13.6-src-babykev-api.py-2ea65f).
+
+In `src/babykev/api.py`, the fields of `Noul` are on lines 19 to 24, and the fields of `SystemOneRequest` on lines 62
+to 65. The `criteria` of `Score`, on lines 49 to 53, keep their limits, `min_length=2` and `max_length=MAX_OPTIONS`,
+beside the new description.
+
+```bash
+uv run python -c "from babykev.api import Score; print(Score.model_json_schema()['properties']['criteria']['description'])"
+just docs check
+just test
+```
+
+`model_json_schema()` is the schema of the model, as JSON, and `uv run python -c` prints the description of the
+field `criteria` of `Score`, `The levels of the scale, the lowest first`. `just docs check` prints `babykev.api 12 of
+12`, and `36 of 45`. Every gap left is in the tests. `just test` prints `53 passed`. A description changes no rule of
+the contract.
+
+#### What changed
+
+- <a id="tut-13.6-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a description on every field of the four classes. 22 lines added, 11 removed. [The file](https://github.com/rahuldave/babykev/blob/6ad6c02267070b7c260934e3165ea40aeb49a035/src/babykev/api.py).
+  - look at `    type: Literal["noul"] = Field(description="Marks the question as one of yes or no")`
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -16,17 +16,22 @@ MAX_OPTIONS = 255
+ class Noul(BaseModel):
+     """A question of yes or no. Its criteria, if it has them, describe false and true."""
+ 
+-    type: Literal["noul"]
+-    instructions: JSONContent
+-    criteria: dict[str, JSONContent] | None = None
++    type: Literal["noul"] = Field(description="Marks the question as one of yes or no")
++    instructions: JSONContent = Field(description="The question, as text or as structured content")
++    criteria: dict[str, JSONContent] | None = Field(
++        default=None,
++        description="What no and yes mean, under the keys false and true. May be left out",
++    )
+ 
+ 
+ class Choice(BaseModel):
+     """A question answered by one of its options, named in its criteria."""
+ 
+-    type: Literal["choice"]
+-    instructions: JSONContent
+-    criteria: dict[str, JSONContent]
++    type: Literal["choice"] = Field(description="Marks the question as a choice")
++    instructions: JSONContent = Field(description="The question, as text or as structured content")
++    criteria: dict[str, JSONContent] = Field(
++        description="The name of each option, with its description, or null if the name says enough"
++    )
+ 
+     @model_validator(mode="after")
+     def _check(self) -> Self:  # The choice itself, unchanged
+@@ -39,9 +44,13 @@ class Choice(BaseModel):
+ class Score(BaseModel):
+     """A question answered by a level of a scale, whose criteria are the levels in order."""
+ 
+-    type: Literal["score"]
+-    instructions: JSONContent
+-    criteria: list[JSONContent] = Field(min_length=2, max_length=MAX_OPTIONS)
++    type: Literal["score"] = Field(description="Marks the question as a score")
++    instructions: JSONContent = Field(description="The question, as text or as structured content")
++    criteria: list[JSONContent] = Field(
++        min_length=2,
++        max_length=MAX_OPTIONS,
++        description="The levels of the scale, the lowest first",
++    )
+ 
+ 
+ Question = Noul | Choice | Score
+@@ -50,8 +59,10 @@ Question = Noul | Choice | Score
+ class SystemOneRequest(BaseModel):
+     """One request: a state, and the questions to answer about it, each by its name."""
+ 
+-    state: JSONContent
+-    questions: dict[str, Question] = Field(min_length=1)
++    state: JSONContent = Field(description="The context: the document that the questions are about")
++    questions: dict[str, Question] = Field(
++        min_length=1, description="The questions, each under a name that the caller chooses"
++    )
+ 
+ 
+ def render(
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/6ad6c02267070b7c260934e3165ea40aeb49a035). [The code after it](https://github.com/rahuldave/babykev/tree/6ad6c02267070b7c260934e3165ea40aeb49a035).
+
+<a id="tut-13.7"></a>
+
+### 13.7 Docments on the tests of the command
+
+The tests are documentation too. A reader learns from them what the code must do. `smalldocs api check` holds the
+tests to the same rule as the package. In `test_cli.py`, `run` and the two tests have parameters with no docment.
+Each now has one parameter on a line, with its docment.
+
+A patch to [`tests/unit/test_cli.py`](#tut-13.7-tests-unit-test_cli.py-44d4a0).
+
+In `tests/unit/test_cli.py`, the signature of `run` is on lines 8 to 11. The parameters of the two tests are on lines
+19 to 21 and 29 to 30.
+
+We read the tests of the command again, with their docments.
+
+```bash
+sed -n '8,40p' tests/unit/test_cli.py
+just test -k unknown_command
+just docs check
+```
+
+`sed` prints `run` and the two tests. Each docment says what pytest gives the test. `monkeypatch` sets the command
+line, and `capsys` catches what the test prints. The test of an unknown command runs `babykev train`, and checks the
+exit code 2 and the message. `just test -k unknown_command` prints `1 passed, 52 deselected`. `just docs check`
+prints `tests/unit/test_cli.py 3 of 3`, and `39 of 45`.
+
+#### What changed
+
+- <a id="tut-13.7-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: a docment on each parameter. 9 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/28caad31e7a7fbab5acefd39c2b2b9e153f096b0/tests/unit/test_cli.py).
+  - look at `    capsys: pytest.CaptureFixture[str],  # Catches the message of the refusal`
+
+<details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
+
+```diff
+@@ -5,7 +5,10 @@ import pytest
+ from babykev.cli import HELP, main
+ 
+ 
+-def run(monkeypatch: pytest.MonkeyPatch, *words: str) -> None:
++def run(
++    monkeypatch: pytest.MonkeyPatch,  # pytest's fixture, which undoes each change after the test
++    *words: str,  # The words after `babykev` on the command line
++) -> None:
+     """Run `babykev` with these words as its command line."""
+     monkeypatch.setattr("sys.argv", ["babykev", *words])
+     main()
+@@ -13,7 +16,9 @@ def run(monkeypatch: pytest.MonkeyPatch, *words: str) -> None:
+ 
+ @pytest.mark.parametrize("words", [(), ("help",), ("--help",), ("-h",)])
+ def test_help_is_printed_for_help_and_for_no_words(
+-    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str], words: tuple[str, ...]
++    monkeypatch: pytest.MonkeyPatch,  # Sets the command line for the test
++    capsys: pytest.CaptureFixture[str],  # pytest's fixture, which catches what the test prints
++    words: tuple[str, ...],  # The words of the command line, which ask for the help
+ ) -> None:
+     """`babykev`, `babykev help`, `--help` and `-h` all print the help text, and nothing else."""
+     run(monkeypatch, *words)
+@@ -21,7 +26,8 @@ def test_help_is_printed_for_help_and_for_no_words(
+ 
+ 
+ def test_an_unknown_command_is_refused_with_exit_code_2(
+-    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
++    monkeypatch: pytest.MonkeyPatch,  # Sets the command line for the test
++    capsys: pytest.CaptureFixture[str],  # Catches the message of the refusal
+ ) -> None:
+     """A word that is not a command is named, the help is pointed to, and the exit code is 2."""
+     with pytest.raises(SystemExit) as exit_info:
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/28caad31e7a7fbab5acefd39c2b2b9e153f096b0). [The code after it](https://github.com/rahuldave/babykev/tree/28caad31e7a7fbab5acefd39c2b2b9e153f096b0).
+
+<a id="tut-13.8"></a>
+
+### 13.8 Docments on the tests of the contract
+
+In `test_api.py`, the helper `cheese_request` has no docment on its return. Five tests take parameters from
+`@pytest.mark.parametrize`, with no docment. Each gets its docments.
+
+A patch to [`tests/unit/test_api.py`](#tut-13.8-tests-unit-test_api.py-58d97c).
+
+In `tests/unit/test_api.py`, line 32 is `def cheese_request() -> SystemOneRequest:  # A noul, a choice and a score about
+one cheese`. The test of `option_text` is on lines 155 to 169, with its three parameters on lines 164 to 166.
+
+```bash
+sed -n '155,169p' tests/unit/test_api.py
+just test -k option_text
+just docs check
+```
+
+`sed` prints the test of `option_text`. `@pytest.mark.parametrize` gives it three cases. The docments say what each
+value is, the name, the description, and the text that `option_text` must make of them. `just test -k option_text`
+prints `3 passed, 50 deselected`, one for each case. `just docs check` prints a count for each file, all
+complete, and `45 of 45 functions, methods and classes are typed and documented`. It ends with exit code 0.
+
+#### What changed
+
+- <a id="tut-13.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a docment on each parameter, and on the return of `cheese_request`. 17 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/4bd145b7895a9e6f7841a997995efcd343d0049c/tests/unit/test_api.py).
+  - look at `    description: JSONContent,  # Its description, or None or "" for none`
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -29,7 +29,7 @@ MILKS = {"cow": None, "goat": None, "sheep": None, "mixed": "More than one kind
+ FIRMNESS = ["Soft", "Semi-soft", "Semi-hard", "Hard"]
+ 
+ 
+-def cheese_request() -> SystemOneRequest:
++def cheese_request() -> SystemOneRequest:  # A noul, a choice and a score about one cheese
+     """One request that asks a question of each type."""
+     return SystemOneRequest.model_validate(
+         {
+@@ -47,7 +47,9 @@ def cheese_request() -> SystemOneRequest:
+ 
+ 
+ @pytest.mark.parametrize("line", SAMPLE_LINES)
+-def test_sample_line_fits_the_contract(line: dict[str, Any]) -> None:
++def test_sample_line_fits_the_contract(
++    line: dict[str, Any],  # One line of the sample data, read as JSON
++) -> None:
+     """Every line of the sample data is a valid request, with one record question per question."""
+     request = SystemOneRequest.model_validate(line)
+     record, meta = to_record(request)
+@@ -57,7 +59,9 @@ def test_sample_line_fits_the_contract(line: dict[str, Any]) -> None:
+ 
+ 
+ @pytest.mark.parametrize("line", SAMPLE_LINES)
+-def test_sample_line_has_a_usable_label_on_every_question(line: dict[str, Any]) -> None:
++def test_sample_line_has_a_usable_label_on_every_question(
++    line: dict[str, Any],  # One line of the sample data, read as JSON
++) -> None:
+     """A label is a boolean for noul, an option name for choice, and a level index for score."""
+     for question in line["questions"].values():
+         label = question["label"]
+@@ -140,7 +144,10 @@ def test_score_with_one_level_is_rejected() -> None:
+         ([{"role": "customer", "content": "hello"}], "- role: customer\n  content: hello"),
+     ],
+ )
+-def test_render_flattens_json_into_text(value: JSONContent, text: str) -> None:
++def test_render_flattens_json_into_text(
++    value: JSONContent,  # A value of a request
++    text: str,  # The text that render must make of it
++) -> None:
+     """Strings, numbers, lists and objects all become the text the model reads."""
+     assert render(value) == text
+ 
+@@ -154,7 +161,9 @@ def test_render_flattens_json_into_text(value: JSONContent, text: str) -> None:
+     ],
+ )
+ def test_option_text_adds_a_description_only_when_there_is_one(
+-    name: str, description: JSONContent, text: str
++    name: str,  # The name of the option
++    description: JSONContent,  # Its description, or None or "" for none
++    text: str,  # The text that option_text must make of them
+ ) -> None:
+     """An option is its name, followed by its description when it has one."""
+     assert option_text(name, description) == text
+@@ -280,7 +289,9 @@ def test_choice_confidence_grows_with_the_winner() -> None:
+ 
+ 
+ @pytest.mark.parametrize("level", [0, 1, 2])
+-def test_score_confidence_is_one_when_certain(level: int) -> None:
++def test_score_confidence_is_one_when_certain(
++    level: int,  # The level that has all the probability
++) -> None:
+     """All the probability on one level is certainty, wherever the level is."""
+     p = [0.0, 0.0, 0.0]
+     p[level] = 1.0
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/4bd145b7895a9e6f7841a997995efcd343d0049c). [The code after it](https://github.com/rahuldave/babykev/tree/4bd145b7895a9e6f7841a997995efcd343d0049c).
+
+<a id="tut-13.9"></a>
+
+### 13.9 A docment too long for its line, on purpose
+
+A docment is on the line of its parameter or of its return type, and a line has at most 100 characters. This move
+makes a mistake on purpose. The docment of the return of `to_record` says more, and its line grows to 119
+characters. The next moves show what the formatter makes of it.
+
+A patch to [`src/babykev/api.py`](#tut-13.9-src-babykev-api.py-2ea65f).
+
+In `src/babykev/api.py`, line 98 now ends with `# The record that the model reads, and the metadata of each question`.
+
+```bash
+just lint
+just fmt --check
+just docs check
+```
+
+`just lint` finds `E501`, `Line too long (119 > 100)`, at line 98, and ends with exit code 1. `just fmt --check`
+would rewrite the line. It shows the return type split over three lines, with the comment after `]:`, and ends with
+exit code 1. `just docs check` still prints `45 of 45`, because the docment is on its line.
+
+#### What changed
+
+- <a id="tut-13.9-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docment longer than its line, on purpose. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/95ebd81a9d15158c39a8adf35237da700e9334b2/src/babykev/api.py).
+  - look at `) -> tuple[dict[str, Any], list[dict[str, Any]]]:  # The record that the model reads, and the metadata of each question`
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -95,7 +95,7 @@ def option_text(
+ 
+ def to_record(
+     req: SystemOneRequest,  # A request that the contract has accepted
+-) -> tuple[dict[str, Any], list[dict[str, Any]]]:  # The record, and the metadata of each question
++) -> tuple[dict[str, Any], list[dict[str, Any]]]:  # The record that the model reads, and the metadata of each question
+     """-> internal record for encode(), plus per-question metadata to map probabilities back."""
+     qs, meta = [], []
+     for qid, q in req.questions.items():
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/95ebd81a9d15158c39a8adf35237da700e9334b2). [The code after it](https://github.com/rahuldave/babykev/tree/95ebd81a9d15158c39a8adf35237da700e9334b2).
+
+<a id="tut-13.10"></a>
+
+### 13.10 Just fmt wraps the return type
+
+The formatter fixes a line that is too long, and a person runs it without a second thought.
+
+This change came from running `just fmt`.
+
+`just fmt` prints `1 file reformatted, 5 files left unchanged`.
+
+In `src/babykev/api.py`, the return type of `to_record` is now on lines 98 to 100. `) -> tuple[` is line 98, the
+types are line 99, and `]:  # The record that the model reads, and the metadata of each question` is line 100.
+
+The comment is now two lines below the arrow `->`. smalldocs reads it as a comment on the line `]:`, and not as the
+docment of the return.
+
+```bash
+just lint
+just check
+just docs check
+```
+
+`just lint` prints `All checks passed!`, and `just check` passes, with exit code 0. `just docs check` prints
+`babykev.api 11 of 12`, `babykev.api:to_record: no return docment`, and `44 of 45`, with exit code 1. The linter and
+the formatter are happy, and only the docs check sees the lost docment. `just check` does not run it yet.
+
+#### What changed
+
+- <a id="tut-13.10-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the return type of `to_record`, over three lines. 3 lines added, 1 removed. It comes from `just fmt`. [The file](https://github.com/rahuldave/babykev/blob/54535b100f054ffd8b787c50cac1d3a828770ec9/src/babykev/api.py).
+  - look at `]:  # The record that the model reads, and the metadata of each question`
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -95,7 +95,9 @@ def option_text(
+ 
+ def to_record(
+     req: SystemOneRequest,  # A request that the contract has accepted
+-) -> tuple[dict[str, Any], list[dict[str, Any]]]:  # The record that the model reads, and the metadata of each question
++) -> tuple[
++    dict[str, Any], list[dict[str, Any]]
++]:  # The record that the model reads, and the metadata of each question
+     """-> internal record for encode(), plus per-question metadata to map probabilities back."""
+     qs, meta = [], []
+     for qid, q in req.questions.items():
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/54535b100f054ffd8b787c50cac1d3a828770ec9). [The code after it](https://github.com/rahuldave/babykev/tree/54535b100f054ffd8b787c50cac1d3a828770ec9).
+
+<a id="tut-13.11"></a>
+
+### 13.11 The docment, short enough
+
+The fix is a docment that fits on the line of the return type, with the type on one line again. The docment of
+before, `The record, and the metadata of each question`, fits, at 98 characters.
+
+A patch to [`src/babykev/api.py`](#tut-13.11-src-babykev-api.py-2ea65f).
+
+In `src/babykev/api.py`, line 98 is `) -> tuple[dict[str, Any], list[dict[str, Any]]]:  # The record, and the metadata of
+each question`, as it was before the mistake.
+
+```bash
+just fmt --check
+just docs check
+```
+
+`just fmt --check` prints `6 files already formatted`, and `just docs check` prints `45 of 45`, with exit code 0.
+
+#### What changed
+
+- <a id="tut-13.11-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the return type on one line, with its short docment. 1 line added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/861142a50356963bb5e371fe8226ba73b87eef93/src/babykev/api.py).
+  - look at `) -> tuple[dict[str, Any], list[dict[str, Any]]]:  # The record, and the metadata of each question`
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -95,9 +95,7 @@ def option_text(
+ 
+ def to_record(
+     req: SystemOneRequest,  # A request that the contract has accepted
+-) -> tuple[
+-    dict[str, Any], list[dict[str, Any]]
+-]:  # The record that the model reads, and the metadata of each question
++) -> tuple[dict[str, Any], list[dict[str, Any]]]:  # The record, and the metadata of each question
+     """-> internal record for encode(), plus per-question metadata to map probabilities back."""
+     qs, meta = [], []
+     for qid, q in req.questions.items():
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/861142a50356963bb5e371fe8226ba73b87eef93). [The code after it](https://github.com/rahuldave/babykev/tree/861142a50356963bb5e371fe8226ba73b87eef93).
+
+<a id="tut-13.12"></a>
+
+### 13.12 The gate checks the docs
+
+`just check` passed with a docment lost. As a line of `check`, `just docs check` runs before each `git commit`,
+through the hook. It goes after the tests, and before the config files.
+
+A patch to [`justfile`](#tut-13.12-justfile-424f0b).
+
+In the `justfile`, `just docs check` is line 76, between `just test -q` and `just lint-config`. The comment on line 66
+names the docs.
+
+```bash
+just --show check
+just check
+```
+
+`just --show check` prints the recipe, with five checks. `just check` prints the output of each, with `45 of 45`
+after the tests, and ends with exit code 0. A function, a parameter or a field with no documentation now stops
+`git commit`.
+
+#### What changed
+
+- <a id="tut-13.12-justfile-424f0b"></a>`justfile`: the docs check, in the gate. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/005b87bdfa2e70c6ceca52dc07197c69702f00be/justfile).
+  - look at `    just docs check`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -63,7 +63,7 @@ lint-config *args:
+ test *args:
+     @{{ if args == "help" { "just help test" } else { 'uv run pytest "$@"' } }}
+ 
+-# Run the checks one after another, and stop at the first that fails: the format, the linter, the tests, the config files
++# Run the checks one after another, and stop at the first that fails: the format, the linter, the tests, the docs, the config files
+ [group('quality')]
+ [no-exit-message]
+ check *args:
+@@ -73,6 +73,7 @@ check *args:
+     just fmt --check
+     just lint
+     just test -q
++    just docs check
+     just lint-config
+ 
+ # The reference of the code, by smalldocs. Words go to smalldocs api: just docs check, just docs module api
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/005b87bdfa2e70c6ceca52dc07197c69702f00be). [The code after it](https://github.com/rahuldave/babykev/tree/005b87bdfa2e70c6ceca52dc07197c69702f00be).
+
+<a id="tut-14"></a>
+
+## 14 The docs site
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 34 packages`.
+
+The reference exists only as Markdown that `just docs module` prints in a terminal. A reader wants a site, with a
+front page that says what babykev is, and a page of reference for each module. smalldocs builds that site from the
+same docstrings and docments. The build writes its files into `docs/`, and git must not track them. Then the site gets
+its settings and its front page, and the README names it.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/005b87bdfa2e70c6ceca52dc07197c69702f00be). [The code after it](https://github.com/rahuldave/babykev/tree/86c948e639d637a674b3d073de74e3f2c0a6cd6a).
+
+<a id="tut-14.1"></a>
+
+### 14.1 Just docs, alone, builds the site
+
+`smalldocs render docs` builds the site from the folder `docs`. It writes the reference pages from the code, then
+the HTML of every page into `docs/_site`. With no words, the recipe `docs` now runs it. With words, it runs
+`smalldocs api` as before. So the body of the recipe is a script of `sh`.
+
+A patch to [`justfile`](#tut-14.1-justfile-424f0b).
+
+In the `justfile`, the recipe `docs` starts at line 79, with its comment. Line 85,
+`if [ "$#" -eq 0 ]; then exec uv run smalldocs render docs; fi`, is the case with no words.
+
+```bash
+uv run smalldocs render docs
+just --show docs
+just docs
+git status --short
+```
+
+`smalldocs render docs` prints `wrote 2 page(s) to docs/_site`. The two pages are the reference of `api.py` and of
+`cli.py`, because `docs/` has no page of its own yet. `just --show docs` prints the recipe, and `just docs` prints the
+same line as the command.
+
+`git status --short` lists three new paths, each marked `??`, untracked. `docs/_site/` is the site, and
+`docs/_symbols.json` holds the names that a link can point to. `docs/api/` holds the reference pages, as Markdown. A
+build makes all three again from the code, so they do not belong in git. In do mode, `git status` also lists the
+change of the `justfile`.
+
+#### What changed
+
+- <a id="tut-14.1-justfile-424f0b"></a>`justfile`: with no words, `docs` builds the site. 5 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/0d29e34880ff2402546ddd88ded0908f70dd9034/justfile).
+  - look at `    if [ "$#" -eq 0 ]; then exec uv run smalldocs render docs; fi`
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -76,8 +76,11 @@ check *args:
+     just docs check
+     just lint-config
+ 
+-# The reference of the code, by smalldocs. Words go to smalldocs api: just docs check, just docs module api
++# The docs, by smalldocs. Alone, the site in docs/_site. Words go to smalldocs api: just docs check
+ [group('docs')]
+ [no-exit-message]
+ docs *args:
+-    @{{ if args == "help" { "just help docs" } else { 'uv run smalldocs api "$@" --dir docs' } }}
++    #!/usr/bin/env sh
++    if [ "$*" = help ]; then just help docs; exit 0; fi
++    if [ "$#" -eq 0 ]; then exec uv run smalldocs render docs; fi
++    exec uv run smalldocs api "$@" --dir docs
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0d29e34880ff2402546ddd88ded0908f70dd9034). [The code after it](https://github.com/rahuldave/babykev/tree/0d29e34880ff2402546ddd88ded0908f70dd9034).
+
+<a id="tut-14.2"></a>
+
+### 14.2 Git ignores what a build of the docs makes
+
+`.gitignore` names the files that git does not track. Three lines at its end name what a build of the docs makes.
+A `/` at the start of a line means the root of the repository, so `/docs/api/` is only that folder.
+
+A patch to [`.gitignore`](#tut-14.2-.gitignore-a5cc29).
+
+At the end of `.gitignore`, the comment is on line 222, and `/docs/_site/`, `/docs/api/` and `/docs/_symbols.json` on
+lines 223 to 225.
+
+```bash
+just docs
+git status --short --ignored docs
+```
+
+`just docs` prints `wrote 2 page(s) to docs/_site`. `git status --short --ignored docs` lists the three paths with
+`!!`, ignored, in place of `??`.
+
+#### What changed
+
+- <a id="tut-14.2-.gitignore-a5cc29"></a>`.gitignore`: the files that a build of the docs makes. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/1a53d8993513be1df47d87105dd97e22c24688c1/.gitignore).
+  - look at `/docs/_site/`
+
+<details><summary>The diff of <code>.gitignore</code></summary>
+
+```diff
+@@ -218,3 +218,8 @@ __marimo__/
+ 
+ # Streamlit
+ .streamlit/secrets.toml
++
++# smalldocs: the docs site, and the reference pages that each build makes from the code
++/docs/_site/
++/docs/api/
++/docs/_symbols.json
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/1a53d8993513be1df47d87105dd97e22c24688c1). [The code after it](https://github.com/rahuldave/babykev/tree/1a53d8993513be1df47d87105dd97e22c24688c1).
+
+<a id="tut-14.3"></a>
+
+### 14.3 The settings of the site
+
+The site has no title, no sidebar and no links between its pages. Its settings go in `docs/_smalldocs.yml`, above the
+section `api`, which stays as it is. They are the type of the project, its output folder, the title, the sidebar, the
+theme and a table of contents on each page. With them, a name in backticks, such as `Score`, becomes a link to its
+entry in the reference.
+
+A patch to [`docs/_smalldocs.yml`](#tut-14.3-docs-_smalldocs.yml-4b0b48).
+
+In `docs/_smalldocs.yml`, the sidebar is on lines 8 to 12. It lists the front page, `index.qmd`, then the reference
+pages, `contents: api/*`, under the title Reference. The section `api` is on lines 18 to 21, as before.
+
+```bash
+just docs
+open docs/_site/api/api.html
+```
+
+`just docs` prints `wrote 2 page(s) to docs/_site`, then two warnings, `api/api.qmd: broken link /index.qmd` and the
+same for `api/cli.qmd`. The sidebar names the front page, which does not exist yet. The next move writes it. The
+reference of `api.py` opens in the browser, with the sidebar on the left.
+
+#### What changed
+
+- <a id="tut-14.3-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the settings of the site, above the reference. 17 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/1d3b2adb4fe455efe72807095bfb2e0b41dd0234/docs/_smalldocs.yml).
+  - look at `        contents: api/*  # the reference pages, which each build makes from the code`
+
+<details><summary>The diff of <code>docs/_smalldocs.yml</code></summary>
+
+```diff
+@@ -1,4 +1,20 @@
+-# The settings of smalldocs. `api` is the reference, made from the code of the package
++# The settings of smalldocs. `just docs` builds the site into docs/_site
++project:
++  type: website
++  output-dir: _site
++
++website:
++  title: "babykev"
++  sidebar:
++    contents:
++      - index.qmd
++      - section: Reference
++        contents: api/*  # the reference pages, which each build makes from the code
++
++theme: cosmo
++toc: true
++
++# `api` is the reference, made from the code of the package. A name in backticks links to its entry
+ api:
+   packages: [babykev]
+   source: https://github.com/rahuldave/babykev/blob/tutorial  # each entry links to its line here
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/1d3b2adb4fe455efe72807095bfb2e0b41dd0234). [The code after it](https://github.com/rahuldave/babykev/tree/1d3b2adb4fe455efe72807095bfb2e0b41dd0234).
+
+<a id="tut-14.4"></a>
+
+### 14.4 A front page
+
+The front page, `docs/index.qmd`, says what babykev is, what a request holds, and what each module does. A `.qmd`
+file is Markdown, with a header between two lines `---` that gives the title of the page. The file is new, and comes
+whole, as a patch.
+
+A patch to [`docs/index.qmd`](#tut-14.4-docs-index.qmd-d6d880).
+
+The new file `docs/index.qmd` has 29 lines. Lines 1 to 3 are the header, with `title: babykev`. The list of modules is
+on lines 17 to 19.
+
+```bash
+just docs
+grep -o 'href="api/api.html#[^"]*"' docs/_site/index.html
+open docs/_site/index.html
+```
+
+`just docs` prints `wrote 3 page(s) to docs/_site`, and no warning. `grep -o` prints each link of the front page into
+the reference of `api.py`, seven of them. `SystemOneRequest`, `Noul`, `Choice` and `Score` link to their classes, and
+`to_record` and `to_answers` to their functions. `to_answers` is named twice. The front page opens in the browser.
+
+#### What changed
+
+- <a id="tut-14.4-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the front page, written by hand. New, 29 lines. [The file](https://github.com/rahuldave/babykev/blob/3874b02bfd14425bd62a22053b6d8c077d05eb9b/docs/index.qmd).
+  - look at ``A name in backticks, such as `to_answers`, links to its entry.``
+
+<details><summary>The diff of <code>docs/index.qmd</code></summary>
+
+```diff
+@@ -0,0 +1,29 @@
++---
++title: babykev
++---
++
++babykev is a small decision model. You send it one document, the context, and a set of typed questions
++about it. It returns a probability for every possible answer to every question.
++
++A request is a `SystemOneRequest`. It has a `state`, the context, and its questions, each under a name. A
++question has one of three types:
++
++- a `Noul` asks for yes or no
++- a `Choice` asks for one of several named options
++- a `Score` asks for a level on an ordered scale
++
++The code is in two modules:
++
++- `babykev.api` is the contract. `to_record` turns a request into the text and the options that the model
++  reads. `to_answers` turns the probabilities of the model into an answer of the type of each question.
++- `babykev.cli` is the command `babykev`.
++
++Each build of the site makes the pages under Reference from the code. A page takes these parts from each
++function and each class:
++
++- the signature and the types
++- the description, from the docstring
++- the description of each parameter, each return value and each field, from its docment or its
++  `Field(description=...)`
++
++A name in backticks, such as `to_answers`, links to its entry.
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3874b02bfd14425bd62a22053b6d8c077d05eb9b). [The code after it](https://github.com/rahuldave/babykev/tree/3874b02bfd14425bd62a22053b6d8c077d05eb9b).
+
+<a id="tut-14.5"></a>
+
+### 14.5 The README names the docs
+
+The table of the README says where each part of the project is, and it does not list the docs. `docs/` gets a row,
+under the tests.
+
+A patch to [`README.md`](#tut-14.5-README.md-8ec9a0).
+
+In `README.md`, the row of `docs/` is on line 74.
+
+```bash
+grep -n 'docs/' README.md
+```
+
+`grep` prints line 74, the new row.
+
+#### What changed
+
+- <a id="tut-14.5-README.md-8ec9a0"></a>`README.md`: a row for `docs/`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/86c948e639d637a674b3d073de74e3f2c0a6cd6a/README.md).
+  - look at ``| `docs/` | The docs site. `just docs` builds it into `docs/_site`, with the reference made from the code |``
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+```diff
+@@ -71,6 +71,7 @@ yourself at any time.
+ | `src/babykev/cli.py` | The command `babykev` |
+ | `data/cheese/sample.jsonl` | Five requests about cheese, one on each line. Every question has a `label`, the right answer |
+ | `tests/unit/` | The unit tests of the contract and of the command. One test checks every line of the sample data against the contract |
++| `docs/` | The docs site. `just docs` builds it into `docs/_site`, with the reference made from the code |
+ | `justfile` | Every task of the project, one recipe each. `just help` explains them |
+ | `README.md` | This file |
+ | `LICENSE`, `NOTICE` | The licence, and the credit to kev |
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/86c948e639d637a674b3d073de74e3f2c0a6cd6a). [The code after it](https://github.com/rahuldave/babykev/tree/86c948e639d637a674b3d073de74e3f2c0a6cd6a).

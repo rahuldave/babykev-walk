@@ -1,0 +1,957 @@
+---
+title: "13 Documentation in the code"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Build it yourself.** [Read the tutorial](../read/tut-13.qmd) is the other way to read this part.
+
+If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
+
+```bash
+git rm -rq --cached --ignore-unmatch -- :/ && git restore --source cbbf9bedfc2b --staged --worktree -- :/
+```
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 29 packages`.
+
+The signature of `render` gives the types of its parameters, and its docstring says what it does. Neither says what
+`indent` means, or what the text that `render` returns is for. A docment says it. A docment is a comment beside a
+parameter, a return type or a field, on the same line.
+
+smalldocs reads the signature, the docstring and the docments, and writes the reference of the code from them. It
+also lists what has no documentation, as coverage lists the lines that no test runs. The gaps close one part at a
+time. A long docment then shows what the formatter can do to one, and the gate runs the check.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac). [The code after it](https://github.com/rahuldave/babykev/tree/005b87bdfa2e70c6ceca52dc07197c69702f00be).
+
+## 13.1 Smalldocs, in the group docs {#tut-13.1}
+
+Nothing reads the documentation of the code yet. smalldocs is a Python package, so uv installs it like any other. It
+is for the documentation, so it goes in a third dependency group, `docs`.
+
+```bash
+uv add --group docs smalldocs
+```
+
+`uv add` prints `Resolved 34 packages`, and installs `smalldocs==0.1.5` and four packages that it needs, among them
+fastcore and markdown-it-py.
+
+`default-groups = "all"`, on line 23 of `pyproject.toml`, makes uv install every group. So `just setup` installs
+smalldocs, with no other change.
+
+```bash
+uv run smalldocs --version
+uv tree --only-group docs
+```
+
+`uv run smalldocs --version` prints `smalldocs 0.1.5`, or a newer version. `uv tree` prints smalldocs `(group: docs)`,
+and under it fastcore, markdown-it-py, mdit-py-plugins, pygments and pyyaml. mdurl is under markdown-it-py.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 609d58ce5f8c
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source cbbf9bedfc2b --staged -- :/ && git restore --source 609d58ce5f8c --staged --worktree -- :/
+```
+
+### What changed {#tut-13.1-what-changed-182c57}
+
+- <a id="tut-13.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the group `docs`, with smalldocs. 3 lines added. It comes from `uv add --group docs smalldocs`. [The file](https://github.com/rahuldave/babykev/blob/609d58ce5f8c0fb8e7b60548c8ee097766446ff5/pyproject.toml).
+  - look at `"smalldocs>=0.1.5",`
+- <a id="tut-13.1-uv.lock-8356d8"></a>`uv.lock`: the exact version of smalldocs, and of the packages that it needs. 62 lines added. It comes from `uv add --group docs smalldocs`. [The file](https://github.com/rahuldave/babykev/blob/609d58ce5f8c0fb8e7b60548c8ee097766446ff5/uv.lock).
+
+<details><summary>The diff that <code>uv add --group docs smalldocs</code> makes in <code>pyproject.toml</code></summary>
+
+```diff
+@@ -23,6 +23,9 @@ build-backend = "uv_build"
+ default-groups = "all"
+ 
+ [dependency-groups]
++docs = [
++    "smalldocs>=0.1.5",
++]
+ lint = [
+     "pre-commit>=4.7.0",
+     "ruff>=0.17.1",
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/609d58ce5f8c0fb8e7b60548c8ee097766446ff5). [The code after it](https://github.com/rahuldave/babykev/tree/609d58ce5f8c0fb8e7b60548c8ee097766446ff5).
+
+## 13.2 The settings of smalldocs {#tut-13.2}
+
+smalldocs needs to know which package to document. It reads its settings from `docs/_smalldocs.yml`. For now the file
+has one section, `api`, the reference. It names the package and the address of its source on GitHub. It also names
+the files of the tests, which smalldocs holds to the same rule as the package. The file is new, and comes whole, as a
+patch.
+
+Apply the patch to [`docs/_smalldocs.yml`](#tut-13.2-docs-_smalldocs.yml-4b0b48), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/4444b1e809427e92a5dc08a9e9fdbbddab7de830.diff | git apply --include=docs/_smalldocs.yml
+```
+
+Read the three keys under `api`, which are `packages`, `source` and `check`.
+
+```bash
+uv run smalldocs api check --dir docs
+```
+
+`smalldocs api check` lists the gaps, and `--dir docs` names the folder of the settings. It holds every function,
+method and class to one rule, with four parts.
+
+- a type and a docment on every parameter
+- a type and a docment on the return, unless it is `None`
+- a docstring
+- a description on every field of a pydantic model
+
+The first lines of the output count the complete ones in each module and each file of tests.
+
+- `babykev.api`, 0 of 12
+- `babykev.cli`, 1 of 1
+- `tests/unit/test_api.py`, 23 of 29
+- `tests/unit/test_cli.py`, 0 of 3
+
+Then come 46 lines, one for each gap, and the last line, `24 of 45 functions, methods and classes are typed and
+documented`. The command ends with exit code 1. The linter asks already for every type and for every docstring of a
+public name, so 45 of the 46 gaps are docments and descriptions. The other one is the docstring of `_check`, a private
+method, which the linter does not ask for.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 4444b1e80942
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 609d58ce5f8c --staged -- :/ && git restore --source 4444b1e80942 --staged --worktree -- :/
+```
+
+### What changed {#tut-13.2-what-changed-182c57}
+
+- <a id="tut-13.2-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the package to document, and the tests to check. New, 5 lines. [The file](https://github.com/rahuldave/babykev/blob/4444b1e809427e92a5dc08a9e9fdbbddab7de830/docs/_smalldocs.yml).
+  - look at `  packages: [babykev]`
+
+<details open><summary>The patch to <code>docs/_smalldocs.yml</code></summary>
+
+```diff
+@@ -0,0 +1,5 @@
++# The settings of smalldocs. `api` is the reference, made from the code of the package
++api:
++  packages: [babykev]
++  source: https://github.com/rahuldave/babykev/blob/tutorial  # each entry links to its line here
++  check: ["tests/**/*.py"]  # the tests are held to the same rule as the package
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/4444b1e809427e92a5dc08a9e9fdbbddab7de830). [The code after it](https://github.com/rahuldave/babykev/tree/4444b1e809427e92a5dc08a9e9fdbbddab7de830).
+
+## 13.3 The recipe docs {#tut-13.3}
+
+The command that lists the gaps is long. The recipe `docs` gives its words to `smalldocs api`, and adds `--dir docs`.
+
+Apply the patch to [`justfile`](#tut-13.3-justfile-424f0b), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/a582ad38e75bb188174b75a5e80405cebcd1259d.diff | git apply --include=justfile
+```
+
+The patch adds the recipe `docs` at the end of the `justfile`, in a group of its own, `docs`.
+
+```bash
+just --show docs
+just docs check
+just help docs
+```
+
+`just --show docs` prints the recipe. `just docs check` prints the same as `smalldocs api check` above, and ends with
+`24 of 45` and exit code 1. `just help docs` prints the line of the recipe.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check a582ad38e75b
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 4444b1e80942 --staged -- :/ && git restore --source a582ad38e75b --staged --worktree -- :/
+```
+
+### What changed {#tut-13.3-what-changed-182c57}
+
+- <a id="tut-13.3-justfile-424f0b"></a>`justfile`: the recipe `docs`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/a582ad38e75bb188174b75a5e80405cebcd1259d/justfile).
+  - look at `docs *args:`
+
+<details open><summary>The patch to <code>justfile</code></summary>
+
+```diff
+@@ -74,3 +74,9 @@ check *args:
+     just lint
+     just test -q
+     just lint-config
++
++# The reference of the code, by smalldocs. Words go to smalldocs api: just docs check, just docs module api
++[group('docs')]
++[no-exit-message]
++docs *args:
++    @{{ if args == "help" { "just help docs" } else { 'uv run smalldocs api "$@" --dir docs' } }}
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a582ad38e75bb188174b75a5e80405cebcd1259d). [The code after it](https://github.com/rahuldave/babykev/tree/a582ad38e75bb188174b75a5e80405cebcd1259d).
+
+## 13.4 Docments on the functions of api.py {#tut-13.4}
+
+`babykev.api` has seven functions, from `render` to `to_answers`, and none has a docment. Each function now has one
+parameter on a line, with its docment beside it, and a docment on its return type, after `-> TYPE:`. The type says
+`int`, and the docment says what the number means.
+
+Apply the patch to [`src/babykev/api.py`](#tut-13.4-src-babykev-api.py-2ea65f), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/ae28dff704c768a862e416a894ac42443ab3468c.diff | git apply --include=src/babykev/api.py
+```
+
+In `src/babykev/api.py`, the patch writes the line `def ...` of each of the seven functions again, over several
+lines. Read the docments of `render`, the first of them.
+
+`just docs module api` prints the reference of the module, as Markdown. `sed` keeps the part of `render`.
+
+```bash
+just docs module api | sed -n '/^## render$/,/^## option_text$/p'
+just docs check
+```
+
+The reference of `render` has its signature, its docstring, and a table with a row for `v`, for `indent` and for
+`returns`. The column Description holds the docments. `just docs check` prints `babykev.api 7 of 12`, and
+`31 of 45`, with exit code 1. The 7 are the seven functions. The five left in `babykev.api` are the four classes and
+`_check`.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check ae28dff704c7
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source a582ad38e75b --staged -- :/ && git restore --source ae28dff704c7 --staged --worktree -- :/
+```
+
+### What changed {#tut-13.4-what-changed-182c57}
+
+- <a id="tut-13.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docment on each parameter and each return of seven functions. 24 lines added, 7 removed. [The file](https://github.com/rahuldave/babykev/blob/ae28dff704c768a862e416a894ac42443ab3468c/src/babykev/api.py).
+  - look at `) -> str:  # The text that the model sees`
+
+<details open><summary>The patch to <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -53,7 +53,10 @@ class SystemOneRequest(BaseModel):
+     questions: dict[str, Question] = Field(min_length=1)
+ 
+ 
+-def render(v: JSONContent, indent: int = 0) -> str:
++def render(
++    v: JSONContent,  # Text, a number, a list or an object, from a request
++    indent: int = 0,  # How deeply the value is nested. Each level indents by two spaces
++) -> str:  # The text that the model sees
+     """Flatten str | object | array into text the model sees. Field names are kept as labels."""
+     pad = "  " * indent
+     if v is None:
+@@ -70,12 +73,17 @@ def render(v: JSONContent, indent: int = 0) -> str:
+     )
+ 
+ 
+-def option_text(name: str, desc: JSONContent) -> str:
++def option_text(
++    name: str,  # The name of the option
++    desc: JSONContent,  # Its description, or None or "" when the name says enough
++) -> str:  # The name alone, or the name and the description
+     """Write an option as its name, followed by its description when it has one."""
+     return name if desc is None or desc == "" else f"{name}: {render(desc)}"
+ 
+ 
+-def to_record(req: SystemOneRequest) -> tuple[dict[str, Any], list[dict[str, Any]]]:
++def to_record(
++    req: SystemOneRequest,  # A request that the contract has accepted
++) -> tuple[dict[str, Any], list[dict[str, Any]]]:  # The record, and the metadata of each question
+     """-> internal record for encode(), plus per-question metadata to map probabilities back."""
+     qs, meta = [], []
+     for qid, q in req.questions.items():
+@@ -100,13 +108,17 @@ def to_record(req: SystemOneRequest) -> tuple[dict[str, Any], list[dict[str, Any
+     return {"state": render(req.state), "questions": qs}, meta
+ 
+ 
+-def choice_confidence(p: list[float]) -> float:
++def choice_confidence(
++    p: list[float],  # The probability of each option
++) -> float:  # From 0 for a guess to 1 when one option has all the probability
+     """Measure how far the most likely option stands above a guess: 1 if certain, 0 for a guess."""
+     k = len(p)
+     return 1.0 if k == 1 else (max(p) - 1 / k) / (1 - 1 / k)
+ 
+ 
+-def score_confidence(p: list[float]) -> float:
++def score_confidence(
++    p: list[float],  # The probability of each level, the lowest level first
++) -> float:  # From 0 for a guess to 1 when one level has all the probability
+     """How closely the probabilities sit around the most likely level: 1 if certain, 0 for a guess.
+ 
+     `spread` is the expected distance from the most likely level. `guess` is the spread of a guess,
+@@ -121,13 +133,18 @@ def score_confidence(p: list[float]) -> float:
+     return max(0.0, 1.0 - spread / guess)
+ 
+ 
+-def round_prob(x: float) -> float:
++def round_prob(
++    x: float,  # A probability, or a number made from probabilities
++) -> float:  # The same number, to four decimals
+     """Round a number for output. Four decimals keep the sum of a distribution within 0.02 of 1,
+     even with MAX_OPTIONS options. Two decimals did not: 77 equal options summed to 0.77."""
+     return round(float(x), 4)
+ 
+ 
+-def to_answers(probs: list[list[float]], meta: list[dict]) -> dict[str, Any]:
++def to_answers(
++    probs: list[list[float]],  # For each question, the probability of each of its options
++    meta: list[dict],  # The metadata of the questions, as to_record returns it
++) -> dict[str, Any]:  # The answer to each question, under its name
+     """Turn the probabilities of the model into an answer of the type of each question."""
+     out = {}
+     for p, m in zip(probs, meta, strict=True):
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ae28dff704c768a862e416a894ac42443ab3468c). [The code after it](https://github.com/rahuldave/babykev/tree/ae28dff704c768a862e416a894ac42443ab3468c).
+
+## 13.5 _check says what it checks {#tut-13.5}
+
+`_check` is the validator of `Choice`. Its name starts with `_`, so the linter asks for no docstring, and the
+reference leaves it out. smalldocs checks it still, because a reader of the code needs to know what it does. It gets
+a docstring, and a docment on its return, the choice itself.
+
+Apply the patch to [`src/babykev/api.py`](#tut-13.5-src-babykev-api.py-2ea65f), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/a064e34557be7fc006863c995c8cd39e85491b31.diff | git apply --include=src/babykev/api.py
+```
+
+In `src/babykev/api.py`, the patch adds a docment at the end of the line `def _check(self) -> Self:`, and a docstring
+under it.
+
+```bash
+just docs check
+```
+
+`just docs check` prints `babykev.api 8 of 12`, and `32 of 45`. The gaps of `_check` are gone.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check a064e34557be
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source ae28dff704c7 --staged -- :/ && git restore --source a064e34557be --staged --worktree -- :/
+```
+
+### What changed {#tut-13.5-what-changed-182c57}
+
+- <a id="tut-13.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring and a docment for `_check`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a064e34557be7fc006863c995c8cd39e85491b31/src/babykev/api.py).
+  - look at `    def _check(self) -> Self:  # The choice itself, unchanged`
+
+<details open><summary>The patch to <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -29,7 +29,8 @@ class Choice(BaseModel):
+     criteria: dict[str, JSONContent]
+ 
+     @model_validator(mode="after")
+-    def _check(self) -> Self:
++    def _check(self) -> Self:  # The choice itself, unchanged
++        """Refuse a choice with no options, or with more than MAX_OPTIONS."""
+         if not 1 <= len(self.criteria) <= MAX_OPTIONS:
+             raise ValueError(f"criteria must have 1..{MAX_OPTIONS} options")
+         return self
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a064e34557be7fc006863c995c8cd39e85491b31). [The code after it](https://github.com/rahuldave/babykev/tree/a064e34557be7fc006863c995c8cd39e85491b31).
+
+## 13.6 A description on every field of a request {#tut-13.6}
+
+The four classes of a request have no signature to put a docment on. Each field is a line of the class, such as
+`type: Literal["noul"]`. pydantic takes a description of a field in `Field(description="...")`. It keeps the
+description in the schema of the model, which other programs read, and smalldocs puts it in the reference.
+
+Apply the patch to [`src/babykev/api.py`](#tut-13.6-src-babykev-api.py-2ea65f), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/6ad6c02267070b7c260934e3165ea40aeb49a035.diff | git apply --include=src/babykev/api.py
+```
+
+In `src/babykev/api.py`, the patch gives each field of `Noul`, `Choice`, `Score` and `SystemOneRequest` a
+`Field(description=...)`. A field with a default or a limit already keeps it, in the same `Field`.
+
+```bash
+uv run python -c "from babykev.api import Score; print(Score.model_json_schema()['properties']['criteria']['description'])"
+just docs check
+just test
+```
+
+`model_json_schema()` is the schema of the model, as JSON, and `uv run python -c` prints the description of the
+field `criteria` of `Score`, `The levels of the scale, the lowest first`. `just docs check` prints `babykev.api 12 of
+12`, and `36 of 45`. Every gap left is in the tests. `just test` prints `53 passed`. A description changes no rule of
+the contract.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 6ad6c0226707
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source a064e34557be --staged -- :/ && git restore --source 6ad6c0226707 --staged --worktree -- :/
+```
+
+### What changed {#tut-13.6-what-changed-182c57}
+
+- <a id="tut-13.6-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a description on every field of the four classes. 22 lines added, 11 removed. [The file](https://github.com/rahuldave/babykev/blob/6ad6c02267070b7c260934e3165ea40aeb49a035/src/babykev/api.py).
+  - look at `    type: Literal["noul"] = Field(description="Marks the question as one of yes or no")`
+
+<details open><summary>The patch to <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -16,17 +16,22 @@ MAX_OPTIONS = 255
+ class Noul(BaseModel):
+     """A question of yes or no. Its criteria, if it has them, describe false and true."""
+ 
+-    type: Literal["noul"]
+-    instructions: JSONContent
+-    criteria: dict[str, JSONContent] | None = None
++    type: Literal["noul"] = Field(description="Marks the question as one of yes or no")
++    instructions: JSONContent = Field(description="The question, as text or as structured content")
++    criteria: dict[str, JSONContent] | None = Field(
++        default=None,
++        description="What no and yes mean, under the keys false and true. May be left out",
++    )
+ 
+ 
+ class Choice(BaseModel):
+     """A question answered by one of its options, named in its criteria."""
+ 
+-    type: Literal["choice"]
+-    instructions: JSONContent
+-    criteria: dict[str, JSONContent]
++    type: Literal["choice"] = Field(description="Marks the question as a choice")
++    instructions: JSONContent = Field(description="The question, as text or as structured content")
++    criteria: dict[str, JSONContent] = Field(
++        description="The name of each option, with its description, or null if the name says enough"
++    )
+ 
+     @model_validator(mode="after")
+     def _check(self) -> Self:  # The choice itself, unchanged
+@@ -39,9 +44,13 @@ class Choice(BaseModel):
+ class Score(BaseModel):
+     """A question answered by a level of a scale, whose criteria are the levels in order."""
+ 
+-    type: Literal["score"]
+-    instructions: JSONContent
+-    criteria: list[JSONContent] = Field(min_length=2, max_length=MAX_OPTIONS)
++    type: Literal["score"] = Field(description="Marks the question as a score")
++    instructions: JSONContent = Field(description="The question, as text or as structured content")
++    criteria: list[JSONContent] = Field(
++        min_length=2,
++        max_length=MAX_OPTIONS,
++        description="The levels of the scale, the lowest first",
++    )
+ 
+ 
+ Question = Noul | Choice | Score
+@@ -50,8 +59,10 @@ Question = Noul | Choice | Score
+ class SystemOneRequest(BaseModel):
+     """One request: a state, and the questions to answer about it, each by its name."""
+ 
+-    state: JSONContent
+-    questions: dict[str, Question] = Field(min_length=1)
++    state: JSONContent = Field(description="The context: the document that the questions are about")
++    questions: dict[str, Question] = Field(
++        min_length=1, description="The questions, each under a name that the caller chooses"
++    )
+ 
+ 
+ def render(
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/6ad6c02267070b7c260934e3165ea40aeb49a035). [The code after it](https://github.com/rahuldave/babykev/tree/6ad6c02267070b7c260934e3165ea40aeb49a035).
+
+## 13.7 Docments on the tests of the command {#tut-13.7}
+
+The tests are documentation too. A reader learns from them what the code must do. `smalldocs api check` holds the
+tests to the same rule as the package. In `test_cli.py`, `run` and the two tests have parameters with no docment.
+Each now has one parameter on a line, with its docment.
+
+Apply the patch to [`tests/unit/test_cli.py`](#tut-13.7-tests-unit-test_cli.py-44d4a0), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/28caad31e7a7fbab5acefd39c2b2b9e153f096b0.diff | git apply --include=tests/unit/test_cli.py
+```
+
+In `tests/unit/test_cli.py`, the patch writes the signatures of `run` and of the two tests again, with a docment
+beside each parameter.
+
+We read the tests of the command again, with their docments.
+
+```bash
+sed -n '8,40p' tests/unit/test_cli.py
+just test -k unknown_command
+just docs check
+```
+
+`sed` prints `run` and the two tests. Each docment says what pytest gives the test. `monkeypatch` sets the command
+line, and `capsys` catches what the test prints. The test of an unknown command runs `babykev train`, and checks the
+exit code 2 and the message. `just test -k unknown_command` prints `1 passed, 52 deselected`. `just docs check`
+prints `tests/unit/test_cli.py 3 of 3`, and `39 of 45`.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 28caad31e7a7
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 6ad6c0226707 --staged -- :/ && git restore --source 28caad31e7a7 --staged --worktree -- :/
+```
+
+### What changed {#tut-13.7-what-changed-182c57}
+
+- <a id="tut-13.7-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: a docment on each parameter. 9 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/28caad31e7a7fbab5acefd39c2b2b9e153f096b0/tests/unit/test_cli.py).
+  - look at `    capsys: pytest.CaptureFixture[str],  # Catches the message of the refusal`
+
+<details open><summary>The patch to <code>tests/unit/test_cli.py</code></summary>
+
+```diff
+@@ -5,7 +5,10 @@ import pytest
+ from babykev.cli import HELP, main
+ 
+ 
+-def run(monkeypatch: pytest.MonkeyPatch, *words: str) -> None:
++def run(
++    monkeypatch: pytest.MonkeyPatch,  # pytest's fixture, which undoes each change after the test
++    *words: str,  # The words after `babykev` on the command line
++) -> None:
+     """Run `babykev` with these words as its command line."""
+     monkeypatch.setattr("sys.argv", ["babykev", *words])
+     main()
+@@ -13,7 +16,9 @@ def run(monkeypatch: pytest.MonkeyPatch, *words: str) -> None:
+ 
+ @pytest.mark.parametrize("words", [(), ("help",), ("--help",), ("-h",)])
+ def test_help_is_printed_for_help_and_for_no_words(
+-    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str], words: tuple[str, ...]
++    monkeypatch: pytest.MonkeyPatch,  # Sets the command line for the test
++    capsys: pytest.CaptureFixture[str],  # pytest's fixture, which catches what the test prints
++    words: tuple[str, ...],  # The words of the command line, which ask for the help
+ ) -> None:
+     """`babykev`, `babykev help`, `--help` and `-h` all print the help text, and nothing else."""
+     run(monkeypatch, *words)
+@@ -21,7 +26,8 @@ def test_help_is_printed_for_help_and_for_no_words(
+ 
+ 
+ def test_an_unknown_command_is_refused_with_exit_code_2(
+-    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
++    monkeypatch: pytest.MonkeyPatch,  # Sets the command line for the test
++    capsys: pytest.CaptureFixture[str],  # Catches the message of the refusal
+ ) -> None:
+     """A word that is not a command is named, the help is pointed to, and the exit code is 2."""
+     with pytest.raises(SystemExit) as exit_info:
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/28caad31e7a7fbab5acefd39c2b2b9e153f096b0). [The code after it](https://github.com/rahuldave/babykev/tree/28caad31e7a7fbab5acefd39c2b2b9e153f096b0).
+
+## 13.8 Docments on the tests of the contract {#tut-13.8}
+
+In `test_api.py`, the helper `cheese_request` has no docment on its return. Five tests take parameters from
+`@pytest.mark.parametrize`, with no docment. Each gets its docments.
+
+Apply the patch to [`tests/unit/test_api.py`](#tut-13.8-tests-unit-test_api.py-58d97c), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/4bd145b7895a9e6f7841a997995efcd343d0049c.diff | git apply --include=tests/unit/test_api.py
+```
+
+In `tests/unit/test_api.py`, the patch adds a docment at the end of the line `def cheese_request()`. It writes the
+signatures of five tests again, one parameter on a line, with its docment.
+
+```bash
+sed -n '155,169p' tests/unit/test_api.py
+just test -k option_text
+just docs check
+```
+
+`sed` prints the test of `option_text`. `@pytest.mark.parametrize` gives it three cases. The docments say what each
+value is, the name, the description, and the text that `option_text` must make of them. `just test -k option_text`
+prints `3 passed, 50 deselected`, one for each case. `just docs check` prints a count for each file, all
+complete, and `45 of 45 functions, methods and classes are typed and documented`. It ends with exit code 0.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 4bd145b7895a
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 28caad31e7a7 --staged -- :/ && git restore --source 4bd145b7895a --staged --worktree -- :/
+```
+
+### What changed {#tut-13.8-what-changed-182c57}
+
+- <a id="tut-13.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a docment on each parameter, and on the return of `cheese_request`. 17 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/4bd145b7895a9e6f7841a997995efcd343d0049c/tests/unit/test_api.py).
+  - look at `    description: JSONContent,  # Its description, or None or "" for none`
+
+<details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -29,7 +29,7 @@ MILKS = {"cow": None, "goat": None, "sheep": None, "mixed": "More than one kind
+ FIRMNESS = ["Soft", "Semi-soft", "Semi-hard", "Hard"]
+ 
+ 
+-def cheese_request() -> SystemOneRequest:
++def cheese_request() -> SystemOneRequest:  # A noul, a choice and a score about one cheese
+     """One request that asks a question of each type."""
+     return SystemOneRequest.model_validate(
+         {
+@@ -47,7 +47,9 @@ def cheese_request() -> SystemOneRequest:
+ 
+ 
+ @pytest.mark.parametrize("line", SAMPLE_LINES)
+-def test_sample_line_fits_the_contract(line: dict[str, Any]) -> None:
++def test_sample_line_fits_the_contract(
++    line: dict[str, Any],  # One line of the sample data, read as JSON
++) -> None:
+     """Every line of the sample data is a valid request, with one record question per question."""
+     request = SystemOneRequest.model_validate(line)
+     record, meta = to_record(request)
+@@ -57,7 +59,9 @@ def test_sample_line_fits_the_contract(line: dict[str, Any]) -> None:
+ 
+ 
+ @pytest.mark.parametrize("line", SAMPLE_LINES)
+-def test_sample_line_has_a_usable_label_on_every_question(line: dict[str, Any]) -> None:
++def test_sample_line_has_a_usable_label_on_every_question(
++    line: dict[str, Any],  # One line of the sample data, read as JSON
++) -> None:
+     """A label is a boolean for noul, an option name for choice, and a level index for score."""
+     for question in line["questions"].values():
+         label = question["label"]
+@@ -140,7 +144,10 @@ def test_score_with_one_level_is_rejected() -> None:
+         ([{"role": "customer", "content": "hello"}], "- role: customer\n  content: hello"),
+     ],
+ )
+-def test_render_flattens_json_into_text(value: JSONContent, text: str) -> None:
++def test_render_flattens_json_into_text(
++    value: JSONContent,  # A value of a request
++    text: str,  # The text that render must make of it
++) -> None:
+     """Strings, numbers, lists and objects all become the text the model reads."""
+     assert render(value) == text
+ 
+@@ -154,7 +161,9 @@ def test_render_flattens_json_into_text(value: JSONContent, text: str) -> None:
+     ],
+ )
+ def test_option_text_adds_a_description_only_when_there_is_one(
+-    name: str, description: JSONContent, text: str
++    name: str,  # The name of the option
++    description: JSONContent,  # Its description, or None or "" for none
++    text: str,  # The text that option_text must make of them
+ ) -> None:
+     """An option is its name, followed by its description when it has one."""
+     assert option_text(name, description) == text
+@@ -280,7 +289,9 @@ def test_choice_confidence_grows_with_the_winner() -> None:
+ 
+ 
+ @pytest.mark.parametrize("level", [0, 1, 2])
+-def test_score_confidence_is_one_when_certain(level: int) -> None:
++def test_score_confidence_is_one_when_certain(
++    level: int,  # The level that has all the probability
++) -> None:
+     """All the probability on one level is certainty, wherever the level is."""
+     p = [0.0, 0.0, 0.0]
+     p[level] = 1.0
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/4bd145b7895a9e6f7841a997995efcd343d0049c). [The code after it](https://github.com/rahuldave/babykev/tree/4bd145b7895a9e6f7841a997995efcd343d0049c).
+
+## 13.9 A docment too long for its line, on purpose {#tut-13.9}
+
+A docment is on the line of its parameter or of its return type, and a line has at most 100 characters. This move
+makes a mistake on purpose. The docment of the return of `to_record` says more, and its line grows to 119
+characters. The next moves show what the formatter makes of it.
+
+Apply the patch to [`src/babykev/api.py`](#tut-13.9-src-babykev-api.py-2ea65f), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/95ebd81a9d15158c39a8adf35237da700e9334b2.diff | git apply --include=src/babykev/api.py
+```
+
+In `src/babykev/api.py`, the patch writes the docment of the return of `to_record` again, on line 98.
+
+```bash
+just lint
+just fmt --check
+just docs check
+```
+
+`just lint` finds `E501`, `Line too long (119 > 100)`, at line 98, and ends with exit code 1. `just fmt --check`
+would rewrite the line. It shows the return type split over three lines, with the comment after `]:`, and ends with
+exit code 1. `just docs check` still prints `45 of 45`, because the docment is on its line.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 95ebd81a9d15
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 4bd145b7895a --staged -- :/ && git restore --source 95ebd81a9d15 --staged --worktree -- :/
+```
+
+### What changed {#tut-13.9-what-changed-182c57}
+
+- <a id="tut-13.9-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docment longer than its line, on purpose. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/95ebd81a9d15158c39a8adf35237da700e9334b2/src/babykev/api.py).
+  - look at `) -> tuple[dict[str, Any], list[dict[str, Any]]]:  # The record that the model reads, and the metadata of each question`
+
+<details open><summary>The patch to <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -95,7 +95,7 @@ def option_text(
+ 
+ def to_record(
+     req: SystemOneRequest,  # A request that the contract has accepted
+-) -> tuple[dict[str, Any], list[dict[str, Any]]]:  # The record, and the metadata of each question
++) -> tuple[dict[str, Any], list[dict[str, Any]]]:  # The record that the model reads, and the metadata of each question
+     """-> internal record for encode(), plus per-question metadata to map probabilities back."""
+     qs, meta = [], []
+     for qid, q in req.questions.items():
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/95ebd81a9d15158c39a8adf35237da700e9334b2). [The code after it](https://github.com/rahuldave/babykev/tree/95ebd81a9d15158c39a8adf35237da700e9334b2).
+
+## 13.10 Just fmt wraps the return type {#tut-13.10}
+
+The formatter fixes a line that is too long, and a person runs it without a second thought.
+
+```bash
+just fmt
+```
+
+`just fmt` prints `1 file reformatted, 5 files left unchanged`.
+
+The comment is now two lines below the arrow `->`. smalldocs reads it as a comment on the line `]:`, and not as the
+docment of the return.
+
+```bash
+just lint
+just check
+just docs check
+```
+
+`just lint` prints `All checks passed!`, and `just check` passes, with exit code 0. `just docs check` prints
+`babykev.api 11 of 12`, `babykev.api:to_record: no return docment`, and `44 of 45`, with exit code 1. The linter and
+the formatter are happy, and only the docs check sees the lost docment. `just check` does not run it yet.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 54535b100f05
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 95ebd81a9d15 --staged -- :/ && git restore --source 54535b100f05 --staged --worktree -- :/
+```
+
+### What changed {#tut-13.10-what-changed-182c57}
+
+- <a id="tut-13.10-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the return type of `to_record`, over three lines. 3 lines added, 1 removed. It comes from `just fmt`. [The file](https://github.com/rahuldave/babykev/blob/54535b100f054ffd8b787c50cac1d3a828770ec9/src/babykev/api.py).
+  - look at `]:  # The record that the model reads, and the metadata of each question`
+
+<details><summary>The diff that <code>just fmt</code> makes in <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -95,7 +95,9 @@ def option_text(
+ 
+ def to_record(
+     req: SystemOneRequest,  # A request that the contract has accepted
+-) -> tuple[dict[str, Any], list[dict[str, Any]]]:  # The record that the model reads, and the metadata of each question
++) -> tuple[
++    dict[str, Any], list[dict[str, Any]]
++]:  # The record that the model reads, and the metadata of each question
+     """-> internal record for encode(), plus per-question metadata to map probabilities back."""
+     qs, meta = [], []
+     for qid, q in req.questions.items():
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/54535b100f054ffd8b787c50cac1d3a828770ec9). [The code after it](https://github.com/rahuldave/babykev/tree/54535b100f054ffd8b787c50cac1d3a828770ec9).
+
+## 13.11 The docment, short enough {#tut-13.11}
+
+The fix is a docment that fits on the line of the return type, with the type on one line again. The docment of
+before, `The record, and the metadata of each question`, fits, at 98 characters.
+
+Apply the patch to [`src/babykev/api.py`](#tut-13.11-src-babykev-api.py-2ea65f), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/861142a50356963bb5e371fe8226ba73b87eef93.diff | git apply --include=src/babykev/api.py
+```
+
+In `src/babykev/api.py`, the patch puts the return type of `to_record` on one line again, line 98, with the short
+docment.
+
+```bash
+just fmt --check
+just docs check
+```
+
+`just fmt --check` prints `6 files already formatted`, and `just docs check` prints `45 of 45`, with exit code 0.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 861142a50356
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 54535b100f05 --staged -- :/ && git restore --source 861142a50356 --staged --worktree -- :/
+```
+
+### What changed {#tut-13.11-what-changed-182c57}
+
+- <a id="tut-13.11-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the return type on one line, with its short docment. 1 line added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/861142a50356963bb5e371fe8226ba73b87eef93/src/babykev/api.py).
+  - look at `) -> tuple[dict[str, Any], list[dict[str, Any]]]:  # The record, and the metadata of each question`
+
+<details open><summary>The patch to <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -95,9 +95,7 @@ def option_text(
+ 
+ def to_record(
+     req: SystemOneRequest,  # A request that the contract has accepted
+-) -> tuple[
+-    dict[str, Any], list[dict[str, Any]]
+-]:  # The record that the model reads, and the metadata of each question
++) -> tuple[dict[str, Any], list[dict[str, Any]]]:  # The record, and the metadata of each question
+     """-> internal record for encode(), plus per-question metadata to map probabilities back."""
+     qs, meta = [], []
+     for qid, q in req.questions.items():
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/861142a50356963bb5e371fe8226ba73b87eef93). [The code after it](https://github.com/rahuldave/babykev/tree/861142a50356963bb5e371fe8226ba73b87eef93).
+
+## 13.12 The gate checks the docs {#tut-13.12}
+
+`just check` passed with a docment lost. As a line of `check`, `just docs check` runs before each `git commit`,
+through the hook. It goes after the tests, and before the config files.
+
+Apply the patch to [`justfile`](#tut-13.12-justfile-424f0b), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/005b87bdfa2e70c6ceca52dc07197c69702f00be.diff | git apply --include=justfile
+```
+
+In the recipe `check`, the patch adds `just docs check` under `just test -q`, and names the docs in the comment above
+the recipe.
+
+```bash
+just --show check
+just check
+```
+
+`just --show check` prints the recipe, with five checks. `just check` prints the output of each, with `45 of 45`
+after the tests, and ends with exit code 0. A function, a parameter or a field with no documentation now stops
+`git commit`.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 005b87bdfa2e
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 861142a50356 --staged -- :/ && git restore --source 005b87bdfa2e --staged --worktree -- :/
+```
+
+### What changed {#tut-13.12-what-changed-182c57}
+
+- <a id="tut-13.12-justfile-424f0b"></a>`justfile`: the docs check, in the gate. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/005b87bdfa2e70c6ceca52dc07197c69702f00be/justfile).
+  - look at `    just docs check`
+
+<details open><summary>The patch to <code>justfile</code></summary>
+
+```diff
+@@ -63,7 +63,7 @@ lint-config *args:
+ test *args:
+     @{{ if args == "help" { "just help test" } else { 'uv run pytest "$@"' } }}
+ 
+-# Run the checks one after another, and stop at the first that fails: the format, the linter, the tests, the config files
++# Run the checks one after another, and stop at the first that fails: the format, the linter, the tests, the docs, the config files
+ [group('quality')]
+ [no-exit-message]
+ check *args:
+@@ -73,6 +73,7 @@ check *args:
+     just fmt --check
+     just lint
+     just test -q
++    just docs check
+     just lint-config
+ 
+ # The reference of the code, by smalldocs. Words go to smalldocs api: just docs check, just docs module api
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/005b87bdfa2e70c6ceca52dc07197c69702f00be). [The code after it](https://github.com/rahuldave/babykev/tree/005b87bdfa2e70c6ceca52dc07197c69702f00be).

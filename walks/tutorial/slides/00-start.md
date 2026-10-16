@@ -72,7 +72,11 @@ A machine-learning project is a software project with a model and data in it.
 | tut-04 | Tests of what a request is | **pytest** |
 | tut-05 | Tests of the text that the model reads, and of the answers made from its probabilities | **pytest** |
 | tut-06 | Two bugs of kev, each found by a test and then fixed | **pytest** |
-| Later | Format and lint, `just check` and a git hook, docs, the model and its tests, Docker images, checks and docs on GitHub | **ruff**, **pre-commit**, **smalldocs**, **torch**, **ty**, **hypothesis**, **Docker**, **GitHub Actions** |
+| tut-07 to tut-10 | One format, a linter, a type in every signature, a docstring on every public name | **ruff** |
+| tut-11 | `just check`, and a git hook that runs it before each commit | **pre-commit** |
+| tut-12 | Checks of the config files | **validate-pyproject**, **yamllint** |
+| tut-13, tut-14 | Documentation in the code, its check, and a site built from it | **smalldocs** |
+| Later | The model and its tests, Docker images, checks and docs on GitHub | **torch**, **ty**, **hypothesis**, **Docker**, **GitHub Actions** |
 
 ---
 
