@@ -3079,7 +3079,7 @@ is for the documentation, so it goes in a third dependency group, `docs`.
 
 do$ uv add --group docs smalldocs
 
-`uv add` prints `Resolved 34 packages`, and installs `smalldocs==0.1.5` and four packages that it needs, among them
+`uv add` prints `Resolved 34 packages`, and installs smalldocs and four packages that it needs, among them
 fastcore and markdown-it-py.
 
 ::: watch
@@ -3093,7 +3093,7 @@ smalldocs, with no other change.
 $ uv run smalldocs --version
 $ uv tree --only-group docs
 
-`uv run smalldocs --version` prints `smalldocs 0.1.5`, or a newer version. `uv tree` prints smalldocs `(group: docs)`,
+`uv run smalldocs --version` prints the version of smalldocs that uv installed. `uv tree` prints smalldocs `(group: docs)`,
 and under it fastcore, markdown-it-py, mdit-py-plugins, pygments and pyyaml. mdurl is under markdown-it-py.
 
 files:
