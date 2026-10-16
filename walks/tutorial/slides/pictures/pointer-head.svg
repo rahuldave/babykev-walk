@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 360" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif">
+  <rect width="960" height="360" fill="#ffffff"/>
+  <g font-size="16" fill="#17202b" text-anchor="middle">
+    <text x="120" y="24" font-weight="600">What the model computed at …</text>
+    <rect x="30" y="50" width="180" height="50" rx="6" fill="#e3f4ea" stroke="#1d7a4c" stroke-width="2.5"/>
+    <text x="120" y="81" font-family="ui-monospace, Menlo, monospace">&lt;decide&gt;</text>
+    <rect x="30" y="170" width="180" height="42" rx="6" fill="#e3f4ea" stroke="#1d7a4c" stroke-width="2.5"/>
+    <text x="120" y="197" font-family="ui-monospace, Menlo, monospace">&lt;/opt&gt; cow</text>
+    <rect x="30" y="220" width="180" height="42" rx="6" fill="#e3f4ea" stroke="#1d7a4c" stroke-width="2.5"/>
+    <text x="120" y="247" font-family="ui-monospace, Menlo, monospace">&lt;/opt&gt; sheep</text>
+    <rect x="30" y="270" width="180" height="42" rx="6" fill="#e3f4ea" stroke="#1d7a4c" stroke-width="2.5"/>
+    <text x="120" y="297" font-family="ui-monospace, Menlo, monospace">&lt;/opt&gt; goat</text>
+  </g>
+  <g font-size="16" fill="#17202b" text-anchor="middle">
+    <rect x="290" y="50" width="170" height="50" rx="6" fill="#fbefdd" stroke="#a85b00"/>
+    <text x="375" y="72" font-weight="600">Linear q</text><text x="375" y="91" font-size="13" fill="#4d5969">to 256 numbers</text>
+    <rect x="290" y="210" width="170" height="62" rx="6" fill="#fbefdd" stroke="#a85b00"/>
+    <text x="375" y="238" font-weight="600">Linear k</text><text x="375" y="258" font-size="13" fill="#4d5969">to 256 numbers, per option</text>
+    <rect x="540" y="130" width="150" height="62" rx="6" fill="#e4ebf9" stroke="#2456b5"/>
+    <text x="615" y="157" font-weight="600">dot product</text><text x="615" y="177" font-size="13" fill="#4d5969">one score per option</text>
+    <rect x="760" y="130" width="170" height="62" rx="6" fill="#e4ebf9" stroke="#2456b5"/>
+    <text x="845" y="157" font-weight="600">softmax</text><text x="845" y="177" font-size="13" fill="#4d5969">scores to probabilities</text>
+  </g>
+  <g stroke="#6f7b8b" stroke-width="2.5" fill="none">
+    <path d="M214 75 H278"/><path d="M214 241 H278"/>
+    <path d="M464 75 H500 Q520 75 520 95 V140 Q520 150 530 152"/>
+    <path d="M464 241 H500 Q520 241 520 221 V182 Q520 172 530 170"/>
+    <path d="M694 161 H748"/>
+  </g>
+  <g fill="#6f7b8b">
+    <polygon points="278,69 288,75 278,81"/><polygon points="278,235 288,241 278,247"/>
+    <polygon points="528,146 538,152 528,158"/><polygon points="528,164 538,170 528,176"/>
+    <polygon points="748,155 758,161 748,167"/>
+  </g>
+  <g font-size="15" fill="#17202b" font-family="ui-monospace, Menlo, monospace">
+    <text x="770" y="232">cow    0.12</text>
+    <text x="770" y="256">sheep  0.81</text>
+    <text x="770" y="280">goat   0.07</text>
+  </g>
+  <text x="30" y="346" font-size="16" fill="#4d5969">The options are compared with the question. There is no fixed list of classes: any number of options, any text.</text>
+</svg>

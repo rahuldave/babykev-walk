@@ -3589,3 +3589,498 @@ $ grep -n 'docs/' README.md
 files:
 - diff `README.md`: a row for `docs/`.
   show: ``| `docs/` | The docs site. `just docs` builds it into `docs/_site`, with the reference made from the code |``
+
+## tut-15 The packages of the model
+
+$ just setup
+
+`just setup` prints `Resolved 34 packages`.
+
+The model of kev is a language model with an adapter and a head of its own, and it needs four packages.
+
+torch computes with tensors, on the CPU or on a GPU. transformers loads a base model and its tokenizer
+from the Hugging Face Hub. peft adds a LoRA adapter to the base model. safetensors is the format of the weights on the
+Hub. Each package comes in by its own `uv add`, and torch comes first, from an index of its own.
+
+### tut-15.1 The index of PyTorch's builds for the CPU
+
+torch has several builds of each version. On Linux, the build on PyPI brings the libraries of CUDA, for the GPUs of
+NVIDIA. PyTorch keeps a build for the CPU alone on an index of its own, `https://download.pytorch.org/whl/cpu`. An
+index is a server of packages, as PyPI is. The patch names the index in `pyproject.toml`.
+
+patch$ pyproject.toml
+
+::: do
+The patch adds the table `[[tool.uv.index]]` under `[tool.uv]`, with a comment above it.
+:::
+
+::: watch
+In `pyproject.toml`, the comment is on lines 25 and 26. The index is on lines 27 to 30, with its name `pytorch-cpu`,
+its address and `explicit = true`.
+:::
+
+`explicit = true` means that uv takes from the index only the packages that `[tool.uv.sources]` sends there. That
+table does not exist yet.
+
+$ uv lock --check
+
+`uv lock --check` prints `Resolved 34 packages`, and ends with exit code 0. No package uses the index yet, so the
+lockfile does not change.
+
+files:
+- diff `pyproject.toml`: the index of PyTorch.
+  show: `url = "https://download.pytorch.org/whl/cpu"`
+
+### tut-15.2 torch, from the index of PyTorch
+
+`uv add torch --index pytorch-cpu` names the index for torch, and uv writes the source of torch in
+`[tool.uv.sources]` itself. `uv add` then resolves, and for that one run `--index` puts the index of PyTorch first,
+for every package. It would take other packages from there, older than on PyPI. `--frozen` writes `pyproject.toml`
+and leaves `uv.lock` alone, so uv resolves nothing yet.
+
+do$ uv add torch --index pytorch-cpu --frozen
+
+`uv add` prints one warning, `Referencing an index by name is experimental`, and ends with exit code 0. It installs
+nothing.
+
+::: watch
+In `pyproject.toml`, line 12 is now `"torch",`, under pydantic. `--frozen` resolves nothing, so uv writes no lowest
+version. `[tool.uv.sources]` is on lines 33 and 34, with `torch = { index = "pytorch-cpu" }`. `uv.lock` has not
+changed.
+:::
+
+$ uv lock --check
+
+`uv lock --check` prints `Resolved 43 packages`, then `The lockfile at uv.lock needs to be updated`, and ends with
+exit code 1. `pyproject.toml` names torch, and `uv.lock` does not have it. `just lint-config` runs the same command, so
+`just check` fails too. The next move writes the lockfile.
+
+files:
+- diff `pyproject.toml`: torch, in the dependencies, and its source.
+  show: `torch = { index = "pytorch-cpu" }`
+
+### tut-15.3 uv lock takes torch from its index
+
+`uv lock` resolves with no `--index` on the command line. The source sends torch to the index of PyTorch, and
+`explicit = true` keeps every other package on PyPI.
+
+do$ uv lock
+
+`uv lock` prints `Resolved 43 packages`, and eight lines `Added`. torch is `Added torch v2.14.1, v2.14.1+cpu`, two
+builds. The seven packages that it needs, among them `sympy` and `networkx`, are the other seven. `uv lock` writes
+`uv.lock` and installs nothing.
+
+::: watch
+`uv.lock` has 230 new lines, with torch and the seven packages that it needs.
+:::
+
+$ uv lock --check
+$ grep -n -A5 '^name = "torch"' uv.lock
+$ grep -B2 'registry = "https://download.pytorch.org/whl/cpu" }$' uv.lock | grep '^name'
+
+`uv lock --check` prints `Resolved 43 packages`, and ends with exit code 0. The first `grep` prints the two entries
+of torch, on lines 701 and 725. Both come from `https://download.pytorch.org/whl/cpu`. The first is version
+`2.14.1`, for `sys_platform == 'darwin'`, a Mac. The second is version `2.14.1+cpu`, for every other system. The
+second `grep` prints the name of every package from the index of PyTorch, and it prints `name = "torch"` twice and
+nothing more.
+
+$ uv run python -c "import torch; print(torch.__version__, torch.backends.mps.is_available())"
+
+`uv run` first installs what `uv.lock` now has, 9 packages. torch then prints a warning, `UserWarning: Failed to
+initialize NumPy: No module named 'numpy'`. torch works without numpy, and says so. The last line is
+`2.14.1 True`. `True` means that torch finds MPS, the GPU of Apple, so on a Mac the build for the CPU runs on the GPU
+too.
+
+files:
+- diff `uv.lock`: torch, from the index of PyTorch, and the seven packages that it needs, from PyPI.
+
+### tut-15.4 transformers
+
+The base model of kev, and its tokenizer, are on the Hugging Face Hub. transformers loads them.
+
+do$ uv add transformers
+
+`uv add` prints `Resolved 63 packages`, and installs `transformers==5.20.0` and 18 packages that it needs, among
+them `huggingface-hub`, `tokenizers`, `numpy` and `safetensors`.
+
+::: watch
+In `pyproject.toml`, line 13 is now `"transformers>=5.20.0",`, under torch. `uv.lock` has transformers, and the
+packages that it needs.
+:::
+
+$ uv run python -c "import torch, transformers; print(transformers.__version__)"
+
+It prints `5.20.0`, and no warning. numpy came with transformers, so torch no longer warns.
+
+files:
+- diff `pyproject.toml`: transformers, in the dependencies.
+  show: `"transformers>=5.20.0",`
+- diff `uv.lock`: the exact version of transformers, and of the packages that it needs.
+
+### tut-15.5 peft
+
+The base model stays as it is, and a small adapter, LoRA, learns the task. peft adds the adapter.
+
+do$ uv add peft
+
+`uv add` prints `Resolved 66 packages`, and installs `peft==0.21.2`, `accelerate` and `psutil`.
+
+::: watch
+In `pyproject.toml`, line 11 is now `"peft>=0.21.2",`, above pydantic. uv sorts the names. `uv.lock` has peft, and
+the two packages that it needs.
+:::
+
+$ uv tree --invert --package torch --depth 1
+
+`uv tree --invert` prints the packages that need torch, in place of the packages that torch needs. The first line is
+`Resolved 66 packages`. Under `torch v2.14.1` come `accelerate`, `babykev` and `peft`. peft needs torch, and
+torch was already here, from the index of PyTorch.
+
+Had peft come first, uv would have taken torch from PyPI, with the libraries of CUDA for Linux. In a copy of the
+project with the index alone, `uv add peft` resolved 84 packages, and 15 of them were packages of NVIDIA. So torch comes
+first, from its index.
+
+files:
+- diff `pyproject.toml`: peft, in the dependencies.
+  show: `"peft>=0.21.2",`
+- diff `uv.lock`: the exact version of peft, and of the packages that it needs.
+
+### tut-15.6 safetensors
+
+safetensors is the format of the weights on the Hub. transformers installed it already. babykev names it too,
+because babykev saves the weights that it trains to the Hub in this format. A package that only comes with another
+can go when that package stops needing it.
+
+do$ uv add safetensors
+
+`uv add` prints `Resolved 66 packages`, the same count as before, and installs no new package. It installs babykev
+again, with its new list of dependencies.
+
+::: watch
+In `pyproject.toml`, line 13 is now `"safetensors>=0.8.0",`. `uv.lock` changes on two lines, which name safetensors
+among the dependencies of babykev.
+:::
+
+$ uv tree --invert --package safetensors --depth 1
+
+Under `safetensors v0.8.0` come `accelerate`, `babykev`, `peft` and `transformers`. Before the move, the list had
+no `babykev`.
+
+files:
+- diff `pyproject.toml`: safetensors, in the dependencies.
+  show: `"safetensors>=0.8.0",`
+- diff `uv.lock`: safetensors, as a dependency of babykev.
+
+### tut-15.7 The README names the packages of the model
+
+The README says what the project installs. A paragraph under "Start" names the four packages of the model, and
+what they cost on disk.
+
+patch$ README.md
+
+::: do
+The patch adds a paragraph under the first paragraph of the section "Start".
+:::
+
+::: watch
+In `README.md`, the new paragraph is on lines 61 to 63.
+:::
+
+$ just setup
+$ du -sh .venv .venv/lib/python3.13/site-packages/torch
+
+`just setup` prints `Resolved 66 packages`. `du -sh` prints the size of the environment, `765M`, and of torch alone,
+`542M`. The sizes can differ a little on another machine.
+
+files:
+- diff `README.md`: a paragraph on the packages of the model.
+  show: `The model needs four packages, torch, transformers, peft and safetensors. torch is the build for the CPU,`
+
+## tut-16 The model
+
+$ just setup
+
+`just setup` prints `Resolved 66 packages`.
+
+babykev has a contract and no model. `model.py` is the model. It comes in whole, from kev's first version, and we
+read it before anything else. It meets the gate as it is. No test calls it yet, and the coverage shows it. Then the
+front page of the docs and the README name it.
+
+### tut-16.1 model.py, the model
+
+`model.py` turns a language model into a model that decides. It has 274 lines, and four ideas, which its docstring
+names. The file comes in whole, as a patch.
+
+patch$ src/babykev/model.py
+
+::: do
+Read the docstring of the module first, lines 1 to 18.
+:::
+
+::: watch
+`src/babykev/model.py` is new, with 274 lines. The docstring of the module is on lines 1 to 18. The functions that
+pack a record are on lines 78 to 142, and the mask is on lines 145 to 162. The head is on lines 165 to 184, and
+`DecisionModel` on lines 187 to 274.
+:::
+
+$ sed -n '1,18p' src/babykev/model.py
+
+The four ideas are packing, the mask, the restarted positions and pointing. Packing writes the state and every
+question into one sequence of tokens. The mask lets each token see the state and its own question, and never another
+question. The positions of each question start right after the state. The head points at an option, and the model
+generates no text.
+
+$ sed -n '34,54p' src/babykev/model.py
+
+Line 37, `SPECIAL`, lists the five delimiters, special tokens that the base model already has. Line 38 sets the
+longest state, 384 tokens, and the longest state and question together, 1024. The `TypedDict` `Encoded`, on lines 45
+to 53, is a packed record. Each key has a type and a docment.
+
+$ sed -n '145,162p' src/babykev/model.py
+
+The docstring of `branch_mask`, on lines 150 to 155, gives the rule. Token i may look at token j when j is not after
+i, and j is in the state or in the question of i. The mask is added to the scores of the attention, so a blocked pair
+gets the most negative number of its type.
+
+$ sed -n '187,219p' src/babykev/model.py
+
+`DecisionModel` loads a backbone from the Hub, on lines 200 to 205, if the caller gives none. The parameter
+`backbone`, on line 195, is there for the tests. With `lora`, peft wraps the backbone in an adapter, on lines 208 to
+216. The head comes last, on line 217.
+
+The file is formatted, typed and documented, so the gate has nothing to say about it.
+
+$ just fmt --check
+$ just lint
+$ just docs check
+
+`just fmt --check` prints `7 files already formatted`, and `just lint` prints `All checks passed!`. `just docs check`
+first prints a note of torch, `NOTE: Redirects are currently not supported in MacOs.` smalldocs imports `model.py` to
+read it. On a Mac, the import of peft makes torch print the note, and it is not an error. Then `just docs check`
+prints `babykev.model 15 of 15`, and `60 of 60 functions, methods and classes are typed and documented`.
+
+$ just test
+
+`just test` prints `53 passed`, and the coverage falls. `model.py` has 109 statements at 0%, and the column Missing
+says `20-274`. No test imports `model.py`, and `--cov=babykev` still counts every file of the package. The total is
+43%, 83 of 192 statements, where it was 100%, 83 of 83. `just check` has no floor on the coverage, so it passes. The
+tests of the model come later, and bring the coverage back.
+
+files:
+- file `src/babykev/model.py`: the model. It packs a request into tokens, masks it, and points at the options.
+  show: `class DecisionModel(nn.Module):`
+
+### tut-16.2 The front page names the model
+
+The front page of the docs says that the code is in two modules. Now it is in three.
+
+patch$ docs/index.qmd
+
+::: do
+The patch changes `two modules` to `three modules`, and adds an item for `babykev.model` at the end of the list.
+:::
+
+::: watch
+In `docs/index.qmd`, line 15 says `three modules`, and the item of `babykev.model` is on lines 20 and 21.
+:::
+
+`encode()` has its brackets on line 20. smalldocs does not link the plain word `encode`, and it links `encode()` to
+the function.
+
+$ just docs
+$ grep -o 'href="api/model.html#[^"]*"' docs/_site/index.html
+
+`just docs` prints the note of torch, then `wrote 4 page(s) to docs/_site`. The fourth page is the reference of
+`model.py`. `grep -o` prints the two links of the front page into it, `#encode` and `#DecisionModel`.
+
+files:
+- diff `docs/index.qmd`: the module `babykev.model`, in the list.
+  show: ``- `babykev.model` is the model. `encode()` packs a record into one sequence of tokens, and a``
+
+### tut-16.3 The README names model.py
+
+The table of the README lists each file of the code. `model.py` gets a row, under `cli.py`.
+
+patch$ README.md
+
+::: do
+The patch adds a row for `src/babykev/model.py` under the row of `src/babykev/cli.py`.
+:::
+
+::: watch
+In `README.md`, the row of `src/babykev/model.py` is on line 76.
+:::
+
+$ grep -n 'model.py' README.md
+
+`grep` prints line 76, the new row.
+
+files:
+- diff `README.md`: a row for `src/babykev/model.py`.
+  show: ``| `src/babykev/model.py` | The model, a language model with a head that points at the options |``
+
+## tut-17 Types
+
+$ just setup
+
+`just setup` prints `Resolved 66 packages`.
+
+`model.py` has a type on every parameter and every return. Nothing checks them. Python runs the code without
+reading the types, and the linter asks only that they be there. A type checker reads the code, and compares each
+call and each value with the types that the code and its libraries declare. ty is a type checker. It finds two
+places in `model.py`, and both have one cause, in torch.
+
+### tut-17.1 ty, in the group lint
+
+ty is for working on babykev, so it goes in the group `lint`.
+
+do$ uv add --group lint ty
+
+`uv add` prints `Resolved 67 packages`, and installs `ty==0.0.88`, which needs no other package.
+
+::: watch
+In `pyproject.toml`, the group `lint` has `"ty>=0.0.88",` on line 46, under ruff. `uv.lock` has its exact version.
+:::
+
+$ uv run ty --version
+
+It prints `ty 0.0.88`, or a newer version. A newer ty can find more, or less, than these notes show.
+
+files:
+- diff `pyproject.toml`: ty, in the group `lint`.
+  show: `"ty>=0.0.88",`
+- diff `uv.lock`: the exact version of ty.
+
+### tut-17.2 The recipe types
+
+`ty check` checks every Python file of the project. The recipe `types` runs it, and gives it any extra words.
+
+patch$ justfile
+
+::: do
+The patch adds the recipe `types` in the group `quality`, between `lint-config` and `test`.
+:::
+
+::: watch
+In the `justfile`, the recipe `types` is on lines 60 to 64. Line 64 runs `uv run ty check "$@"`.
+:::
+
+The command behind the recipe comes first.
+
+$ uv run ty check
+
+`ty check` prints two diagnostics, and ends with exit code 1. Both are `error[invalid-mutable-override]`, `Invalid
+override of attribute forward`, at `src/babykev/model.py:178:9` and at `src/babykev/model.py:257:9`. The two lines
+are the methods `forward` of `PointerHead` and of `DecisionModel`. Under each, ty says `Override does not accept writes of type
+(...) -> Any`. The last line is `Found 2 diagnostics`.
+
+$ just --show types
+$ just types
+$ just help types
+
+`just --show types` prints the recipe. `just types` prints the same two diagnostics, and ends with exit code 1. `just
+help types` prints the line of the recipe.
+
+$ uv run ty explain rule invalid-mutable-override
+
+`ty explain rule` prints what a rule checks. A subclass must accept every value that its base class lets code write
+into an attribute. Its example has a `value: int` in a base class and a `value: bool` in a subclass. Code that writes
+`42` through the base class breaks the subclass. The next move reads what torch declares.
+
+files:
+- diff `justfile`: the recipe `types`.
+  show: `types *args:`
+
+### tut-17.3 PointerHead.forward, past ty
+
+torch declares `forward` in its base class of every model, `nn.Module`.
+
+$ grep -n '= _forward_unimplemented' .venv/lib/python3.13/site-packages/torch/nn/modules/module.py
+
+`grep` prints line 526 of `module.py`, `forward: Callable[..., Any] = _forward_unimplemented`. `forward` is an
+attribute that may hold any function, with any arguments. `PointerHead` puts a method there that takes two tensors.
+Code could write any function into `forward` of an `nn.Module`, and the method accepts fewer calls. The rule refuses
+this narrowing.
+
+Every model of torch defines `forward` as a method. torch only calls it, from `__call__`, and never writes it. So the
+rule is right in general, and does not fit here.
+
+A comment `# ty: ignore[invalid-mutable-override]` on the line of a diagnostic turns off that one rule on that one
+line. Each other rule still checks the line. A comment above the method says why.
+
+patch$ src/babykev/model.py
+
+::: do
+In `src/babykev/model.py`, the patch adds the comment at the end of the line `def forward(` of `PointerHead`, and two
+lines of reason above it.
+:::
+
+::: watch
+In `src/babykev/model.py`, the reason is on lines 178 and 179, and line 180 is
+`def forward(  # ty: ignore[invalid-mutable-override]`.
+:::
+
+$ just types
+$ just docs check
+
+`just types` prints one diagnostic, at `src/babykev/model.py:259:9`, the `forward` of `DecisionModel`, two lines lower
+than before. It ends with `Found 1 diagnostic`, and exit code 1. `just docs check` prints the note of torch and
+`60 of 60`. The comment on the line `def forward(` is not a docment, because a docment is on the line of a parameter
+or of the return type.
+
+files:
+- diff `src/babykev/model.py`: the rule off on the `forward` of `PointerHead`, with the reason.
+  show: `    # tensors accepts fewer calls, so ty refuses it. torch only calls forward, and never sets it`
+
+### tut-17.4 DecisionModel.forward, past ty
+
+The `forward` of `DecisionModel` is the same case. It gets the same comment, and one line of reason that points to
+the first.
+
+patch$ src/babykev/model.py
+
+::: do
+In `src/babykev/model.py`, the patch adds the comment at the end of the line `def forward(` of `DecisionModel`, and
+one line of reason above it.
+:::
+
+::: watch
+In `src/babykev/model.py`, the reason is on line 259, and line 260 is
+`def forward(  # ty: ignore[invalid-mutable-override]`.
+:::
+
+$ just types
+
+`just types` prints `All checks passed!`, and ends with exit code 0.
+
+files:
+- diff `src/babykev/model.py`: the rule off on the `forward` of `DecisionModel`, with the reason.
+  show: `    # As in PointerHead, nn.Module declares forward as an attribute, and torch never sets it`
+
+### tut-17.5 The gate checks the types
+
+`just types` passes, and nothing runs it before `git commit`. As a line of `check`, it runs before each `git commit`,
+through the hook. It goes after the linter, and before the tests.
+
+patch$ justfile
+
+::: do
+In the recipe `check`, the patch adds `just types` under `just lint`, and names the types in the comment above the
+recipe.
+:::
+
+::: watch
+In the `justfile`, `just types` is line 81, between `just lint` and `just test -q`. The comment on line 72 names the
+types.
+:::
+
+$ just --show check
+$ just check
+
+`just --show check` prints the recipe, with six checks. `just check` prints `All checks passed!` twice, once for the
+linter and once for ty. Then come `53 passed`, the total of 43%, `60 of 60` and the config files, and it ends with
+exit code 0. A call that does not match the types now stops `git commit`.
+
+files:
+- diff `justfile`: ty, in the gate.
+  show: `    just types`

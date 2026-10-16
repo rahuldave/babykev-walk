@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 400" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif">
+  <rect width="960" height="400" fill="#ffffff"/>
+  <g font-size="17" font-weight="600" fill="#17202b">
+    <text x="20" y="28">Segment 0: the state</text>
+    <text x="20" y="138">Segment 1: question 1</text>
+    <text x="20" y="248">Segment 2: question 2</text>
+  </g>
+  <g font-size="15" fill="#4d5969" text-anchor="end">
+    <text x="940" y="28">positions 0 … S−1</text>
+    <text x="940" y="138">positions S, S+1, …</text>
+    <text x="940" y="248">positions S, S+1, … again</text>
+  </g>
+  <g font-size="15" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" fill="#17202b">
+    <rect x="20" y="40" width="96" height="44" rx="5" fill="#fbefdd" stroke="#a85b00"/><text x="68" y="68">&lt;state&gt;</text>
+    <rect x="122" y="40" width="818" height="44" rx="5" fill="#e4ebf9" stroke="#2456b5"/>
+    <text x="531" y="68" font-family="system-ui, sans-serif">Roquefort is a semi-soft, blue-veined cheese from France. It tastes sharp …</text>
+  </g>
+  <g font-size="15" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" fill="#17202b">
+    <rect x="20"  y="150" width="62"  height="44" rx="5" fill="#fbefdd" stroke="#a85b00"/><text x="51"  y="178">&lt;q&gt;</text>
+    <rect x="88"  y="150" width="150" height="44" rx="5" fill="#e4ebf9" stroke="#2456b5"/><text x="163" y="178" font-family="system-ui, sans-serif">Which milk?</text>
+    <rect x="244" y="150" width="70"  height="44" rx="5" fill="#fbefdd" stroke="#a85b00"/><text x="279" y="178">&lt;opt&gt;</text>
+    <rect x="320" y="150" width="96"  height="44" rx="5" fill="#e4ebf9" stroke="#2456b5"/><text x="368" y="178" font-family="system-ui, sans-serif">cow</text>
+    <rect x="422" y="150" width="78"  height="44" rx="5" fill="#e3f4ea" stroke="#1d7a4c" stroke-width="2.5"/><text x="461" y="178">&lt;/opt&gt;</text>
+    <rect x="506" y="150" width="70"  height="44" rx="5" fill="#fbefdd" stroke="#a85b00"/><text x="541" y="178">&lt;opt&gt;</text>
+    <rect x="582" y="150" width="80"  height="44" rx="5" fill="#e4ebf9" stroke="#2456b5"/><text x="622" y="178" font-family="system-ui, sans-serif">sheep</text>
+    <rect x="668" y="150" width="78"  height="44" rx="5" fill="#e3f4ea" stroke="#1d7a4c" stroke-width="2.5"/><text x="707" y="178">&lt;/opt&gt;</text>
+    <rect x="752" y="150" width="100" height="44" rx="5" fill="#e3f4ea" stroke="#1d7a4c" stroke-width="2.5"/><text x="802" y="178">&lt;decide&gt;</text>
+  </g>
+  <g font-size="15" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" fill="#17202b">
+    <rect x="20"  y="260" width="62"  height="44" rx="5" fill="#fbefdd" stroke="#a85b00"/><text x="51"  y="288">&lt;q&gt;</text>
+    <rect x="88"  y="260" width="150" height="44" rx="5" fill="#e4ebf9" stroke="#2456b5"/><text x="163" y="288" font-family="system-ui, sans-serif">Vegetarian?</text>
+    <rect x="244" y="260" width="70"  height="44" rx="5" fill="#fbefdd" stroke="#a85b00"/><text x="279" y="288">&lt;opt&gt;</text>
+    <rect x="320" y="260" width="96"  height="44" rx="5" fill="#e4ebf9" stroke="#2456b5"/><text x="368" y="288" font-family="system-ui, sans-serif">no</text>
+    <rect x="422" y="260" width="78"  height="44" rx="5" fill="#e3f4ea" stroke="#1d7a4c" stroke-width="2.5"/><text x="461" y="288">&lt;/opt&gt;</text>
+    <rect x="506" y="260" width="70"  height="44" rx="5" fill="#fbefdd" stroke="#a85b00"/><text x="541" y="288">&lt;opt&gt;</text>
+    <rect x="582" y="260" width="80"  height="44" rx="5" fill="#e4ebf9" stroke="#2456b5"/><text x="622" y="288" font-family="system-ui, sans-serif">yes</text>
+    <rect x="668" y="260" width="78"  height="44" rx="5" fill="#e3f4ea" stroke="#1d7a4c" stroke-width="2.5"/><text x="707" y="288">&lt;/opt&gt;</text>
+    <rect x="752" y="260" width="100" height="44" rx="5" fill="#e3f4ea" stroke="#1d7a4c" stroke-width="2.5"/><text x="802" y="288">&lt;decide&gt;</text>
+  </g>
+  <g font-size="16" fill="#17202b">
+    <rect x="20"  y="350" width="22" height="22" rx="4" fill="#fbefdd" stroke="#a85b00"/><text x="50" y="367">a delimiter token</text>
+    <rect x="212" y="350" width="22" height="22" rx="4" fill="#e4ebf9" stroke="#2456b5"/><text x="242" y="367">the caller's text</text>
+    <rect x="400" y="350" width="22" height="22" rx="4" fill="#e3f4ea" stroke="#1d7a4c" stroke-width="2.5"/><text x="430" y="367">a delimiter the answer is read from</text>
+  </g>
+</svg>

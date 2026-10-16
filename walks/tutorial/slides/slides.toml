@@ -35,4 +35,11 @@ tut-13 = ["docs.md#1-2"]
 "tut-13.2" = ["docs.md#3"]
 "tut-13.10" = ["docs.md#4"]
 tut-14 = ["docs.md#5"]
-# uv.md#3, all the groups, waits for the step that brings in the model and ty
+tut-15 = ["model.md#1"]
+"tut-15.2" = ["model.md#2"]
+tut-16 = ["model.md#3"]
+"tut-16.1" = ["model.md#4-7"]
+tut-17 = ["model.md#8"]
+"tut-17.2" = ["model.md#9"]
+"tut-17.3" = ["model.md#10"]
+# uv.md#3, all the groups, waits for the step that brings in hypothesis and the last of the groups

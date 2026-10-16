@@ -52,6 +52,9 @@ Each change explained, with the code to look at.
 - [12 The config files are checked](read/tut-12.qmd)
 - [13 Documentation in the code](read/tut-13.qmd)
 - [14 The docs site](read/tut-14.qmd)
+- [15 The packages of the model](read/tut-15.qmd)
+- [16 The model](read/tut-16.qmd)
+- [17 Types](read/tut-17.qmd)
 
 ## Build it yourself
 
@@ -185,6 +188,9 @@ git config alias.check '!f() { i="$(git rev-parse --git-path check-index)" && { 
 - [12 The config files are checked](build/tut-12.qmd)
 - [13 Documentation in the code](build/tut-13.qmd)
 - [14 The docs site](build/tut-14.qmd)
+- [15 The packages of the model](build/tut-15.qmd)
+- [16 The model](build/tut-16.qmd)
+- [17 Types](build/tut-17.qmd)
 
 ## The other walks
 

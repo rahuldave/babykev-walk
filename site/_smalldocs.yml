@@ -308,6 +308,45 @@ website:
                 href: read/tut-14.qmd#tut-14.4
               - text: "14.5 The README names the docs"
                 href: read/tut-14.qmd#tut-14.5
+          - section: "15 The packages of the model"
+            href: read/tut-15.qmd
+            contents:
+              - text: "15.1 The index of PyTorch's builds for the CPU"
+                href: read/tut-15.qmd#tut-15.1
+              - text: "15.2 torch, from the index of PyTorch"
+                href: read/tut-15.qmd#tut-15.2
+              - text: "15.3 uv lock takes torch from its index"
+                href: read/tut-15.qmd#tut-15.3
+              - text: "15.4 transformers"
+                href: read/tut-15.qmd#tut-15.4
+              - text: "15.5 peft"
+                href: read/tut-15.qmd#tut-15.5
+              - text: "15.6 safetensors"
+                href: read/tut-15.qmd#tut-15.6
+              - text: "15.7 The README names the packages of the model"
+                href: read/tut-15.qmd#tut-15.7
+          - section: "16 The model"
+            href: read/tut-16.qmd
+            contents:
+              - text: "16.1 model.py, the model"
+                href: read/tut-16.qmd#tut-16.1
+              - text: "16.2 The front page names the model"
+                href: read/tut-16.qmd#tut-16.2
+              - text: "16.3 The README names model.py"
+                href: read/tut-16.qmd#tut-16.3
+          - section: "17 Types"
+            href: read/tut-17.qmd
+            contents:
+              - text: "17.1 ty, in the group lint"
+                href: read/tut-17.qmd#tut-17.1
+              - text: "17.2 The recipe types"
+                href: read/tut-17.qmd#tut-17.2
+              - text: "17.3 PointerHead.forward, past ty"
+                href: read/tut-17.qmd#tut-17.3
+              - text: "17.4 DecisionModel.forward, past ty"
+                href: read/tut-17.qmd#tut-17.4
+              - text: "17.5 The gate checks the types"
+                href: read/tut-17.qmd#tut-17.5
       - section: "Build it yourself"
         contents:
           - text: "0 Where we start"
@@ -604,6 +643,45 @@ website:
                 href: build/tut-14.qmd#tut-14.4
               - text: "14.5 The README names the docs"
                 href: build/tut-14.qmd#tut-14.5
+          - section: "15 The packages of the model"
+            href: build/tut-15.qmd
+            contents:
+              - text: "15.1 The index of PyTorch's builds for the CPU"
+                href: build/tut-15.qmd#tut-15.1
+              - text: "15.2 torch, from the index of PyTorch"
+                href: build/tut-15.qmd#tut-15.2
+              - text: "15.3 uv lock takes torch from its index"
+                href: build/tut-15.qmd#tut-15.3
+              - text: "15.4 transformers"
+                href: build/tut-15.qmd#tut-15.4
+              - text: "15.5 peft"
+                href: build/tut-15.qmd#tut-15.5
+              - text: "15.6 safetensors"
+                href: build/tut-15.qmd#tut-15.6
+              - text: "15.7 The README names the packages of the model"
+                href: build/tut-15.qmd#tut-15.7
+          - section: "16 The model"
+            href: build/tut-16.qmd
+            contents:
+              - text: "16.1 model.py, the model"
+                href: build/tut-16.qmd#tut-16.1
+              - text: "16.2 The front page names the model"
+                href: build/tut-16.qmd#tut-16.2
+              - text: "16.3 The README names model.py"
+                href: build/tut-16.qmd#tut-16.3
+          - section: "17 Types"
+            href: build/tut-17.qmd
+            contents:
+              - text: "17.1 ty, in the group lint"
+                href: build/tut-17.qmd#tut-17.1
+              - text: "17.2 The recipe types"
+                href: build/tut-17.qmd#tut-17.2
+              - text: "17.3 PointerHead.forward, past ty"
+                href: build/tut-17.qmd#tut-17.3
+              - text: "17.4 DecisionModel.forward, past ty"
+                href: build/tut-17.qmd#tut-17.4
+              - text: "17.5 The gate checks the types"
+                href: build/tut-17.qmd#tut-17.5
 
 theme: cosmo
 css: styles.css

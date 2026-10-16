@@ -1,0 +1,353 @@
+---
+title: "17 Types"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Build it yourself.** [Read the tutorial](../read/tut-17.qmd) is the other way to read this part.
+
+If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
+
+```bash
+git rm -rq --cached --ignore-unmatch -- :/ && git restore --source f41d9c4b5914 --staged --worktree -- :/
+```
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 66 packages`.
+
+`model.py` has a type on every parameter and every return. Nothing checks them. Python runs the code without
+reading the types, and the linter asks only that they be there. A type checker reads the code, and compares each
+call and each value with the types that the code and its libraries declare. ty is a type checker. It finds two
+places in `model.py`, and both have one cause, in torch.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/f41d9c4b591493c35d77e92d7d12d63260c69231). [The code after it](https://github.com/rahuldave/babykev/tree/42f75dc784aa7fdfa6981c1f4defd0c798cc3b08).
+
+## 17.1 ty, in the group lint {#tut-17.1}
+
+ty is for working on babykev, so it goes in the group `lint`.
+
+```bash
+uv add --group lint ty
+```
+
+`uv add` prints `Resolved 67 packages`, and installs `ty==0.0.88`, which needs no other package.
+
+```bash
+uv run ty --version
+```
+
+It prints `ty 0.0.88`, or a newer version. A newer ty can find more, or less, than these notes show.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 50011dc045ad
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source f41d9c4b5914 --staged -- :/ && git restore --source 50011dc045ad --staged --worktree -- :/
+```
+
+### What changed {#tut-17.1-what-changed-182c57}
+
+- <a id="tut-17.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: ty, in the group `lint`. 1 line added. It comes from `uv add --group lint ty`. [The file](https://github.com/rahuldave/babykev/blob/50011dc045ad666fe0c04f1f3eab9f531ea13cee/pyproject.toml).
+  - look at `"ty>=0.0.88",`
+- <a id="tut-17.1-uv.lock-8356d8"></a>`uv.lock`: the exact version of ty. 27 lines added. It comes from `uv add --group lint ty`. [The file](https://github.com/rahuldave/babykev/blob/50011dc045ad666fe0c04f1f3eab9f531ea13cee/uv.lock).
+
+<details><summary>The diff that <code>uv add --group lint ty</code> makes in <code>pyproject.toml</code></summary>
+
+```diff
+@@ -43,6 +43,7 @@ docs = [
+ lint = [
+     "pre-commit>=4.7.0",
+     "ruff>=0.17.1",
++    "ty>=0.0.88",
+     "validate-pyproject>=0.26",
+     "yamllint>=1.38.0",
+ ]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/50011dc045ad666fe0c04f1f3eab9f531ea13cee). [The code after it](https://github.com/rahuldave/babykev/tree/50011dc045ad666fe0c04f1f3eab9f531ea13cee).
+
+## 17.2 The recipe types {#tut-17.2}
+
+`ty check` checks every Python file of the project. The recipe `types` runs it, and gives it any extra words.
+
+Apply the patch to [`justfile`](#tut-17.2-justfile-424f0b), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/b60eb5b2b67b3c8e94b5574d767be3905437e8f0.diff | git apply --include=justfile
+```
+
+The patch adds the recipe `types` in the group `quality`, between `lint-config` and `test`.
+
+The command behind the recipe comes first.
+
+```bash
+uv run ty check
+```
+
+`ty check` prints two diagnostics, and ends with exit code 1. Both are `error[invalid-mutable-override]`, `Invalid
+override of attribute forward`, at `src/babykev/model.py:178:9` and at `src/babykev/model.py:257:9`. The two lines
+are the methods `forward` of `PointerHead` and of `DecisionModel`. Under each, ty says `Override does not accept writes of type
+(...) -> Any`. The last line is `Found 2 diagnostics`.
+
+```bash
+just --show types
+just types
+just help types
+```
+
+`just --show types` prints the recipe. `just types` prints the same two diagnostics, and ends with exit code 1. `just
+help types` prints the line of the recipe.
+
+```bash
+uv run ty explain rule invalid-mutable-override
+```
+
+`ty explain rule` prints what a rule checks. A subclass must accept every value that its base class lets code write
+into an attribute. Its example has a `value: int` in a base class and a `value: bool` in a subclass. Code that writes
+`42` through the base class breaks the subclass. The next move reads what torch declares.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check b60eb5b2b67b
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 50011dc045ad --staged -- :/ && git restore --source b60eb5b2b67b --staged --worktree -- :/
+```
+
+### What changed {#tut-17.2-what-changed-182c57}
+
+- <a id="tut-17.2-justfile-424f0b"></a>`justfile`: the recipe `types`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/b60eb5b2b67b3c8e94b5574d767be3905437e8f0/justfile).
+  - look at `types *args:`
+
+<details open><summary>The patch to <code>justfile</code></summary>
+
+```diff
+@@ -57,6 +57,12 @@ lint-config *args:
+     just --fmt --check --unstable
+     uv run yamllint --strict .
+ 
++# Check the types, by reading the code and not running it. Extra words go to ty: just types src
++[group('quality')]
++[no-exit-message]
++types *args:
++    @{{ if args == "help" { "just help types" } else { 'uv run ty check "$@"' } }}
++
+ # Run the tests. Extra words go to pytest: just test -k render
+ [group('quality')]
+ [no-exit-message]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b60eb5b2b67b3c8e94b5574d767be3905437e8f0). [The code after it](https://github.com/rahuldave/babykev/tree/b60eb5b2b67b3c8e94b5574d767be3905437e8f0).
+
+## 17.3 PointerHead.forward, past ty {#tut-17.3}
+
+torch declares `forward` in its base class of every model, `nn.Module`.
+
+```bash
+grep -n '= _forward_unimplemented' .venv/lib/python3.13/site-packages/torch/nn/modules/module.py
+```
+
+`grep` prints line 526 of `module.py`, `forward: Callable[..., Any] = _forward_unimplemented`. `forward` is an
+attribute that may hold any function, with any arguments. `PointerHead` puts a method there that takes two tensors.
+Code could write any function into `forward` of an `nn.Module`, and the method accepts fewer calls. The rule refuses
+this narrowing.
+
+Every model of torch defines `forward` as a method. torch only calls it, from `__call__`, and never writes it. So the
+rule is right in general, and does not fit here.
+
+A comment `# ty: ignore[invalid-mutable-override]` on the line of a diagnostic turns off that one rule on that one
+line. Each other rule still checks the line. A comment above the method says why.
+
+Apply the patch to [`src/babykev/model.py`](#tut-17.3-src-babykev-model.py-a86a0b), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/8b279381e0752d78b86fe87f7334656163a12a93.diff | git apply --include=src/babykev/model.py
+```
+
+In `src/babykev/model.py`, the patch adds the comment at the end of the line `def forward(` of `PointerHead`, and two
+lines of reason above it.
+
+```bash
+just types
+just docs check
+```
+
+`just types` prints one diagnostic, at `src/babykev/model.py:259:9`, the `forward` of `DecisionModel`, two lines lower
+than before. It ends with `Found 1 diagnostic`, and exit code 1. `just docs check` prints the note of torch and
+`60 of 60`. The comment on the line `def forward(` is not a docment, because a docment is on the line of a parameter
+or of the return type.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 8b279381e075
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source b60eb5b2b67b --staged -- :/ && git restore --source 8b279381e075 --staged --worktree -- :/
+```
+
+### What changed {#tut-17.3-what-changed-182c57}
+
+- <a id="tut-17.3-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the rule off on the `forward` of `PointerHead`, with the reason. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/8b279381e0752d78b86fe87f7334656163a12a93/src/babykev/model.py).
+  - look at `    # tensors accepts fewer calls, so ty refuses it. torch only calls forward, and never sets it`
+
+<details open><summary>The patch to <code>src/babykev/model.py</code></summary>
+
+```diff
+@@ -175,7 +175,9 @@ class PointerHead(nn.Module):
+         self.q, self.k = nn.Linear(d, dp), nn.Linear(d, dp)
+         self.scale = 1 / math.sqrt(dp)
+ 
+-    def forward(
++    # nn.Module declares forward as an attribute that may hold any function. A method with two
++    # tensors accepts fewer calls, so ty refuses it. torch only calls forward, and never sets it
++    def forward(  # ty: ignore[invalid-mutable-override]
+         self,
+         h_decide: torch.Tensor,  # The hidden state at the decide token, shape [d]
+         h_opts: torch.Tensor,  # The hidden states at the K options' closing tokens, shape [K, d]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/8b279381e0752d78b86fe87f7334656163a12a93). [The code after it](https://github.com/rahuldave/babykev/tree/8b279381e0752d78b86fe87f7334656163a12a93).
+
+## 17.4 DecisionModel.forward, past ty {#tut-17.4}
+
+The `forward` of `DecisionModel` is the same case. It gets the same comment, and one line of reason that points to
+the first.
+
+Apply the patch to [`src/babykev/model.py`](#tut-17.4-src-babykev-model.py-a86a0b), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/655fda2b4bddefc75b11b224d69769cd11f3eba3.diff | git apply --include=src/babykev/model.py
+```
+
+In `src/babykev/model.py`, the patch adds the comment at the end of the line `def forward(` of `DecisionModel`, and
+one line of reason above it.
+
+```bash
+just types
+```
+
+`just types` prints `All checks passed!`, and ends with exit code 0.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 655fda2b4bdd
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 8b279381e075 --staged -- :/ && git restore --source 655fda2b4bdd --staged --worktree -- :/
+```
+
+### What changed {#tut-17.4-what-changed-182c57}
+
+- <a id="tut-17.4-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the rule off on the `forward` of `DecisionModel`, with the reason. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/655fda2b4bddefc75b11b224d69769cd11f3eba3/src/babykev/model.py).
+  - look at `    # As in PointerHead, nn.Module declares forward as an attribute, and torch never sets it`
+
+<details open><summary>The patch to <code>src/babykev/model.py</code></summary>
+
+```diff
+@@ -256,7 +256,8 @@ class DecisionModel(nn.Module):
+             for b, enc in enumerate(encs)
+         ]
+ 
+-    def forward(
++    # As in PointerHead, nn.Module declares forward as an attribute, and torch never sets it
++    def forward(  # ty: ignore[invalid-mutable-override]
+         self,
+         enc: Encoded,  # A packed record
+     ) -> list[torch.Tensor]:  # For each question, one logit per option
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/655fda2b4bddefc75b11b224d69769cd11f3eba3). [The code after it](https://github.com/rahuldave/babykev/tree/655fda2b4bddefc75b11b224d69769cd11f3eba3).
+
+## 17.5 The gate checks the types {#tut-17.5}
+
+`just types` passes, and nothing runs it before `git commit`. As a line of `check`, it runs before each `git commit`,
+through the hook. It goes after the linter, and before the tests.
+
+Apply the patch to [`justfile`](#tut-17.5-justfile-424f0b), from the top of the project:
+
+```bash
+curl -fsSL https://github.com/rahuldave/babykev/commit/42f75dc784aa7fdfa6981c1f4defd0c798cc3b08.diff | git apply --include=justfile
+```
+
+In the recipe `check`, the patch adds `just types` under `just lint`, and names the types in the comment above the
+recipe.
+
+```bash
+just --show check
+just check
+```
+
+`just --show check` prints the recipe, with six checks. `just check` prints `All checks passed!` twice, once for the
+linter and once for ty. Then come `53 passed`, the total of 43%, `60 of 60` and the config files, and it ends with
+exit code 0. A call that does not match the types now stops `git commit`.
+
+Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
+
+```bash
+git check 42f75dc784aa
+```
+
+If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
+
+```bash
+git restore --source 655fda2b4bdd --staged -- :/ && git restore --source 42f75dc784aa --staged --worktree -- :/
+```
+
+### What changed {#tut-17.5-what-changed-182c57}
+
+- <a id="tut-17.5-justfile-424f0b"></a>`justfile`: ty, in the gate. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/42f75dc784aa7fdfa6981c1f4defd0c798cc3b08/justfile).
+  - look at `    just types`
+
+<details open><summary>The patch to <code>justfile</code></summary>
+
+```diff
+@@ -69,7 +69,7 @@ types *args:
+ test *args:
+     @{{ if args == "help" { "just help test" } else { 'uv run pytest "$@"' } }}
+ 
+-# Run the checks one after another, and stop at the first that fails: the format, the linter, the tests, the docs, the config files
++# Run the checks one after another, and stop at the first that fails: the format, the linter, the types, the tests, the docs, the config files
+ [group('quality')]
+ [no-exit-message]
+ check *args:
+@@ -78,6 +78,7 @@ check *args:
+     if [ "$*" = help ]; then just help check; exit 0; fi
+     just fmt --check
+     just lint
++    just types
+     just test -q
+     just docs check
+     just lint-config
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/42f75dc784aa7fdfa6981c1f4defd0c798cc3b08). [The code after it](https://github.com/rahuldave/babykev/tree/42f75dc784aa7fdfa6981c1f4defd0c798cc3b08).

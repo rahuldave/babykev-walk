@@ -1,0 +1,339 @@
+---
+title: "15 The packages of the model"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+**Read the tutorial.** [Build it yourself](../build/tut-15.qmd) is the other way to read this part.
+
+```bash
+just setup
+```
+
+`just setup` prints `Resolved 34 packages`.
+
+The model of kev is a language model with an adapter and a head of its own, and it needs four packages.
+
+torch computes with tensors, on the CPU or on a GPU. transformers loads a base model and its tokenizer
+from the Hugging Face Hub. peft adds a LoRA adapter to the base model. safetensors is the format of the weights on the
+Hub. Each package comes in by its own `uv add`, and torch comes first, from an index of its own.
+
+[The code before this part](https://github.com/rahuldave/babykev/tree/86c948e639d637a674b3d073de74e3f2c0a6cd6a). [The code after it](https://github.com/rahuldave/babykev/tree/c8e050183058bbee970a1d8ed702de0e3e7f773b).
+
+## 15.1 The index of PyTorch's builds for the CPU {#tut-15.1}
+
+torch has several builds of each version. On Linux, the build on PyPI brings the libraries of CUDA, for the GPUs of
+NVIDIA. PyTorch keeps a build for the CPU alone on an index of its own, `https://download.pytorch.org/whl/cpu`. An
+index is a server of packages, as PyPI is. The patch names the index in `pyproject.toml`.
+
+A patch to [`pyproject.toml`](#tut-15.1-pyproject.toml-5d07e7).
+
+In `pyproject.toml`, the comment is on lines 25 and 26. The index is on lines 27 to 30, with its name `pytorch-cpu`,
+its address and `explicit = true`.
+
+`explicit = true` means that uv takes from the index only the packages that `[tool.uv.sources]` sends there. That
+table does not exist yet.
+
+```bash
+uv lock --check
+```
+
+`uv lock --check` prints `Resolved 34 packages`, and ends with exit code 0. No package uses the index yet, so the
+lockfile does not change.
+
+### What changed {#tut-15.1-what-changed-182c57}
+
+- <a id="tut-15.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the index of PyTorch. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/6d8e76834355d207a1e1696053bb27ab84008708/pyproject.toml).
+  - look at `url = "https://download.pytorch.org/whl/cpu"`
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -22,6 +22,13 @@ build-backend = "uv_build"
+ # uv sync and uv run install every dependency group, not only dev
+ default-groups = "all"
+ 
++# torch comes in several builds, and this project installs the build for the CPU, from the index
++# of PyTorch. explicit = true: uv takes from it only what [tool.uv.sources] sends there
++[[tool.uv.index]]
++name = "pytorch-cpu"
++url = "https://download.pytorch.org/whl/cpu"
++explicit = true
++
+ [dependency-groups]
+ docs = [
+     "smalldocs>=0.1.5",
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/6d8e76834355d207a1e1696053bb27ab84008708). [The code after it](https://github.com/rahuldave/babykev/tree/6d8e76834355d207a1e1696053bb27ab84008708).
+
+## 15.2 torch, from the index of PyTorch {#tut-15.2}
+
+`uv add torch --index pytorch-cpu` names the index for torch, and uv writes the source of torch in
+`[tool.uv.sources]` itself. `uv add` then resolves, and for that one run `--index` puts the index of PyTorch first,
+for every package. It would take other packages from there, older than on PyPI. `--frozen` writes `pyproject.toml`
+and leaves `uv.lock` alone, so uv resolves nothing yet.
+
+This change came from running `uv add torch --index pytorch-cpu --frozen`.
+
+`uv add` prints one warning, `Referencing an index by name is experimental`, and ends with exit code 0. It installs
+nothing.
+
+In `pyproject.toml`, line 12 is now `"torch",`, under pydantic. `--frozen` resolves nothing, so uv writes no lowest
+version. `[tool.uv.sources]` is on lines 33 and 34, with `torch = { index = "pytorch-cpu" }`. `uv.lock` has not
+changed.
+
+```bash
+uv lock --check
+```
+
+`uv lock --check` prints `Resolved 43 packages`, then `The lockfile at uv.lock needs to be updated`, and ends with
+exit code 1. `pyproject.toml` names torch, and `uv.lock` does not have it. `just lint-config` runs the same command, so
+`just check` fails too. The next move writes the lockfile.
+
+### What changed {#tut-15.2-what-changed-182c57}
+
+- <a id="tut-15.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: torch, in the dependencies, and its source. 4 lines added. It comes from `uv add torch --index pytorch-cpu --frozen`. [The file](https://github.com/rahuldave/babykev/blob/21fdb6aae553fde949a2a8509de5274bd6aacab4/pyproject.toml).
+  - look at `torch = { index = "pytorch-cpu" }`
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -9,6 +9,7 @@ authors = [{ name = "Rahul Dave" }]
+ requires-python = ">=3.13"
+ dependencies = [
+     "pydantic>=2.14.1",
++    "torch",
+ ]
+ 
+ [project.scripts]
+@@ -29,6 +30,9 @@ name = "pytorch-cpu"
+ url = "https://download.pytorch.org/whl/cpu"
+ explicit = true
+ 
++[tool.uv.sources]
++torch = { index = "pytorch-cpu" }
++
+ [dependency-groups]
+ docs = [
+     "smalldocs>=0.1.5",
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/21fdb6aae553fde949a2a8509de5274bd6aacab4). [The code after it](https://github.com/rahuldave/babykev/tree/21fdb6aae553fde949a2a8509de5274bd6aacab4).
+
+## 15.3 uv lock takes torch from its index {#tut-15.3}
+
+`uv lock` resolves with no `--index` on the command line. The source sends torch to the index of PyTorch, and
+`explicit = true` keeps every other package on PyPI.
+
+This change came from running `uv lock`.
+
+`uv lock` prints `Resolved 43 packages`, and eight lines `Added`. torch is `Added torch v2.14.1, v2.14.1+cpu`, two
+builds. The seven packages that it needs, among them `sympy` and `networkx`, are the other seven. `uv lock` writes
+`uv.lock` and installs nothing.
+
+`uv.lock` has 230 new lines, with torch and the seven packages that it needs.
+
+```bash
+uv lock --check
+grep -n -A5 '^name = "torch"' uv.lock
+grep -B2 'registry = "https://download.pytorch.org/whl/cpu" }$' uv.lock | grep '^name'
+```
+
+`uv lock --check` prints `Resolved 43 packages`, and ends with exit code 0. The first `grep` prints the two entries
+of torch, on lines 701 and 725. Both come from `https://download.pytorch.org/whl/cpu`. The first is version
+`2.14.1`, for `sys_platform == 'darwin'`, a Mac. The second is version `2.14.1+cpu`, for every other system. The
+second `grep` prints the name of every package from the index of PyTorch, and it prints `name = "torch"` twice and
+nothing more.
+
+```bash
+uv run python -c "import torch; print(torch.__version__, torch.backends.mps.is_available())"
+```
+
+`uv run` first installs what `uv.lock` now has, 9 packages. torch then prints a warning, `UserWarning: Failed to
+initialize NumPy: No module named 'numpy'`. torch works without numpy, and says so. The last line is
+`2.14.1 True`. `True` means that torch finds MPS, the GPU of Apple, so on a Mac the build for the CPU runs on the GPU
+too.
+
+### What changed {#tut-15.3-what-changed-182c57}
+
+- <a id="tut-15.3-uv.lock-8356d8"></a>`uv.lock`: torch, from the index of PyTorch, and the seven packages that it needs, from PyPI. 230 lines added, 1 removed. It comes from `uv lock`. [The file](https://github.com/rahuldave/babykev/blob/1625437d490f284722fd4c9ff4a1a322eb108799/uv.lock).
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/1625437d490f284722fd4c9ff4a1a322eb108799). [The code after it](https://github.com/rahuldave/babykev/tree/1625437d490f284722fd4c9ff4a1a322eb108799).
+
+## 15.4 transformers {#tut-15.4}
+
+The base model of kev, and its tokenizer, are on the Hugging Face Hub. transformers loads them.
+
+This change came from running `uv add transformers`.
+
+`uv add` prints `Resolved 63 packages`, and installs `transformers==5.20.0` and 18 packages that it needs, among
+them `huggingface-hub`, `tokenizers`, `numpy` and `safetensors`.
+
+In `pyproject.toml`, line 13 is now `"transformers>=5.20.0",`, under torch. `uv.lock` has transformers, and the
+packages that it needs.
+
+```bash
+uv run python -c "import torch, transformers; print(transformers.__version__)"
+```
+
+It prints `5.20.0`, and no warning. numpy came with transformers, so torch no longer warns.
+
+### What changed {#tut-15.4-what-changed-182c57}
+
+- <a id="tut-15.4-pyproject.toml-5d07e7"></a>`pyproject.toml`: transformers, in the dependencies. 1 line added. It comes from `uv add transformers`. [The file](https://github.com/rahuldave/babykev/blob/2c8c0d5c94539e3ff01c9be202f282557beee4be/pyproject.toml).
+  - look at `"transformers>=5.20.0",`
+- <a id="tut-15.4-uv.lock-8356d8"></a>`uv.lock`: the exact version of transformers, and of the packages that it needs. 419 lines added. It comes from `uv add transformers`. [The file](https://github.com/rahuldave/babykev/blob/2c8c0d5c94539e3ff01c9be202f282557beee4be/uv.lock).
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -10,6 +10,7 @@ requires-python = ">=3.13"
+ dependencies = [
+     "pydantic>=2.14.1",
+     "torch",
++    "transformers>=5.20.0",
+ ]
+ 
+ [project.scripts]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/2c8c0d5c94539e3ff01c9be202f282557beee4be). [The code after it](https://github.com/rahuldave/babykev/tree/2c8c0d5c94539e3ff01c9be202f282557beee4be).
+
+## 15.5 peft {#tut-15.5}
+
+The base model stays as it is, and a small adapter, LoRA, learns the task. peft adds the adapter.
+
+This change came from running `uv add peft`.
+
+`uv add` prints `Resolved 66 packages`, and installs `peft==0.21.2`, `accelerate` and `psutil`.
+
+In `pyproject.toml`, line 11 is now `"peft>=0.21.2",`, above pydantic. uv sorts the names. `uv.lock` has peft, and
+the two packages that it needs.
+
+```bash
+uv tree --invert --package torch --depth 1
+```
+
+`uv tree --invert` prints the packages that need torch, in place of the packages that torch needs. The first line is
+`Resolved 66 packages`. Under `torch v2.14.1` come `accelerate`, `babykev` and `peft`. peft needs torch, and
+torch was already here, from the index of PyTorch.
+
+Had peft come first, uv would have taken torch from PyPI, with the libraries of CUDA for Linux. In a copy of the
+project with the index alone, `uv add peft` resolved 84 packages, and 15 of them were packages of NVIDIA. So torch comes
+first, from its index.
+
+### What changed {#tut-15.5-what-changed-182c57}
+
+- <a id="tut-15.5-pyproject.toml-5d07e7"></a>`pyproject.toml`: peft, in the dependencies. 1 line added. It comes from `uv add peft`. [The file](https://github.com/rahuldave/babykev/blob/f28d37b6e7bf188fc0311f1a2caffeb2cb2adbd5/pyproject.toml).
+  - look at `"peft>=0.21.2",`
+- <a id="tut-15.5-uv.lock-8356d8"></a>`uv.lock`: the exact version of peft, and of the packages that it needs. 71 lines added. It comes from `uv add peft`. [The file](https://github.com/rahuldave/babykev/blob/f28d37b6e7bf188fc0311f1a2caffeb2cb2adbd5/uv.lock).
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -8,6 +8,7 @@ license-files = ["LICENSE", "NOTICE"]
+ authors = [{ name = "Rahul Dave" }]
+ requires-python = ">=3.13"
+ dependencies = [
++    "peft>=0.21.2",
+     "pydantic>=2.14.1",
+     "torch",
+     "transformers>=5.20.0",
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/f28d37b6e7bf188fc0311f1a2caffeb2cb2adbd5). [The code after it](https://github.com/rahuldave/babykev/tree/f28d37b6e7bf188fc0311f1a2caffeb2cb2adbd5).
+
+## 15.6 safetensors {#tut-15.6}
+
+safetensors is the format of the weights on the Hub. transformers installed it already. babykev names it too,
+because babykev saves the weights that it trains to the Hub in this format. A package that only comes with another
+can go when that package stops needing it.
+
+This change came from running `uv add safetensors`.
+
+`uv add` prints `Resolved 66 packages`, the same count as before, and installs no new package. It installs babykev
+again, with its new list of dependencies.
+
+In `pyproject.toml`, line 13 is now `"safetensors>=0.8.0",`. `uv.lock` changes on two lines, which name safetensors
+among the dependencies of babykev.
+
+```bash
+uv tree --invert --package safetensors --depth 1
+```
+
+Under `safetensors v0.8.0` come `accelerate`, `babykev`, `peft` and `transformers`. Before the move, the list had
+no `babykev`.
+
+### What changed {#tut-15.6-what-changed-182c57}
+
+- <a id="tut-15.6-pyproject.toml-5d07e7"></a>`pyproject.toml`: safetensors, in the dependencies. 1 line added. It comes from `uv add safetensors`. [The file](https://github.com/rahuldave/babykev/blob/99f4bd13e1e7a8b99a503b30a0ecc0c2db5bfab7/pyproject.toml).
+  - look at `"safetensors>=0.8.0",`
+- <a id="tut-15.6-uv.lock-8356d8"></a>`uv.lock`: safetensors, as a dependency of babykev. 2 lines added. It comes from `uv add safetensors`. [The file](https://github.com/rahuldave/babykev/blob/99f4bd13e1e7a8b99a503b30a0ecc0c2db5bfab7/uv.lock).
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -10,6 +10,7 @@ requires-python = ">=3.13"
+ dependencies = [
+     "peft>=0.21.2",
+     "pydantic>=2.14.1",
++    "safetensors>=0.8.0",
+     "torch",
+     "transformers>=5.20.0",
+ ]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/99f4bd13e1e7a8b99a503b30a0ecc0c2db5bfab7). [The code after it](https://github.com/rahuldave/babykev/tree/99f4bd13e1e7a8b99a503b30a0ecc0c2db5bfab7).
+
+## 15.7 The README names the packages of the model {#tut-15.7}
+
+The README says what the project installs. A paragraph under "Start" names the four packages of the model, and
+what they cost on disk.
+
+A patch to [`README.md`](#tut-15.7-README.md-8ec9a0).
+
+In `README.md`, the new paragraph is on lines 61 to 63.
+
+```bash
+just setup
+du -sh .venv .venv/lib/python3.13/site-packages/torch
+```
+
+`just setup` prints `Resolved 66 packages`. `du -sh` prints the size of the environment, `765M`, and of torch alone,
+`542M`. The sizes can differ a little on another machine.
+
+### What changed {#tut-15.7-what-changed-182c57}
+
+- <a id="tut-15.7-README.md-8ec9a0"></a>`README.md`: a paragraph on the packages of the model. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/c8e050183058bbee970a1d8ed702de0e3e7f773b/README.md).
+  - look at `The model needs four packages, torch, transformers, peft and safetensors. torch is the build for the CPU,`
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+```diff
+@@ -58,6 +58,10 @@ Then run `just test`. `just` lists the tasks, `just help VERB` explains one, and
+ help of the program itself. A recipe gives its extra words to the tool behind it. For example,
+ `just test -k help` runs only the tests with `help` in their name.
+ 
++The model needs four packages, torch, transformers, peft and safetensors. torch is the build for the CPU,
++from the index of PyTorch that `pyproject.toml` names. On a Mac, the same build runs on the GPU of Apple
++too. With them, `.venv` takes about 750 MB, and torch is most of it.
++
+ Run `just hook` once in each clone. It installs a git hook, which runs `just check` before each commit.
+ `just check` runs every check of the project, and if one fails, git makes no commit. You can run `just check`
+ yourself at any time.
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/c8e050183058bbee970a1d8ed702de0e3e7f773b). [The code after it](https://github.com/rahuldave/babykev/tree/c8e050183058bbee970a1d8ed702de0e3e7f773b).
