@@ -216,7 +216,7 @@ git config alias.check '!f() { i="$(git rev-parse --git-path check-index)" && { 
 
 ## The other walks
 
-Each other walk through the project has a website of its own:
+Each other walk through the project has pages of its own:
 
 - [babykev, the first lecture](narrative/index.html). The first lecture, on the branch main of babykev: the steps step-00 to step-05b, with no moves between them.
 - [uv and the groups of dependencies of babykev](uv/index.html). The project and its lockfile, the groups `test` and `lint`, the first dependency, the packages of the model from the index of PyTorch, and the two Docker images, which install no group and every group.
@@ -227,3 +227,33 @@ Each other walk through the project has a website of its own:
 - [The tests of babykev](testing/index.html). pytest and the first tests, coverage, the tests of the contract, fixtures and a tiny model, unit and integration tests, a floor, property tests of the mask with hypothesis, the system test, and the tests on GitHub.
 - [The contract of babykev](contract/index.html). What a request and an answer hold, written with pydantic: the three types of question, the sample data, tests of what the contract refuses, and the code that turns a request into text for the model and probabilities into answers.
 - [babykev, the lecture](lecture/index.html). The first lecture, on the branch tutorial of babykev, in nine stops from tut-01 to tut-26. Each stop takes in all the work since the stop before, and ends with every check passing.
+
+## Follow the walks in timewalk
+
+[timewalk](https://rahuldave.com/timewalk/) replays these walks in your browser. At each part, it shows the files of babykev as they were, and what the part changed. It also shows the notes, and terminals in the project as it was then.
+
+A narrative goes from part to part. A tutorial has two modes. In watch mode, timewalk shows each change. In do mode, you make each change yourself, and timewalk tells you when your files match.
+
+![A part in timewalk: a slide, the files, a file, a terminal and the notes](https://rahuldave.com/timewalk/images/page.png)
+
+You need [uv](https://docs.astral.sh/uv/), [git](https://git-scm.com/), [just](https://just.systems/) and a recent browser. Fork [rahuldave/babykev-walk](https://github.com/rahuldave/babykev-walk) on GitHub, so that you can keep your own notes, and clone your fork. In its folder, run `just present`, and open the address that timewalk prints. The first time, it clones babykev into the folder `repo/`.
+
+```bash
+git clone https://github.com/YOU/babykev-walk
+cd babykev-walk
+just present
+```
+
+`just present` opens the first walk, *babykev, shown one move at a time* (a tutorial). To open another, give its id:
+
+- `just present narrative`: *babykev, the first lecture* (a narrative)
+- `just present uv`: *uv and the groups of dependencies of babykev* (a tutorial)
+- `just present linting`: *The formatter, the linter and the type checker of babykev* (a tutorial)
+- `just present docs`: *The documentation of babykev* (a tutorial)
+- `just present just`: *just, the recipes of babykev* (a tutorial)
+- `just present model`: *The model of babykev, explained* (a tutorial)
+- `just present testing`: *The tests of babykev* (a tutorial)
+- `just present contract`: *The contract of babykev* (a tutorial)
+- `just present lecture`: *babykev, the lecture* (a narrative)
+
+![Do mode: you make each change, and timewalk checks your files](https://rahuldave.com/timewalk/images/tutorial-do.png)
