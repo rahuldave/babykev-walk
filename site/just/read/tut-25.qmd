@@ -17,7 +17,7 @@ git fetch --quiet --tags --force origin
 git switch --detach tut-24
 ```
 
-The whole tutorial then finds a bug in the mask of the model with tests of hypothesis, and fixes it. It adds a test of
+The whole tutorial then finds a bug in the mask of the model with tests of [hypothesis](https://hypothesis.readthedocs.io/), and fixes it. It adds a test of
 the real model, marked `system`. `-m 'not system'` in `pyproject.toml` leaves that test out of `just test`, and so out
 of `just check` and the hook. `just test -m system` runs it. Then the docs get a guide to the model.
 

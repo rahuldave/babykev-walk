@@ -9,9 +9,11 @@ Each part ends with a section called **What changed**. It lists every file that 
 We follow the dependencies of babykev, a small decision model. It reads a text and a set of questions about it,
 and gives a probability for every answer.
 
+The repository [babykev](https://github.com/rahuldave/babykev/tree/tutorial) holds the model and the project around it, on the branch `tutorial`. At the end, `src/babykev/` holds `cli.py`, the command, `api.py`, the contract, `model.py`, the model, and `smoke.py`, a run of the real model. `tests/unit/` holds the unit and integration tests, and `tests/system/` holds the system test. `data/cheese/` holds sample requests, and `docs/` holds the site. `justfile`, `pyproject.toml` and `uv.lock` say how to work on it, and a `Dockerfile` and `.github/workflows/` run it on other machines. The tools are [uv](https://docs.astral.sh/uv/), [just](https://just.systems/), [pytest](https://docs.pytest.org/), [ruff](https://docs.astral.sh/ruff/), [ty](https://docs.astral.sh/ty/), [smalldocs](https://github.com/rahuldave/smalldocs) and [Docker](https://www.docker.com/).
+
 uv installs Python and the packages of the project, and writes their exact versions into one lockfile, `uv.lock`.
 The packages come in groups. babykev needs some of them to run. The tests and the checks need the others. This
-tutorial takes these parts out of the whole tutorial of babykev, and ends with the two Docker images, which install
+tutorial takes these parts out of the whole tutorial of babykev, and ends with the two [Docker](https://www.docker.com/) images, which install
 different groups.
 
 We make the project in moves. A move is one small change, made by one patch or by one command. A command such as
@@ -468,7 +470,7 @@ This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev)
 just setup
 ```
 
-The whole tutorial then adds five tests of the command. pytest-cov, which measures which
+The whole tutorial then adds five tests of the command. [pytest-cov](https://pytest-cov.readthedocs.io/), which measures which
 lines the tests run, joins pytest in the group `test`. babykev itself needs pydantic to run, so it goes into the
 dependencies of the project, and into no group.
 
@@ -604,8 +606,8 @@ This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev)
 just setup
 ```
 
-The whole tutorial then sets up ruff, fixes the code with it, and adds types and docstrings. pre-commit,
-validate-pyproject and yamllint, more tools for the checks, join the group `lint`. smalldocs, which builds the site
+The whole tutorial then sets up ruff, fixes the code with it, and adds types and docstrings. [pre-commit](https://pre-commit.com/),
+[validate-pyproject](https://github.com/abravalheri/validate-pyproject) and [yamllint](https://yamllint.readthedocs.io/), more tools for the checks, join the group `lint`. [smalldocs](https://github.com/rahuldave/smalldocs), which builds the site
 of the docs, starts a third group, `docs`. `default-groups = "all"` makes `just setup` install each of them, with no
 other change.
 
@@ -976,8 +978,8 @@ This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev)
 just setup
 ```
 
-The whole tutorial then writes the model, and its tests. ty, which checks the types, joins the group `lint`.
-hypothesis, which draws many inputs for one test, joins the group `test`. The run image is babykev as a user runs
+The whole tutorial then writes the model, and its tests. [ty](https://docs.astral.sh/ty/), which checks the types, joins the group `lint`.
+[hypothesis](https://hypothesis.readthedocs.io/), which draws many inputs for one test, joins the group `test`. The run image is babykev as a user runs
 it. It needs the dependencies of the project, and no group.
 
 ### 25.1 The Dockerfile, with the run image
@@ -1258,7 +1260,7 @@ just setup
 ```
 
 The whole tutorial then turns off the time limit of hypothesis, and adds the recipe `just image`. `just image build
-dev` builds the dev image, and `just image shell` runs a command in it, with this folder at `/work`. hadolint, a
+dev` builds the dev image, and `just image shell` runs a command in it, with this folder at `/work`. [hadolint](https://github.com/hadolint/hadolint), a
 linter for the `Dockerfile`, joins the group `lint`. Its one finding stays
 out, with the reason in a comment. Docker built the dev image before hadolint came in.
 

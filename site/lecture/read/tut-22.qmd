@@ -59,6 +59,8 @@ for want, got in zip(picture, rows, strict=True): print(want, got, "ok" if want 
 EOF
 ```
 
+[hypothesis](https://hypothesis.readthedocs.io/) writes test inputs. A test says what kind of input it takes, such as a list of up to five numbers. hypothesis then tries many of them, and when one fails, it shrinks it to the smallest input that still fails.
+
 **hypothesis: state the rule, and let the computer try the shapes.** hypothesis is a Python library for tests. Line 10 of `test_mask.py`, `shapes`, says what a request may look like. It has a state of 1 to 6 tokens, and up to 4 questions of 1 to 5 tokens each. `@given(shapes)` on line 42 runs the test below it on up to 100 shapes, drawn at random. When a shape breaks the rule, hypothesis reports the smallest shape that still breaks it.
 
 The test on lines 42 to 49 says that no question sees another.

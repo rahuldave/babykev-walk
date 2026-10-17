@@ -24,16 +24,16 @@ git rm -rq --cached --ignore-unmatch -- :/ && git restore --source eb0acd148867 
 just setup
 ```
 
-The whole tutorial then adds a `Dockerfile`, which builds two images. An image of Docker is a Linux machine that one
+The whole tutorial then adds a `Dockerfile`, which builds two images. An image of [Docker](https://www.docker.com/) is a Linux machine that one
 file describes. The run image starts `babykev`, and the dev image holds the whole project and the tools to work on
-it. The recipe `just image` builds them, and `just lint-config` now runs hadolint, a linter of the `Dockerfile`.
+it. The recipe `just image` builds them, and `just lint-config` now runs [hadolint](https://github.com/hadolint/hadolint), a linter of the `Dockerfile`.
 
-The site is only on the machine that builds it. GitHub runs workflows on its own machines. A workflow is a file of
+The site is only on the machine that builds it. [GitHub Actions](https://docs.github.com/actions) runs workflows on GitHub's machines. A workflow is a file of
 YAML in `.github/workflows/`, and its key `on` names the events that start it. The first workflow, `check.yaml`, runs
-`just setup` and `just check` after every push. yamllint refused the key `on`, because YAML 1.1 reads the word `on`
+`just setup` and `just check` after every push. [yamllint](https://yamllint.readthedocs.io/) refused the key `on`, because YAML 1.1 reads the word `on`
 as the value true. Its settings now let a key be such a word.
 
-The project adds actionlint, a linter of the workflows of GitHub, to its other linters, and `just lint-config` runs
+The project adds [actionlint](https://github.com/rhysd/actionlint), a linter of the workflows of GitHub, to its other linters, and `just lint-config` runs
 it. The second workflow builds the site and publishes it.
 
 ## 26.5 GitHub Pages publishes the docs {#tut-26.5}

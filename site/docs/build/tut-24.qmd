@@ -20,8 +20,8 @@ If you start at this part, make your clone as **Get the project** says, and then
 git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch -- :/ && git restore --source tut-23 --staged --worktree -- :/
 ```
 
-The whole tutorial then builds the model, and tests it. The project adds four packages for the model, torch,
-transformers, peft and safetensors. `src/babykev/model.py` holds the model. ty checks the types, through
+The whole tutorial then builds the model, and tests it. The project adds four packages for the model, [torch](https://pytorch.org/),
+[transformers](https://huggingface.co/docs/transformers), [peft](https://huggingface.co/docs/peft) and [safetensors](https://huggingface.co/docs/safetensors). `src/babykev/model.py` holds the model. [ty](https://docs.astral.sh/ty/) checks the types, through
 `just types`. `src/babykev/smoke.py` runs the real model on the sample data, through `just smoke`.
 
 The model reads text as tokens, which are small pieces of words. `encode` packs the state and its questions into one

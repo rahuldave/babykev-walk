@@ -21,7 +21,7 @@ git switch --detach tut-25
 just setup
 ```
 
-The whole tutorial then writes two pages of a guide to the model. It builds two images of Docker, one to run babykev
+The whole tutorial then writes two pages of a guide to the model. It builds two images of [Docker](https://www.docker.com/), one to run babykev
 and one to work on it. One change there is about the tests. In a container, a test of hypothesis sometimes ran past
 its deadline of 200 ms, and failed by chance. A setting in `tests/conftest.py` now turns that deadline off.
 
@@ -102,7 +102,7 @@ just lint-config
 
 `just lint-config` passes.
 
-This tutorial ends here. After it, the whole tutorial checks the workflow with actionlint, and publishes the docs site
+This tutorial ends here. After it, the whole tutorial checks the workflow with [actionlint](https://github.com/rhysd/actionlint), and publishes the docs site
 on GitHub Pages. The [whole tutorial](https://rahuldave.com/babykev-walk/) has every change.
 
 ### What changed {#tut-26.2-what-changed-182c57}

@@ -3,6 +3,8 @@ a probability for every answer. A contract is the set of rules that both sides o
 sides are the person who sends a request and the code that answers it. The contract says what a request must hold, and
 what an answer holds.
 
+The repository [babykev](https://github.com/rahuldave/babykev/tree/tutorial) holds the model and the project around it, on the branch `tutorial`. At the end, `src/babykev/` holds `cli.py`, the command, `api.py`, the contract, `model.py`, the model, and `smoke.py`, a run of the real model. `tests/unit/` holds the unit and integration tests, and `tests/system/` holds the system test. `data/cheese/` holds sample requests, and `docs/` holds the site. `justfile`, `pyproject.toml` and `uv.lock` say how to work on it, and a `Dockerfile` and `.github/workflows/` run it on other machines. The tools are [uv](https://docs.astral.sh/uv/), [just](https://just.systems/), [pytest](https://docs.pytest.org/), [ruff](https://docs.astral.sh/ruff/), [ty](https://docs.astral.sh/ty/), [smalldocs](https://github.com/rahuldave/smalldocs) and [Docker](https://www.docker.com/).
+
 Here is a small request. Its `state` says what the questions are about, here one cheese. The state can be plain text,
 or named fields as here, and babykev turns it into text for the model. Three questions ask about it, each under a name
 of its own.
@@ -33,7 +35,7 @@ number from 0 to 1. It is 1 when the model is certain, and 0 when it only guesse
 The contract also says what a request must not be. A request with no questions is refused. So is a choice with no
 options, or a scale with one level, or a question of a type that does not exist.
 
-In babykev, the contract is the file `src/babykev/api.py`. It is written with pydantic, a Python package. In pydantic,
+In babykev, the contract is the file `src/babykev/api.py`. It is written with [pydantic](https://docs.pydantic.dev/), a Python package. In pydantic,
 each kind of data is a class, a piece of code that lists the fields the data must have. pydantic checks data against
 its class. This tutorial takes the parts about the contract out of the whole tutorial of babykev.
 
@@ -59,7 +61,7 @@ $ just setup
 
 The whole tutorial first made babykev a Python project with uv. It gave babykev a command, `babykev`, in
 `src/babykev/cli.py`. It also added a justfile, a file of short named commands called recipes, with the recipes
-`setup` and `help`. Then it added pytest, a tool that runs tests, and coverage, which shows the lines of code that the
+`setup` and `help`. Then it added [pytest](https://docs.pytest.org/), a tool that runs tests, and [coverage](https://coverage.readthedocs.io/), which shows the lines of code that the
 tests run. The recipe `just test` runs them both, and five tests check the command. The project has no contract yet.
 
 {{include tut-03.1..tut-03.2}}
@@ -87,6 +89,8 @@ A file holds five requests about cheese, one on each line. Each line must fit th
 {{include tut-03.6..tut-03.7}}
 
 ## What the contract accepts and refuses
+
+[pytest](https://docs.pytest.org/) is the test runner of most Python projects. It finds every file `test_*.py`, runs each function whose name starts with `test_`, and reports each failure with the values that made it fail. A test is a plain function with `assert` in it.
 
 No test reaches the contract yet. The first tests check each line of the sample data against it. The others check one
 rule each. A contract must refuse bad data as well as accept good data. When data does not fit, pydantic refuses it
@@ -121,7 +125,7 @@ $ just setup
 The whole tutorial then fixed two bugs in the answers, one in the rounding of the probabilities and one in the
 confidence of a score.
 
-It brought in ruff, a tool that formats the code and checks it against rules. Then it wrote down, for every function,
+It brought in [ruff](https://docs.astral.sh/ruff/), a tool that formats the code and checks it against rules. Then it wrote down, for every function,
 the kind of value that each input and the result hold. The tests grew to 53.
 
 Then the whole tutorial turned on the rules `D1` of ruff. They ask for a docstring on every public file, class and

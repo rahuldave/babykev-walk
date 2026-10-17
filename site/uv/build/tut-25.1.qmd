@@ -24,8 +24,8 @@ git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch --
 just setup
 ```
 
-The whole tutorial then writes the model, and its tests. ty, which checks the types, joins the group `lint`.
-hypothesis, which draws many inputs for one test, joins the group `test`. The run image is babykev as a user runs
+The whole tutorial then writes the model, and its tests. [ty](https://docs.astral.sh/ty/), which checks the types, joins the group `lint`.
+[hypothesis](https://hypothesis.readthedocs.io/), which draws many inputs for one test, joins the group `test`. The run image is babykev as a user runs
 it. It needs the dependencies of the project, and no group.
 
 ## 25.1 The Dockerfile, with the run image {#tut-25.1}

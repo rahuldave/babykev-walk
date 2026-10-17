@@ -17,13 +17,17 @@ git fetch --quiet --tags --force origin
 git switch --detach tut-18
 ```
 
-The whole tutorial then makes a long detour. ruff formats the code and checks it against rules. Every function gets
+The whole tutorial then makes a long detour. [ruff](https://docs.astral.sh/ruff/) formats the code and checks it against rules. Every function gets
 types and a docstring, the tests too. `just check` runs every check, and a git hook runs `just check` before git
-records a change. smalldocs builds a docs site from the code.
+records a change. [smalldocs](https://github.com/rahuldave/smalldocs) builds a docs site from the code.
 
-Then the model comes in, with torch and three more packages, as `src/babykev/model.py`. ty checks its types.
+Then the model comes in, with torch and three more packages, as `src/babykev/model.py`. [ty](https://docs.astral.sh/ty/) checks its types.
 `src/babykev/smoke.py` runs the real model on the sample requests, and `just smoke` runs it. No test calls the model
 or the smoke yet, so most of the new lines have no test.
+
+[PyTorch](https://pytorch.org/), the package `torch`, holds tensors, the arrays of numbers that a model computes with, and the layers of neural networks. It runs on a CPU, on an NVIDIA GPU, and on the GPU of a Mac.
+
+[transformers](https://huggingface.co/docs/transformers), from Hugging Face, loads trained language models and their tokenizers by name, such as `Qwen/Qwen2.5-0.5B`, and downloads their weights once.
 
 The tests of the model need a model, and the real one is a download of about 1 GB. Here the tests get a tiny model,
 with random weights, from fixtures.

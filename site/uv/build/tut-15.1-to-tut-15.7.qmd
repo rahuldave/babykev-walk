@@ -24,8 +24,8 @@ git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch --
 just setup
 ```
 
-The whole tutorial then sets up ruff, fixes the code with it, and adds types and docstrings. pre-commit,
-validate-pyproject and yamllint, more tools for the checks, join the group `lint`. smalldocs, which builds the site
+The whole tutorial then sets up ruff, fixes the code with it, and adds types and docstrings. [pre-commit](https://pre-commit.com/),
+[validate-pyproject](https://github.com/abravalheri/validate-pyproject) and [yamllint](https://yamllint.readthedocs.io/), more tools for the checks, join the group `lint`. [smalldocs](https://github.com/rahuldave/smalldocs), which builds the site
 of the docs, starts a third group, `docs`. `default-groups = "all"` makes `just setup` install each of them, with no
 other change.
 

@@ -18,8 +18,10 @@ git switch --detach tut-03
 ```
 
 The whole tutorial then adds the contract, `src/babykev/api.py`. It says what a request is and what an answer is,
-with pydantic, a library that checks the shape of data. Five sample requests about cheese go in
+with pydantic. Five sample requests about cheese go in
 `data/cheese/sample.jsonl`. No test reaches the contract yet, so the coverage falls.
+
+[pydantic](https://docs.pydantic.dev/) checks data against a description written as Python classes with type hints. A model says which fields a request has and of what type. pydantic then refuses data that does not fit, with a message that names the field. So the rules of a request live in one place, as code.
 
 The tests here check the sample requests against the contract, then each rule of the contract, one at a time.
 

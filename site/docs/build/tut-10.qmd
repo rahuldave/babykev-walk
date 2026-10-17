@@ -27,9 +27,9 @@ picks one option, and a score picks a level on a scale.
 
 The functions of `api.py`, from `render` to `to_answers`, turn a request into the text that the model reads. They
 also turn the probabilities of the model into answers. The tests are in `tests/unit/`, and `just test` runs them with
-pytest. Each run also measures coverage, the share of the lines of the code that the tests run.
+[pytest](https://docs.pytest.org/). Each run also measures coverage, the share of the lines of the code that the tests run.
 
-ruff formats the code, through `just fmt`, and lints it, through `just lint`. To lint is to check the code against a
+[ruff](https://docs.astral.sh/ruff/) formats the code, through `just fmt`, and lints it, through `just lint`. To lint is to check the code against a
 list of rules. The families of rules are in the list `select` of `pyproject.toml`. The last of them, `ANN`, asks for a
 type on every parameter and every return. The README names each new file in its table.
 

@@ -21,6 +21,8 @@ git switch --detach tut-07
 just setup
 ```
 
+[ruff](https://docs.astral.sh/ruff/) is a formatter and a linter for Python, written in Rust by the makers of uv. As a formatter, it rewrites code into one layout. As a linter, it reads code for mistakes and bad habits, each rule with a code such as `F401`. It takes the place of black, isort, flake8 and many plugins, and it is fast.
+
 **What is new.** Nine tests of the confidences and of rounding, on lines 250 to 298 of `tests/unit/test_api.py`. Two of them failed on the code of kev, and the code is fixed so that they pass. ruff came in as the formatter and the linter, with its settings in `pyproject.toml` and two recipes, `fmt` and `lint`. `api.py` is formatted and linted. Every check passes here, and the commands below show the work in between on the files as they were.
 
 **Two tests, and the code of kev.** The first `sed` line prints the test of rounding, lines 250 to 256. Its 77 options have the same probability, and they must still sum to 1, within 0.02. The second prints the test of a guess, lines 291 to 293. Three levels with the same probability are a guess, and a guess must have confidence 0. The third prints the two functions of kev that these tests call, from `api.py` as it was at `tut-05`.

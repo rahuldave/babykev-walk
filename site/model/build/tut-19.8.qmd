@@ -24,10 +24,12 @@ git rm -rq --cached --ignore-unmatch -- :/ && git restore --source b4bf2491e850 
 just setup
 ```
 
-`just setup` prints `Resolved 67 packages`. Since the last part, the walk leaves out three groups of moves. ty, a
+`just setup` prints `Resolved 67 packages`. Since the last part, the walk leaves out three groups of moves. [ty](https://docs.astral.sh/ty/), a
 checker of types, came in, and two comments in `model.py` answer it. The smoke run came in. It loads the real
 model, asks it the questions of a sample file, and prints how many it got right. Then the tests got a tiny tokenizer
 and a tiny backbone, in `tests/tiny.py`, and three fixtures, in `tests/conftest.py`.
+
+[pytest](https://docs.pytest.org/) is the test runner of most Python projects. It finds every file `test_*.py`, runs each function whose name starts with `test_`, and reports each failure with the values that made it fail. A test is a plain function with `assert` in it.
 
 A test of the model checks something exact, such as which token is where, or which weights get a gradient. That holds
 for any weights. So the tests need no trained model, and no download. The tiny backbone is the same class as the

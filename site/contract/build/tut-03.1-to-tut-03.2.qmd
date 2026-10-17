@@ -26,7 +26,7 @@ just setup
 
 The whole tutorial first made babykev a Python project with uv. It gave babykev a command, `babykev`, in
 `src/babykev/cli.py`. It also added a justfile, a file of short named commands called recipes, with the recipes
-`setup` and `help`. Then it added pytest, a tool that runs tests, and coverage, which shows the lines of code that the
+`setup` and `help`. Then it added [pytest](https://docs.pytest.org/), a tool that runs tests, and [coverage](https://coverage.readthedocs.io/), which shows the lines of code that the
 tests run. The recipe `just test` runs them both, and five tests check the command. The project has no contract yet.
 
 ## 3.1 Pydantic, the first dependency {#tut-03.1}

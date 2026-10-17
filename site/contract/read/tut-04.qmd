@@ -17,6 +17,8 @@ git fetch --quiet --tags --force origin
 git switch --detach tut-03
 ```
 
+[pytest](https://docs.pytest.org/) is the test runner of most Python projects. It finds every file `test_*.py`, runs each function whose name starts with `test_`, and reports each failure with the values that made it fail. A test is a plain function with `assert` in it.
+
 No test reaches the contract yet. The first tests check each line of the sample data against it. The others check one
 rule each. A contract must refuse bad data as well as accept good data. When data does not fit, pydantic refuses it
 with an error called `ValidationError`. So most of these tests expect that error.

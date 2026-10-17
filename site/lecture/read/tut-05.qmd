@@ -21,6 +21,12 @@ git switch --detach tut-04
 just setup
 ```
 
+[pydantic](https://docs.pydantic.dev/) checks data against a description written as Python classes with type hints. A model says which fields a request has and of what type. pydantic then refuses data that does not fit, with a message that names the field. So the rules of a request live in one place, as code.
+
+[pytest](https://docs.pytest.org/) is the test runner of most Python projects. It finds every file `test_*.py`, runs each function whose name starts with `test_`, and reports each failure with the values that made it fail. A test is a plain function with `assert` in it.
+
+[pytest-cov](https://pytest-cov.readthedocs.io/) connects pytest to [coverage.py](https://coverage.readthedocs.io/), which records each line of the code that the tests run. The report then names the lines that no test reaches. A line that no test runs can break without any test failing.
+
 **What is new.** `src/babykev/api.py` is the contract of kev, from his first version, without the parts of his server. `data/cheese/sample.jsonl` holds five requests about cheese, each with a `label` on every question. `tests/unit/test_cli.py` tests the command, and `tests/unit/test_api.py` tests the contract. pytest and pytest-cov are in a dependency group, `test`, on lines 25 to 29 of `pyproject.toml`. The justfile has a third recipe, `test`.
 
 **Start from the data.** One line is a request about one cheese, Coquetdale. Its `state` is the context, the text that the questions are about. It asks three questions, a `noul`, a `score` and a `choice`, and each question has its `label`. The five lines are data for the tests, kept in the repository so that the tests can read them.

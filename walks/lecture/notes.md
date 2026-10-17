@@ -56,6 +56,12 @@ $ sed -n '12,13p' pyproject.toml
 
 $ just setup
 
+[pydantic](https://docs.pydantic.dev/) checks data against a description written as Python classes with type hints. A model says which fields a request has and of what type. pydantic then refuses data that does not fit, with a message that names the field. So the rules of a request live in one place, as code.
+
+[pytest](https://docs.pytest.org/) is the test runner of most Python projects. It finds every file `test_*.py`, runs each function whose name starts with `test_`, and reports each failure with the values that made it fail. A test is a plain function with `assert` in it.
+
+[pytest-cov](https://pytest-cov.readthedocs.io/) connects pytest to [coverage.py](https://coverage.readthedocs.io/), which records each line of the code that the tests run. The report then names the lines that no test reaches. A line that no test runs can break without any test failing.
+
 **What is new.** `src/babykev/api.py` is the contract of kev, from his first version, without the parts of his server. `data/cheese/sample.jsonl` holds five requests about cheese, each with a `label` on every question. `tests/unit/test_cli.py` tests the command, and `tests/unit/test_api.py` tests the contract. pytest and pytest-cov are in a dependency group, `test`, on lines 25 to 29 of `pyproject.toml`. The justfile has a third recipe, `test`.
 
 **Start from the data.** One line is a request about one cheese, Coquetdale. Its `state` is the context, the text that the questions are about. It asks three questions, a `noul`, a `score` and a `choice`, and each question has its `label`. The five lines are data for the tests, kept in the repository so that the tests can read them.
@@ -112,6 +118,8 @@ $ sed -i '' 's/option_text("no", c.get("false"))/option_text("NO", c.get("false"
 **Init.** `just setup` installs one package, ruff 0.17.1, from a second dependency group, `lint`, on lines 26 to 28 of `pyproject.toml`.
 
 $ just setup
+
+[ruff](https://docs.astral.sh/ruff/) is a formatter and a linter for Python, written in Rust by the makers of uv. As a formatter, it rewrites code into one layout. As a linter, it reads code for mistakes and bad habits, each rule with a code such as `F401`. It takes the place of black, isort, flake8 and many plugins, and it is fast.
 
 **What is new.** Nine tests of the confidences and of rounding, on lines 250 to 298 of `tests/unit/test_api.py`. Two of them failed on the code of kev, and the code is fixed so that they pass. ruff came in as the formatter and the linter, with its settings in `pyproject.toml` and two recipes, `fmt` and `lint`. `api.py` is formatted and linted. Every check passes here, and the commands below show the work in between on the files as they were.
 
@@ -233,6 +241,8 @@ $ just test -k unknown_command
 $ just --show check
 $ just check
 
+[pre-commit](https://pre-commit.com/) runs checks each time you run `git commit`, before git records the change. The file `.pre-commit-config.yaml` lists hooks. `pre-commit install` puts a script into `.git/hooks`, so `git commit` runs them first, and stops when one fails.
+
 **The hook.** `uv run pre-commit install` is pre-commit, a tool that runs the hooks that `.pre-commit-config.yaml` lists before each `git commit`. `install` writes the script that git runs, and prints `pre-commit installed at .git/hooks/pre-commit`. `just --show hook` prints the recipe around that command, and `just hook` runs it again. `just setup` never runs it, because a hook changes how git behaves, and each clone asks for it once.
 
 $ uv run pre-commit install
@@ -267,6 +277,8 @@ $ git rm --cached -q .env && rm .env
 
 **The config files are code too.** `just lint-config` runs four checks, one for each kind of file that is not Python. Each runs by hand first, once on the file as it is and once with one change that breaks it. The `git restore` line after each puts the file back, because the next checks read it.
 
+[validate-pyproject](https://github.com/abravalheri/validate-pyproject) checks `pyproject.toml` against the published schemas of its tables. It finds a misspelt key or a value of the wrong type, which most tools ignore without a word.
+
 **validate-pyproject.** `pyproject.toml` has a format that a standard writes down, with the sections, the keys of each and the kind of value of each key. `uv run validate-pyproject pyproject.toml` prints `Valid file: pyproject.toml`. The `sed` line writes `requires_python` in place of `requires-python`. The check then prints 32 lines. uv warns that it found no `requires-python` and builds babykev again, and validate-pyproject prints ``[ERROR] `project` must not contain {'requires_python'} properties`` and `Invalid file: pyproject.toml`.
 
 $ uv run validate-pyproject pyproject.toml
@@ -293,6 +305,8 @@ $ sed -i '' 's/^program := "babykev"/program:="babykev"/' justfile
 $ just --fmt --check --unstable
 $ git restore justfile
 
+[yamllint](https://yamllint.readthedocs.io/) checks YAML files, such as the configuration of pre-commit. It finds syntax errors, keys given twice, and a layout that differs from file to file.
+
 **yamllint.** `uv run yamllint --strict .` checks every YAML file, and prints nothing when all is well, and `--strict` makes a warning fail too. Here uv first builds babykev again, because `pyproject.toml` changed above. Each setting in `.yamllint` answers a finding of the defaults of yamllint, and the second command runs the defaults on the two YAML files. They find lines over 80 characters, and a missing `---` at the start of each file. Line 3 of `.yamllint` makes yamllint skip what git ignores, such as `.venv`.
 
 $ uv run yamllint --strict .
@@ -315,6 +329,8 @@ $ just lint-config
 **Init.** `just setup` installs 5 packages, smalldocs 0.1.5 and fastcore, markdown-it-py, mdit-py-plugins and mdurl, which smalldocs needs. smalldocs is in a third dependency group, `docs`.
 
 $ just setup
+
+[smalldocs](https://github.com/rahuldave/smalldocs) makes documentation from the code. It reads docstrings and docments, the comments beside each parameter. It prints them in a terminal, checks that every function has them, and builds a website from them. Its own documentation is at [docs.smallish.dev](https://docs.smallish.dev/).
 
 **What is new.** `docs/_smalldocs.yml` names the package to document, and the tests to hold to the same rule. The recipe `docs` runs smalldocs. Every parameter, return value and field of the package and of the tests has a description beside it. `just check` runs `just docs check`.
 
@@ -419,11 +435,13 @@ $ just check
 
 ## tut-21 A second file: model.py
 
-**Init.** `just setup` brings the stack of the model, 31 packages in all. They are torch, transformers, peft and safetensors, and the packages that they need, and ty, the type checker. From the cache of uv it takes about a second, and the first time on a machine it downloads a few hundred megabytes.
+**Init.** `just setup` brings the stack of the model, 31 packages in all. They are torch, transformers, peft and [safetensors](https://huggingface.co/docs/safetensors), and the packages that they need, and ty, the type checker. From the cache of uv it takes about a second, and the first time on a machine it downloads a few hundred megabytes.
 
 $ just setup
 
 **What is new.** `src/babykev/model.py`, the model of kev, comes in whole from his first version, and `src/babykev/smoke.py` runs it on the real model. `babykev smoke` and `just smoke` run the smoke, and `just types` runs ty, the type checker. A tiny model stands in for the real one in the tests, in `tests/tiny.py` and `tests/conftest.py`. `tests/unit/test_model.py` and `tests/unit/test_smoke.py` hold the tests of the model and of the smoke. `just check` has a floor on the coverage, 90%.
+
+[PyTorch](https://pytorch.org/), the package `torch`, holds tensors, the arrays of numbers that a model computes with, and the layers of neural networks. It runs on a CPU, on an NVIDIA GPU, and on the GPU of a Mac.
 
 **torch, from its own index.** torch comes in several builds. On Linux, the build on PyPI brings the libraries of CUDA, which a laptop and the tests do not need. Lines 31 to 37 of `pyproject.toml` name the index of PyTorch's builds for the CPU, and send torch there and nothing else. `uv tree --invert --package torch` shows why torch came in first. peft needs torch, through accelerate, and peft added first would have taken torch from PyPI.
 
@@ -446,6 +464,10 @@ $ sed -n '150,155p' src/babykev/model.py
 
 $ sed -n '165,186p' src/babykev/model.py
 
+[transformers](https://huggingface.co/docs/transformers), from Hugging Face, loads trained language models and their tokenizers by name, such as `Qwen/Qwen2.5-0.5B`, and downloads their weights once.
+
+[peft](https://huggingface.co/docs/peft), also from Hugging Face, trains a small adapter beside a large model, such as LoRA, in place of all its weights. Training then changes a few million numbers, not hundreds of millions.
+
 **What is trained.** The `python` line loads the real model, Qwen2.5-0.5B, with an adapter of rank 16, and counts its parameters. It prints `503290240 494032768 8798208 459264 9257472`, and the first two numbers say that 494,032,768 of the 503,290,240 parameters are the frozen language model. Two parts train, the LoRA adapter, 8,798,208 parameters, and the pointer head, 459,264. So 9,257,472 parameters train, and the smoke prints them as `503M parameters, 9.3M of them trainable`.
 
 $ uv run python -c "from babykev.model import DecisionModel; m = DecisionModel('Qwen/Qwen2.5-0.5B', 'cpu', lora=16); n = lambda ps: sum(p.numel() for p in ps); lora = n(p for k, p in m.named_parameters() if 'lora_' in k); head = n(m.head.parameters()); print(n(m.parameters()), n(m.parameters()) - lora - head, lora, head, n(m.trainable_parameters()))"
@@ -458,6 +480,8 @@ $ uv run babykev smoke
 
 $ just --show smoke
 $ just smoke
+
+[ty](https://docs.astral.sh/ty/) is a type checker for Python, from the makers of uv and ruff. It reads the type hints and finds the places where a value cannot have the type that the code expects, without running the code.
 
 **The type checker.** A type says what kind of value something is, a whole number, a list of numbers or a tokenizer. Every function of babykev gives the types that it takes and the type that it returns. `uv run ty check` is ty, which compares every call and every `return` with those types, by reading the code and without running it. It prints `All checks passed!`. `just --show types` prints the recipe, `uv run ty check "$@"`, and `just types` gives the same answer.
 
@@ -589,6 +613,8 @@ $ rows = ["".join("#" if ok else "." for ok in row) for row in mask]
 $ for want, got in zip(picture, rows, strict=True): print(want, got, "ok" if want == got else "WRONG")
 $ EOF
 
+[hypothesis](https://hypothesis.readthedocs.io/) writes test inputs. A test says what kind of input it takes, such as a list of up to five numbers. hypothesis then tries many of them, and when one fails, it shrinks it to the smallest input that still fails.
+
 **hypothesis: state the rule, and let the computer try the shapes.** hypothesis is a Python library for tests. Line 10 of `test_mask.py`, `shapes`, says what a request may look like. It has a state of 1 to 6 tokens, and up to 4 questions of 1 to 5 tokens each. `@given(shapes)` on line 42 runs the test below it on up to 100 shapes, drawn at random. When a shape breaks the rule, hypothesis reports the smallest shape that still breaks it.
 
 The test on lines 42 to 49 says that no question sees another.
@@ -633,6 +659,8 @@ $ uv run python -c "import json; print(sum(1 / (2 if q['type'] == 'noul' else le
 
 $ just setup
 
+[Docker](https://www.docker.com/) builds an image, a file system with an operating system, Python and the project in it, from a `Dockerfile`. A container runs the image the same way on any machine, so the project does not depend on what a laptop has installed.
+
 **What is new.** The smoke on the real model is a test now, `tests/system/test_real_model.py`, and a marker keeps it out of `just test`. Two pages of the docs site explain the model. A `Dockerfile` builds two images from `uv.lock`, `.dockerignore` keeps the files of this machine out of them, and the recipe `image` builds and runs them. Two workflows run on GitHub, the checks after every push and the docs on GitHub Pages. hadolint and actionlint run in `just lint-config`.
 
 **The run image, in the file.** The `sed` line prints lines 11 to 39 of the `Dockerfile`.
@@ -671,6 +699,8 @@ $ just image build run
 **Working inside it.** `just image shell -- COMMAND` runs a command in a new container of the dev image, and `--rm` removes the container after it. `which` shows where each tool is. Python comes from `/opt/venv/bin`, and just and uv from `/usr/local/bin`. `just image shell` with no command gives a shell, and `exit` ends it.
 
 $ just image shell -- which python just uv
+
+[hadolint](https://github.com/hadolint/hadolint) is a linter for Dockerfiles. It finds mistakes such as an `apt-get install` with no pinned versions, and it checks the shell commands of each `RUN`.
 
 **hadolint.** hadolint is a linter of Dockerfiles. `uv run hadolint Dockerfile` prints nothing, so the file is clean. Lines 44 to 47 decline its rule `DL3008`, which asks for the version of each package of Debian. Debian replaces a package at each fix of its security, and the old version leaves the archive, so a pinned version stops building within weeks.
 
@@ -714,10 +744,14 @@ $ sed -n '13,21p' docs/guide/mask.qmd
 $ just test -k small_request
 $ open docs/_site/guide/model.html
 
+[GitHub Actions](https://docs.github.com/actions) runs commands on GitHub's machines. A workflow, a YAML file in `.github/workflows/`, says when it runs, such as after every push, and which commands its jobs run. Each run shows its log on the page of the repository.
+
 **The gate, on GitHub.** The hook runs on the machine that makes a `git commit`, and a clone with no hook makes changes that never met it. GitHub runs a workflow on its own machines, after the events that its key `on` names. `.github/workflows/check.yaml` runs `just setup` and `just check` after every push to a branch, and on every pull request. `.github/workflows/docs.yaml` builds the docs site after a push to `main`, and publishes it on GitHub Pages. Line 26 installs the package and the group `docs`, and no other group.
 
 $ cat .github/workflows/check.yaml
 $ sed -n '20,30p' .github/workflows/docs.yaml
+
+[actionlint](https://github.com/rhysd/actionlint) checks the workflows of GitHub Actions. It finds a key that GitHub does not know, a wrong expression, and mistakes in the shell commands of each `run:` line.
 
 **The workflows are checked too.** YAML 1.1 reads the key `on` as the value true, and yamllint warns of it. Line 7 of `.yamllint` lets a key be such a word. The `sed` line deletes that line, and `uv run yamllint --strict .` then prints `truthy value should be one of [false, true]` for line 5 of `check.yaml` and line 6 of `docs.yaml`. `uv run actionlint` checks the workflows themselves, and prints nothing when they are right. The second `sed` line names a job that does not exist, and actionlint prints `job "deploy" needs job "biuld" which does not exist in this workflow`.
 

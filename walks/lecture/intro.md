@@ -1,3 +1,5 @@
 The lecture walks through babykev on its branch `tutorial`, in nine stops, from `tut-01` to `tut-26`. Each stop takes
 in all the work since the stop before it, and the code at each stop passes every check of the project. The tutorial,
 on the same branch, builds the same project one move at a time.
+
+The repository [babykev](https://github.com/rahuldave/babykev/tree/tutorial) holds a small decision model and the project around it, on the branch `tutorial`. At the end, `src/babykev/` holds `cli.py`, the command, `api.py`, the contract, `model.py`, the model, and `smoke.py`, a run of the real model. `tests/unit/` holds the unit and integration tests, and `tests/system/` holds the system test. `data/cheese/` holds sample requests, and `docs/` holds the site. `justfile`, `pyproject.toml` and `uv.lock` say how to work on it, and a `Dockerfile` and `.github/workflows/` run it on other machines. The tools are [uv](https://docs.astral.sh/uv/), [just](https://just.systems/), [pytest](https://docs.pytest.org/), [ruff](https://docs.astral.sh/ruff/), [ty](https://docs.astral.sh/ty/), [smalldocs](https://github.com/rahuldave/smalldocs) and [Docker](https://www.docker.com/).

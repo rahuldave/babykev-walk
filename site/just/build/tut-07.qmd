@@ -21,9 +21,11 @@ git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch --
 ```
 
 The whole tutorial then writes tests of the command, and measures the coverage on every run. It brings in the
-contract of a request, `src/babykev/api.py`, with pydantic, and five requests about cheese as sample data. Then come
+contract of a request, `src/babykev/api.py`, with [pydantic](https://docs.pydantic.dev/), and five requests about cheese as sample data. Then come
 the tests of the contract, and the code that turns a request into text for the model. More code turns the answers of
 the model back into JSON, and tests find two bugs in it, and the code gets their fixes. `just test` prints `53 passed`.
+
+[pytest-cov](https://pytest-cov.readthedocs.io/) connects pytest to [coverage.py](https://coverage.readthedocs.io/), which records each line of the code that the tests run. The report then names the lines that no test reaches. A line that no test runs can break without any test failing.
 
 The code mixes styles. ruff comes in, and `just fmt` formats the code and the tests.
 

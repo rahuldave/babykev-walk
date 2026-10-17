@@ -20,8 +20,8 @@ If you start at this part, make your clone as **Get the project** says, and then
 git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch -- :/ && git restore --source tut-16 --staged --worktree -- :/
 ```
 
-The whole tutorial then gives the site its settings and a front page. It brings in torch, from the index of PyTorch's
-builds for the CPU, and transformers, peft and safetensors. Then `src/babykev/model.py` comes in, the model, with no
+The whole tutorial then gives the site its settings and a front page. It brings in [torch](https://pytorch.org/), from the index of PyTorch's
+builds for the CPU, and [transformers](https://huggingface.co/docs/transformers), [peft](https://huggingface.co/docs/peft) and [safetensors](https://huggingface.co/docs/safetensors). Then `src/babykev/model.py` comes in, the model, with no
 tests of its own yet. So the total coverage falls to 43%. `just check` has no floor on the coverage, so it still
 passes.
 

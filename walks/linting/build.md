@@ -11,9 +11,11 @@ In Build it yourself, a file that a command makes says which command. A diff tha
 We check the code of babykev, a small decision model. babykev reads a text and a set of questions about it, and
 gives a probability for every answer.
 
+The repository [babykev](https://github.com/rahuldave/babykev/tree/tutorial) holds the model and the project around it, on the branch `tutorial`. At the end, `src/babykev/` holds `cli.py`, the command, `api.py`, the contract, `model.py`, the model, and `smoke.py`, a run of the real model. `tests/unit/` holds the unit and integration tests, and `tests/system/` holds the system test. `data/cheese/` holds sample requests, and `docs/` holds the site. `justfile`, `pyproject.toml` and `uv.lock` say how to work on it, and a `Dockerfile` and `.github/workflows/` run it on other machines. The tools are [uv](https://docs.astral.sh/uv/), [just](https://just.systems/), [pytest](https://docs.pytest.org/), [ruff](https://docs.astral.sh/ruff/), [ty](https://docs.astral.sh/ty/), [smalldocs](https://github.com/rahuldave/smalldocs) and [Docker](https://www.docker.com/).
+
 Code that works can still be hard to read, and a reader can miss a bug in it. A formatter writes every file in one
-style. A linter checks the code against rules, and a type checker checks the types that the code declares. ruff is
-the formatter and the linter, and ty is the type checker. pre-commit then runs every check before each
+style. A linter checks the code against rules, and a type checker checks the types that the code declares. [ruff](https://docs.astral.sh/ruff/) is
+the formatter and the linter, and [ty](https://docs.astral.sh/ty/) is the type checker. [pre-commit](https://pre-commit.com/) then runs every check before each
 `git commit`.
 
 This tutorial takes these parts out of the whole tutorial of babykev. It leaves out the parts that build the
@@ -757,11 +759,11 @@ just setup
 ```
 
 The whole tutorial then makes babykev a Python project with uv. It has a command, `babykev`, in
-`src/babykev/cli.py`, and a `justfile` with the recipes `setup`, `help` and `test`. pytest runs the tests, from the
+`src/babykev/cli.py`, and a `justfile` with the recipes `setup`, `help` and `test`. [pytest](https://docs.pytest.org/) runs the tests, from the
 dependency group `test`, and measures the coverage.
 
 `src/babykev/api.py` is the contract, the rules for what a request and an answer hold. A request has questions of
-three types, and pydantic, a library that checks data, checks each request. Two tests find two bugs in `api.py`, and
+three types, and [pydantic](https://docs.pydantic.dev/), a library that checks data, checks each request. Two tests find two bugs in `api.py`, and
 two changes fix them. `just test` prints `53 passed`, and the coverage is 100%.
 
 `just setup` prints `Resolved 14 packages`. The tests check what the code does, and nothing checks how it looks.
@@ -4593,11 +4595,11 @@ git fetch --quiet --tags --force origin; git restore --source tut-12 --staged --
 just setup
 ```
 
-The whole tutorial then documents the code. smalldocs, in a third dependency group, `docs`, reads the docstrings
+The whole tutorial then documents the code. [smalldocs](https://github.com/rahuldave/smalldocs), in a third dependency group, `docs`, reads the docstrings
 and the docments, the comments beside each parameter. `just docs check` lists what has no documentation, and the
 gate runs it. `just docs` builds a site from the docs.
 
-Then come the four packages of the model, torch, transformers, peft and safetensors. torch is the build for the CPU,
+Then come the four packages of the model, [torch](https://pytorch.org/), [transformers](https://huggingface.co/docs/transformers), [peft](https://huggingface.co/docs/peft) and [safetensors](https://huggingface.co/docs/safetensors). torch is the build for the CPU,
 from PyTorch's own index. Last, `src/babykev/model.py` comes in, the model, 274 lines. It passes the format, the
 linter and the docs check. No test runs it yet, so the coverage falls to 43%.
 

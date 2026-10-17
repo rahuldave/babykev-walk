@@ -22,11 +22,11 @@ just setup
 ```
 
 The whole tutorial then makes babykev a Python project with uv. It has a command, `babykev`, in
-`src/babykev/cli.py`, and a `justfile` with the recipes `setup`, `help` and `test`. pytest runs the tests, from the
+`src/babykev/cli.py`, and a `justfile` with the recipes `setup`, `help` and `test`. [pytest](https://docs.pytest.org/) runs the tests, from the
 dependency group `test`, and measures the coverage.
 
 `src/babykev/api.py` is the contract, the rules for what a request and an answer hold. A request has questions of
-three types, and pydantic, a library that checks data, checks each request. Two tests find two bugs in `api.py`, and
+three types, and [pydantic](https://docs.pydantic.dev/), a library that checks data, checks each request. Two tests find two bugs in `api.py`, and
 two changes fix them. `just test` prints `53 passed`, and the coverage is 100%.
 
 `just setup` prints `Resolved 14 packages`. The tests check what the code does, and nothing checks how it looks.

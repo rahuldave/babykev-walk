@@ -11,6 +11,8 @@ probability for every answer. A person who reads the project on GitHub needs to 
 is. A person who calls the code needs to know what each function does, and what each parameter means. A person who
 wants to know why the model is built as it is needs a page of prose.
 
+The repository [babykev](https://github.com/rahuldave/babykev/tree/tutorial) holds the model and the project around it, on the branch `tutorial`. At the end, `src/babykev/` holds `cli.py`, the command, `api.py`, the contract, `model.py`, the model, and `smoke.py`, a run of the real model. `tests/unit/` holds the unit and integration tests, and `tests/system/` holds the system test. `data/cheese/` holds sample requests, and `docs/` holds the site. `justfile`, `pyproject.toml` and `uv.lock` say how to work on it, and a `Dockerfile` and `.github/workflows/` run it on other machines. The tools are [uv](https://docs.astral.sh/uv/), [just](https://just.systems/), [pytest](https://docs.pytest.org/), [ruff](https://docs.astral.sh/ruff/), [ty](https://docs.astral.sh/ty/), [smalldocs](https://github.com/rahuldave/smalldocs) and [Docker](https://www.docker.com/).
+
 This tutorial takes the parts about documentation out of the
 [whole tutorial](https://rahuldave.com/babykev-walk/) of babykev. It starts from the README, before any code. The
 docstrings come when the code has tests and a linter. The rest of the documentation comes after them.
@@ -767,9 +769,9 @@ picks one option, and a score picks a level on a scale.
 
 The functions of `api.py`, from `render` to `to_answers`, turn a request into the text that the model reads. They
 also turn the probabilities of the model into answers. The tests are in `tests/unit/`, and `just test` runs them with
-pytest. Each run also measures coverage, the share of the lines of the code that the tests run.
+[pytest](https://docs.pytest.org/). Each run also measures coverage, the share of the lines of the code that the tests run.
 
-ruff formats the code, through `just fmt`, and lints it, through `just lint`. To lint is to check the code against a
+[ruff](https://docs.astral.sh/ruff/) formats the code, through `just fmt`, and lints it, through `just lint`. To lint is to check the code against a
 list of rules. The families of rules are in the list `select` of `pyproject.toml`. The last of them, `ANN`, asks for a
 type on every parameter and every return. The README names each new file in its table.
 
@@ -2133,8 +2135,8 @@ This part ends at the code at `tut-14`. [The code after this part](https://githu
 
 This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-23`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-23)
 
-The whole tutorial then builds the model, and tests it. The project adds four packages for the model, torch,
-transformers, peft and safetensors. `src/babykev/model.py` holds the model. ty checks the types, through
+The whole tutorial then builds the model, and tests it. The project adds four packages for the model, [torch](https://pytorch.org/),
+[transformers](https://huggingface.co/docs/transformers), [peft](https://huggingface.co/docs/peft) and [safetensors](https://huggingface.co/docs/safetensors). `src/babykev/model.py` holds the model. [ty](https://docs.astral.sh/ty/) checks the types, through
 `just types`. `src/babykev/smoke.py` runs the real model on the sample data, through `just smoke`.
 
 The model reads text as tokens, which are small pieces of words. `encode` packs the state and its questions into one
@@ -2490,16 +2492,16 @@ This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev)
 just setup
 ```
 
-The whole tutorial then adds a `Dockerfile`, which builds two images. An image of Docker is a Linux machine that one
+The whole tutorial then adds a `Dockerfile`, which builds two images. An image of [Docker](https://www.docker.com/) is a Linux machine that one
 file describes. The run image starts `babykev`, and the dev image holds the whole project and the tools to work on
-it. The recipe `just image` builds them, and `just lint-config` now runs hadolint, a linter of the `Dockerfile`.
+it. The recipe `just image` builds them, and `just lint-config` now runs [hadolint](https://github.com/hadolint/hadolint), a linter of the `Dockerfile`.
 
-The site is only on the machine that builds it. GitHub runs workflows on its own machines. A workflow is a file of
+The site is only on the machine that builds it. [GitHub Actions](https://docs.github.com/actions) runs workflows on GitHub's machines. A workflow is a file of
 YAML in `.github/workflows/`, and its key `on` names the events that start it. The first workflow, `check.yaml`, runs
-`just setup` and `just check` after every push. yamllint refused the key `on`, because YAML 1.1 reads the word `on`
+`just setup` and `just check` after every push. [yamllint](https://yamllint.readthedocs.io/) refused the key `on`, because YAML 1.1 reads the word `on`
 as the value true. Its settings now let a key be such a word.
 
-The project adds actionlint, a linter of the workflows of GitHub, to its other linters, and `just lint-config` runs
+The project adds [actionlint](https://github.com/rhysd/actionlint), a linter of the workflows of GitHub, to its other linters, and `just lint-config` runs
 it. The second workflow builds the site and publishes it.
 
 <a id="tut-26.5"></a>

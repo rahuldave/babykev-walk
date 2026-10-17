@@ -15,13 +15,15 @@ git fetch --quiet --tags --force origin
 git switch --detach tut-20
 ```
 
-**Init.** `just setup` brings the stack of the model, 31 packages in all. They are torch, transformers, peft and safetensors, and the packages that they need, and ty, the type checker. From the cache of uv it takes about a second, and the first time on a machine it downloads a few hundred megabytes.
+**Init.** `just setup` brings the stack of the model, 31 packages in all. They are torch, transformers, peft and [safetensors](https://huggingface.co/docs/safetensors), and the packages that they need, and ty, the type checker. From the cache of uv it takes about a second, and the first time on a machine it downloads a few hundred megabytes.
 
 ```bash
 just setup
 ```
 
 **What is new.** `src/babykev/model.py`, the model of kev, comes in whole from his first version, and `src/babykev/smoke.py` runs it on the real model. `babykev smoke` and `just smoke` run the smoke, and `just types` runs ty, the type checker. A tiny model stands in for the real one in the tests, in `tests/tiny.py` and `tests/conftest.py`. `tests/unit/test_model.py` and `tests/unit/test_smoke.py` hold the tests of the model and of the smoke. `just check` has a floor on the coverage, 90%.
+
+[PyTorch](https://pytorch.org/), the package `torch`, holds tensors, the arrays of numbers that a model computes with, and the layers of neural networks. It runs on a CPU, on an NVIDIA GPU, and on the GPU of a Mac.
 
 **torch, from its own index.** torch comes in several builds. On Linux, the build on PyPI brings the libraries of CUDA, which a laptop and the tests do not need. Lines 31 to 37 of `pyproject.toml` name the index of PyTorch's builds for the CPU, and send torch there and nothing else. `uv tree --invert --package torch` shows why torch came in first. peft needs torch, through accelerate, and peft added first would have taken torch from PyPI.
 
@@ -54,6 +56,10 @@ sed -n '150,155p' src/babykev/model.py
 sed -n '165,186p' src/babykev/model.py
 ```
 
+[transformers](https://huggingface.co/docs/transformers), from Hugging Face, loads trained language models and their tokenizers by name, such as `Qwen/Qwen2.5-0.5B`, and downloads their weights once.
+
+[peft](https://huggingface.co/docs/peft), also from Hugging Face, trains a small adapter beside a large model, such as LoRA, in place of all its weights. Training then changes a few million numbers, not hundreds of millions.
+
 **What is trained.** The `python` line loads the real model, Qwen2.5-0.5B, with an adapter of rank 16, and counts its parameters. It prints `503290240 494032768 8798208 459264 9257472`, and the first two numbers say that 494,032,768 of the 503,290,240 parameters are the frozen language model. Two parts train, the LoRA adapter, 8,798,208 parameters, and the pointer head, 459,264. So 9,257,472 parameters train, and the smoke prints them as `503M parameters, 9.3M of them trainable`.
 
 ```bash
@@ -72,6 +78,8 @@ uv run babykev smoke
 just --show smoke
 just smoke
 ```
+
+[ty](https://docs.astral.sh/ty/) is a type checker for Python, from the makers of uv and ruff. It reads the type hints and finds the places where a value cannot have the type that the code expects, without running the code.
 
 **The type checker.** A type says what kind of value something is, a whole number, a list of numbers or a tokenizer. Every function of babykev gives the types that it takes and the type that it returns. `uv run ty check` is ty, which compares every call and every `return` with those types, by reading the code and without running it. It prints `All checks passed!`. `just --show types` prints the recipe, `uv run ty check "$@"`, and `just types` gives the same answer.
 

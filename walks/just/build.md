@@ -8,8 +8,10 @@ Each part ends with a section called **What changed**. It lists every file that 
 
 In Build it yourself, a file that a command makes says which command. A diff that is open is a patch. Apply it with the command in the text, or make the same change in your editor.
 
-We follow the `justfile` of babykev, a small decision model. The program `just` reads this file. The file gives
+We follow the `justfile` of babykev, a small decision model. The program [`just`](https://just.systems/) reads this file. The file gives
 each task of the project a short name, a verb, such as `just test`. The commands behind a verb are its recipe.
+
+The repository [babykev](https://github.com/rahuldave/babykev/tree/tutorial) holds the model and the project around it, on the branch `tutorial`. At the end, `src/babykev/` holds `cli.py`, the command, `api.py`, the contract, `model.py`, the model, and `smoke.py`, a run of the real model. `tests/unit/` holds the unit and integration tests, and `tests/system/` holds the system test. `data/cheese/` holds sample requests, and `docs/` holds the site. `justfile`, `pyproject.toml` and `uv.lock` say how to work on it, and a `Dockerfile` and `.github/workflows/` run it on other machines. The tools are [uv](https://docs.astral.sh/uv/), [just](https://just.systems/), [pytest](https://docs.pytest.org/), [ruff](https://docs.astral.sh/ruff/), [ty](https://docs.astral.sh/ty/), [smalldocs](https://github.com/rahuldave/smalldocs) and [Docker](https://www.docker.com/).
 
 A person, a git hook, a Docker image and GitHub all run the same tasks. The recipes keep the commands in one place,
 so each of them runs the same thing. `just` alone lists the verbs, `just help VERB` explains one, and
@@ -634,9 +636,11 @@ git fetch --quiet --tags --force origin; git restore --source b0840709e371 --sta
 ```
 
 The whole tutorial then writes tests of the command, and measures the coverage on every run. It brings in the
-contract of a request, `src/babykev/api.py`, with pydantic, and five requests about cheese as sample data. Then come
+contract of a request, `src/babykev/api.py`, with [pydantic](https://docs.pydantic.dev/), and five requests about cheese as sample data. Then come
 the tests of the contract, and the code that turns a request into text for the model. More code turns the answers of
 the model back into JSON, and tests find two bugs in it, and the code gets their fixes. `just test` prints `53 passed`.
+
+[pytest-cov](https://pytest-cov.readthedocs.io/) connects pytest to [coverage.py](https://coverage.readthedocs.io/), which records each line of the code that the tests run. The report then names the lines that no test reaches. A line that no test runs can break without any test failing.
 
 The code mixes styles. ruff comes in, and `just fmt` formats the code and the tests.
 
@@ -3447,8 +3451,8 @@ This part does not start where the part before it ends, because the walk skips s
 git fetch --quiet --tags --force origin; git restore --source 64de40516df5 --staged -- :/ && git restore --source tut-16 --staged --worktree -- :/
 ```
 
-The whole tutorial then gives the site its settings and a front page. It brings in torch, from the index of PyTorch's
-builds for the CPU, and transformers, peft and safetensors. Then `src/babykev/model.py` comes in, the model, with no
+The whole tutorial then gives the site its settings and a front page. It brings in [torch](https://pytorch.org/), from the index of PyTorch's
+builds for the CPU, and [transformers](https://huggingface.co/docs/transformers), [peft](https://huggingface.co/docs/peft) and [safetensors](https://huggingface.co/docs/safetensors). Then `src/babykev/model.py` comes in, the model, with no
 tests of its own yet. So the total coverage falls to 43%. `just check` has no floor on the coverage, so it still
 passes.
 
@@ -4015,7 +4019,7 @@ This part does not start where the part before it ends, because the walk skips s
 git fetch --quiet --tags --force origin; git restore --source 57604134d959 --staged -- :/ && git restore --source tut-24 --staged --worktree -- :/
 ```
 
-The whole tutorial then finds a bug in the mask of the model with tests of hypothesis, and fixes it. It adds a test of
+The whole tutorial then finds a bug in the mask of the model with tests of [hypothesis](https://hypothesis.readthedocs.io/), and fixes it. It adds a test of
 the real model, marked `system`. `-m 'not system'` in `pyproject.toml` leaves that test out of `just test`, and so out
 of `just check` and the hook. `just test -m system` runs it. Then the docs get a guide to the model.
 

@@ -21,11 +21,11 @@ git switch --detach tut-16
 just setup
 ```
 
-The whole tutorial then documents the code. smalldocs, in a third dependency group, `docs`, reads the docstrings
+The whole tutorial then documents the code. [smalldocs](https://github.com/rahuldave/smalldocs), in a third dependency group, `docs`, reads the docstrings
 and the docments, the comments beside each parameter. `just docs check` lists what has no documentation, and the
 gate runs it. `just docs` builds a site from the docs.
 
-Then come the four packages of the model, torch, transformers, peft and safetensors. torch is the build for the CPU,
+Then come the four packages of the model, [torch](https://pytorch.org/), [transformers](https://huggingface.co/docs/transformers), [peft](https://huggingface.co/docs/peft) and [safetensors](https://huggingface.co/docs/safetensors). torch is the build for the CPU,
 from PyTorch's own index. Last, `src/babykev/model.py` comes in, the model, 274 lines. It passes the format, the
 linter and the docs check. No test runs it yet, so the coverage falls to 43%.
 

@@ -3,12 +3,14 @@ architecture first, and then the code that builds it, with the tests that check 
 request about one cheese, and answers several questions about it in one pass. It points at one option for each
 question, and it generates no text.
 
+The repository [babykev](https://github.com/rahuldave/babykev/tree/tutorial) holds the model and the project around it, on the branch `tutorial`. At the end, `src/babykev/` holds `cli.py`, the command, `api.py`, the contract, `model.py`, the model, and `smoke.py`, a run of the real model. `tests/unit/` holds the unit and integration tests, and `tests/system/` holds the system test. `data/cheese/` holds sample requests, and `docs/` holds the site. `justfile`, `pyproject.toml` and `uv.lock` say how to work on it, and a `Dockerfile` and `.github/workflows/` run it on other machines. The tools are [uv](https://docs.astral.sh/uv/), [just](https://just.systems/), [pytest](https://docs.pytest.org/), [ruff](https://docs.astral.sh/ruff/), [ty](https://docs.astral.sh/ty/), [smalldocs](https://github.com/rahuldave/smalldocs) and [Docker](https://www.docker.com/).
+
 We take the code in moves. A move is one small change, made by one patch or by one command. You make each move, and
 the page checks your files against it. Most moves of this walk add one test. The text around them explains the part
 of the model that the test checks.
 
 The walk takes some moves of the whole tutorial of babykev, and leaves out the rest. When it opens, babykev already
-has a command line, the contract of a request, and the packages of the model, torch, transformers and peft. Some
+has a command line, the contract of a request, and the packages of the model, [torch](https://pytorch.org/), [transformers](https://huggingface.co/docs/transformers) and [peft](https://huggingface.co/docs/peft). Some
 moves between the parts of this walk are left out too. After such a gap, the next part says what those moves did. It
 first runs `just setup`, which installs the packages of the code at that place.
 
@@ -37,6 +39,10 @@ $ just setup
 `just setup` prints `Resolved 66 packages`. The model is one file, `src/babykev/model.py`. It comes in whole, and we
 read its docstring first.
 
+[PyTorch](https://pytorch.org/), the package `torch`, holds tensors, the arrays of numbers that a model computes with, and the layers of neural networks. It runs on a CPU, on an NVIDIA GPU, and on the GPU of a Mac.
+
+[transformers](https://huggingface.co/docs/transformers), from Hugging Face, loads trained language models and their tokenizers by name, such as `Qwen/Qwen2.5-0.5B`, and downloads their weights once.
+
 {{include tut-16.1}}
 
 The backbone is the decoder of Qwen2.5-0.5B. Its configuration says how large it is.
@@ -62,10 +68,12 @@ the decoder, and the layers stay as they are. The fourth idea reads `last_hidden
 
 $ just setup
 
-`just setup` prints `Resolved 67 packages`. Since the last part, the walk leaves out three groups of moves. ty, a
+`just setup` prints `Resolved 67 packages`. Since the last part, the walk leaves out three groups of moves. [ty](https://docs.astral.sh/ty/), a
 checker of types, came in, and two comments in `model.py` answer it. The smoke run came in. It loads the real
 model, asks it the questions of a sample file, and prints how many it got right. Then the tests got a tiny tokenizer
 and a tiny backbone, in `tests/tiny.py`, and three fixtures, in `tests/conftest.py`.
+
+[pytest](https://docs.pytest.org/) is the test runner of most Python projects. It finds every file `test_*.py`, runs each function whose name starts with `test_`, and reports each failure with the values that made it fail. A test is a plain function with `assert` in it.
 
 A test of the model checks something exact, such as which token is where, or which weights get a gradient. That holds
 for any weights. So the tests need no trained model, and no download. The tiny backbone is the same class as the
@@ -228,6 +236,8 @@ chooses the GPU or the CPU. It also leaves out the tests of the smoke run and it
 backbone in an adapter.
 
 $ sed -n '39p;208,219p' src/babykev/model.py
+
+[peft](https://huggingface.co/docs/peft), also from Hugging Face, trains a small adapter beside a large model, such as LoRA, in place of all its weights. Training then changes a few million numbers, not hundreds of millions.
 
 LoRA, low-rank adaptation, leaves each weight of the backbone as it is. Beside a weight of shape out by in, it puts
 two small matrices, `A` of r by in and `B` of out by r. Their product goes into the output. Lines 210 to

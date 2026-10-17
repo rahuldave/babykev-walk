@@ -24,6 +24,10 @@ just setup
 `just setup` prints `Resolved 66 packages`. The model is one file, `src/babykev/model.py`. It comes in whole, and we
 read its docstring first.
 
+[PyTorch](https://pytorch.org/), the package `torch`, holds tensors, the arrays of numbers that a model computes with, and the layers of neural networks. It runs on a CPU, on an NVIDIA GPU, and on the GPU of a Mac.
+
+[transformers](https://huggingface.co/docs/transformers), from Hugging Face, loads trained language models and their tokenizers by name, such as `Qwen/Qwen2.5-0.5B`, and downloads their weights once.
+
 ## 16.1 model.py, the model {#tut-16.1}
 
 `model.py` turns a language model into a model that decides. It has 274 lines, and four ideas, which its docstring

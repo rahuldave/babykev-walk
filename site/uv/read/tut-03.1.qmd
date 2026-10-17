@@ -21,7 +21,7 @@ git switch --detach tut-02
 just setup
 ```
 
-The whole tutorial then adds five tests of the command. pytest-cov, which measures which
+The whole tutorial then adds five tests of the command. [pytest-cov](https://pytest-cov.readthedocs.io/), which measures which
 lines the tests run, joins pytest in the group `test`. babykev itself needs pydantic to run, so it goes into the
 dependencies of the project, and into no group.
 

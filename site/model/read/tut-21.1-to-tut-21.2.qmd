@@ -31,6 +31,8 @@ backbone in an adapter.
 sed -n '39p;208,219p' src/babykev/model.py
 ```
 
+[peft](https://huggingface.co/docs/peft), also from Hugging Face, trains a small adapter beside a large model, such as LoRA, in place of all its weights. Training then changes a few million numbers, not hundreds of millions.
+
 LoRA, low-rank adaptation, leaves each weight of the backbone as it is. Beside a weight of shape out by in, it puts
 two small matrices, `A` of r by in and `B` of out by r. Their product goes into the output. Lines 210 to
 218 do it with peft, on the seven projections of `LORA_TARGETS`, line 39. r is the rank, the argument `lora`. peft freezes the

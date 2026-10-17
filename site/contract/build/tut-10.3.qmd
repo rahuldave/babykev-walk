@@ -27,7 +27,7 @@ just setup
 The whole tutorial then fixed two bugs in the answers, one in the rounding of the probabilities and one in the
 confidence of a score.
 
-It brought in ruff, a tool that formats the code and checks it against rules. Then it wrote down, for every function,
+It brought in [ruff](https://docs.astral.sh/ruff/), a tool that formats the code and checks it against rules. Then it wrote down, for every function,
 the kind of value that each input and the result hold. The tests grew to 53.
 
 Then the whole tutorial turned on the rules `D1` of ruff. They ask for a docstring on every public file, class and

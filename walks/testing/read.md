@@ -10,7 +10,9 @@ We build the tests of babykev, a small decision model. babykev reads a text and 
 a probability for every answer. A test runs the code and checks what it gives back, so a later change cannot break
 babykev without a failure. This tutorial takes the parts about tests out of the whole tutorial of babykev. It starts
 from the project that uv made, with the command `babykev` and a justfile. It leaves out the formatter, the linter,
-the types, the docs and the images of Docker.
+the types, the docs and the images of [Docker](https://www.docker.com/).
+
+The repository [babykev](https://github.com/rahuldave/babykev/tree/tutorial) holds the model and the project around it, on the branch `tutorial`. At the end, `src/babykev/` holds `cli.py`, the command, `api.py`, the contract, `model.py`, the model, and `smoke.py`, a run of the real model. `tests/unit/` holds the unit and integration tests, and `tests/system/` holds the system test. `data/cheese/` holds sample requests, and `docs/` holds the site. `justfile`, `pyproject.toml` and `uv.lock` say how to work on it, and a `Dockerfile` and `.github/workflows/` run it on other machines. The tools are [uv](https://docs.astral.sh/uv/), [just](https://just.systems/), [pytest](https://docs.pytest.org/), [ruff](https://docs.astral.sh/ruff/), [ty](https://docs.astral.sh/ty/), [smalldocs](https://github.com/rahuldave/smalldocs) and [Docker](https://www.docker.com/).
 
 We make the project in moves. A move is one small change, made by one patch or by one command. A patch changes a
 file, and a command such as `uv add` writes the files it needs. You make each move, and the page checks your files
@@ -541,8 +543,10 @@ This part ends at the code at `tut-02`. [The code after this part](https://githu
 This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-03`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-03)
 
 The whole tutorial then adds the contract, `src/babykev/api.py`. It says what a request is and what an answer is,
-with pydantic, a library that checks the shape of data. Five sample requests about cheese go in
+with pydantic. Five sample requests about cheese go in
 `data/cheese/sample.jsonl`. No test reaches the contract yet, so the coverage falls.
+
+[pydantic](https://docs.pydantic.dev/) checks data against a description written as Python classes with type hints. A model says which fields a request has and of what type. pydantic then refuses data that does not fit, with a message that names the field. So the rules of a request live in one place, as code.
 
 The tests here check the sample requests against the contract, then each rule of the contract, one at a time.
 
@@ -1615,13 +1619,17 @@ This part ends at the code at `tut-06`. [The code after this part](https://githu
 
 This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-18`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-18)
 
-The whole tutorial then makes a long detour. ruff formats the code and checks it against rules. Every function gets
+The whole tutorial then makes a long detour. [ruff](https://docs.astral.sh/ruff/) formats the code and checks it against rules. Every function gets
 types and a docstring, the tests too. `just check` runs every check, and a git hook runs `just check` before git
-records a change. smalldocs builds a docs site from the code.
+records a change. [smalldocs](https://github.com/rahuldave/smalldocs) builds a docs site from the code.
 
-Then the model comes in, with torch and three more packages, as `src/babykev/model.py`. ty checks its types.
+Then the model comes in, with torch and three more packages, as `src/babykev/model.py`. [ty](https://docs.astral.sh/ty/) checks its types.
 `src/babykev/smoke.py` runs the real model on the sample requests, and `just smoke` runs it. No test calls the model
 or the smoke yet, so most of the new lines have no test.
+
+[PyTorch](https://pytorch.org/), the package `torch`, holds tensors, the arrays of numbers that a model computes with, and the layers of neural networks. It runs on a CPU, on an NVIDIA GPU, and on the GPU of a Mac.
+
+[transformers](https://huggingface.co/docs/transformers), from Hugging Face, loads trained language models and their tokenizers by name, such as `Qwen/Qwen2.5-0.5B`, and downloads their weights once.
 
 The tests of the model need a model, and the real one is a download of about 1 GB. Here the tests get a tiny model,
 with random weights, from fixtures.
@@ -4244,7 +4252,7 @@ This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev)
 just setup
 ```
 
-The whole tutorial then writes two pages of a guide to the model. It builds two images of Docker, one to run babykev
+The whole tutorial then writes two pages of a guide to the model. It builds two images of [Docker](https://www.docker.com/), one to run babykev
 and one to work on it. One change there is about the tests. In a container, a test of hypothesis sometimes ran past
 its deadline of 200 ms, and failed by chance. A setting in `tests/conftest.py` now turns that deadline off.
 
@@ -4329,7 +4337,7 @@ just lint-config
 
 `just lint-config` passes.
 
-This tutorial ends here. After it, the whole tutorial checks the workflow with actionlint, and publishes the docs site
+This tutorial ends here. After it, the whole tutorial checks the workflow with [actionlint](https://github.com/rhysd/actionlint), and publishes the docs site
 on GitHub Pages. The [whole tutorial](https://rahuldave.com/babykev-walk/) has every change.
 
 #### What changed

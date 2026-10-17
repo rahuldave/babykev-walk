@@ -61,6 +61,8 @@ just --show check
 just check
 ```
 
+[pre-commit](https://pre-commit.com/) runs checks each time you run `git commit`, before git records the change. The file `.pre-commit-config.yaml` lists hooks. `pre-commit install` puts a script into `.git/hooks`, so `git commit` runs them first, and stops when one fails.
+
 **The hook.** `uv run pre-commit install` is pre-commit, a tool that runs the hooks that `.pre-commit-config.yaml` lists before each `git commit`. `install` writes the script that git runs, and prints `pre-commit installed at .git/hooks/pre-commit`. `just --show hook` prints the recipe around that command, and `just hook` runs it again. `just setup` never runs it, because a hook changes how git behaves, and each clone asks for it once.
 
 ```bash
@@ -107,6 +109,8 @@ git rm --cached -q .env && rm .env
 
 **The config files are code too.** `just lint-config` runs four checks, one for each kind of file that is not Python. Each runs by hand first, once on the file as it is and once with one change that breaks it. The `git restore` line after each puts the file back, because the next checks read it.
 
+[validate-pyproject](https://github.com/abravalheri/validate-pyproject) checks `pyproject.toml` against the published schemas of its tables. It finds a misspelt key or a value of the wrong type, which most tools ignore without a word.
+
 **validate-pyproject.** `pyproject.toml` has a format that a standard writes down, with the sections, the keys of each and the kind of value of each key. `uv run validate-pyproject pyproject.toml` prints `Valid file: pyproject.toml`. The `sed` line writes `requires_python` in place of `requires-python`. The check then prints 32 lines. uv warns that it found no `requires-python` and builds babykev again, and validate-pyproject prints ``[ERROR] `project` must not contain {'requires_python'} properties`` and `Invalid file: pyproject.toml`.
 
 ```bash
@@ -140,6 +144,8 @@ sed -i '' 's/^program := "babykev"/program:="babykev"/' justfile
 just --fmt --check --unstable
 git restore justfile
 ```
+
+[yamllint](https://yamllint.readthedocs.io/) checks YAML files, such as the configuration of pre-commit. It finds syntax errors, keys given twice, and a layout that differs from file to file.
 
 **yamllint.** `uv run yamllint --strict .` checks every YAML file, and prints nothing when all is well, and `--strict` makes a warning fail too. Here uv first builds babykev again, because `pyproject.toml` changed above. Each setting in `.yamllint` answers a finding of the defaults of yamllint, and the second command runs the defaults on the two YAML files. They find lines over 80 characters, and a missing `---` at the start of each file. Line 3 of `.yamllint` makes yamllint skip what git ignores, such as `.venv`.
 

@@ -21,6 +21,8 @@ git switch --detach tut-25
 just setup
 ```
 
+[Docker](https://www.docker.com/) builds an image, a file system with an operating system, Python and the project in it, from a `Dockerfile`. A container runs the image the same way on any machine, so the project does not depend on what a laptop has installed.
+
 **What is new.** The smoke on the real model is a test now, `tests/system/test_real_model.py`, and a marker keeps it out of `just test`. Two pages of the docs site explain the model. A `Dockerfile` builds two images from `uv.lock`, `.dockerignore` keeps the files of this machine out of them, and the recipe `image` builds and runs them. Two workflows run on GitHub, the checks after every push and the docs on GitHub Pages. hadolint and actionlint run in `just lint-config`.
 
 **The run image, in the file.** The `sed` line prints lines 11 to 39 of the `Dockerfile`.
@@ -73,6 +75,8 @@ just image build run
 ```bash
 just image shell -- which python just uv
 ```
+
+[hadolint](https://github.com/hadolint/hadolint) is a linter for Dockerfiles. It finds mistakes such as an `apt-get install` with no pinned versions, and it checks the shell commands of each `RUN`.
 
 **hadolint.** hadolint is a linter of Dockerfiles. `uv run hadolint Dockerfile` prints nothing, so the file is clean. Lines 44 to 47 decline its rule `DL3008`, which asks for the version of each package of Debian. Debian replaces a package at each fix of its security, and the old version leaves the archive, so a pinned version stops building within weeks.
 
@@ -128,12 +132,16 @@ just test -k small_request
 open docs/_site/guide/model.html
 ```
 
+[GitHub Actions](https://docs.github.com/actions) runs commands on GitHub's machines. A workflow, a YAML file in `.github/workflows/`, says when it runs, such as after every push, and which commands its jobs run. Each run shows its log on the page of the repository.
+
 **The gate, on GitHub.** The hook runs on the machine that makes a `git commit`, and a clone with no hook makes changes that never met it. GitHub runs a workflow on its own machines, after the events that its key `on` names. `.github/workflows/check.yaml` runs `just setup` and `just check` after every push to a branch, and on every pull request. `.github/workflows/docs.yaml` builds the docs site after a push to `main`, and publishes it on GitHub Pages. Line 26 installs the package and the group `docs`, and no other group.
 
 ```bash
 cat .github/workflows/check.yaml
 sed -n '20,30p' .github/workflows/docs.yaml
 ```
+
+[actionlint](https://github.com/rhysd/actionlint) checks the workflows of GitHub Actions. It finds a key that GitHub does not know, a wrong expression, and mistakes in the shell commands of each `run:` line.
 
 **The workflows are checked too.** YAML 1.1 reads the key `on` as the value true, and yamllint warns of it. Line 7 of `.yamllint` lets a key be such a word. The `sed` line deletes that line, and `uv run yamllint --strict .` then prints `truthy value should be one of [false, true]` for line 5 of `check.yaml` and line 6 of `docs.yaml`. `uv run actionlint` checks the workflows themselves, and prints nothing when they are right. The second `sed` line names a job that does not exist, and actionlint prints `job "deploy" needs job "biuld" which does not exist in this workflow`.
 

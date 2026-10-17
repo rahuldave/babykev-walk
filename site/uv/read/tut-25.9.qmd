@@ -22,7 +22,7 @@ just setup
 ```
 
 The whole tutorial then turns off the time limit of hypothesis, and adds the recipe `just image`. `just image build
-dev` builds the dev image, and `just image shell` runs a command in it, with this folder at `/work`. hadolint, a
+dev` builds the dev image, and `just image shell` runs a command in it, with this folder at `/work`. [hadolint](https://github.com/hadolint/hadolint), a
 linter for the `Dockerfile`, joins the group `lint`. Its one finding stays
 out, with the reason in a comment. Docker built the dev image before hadolint came in.
 
