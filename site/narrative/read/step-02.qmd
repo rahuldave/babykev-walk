@@ -4,6 +4,17 @@ title: "2 Format and lint arrive"
 
 <!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `step-01`. [The code before this part](https://github.com/rahuldave/babykev/tree/step-01){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach step-01
+```
+
 **Init.** `just setup` adds one package, ruff. `.venv`: 15 packages. (Coming from step-00 instead of step-01, it adds 14.)
 
 ```bash
@@ -134,11 +145,11 @@ just lint --statistics
 
 ## What changed {#step-02-what-changed-182c57}
 
-- <a id="step-02-README.md-8ec9a0"></a>`README.md`: 3 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/4681f251318456e721cb4a7dcecbb9f73d3589cf/README.md).
-- <a id="step-02-justfile-424f0b"></a>`justfile`: adds `recipe fmt`, `recipe lint`. 15 lines added. [The file](https://github.com/rahuldave/babykev/blob/4681f251318456e721cb4a7dcecbb9f73d3589cf/justfile).
-- <a id="step-02-pyproject.toml-5d07e7"></a>`pyproject.toml`: 39 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/4681f251318456e721cb4a7dcecbb9f73d3589cf/pyproject.toml).
-- <a id="step-02-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: adds `round_prob`; changes `score_confidence`, `to_answers`; removes `r2`. 20 lines added, 10 removed. [The file](https://github.com/rahuldave/babykev/blob/4681f251318456e721cb4a7dcecbb9f73d3589cf/src/babykev/api.py).
-- <a id="step-02-uv.lock-8356d8"></a>`uv.lock`: 31 lines added. [The file](https://github.com/rahuldave/babykev/blob/4681f251318456e721cb4a7dcecbb9f73d3589cf/uv.lock).
+- <a id="step-02-README.md-8ec9a0"></a>`README.md`: 3 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/4681f251318456e721cb4a7dcecbb9f73d3589cf/README.md){.btn .btn-sm .btn-secondary}
+- <a id="step-02-justfile-424f0b"></a>`justfile`: adds `recipe fmt`, `recipe lint`. 15 lines added. [The file](https://github.com/rahuldave/babykev/blob/4681f251318456e721cb4a7dcecbb9f73d3589cf/justfile){.btn .btn-sm .btn-secondary}
+- <a id="step-02-pyproject.toml-5d07e7"></a>`pyproject.toml`: 39 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/4681f251318456e721cb4a7dcecbb9f73d3589cf/pyproject.toml){.btn .btn-sm .btn-secondary}
+- <a id="step-02-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: adds `round_prob`; changes `score_confidence`, `to_answers`; removes `r2`. 20 lines added, 10 removed. [The file](https://github.com/rahuldave/babykev/blob/4681f251318456e721cb4a7dcecbb9f73d3589cf/src/babykev/api.py){.btn .btn-sm .btn-secondary}
+- <a id="step-02-uv.lock-8356d8"></a>`uv.lock`: 31 lines added. [The file](https://github.com/rahuldave/babykev/blob/4681f251318456e721cb4a7dcecbb9f73d3589cf/uv.lock){.btn .btn-sm .btn-secondary}
 
 <details><summary>The diff of <code>README.md</code></summary>
 
@@ -311,4 +322,6 @@ just lint --statistics
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/compare/9cc0343527b93a817207a11a2866752807f0013d...4681f251318456e721cb4a7dcecbb9f73d3589cf). [The code after it](https://github.com/rahuldave/babykev/tree/4681f251318456e721cb4a7dcecbb9f73d3589cf).
+[This change on GitHub](https://github.com/rahuldave/babykev/compare/9cc0343527b93a817207a11a2866752807f0013d...4681f251318456e721cb4a7dcecbb9f73d3589cf){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `step-02`. [The code after this part](https://github.com/rahuldave/babykev/tree/step-02){.btn .btn-sm .btn-primary}

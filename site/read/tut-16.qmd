@@ -6,6 +6,17 @@ title: "16 The model"
 
 **Read the tutorial.** [Build it yourself](../build/tut-16.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-15`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-15){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach tut-15
+```
+
 ```bash
 just setup
 ```
@@ -15,8 +26,6 @@ just setup
 babykev has a contract and no model. `model.py` is the model. It comes in whole, from kev's first version, and we
 read it before anything else. It meets the gate as it is. No test calls it yet, and the coverage shows it. Then the
 front page of the docs and the README name it.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/c7037ec460963acd41edf1f63a6a03d2e52e5bae). [The code after it](https://github.com/rahuldave/babykev/tree/056fe2ced73ff8568dfc329555795524c2465eb1).
 
 ## 16.1 model.py, the model {#tut-16.1}
 
@@ -87,7 +96,7 @@ tests of the model come later, and bring the coverage back.
 
 ### What changed {#tut-16.1-what-changed-182c57}
 
-- <a id="tut-16.1-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the model. It packs a request into tokens, masks it, and points at the options. New, 274 lines. [The file](https://github.com/rahuldave/babykev/blob/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93/src/babykev/model.py).
+- <a id="tut-16.1-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the model. It packs a request into tokens, masks it, and points at the options. New, 274 lines. [The file](https://github.com/rahuldave/babykev/blob/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93/src/babykev/model.py){.btn .btn-sm .btn-secondary}
   - look at `class DecisionModel(nn.Module):`
 
 <details><summary>The diff of <code>src/babykev/model.py</code></summary>
@@ -372,7 +381,7 @@ tests of the model come later, and bring the coverage back.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93). [The code after it](https://github.com/rahuldave/babykev/tree/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93){.btn .btn-sm .btn-primary}
 
 ## 16.2 The front page names the model {#tut-16.2}
 
@@ -395,7 +404,7 @@ grep -o 'href="api/model.html#[^"]*"' docs/_site/index.html
 
 ### What changed {#tut-16.2-what-changed-182c57}
 
-- <a id="tut-16.2-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the module `babykev.model`, in the list. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/bc2df6d99386f11f4e193e0b530fa87128a3acd7/docs/index.qmd).
+- <a id="tut-16.2-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the module `babykev.model`, in the list. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/bc2df6d99386f11f4e193e0b530fa87128a3acd7/docs/index.qmd){.btn .btn-sm .btn-secondary}
   - look at ``- `babykev.model` is the model. `encode()` packs a record into one sequence of tokens, and a``
 
 <details><summary>The diff of <code>docs/index.qmd</code></summary>
@@ -420,7 +429,7 @@ grep -o 'href="api/model.html#[^"]*"' docs/_site/index.html
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/bc2df6d99386f11f4e193e0b530fa87128a3acd7). [The code after it](https://github.com/rahuldave/babykev/tree/bc2df6d99386f11f4e193e0b530fa87128a3acd7).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/bc2df6d99386f11f4e193e0b530fa87128a3acd7){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/bc2df6d99386f11f4e193e0b530fa87128a3acd7){.btn .btn-sm .btn-primary}
 
 ## 16.3 The README names model.py {#tut-16.3}
 
@@ -438,7 +447,7 @@ grep -n 'model.py' README.md
 
 ### What changed {#tut-16.3-what-changed-182c57}
 
-- <a id="tut-16.3-README.md-8ec9a0"></a>`README.md`: a row for `src/babykev/model.py`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/056fe2ced73ff8568dfc329555795524c2465eb1/README.md).
+- <a id="tut-16.3-README.md-8ec9a0"></a>`README.md`: a row for `src/babykev/model.py`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/056fe2ced73ff8568dfc329555795524c2465eb1/README.md){.btn .btn-sm .btn-secondary}
   - look at ``| `src/babykev/model.py` | The model, a language model with a head that points at the options |``
 
 <details><summary>The diff of <code>README.md</code></summary>
@@ -456,4 +465,6 @@ grep -n 'model.py' README.md
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/056fe2ced73ff8568dfc329555795524c2465eb1). [The code after it](https://github.com/rahuldave/babykev/tree/056fe2ced73ff8568dfc329555795524c2465eb1).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/056fe2ced73ff8568dfc329555795524c2465eb1){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-16`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-16){.btn .btn-sm .btn-primary}

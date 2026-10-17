@@ -6,6 +6,8 @@ title: "2.2 to 2.3 `just test`"
 
 **Build it yourself.** [Read the tutorial](../read/tut-02.2-to-tut-02.3.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `ad616a5cc1fc`, partway through `tut-02`. [The code before this part](https://github.com/rahuldave/babykev/tree/ad616a5cc1fcdf5b7c1672b79d0d2b267b72bd59){.btn .btn-sm .btn-primary}
+
 This part does not start where the part before it ends, because the walk skips some changes. This command puts the files that this part starts from in place of yours. Run it, and then go on:
 
 ```bash
@@ -27,8 +29,6 @@ makes uv install every dependency group. A dependency group is a named list of p
 work on babykev need.
 
 pytest comes into the group `test`, and the command that runs it gets a recipe.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/ad616a5cc1fcdf5b7c1672b79d0d2b267b72bd59). [The code after it](https://github.com/rahuldave/babykev/tree/b0840709e371a548d4b922c57c679ba040dd2c1a).
 
 ## 2.2 Pytest, in the group test {#tut-02.2}
 
@@ -65,9 +65,9 @@ git restore --source ad616a5cc1fc --staged -- :/ && git restore --source 966956d
 
 ### What changed {#tut-02.2-what-changed-182c57}
 
-- <a id="tut-02.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the group `test`, with pytest. 5 lines added. It comes from `uv add --group test pytest`. [The file](https://github.com/rahuldave/babykev/blob/966956d738b58505e23586af60f05cd5daceb12f/pyproject.toml).
+- <a id="tut-02.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the group `test`, with pytest. 5 lines added. It comes from `uv add --group test pytest`. [The file](https://github.com/rahuldave/babykev/blob/966956d738b58505e23586af60f05cd5daceb12f/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `"pytest>=9.1.1",`
-- <a id="tut-02.2-uv.lock-8356d8"></a>`uv.lock`: pytest and the five packages it needs. 71 lines added. It comes from `uv add --group test pytest`. [The file](https://github.com/rahuldave/babykev/blob/966956d738b58505e23586af60f05cd5daceb12f/uv.lock).
+- <a id="tut-02.2-uv.lock-8356d8"></a>`uv.lock`: pytest and the five packages it needs. 71 lines added. It comes from `uv add --group test pytest`. [The file](https://github.com/rahuldave/babykev/blob/966956d738b58505e23586af60f05cd5daceb12f/uv.lock){.btn .btn-sm .btn-secondary}
 
 <details><summary>The diff that <code>uv add --group test pytest</code> makes in <code>pyproject.toml</code></summary>
 
@@ -85,7 +85,7 @@ git restore --source ad616a5cc1fc --staged -- :/ && git restore --source 966956d
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/966956d738b58505e23586af60f05cd5daceb12f). [The code after it](https://github.com/rahuldave/babykev/tree/966956d738b58505e23586af60f05cd5daceb12f).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/966956d738b58505e23586af60f05cd5daceb12f){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/966956d738b58505e23586af60f05cd5daceb12f){.btn .btn-sm .btn-primary}
 
 ## 2.3 The recipe test {#tut-02.3}
 
@@ -127,7 +127,7 @@ git restore --source 966956d738b5 --staged -- :/ && git restore --source b084070
 
 ### What changed {#tut-02.3-what-changed-182c57}
 
-- <a id="tut-02.3-justfile-424f0b"></a>`justfile`: the recipe `test`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/b0840709e371a548d4b922c57c679ba040dd2c1a/justfile).
+- <a id="tut-02.3-justfile-424f0b"></a>`justfile`: the recipe `test`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/b0840709e371a548d4b922c57c679ba040dd2c1a/justfile){.btn .btn-sm .btn-secondary}
   - look at `test *args:`
 
 <details open><summary>The patch to <code>justfile</code></summary>
@@ -147,4 +147,6 @@ git restore --source 966956d738b5 --staged -- :/ && git restore --source b084070
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/b0840709e371a548d4b922c57c679ba040dd2c1a). [The code after it](https://github.com/rahuldave/babykev/tree/b0840709e371a548d4b922c57c679ba040dd2c1a).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b0840709e371a548d4b922c57c679ba040dd2c1a){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `b0840709e371`, partway through `tut-02`. [The code after this part](https://github.com/rahuldave/babykev/tree/b0840709e371a548d4b922c57c679ba040dd2c1a){.btn .btn-sm .btn-primary}

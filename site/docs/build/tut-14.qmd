@@ -6,10 +6,12 @@ title: "14 The docs site"
 
 **Build it yourself.** [Read the tutorial](../read/tut-14.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-13`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-13){.btn .btn-sm .btn-primary}
+
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
 
 ```bash
-git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 005b87bdfa2e --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch -- :/ && git restore --source tut-13 --staged --worktree -- :/
 ```
 
 So far, `just docs module api` prints the reference of `api.py` as text in the terminal. This section builds a
@@ -25,8 +27,6 @@ The reference exists only as Markdown that `just docs module` prints in a termin
 front page that says what babykev is, and a page of reference for each module. smalldocs builds that site from the
 same docstrings and docments. Git first learns to ignore the files that a build writes into `docs/`. Then the recipe
 `docs` builds the site, the site gets its settings and its front page, and the README names it.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/005b87bdfa2e70c6ceca52dc07197c69702f00be). [The code after it](https://github.com/rahuldave/babykev/tree/e1efb48492d7223fd0442906d2e55a83e0db481e).
 
 ## 14.1 Git ignores what a build of the docs makes {#tut-14.1}
 
@@ -59,12 +59,12 @@ git check 3593f61e4e22
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 005b87bdfa2e --staged -- :/ && git restore --source 3593f61e4e22 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-13 --staged -- :/ && git restore --source 3593f61e4e22 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-14.1-what-changed-182c57}
 
-- <a id="tut-14.1-.gitignore-a5cc29"></a>`.gitignore`: the files that a build of the docs makes. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/3593f61e4e221b04f00f360fe96e6dc4243b02dd/.gitignore).
+- <a id="tut-14.1-.gitignore-a5cc29"></a>`.gitignore`: the files that a build of the docs makes. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/3593f61e4e221b04f00f360fe96e6dc4243b02dd/.gitignore){.btn .btn-sm .btn-secondary}
   - look at `/docs/_site/`
 
 <details open><summary>The patch to <code>.gitignore</code></summary>
@@ -83,7 +83,7 @@ git restore --source 005b87bdfa2e --staged -- :/ && git restore --source 3593f61
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/3593f61e4e221b04f00f360fe96e6dc4243b02dd). [The code after it](https://github.com/rahuldave/babykev/tree/3593f61e4e221b04f00f360fe96e6dc4243b02dd).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3593f61e4e221b04f00f360fe96e6dc4243b02dd){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/3593f61e4e221b04f00f360fe96e6dc4243b02dd){.btn .btn-sm .btn-primary}
 
 ## 14.2 Just docs, alone, builds the site {#tut-14.2}
 
@@ -128,7 +128,7 @@ git restore --source 3593f61e4e22 --staged -- :/ && git restore --source 64de405
 
 ### What changed {#tut-14.2-what-changed-182c57}
 
-- <a id="tut-14.2-justfile-424f0b"></a>`justfile`: with no words, `docs` builds the site. 5 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/64de40516df5aa215bfac1c0198e898ac0960061/justfile).
+- <a id="tut-14.2-justfile-424f0b"></a>`justfile`: with no words, `docs` builds the site. 5 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/64de40516df5aa215bfac1c0198e898ac0960061/justfile){.btn .btn-sm .btn-secondary}
   - look at `    if [ "$#" -eq 0 ]; then exec uv run smalldocs render docs; fi`
 
 <details open><summary>The patch to <code>justfile</code></summary>
@@ -152,7 +152,7 @@ git restore --source 3593f61e4e22 --staged -- :/ && git restore --source 64de405
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/64de40516df5aa215bfac1c0198e898ac0960061). [The code after it](https://github.com/rahuldave/babykev/tree/64de40516df5aa215bfac1c0198e898ac0960061).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/64de40516df5aa215bfac1c0198e898ac0960061){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/64de40516df5aa215bfac1c0198e898ac0960061){.btn .btn-sm .btn-primary}
 
 ## 14.3 The settings of the site {#tut-14.3}
 
@@ -193,7 +193,7 @@ git restore --source 64de40516df5 --staged -- :/ && git restore --source aee2a9f
 
 ### What changed {#tut-14.3-what-changed-182c57}
 
-- <a id="tut-14.3-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the settings of the site, above the reference. 17 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/aee2a9faf7fe05e5d8780c8cf42e82c3d4145330/docs/_smalldocs.yml).
+- <a id="tut-14.3-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the settings of the site, above the reference. 17 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/aee2a9faf7fe05e5d8780c8cf42e82c3d4145330/docs/_smalldocs.yml){.btn .btn-sm .btn-secondary}
   - look at `        contents: api/*  # the reference pages, which each build makes from the code`
 
 <details open><summary>The patch to <code>docs/_smalldocs.yml</code></summary>
@@ -225,7 +225,7 @@ git restore --source 64de40516df5 --staged -- :/ && git restore --source aee2a9f
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/aee2a9faf7fe05e5d8780c8cf42e82c3d4145330). [The code after it](https://github.com/rahuldave/babykev/tree/aee2a9faf7fe05e5d8780c8cf42e82c3d4145330).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/aee2a9faf7fe05e5d8780c8cf42e82c3d4145330){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/aee2a9faf7fe05e5d8780c8cf42e82c3d4145330){.btn .btn-sm .btn-primary}
 
 ## 14.4 A front page {#tut-14.4}
 
@@ -265,7 +265,7 @@ git restore --source aee2a9faf7fe --staged -- :/ && git restore --source e849099
 
 ### What changed {#tut-14.4-what-changed-182c57}
 
-- <a id="tut-14.4-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the front page, written by hand. New, 29 lines. [The file](https://github.com/rahuldave/babykev/blob/e849099979801bc865c5a466d2b098b5ac9aa2e6/docs/index.qmd).
+- <a id="tut-14.4-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the front page, written by hand. New, 29 lines. [The file](https://github.com/rahuldave/babykev/blob/e849099979801bc865c5a466d2b098b5ac9aa2e6/docs/index.qmd){.btn .btn-sm .btn-secondary}
   - look at ``A name in backticks, such as `to_answers`, links to its entry.``
 
 <details open><summary>The patch to <code>docs/index.qmd</code></summary>
@@ -305,7 +305,7 @@ git restore --source aee2a9faf7fe --staged -- :/ && git restore --source e849099
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e849099979801bc865c5a466d2b098b5ac9aa2e6). [The code after it](https://github.com/rahuldave/babykev/tree/e849099979801bc865c5a466d2b098b5ac9aa2e6).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e849099979801bc865c5a466d2b098b5ac9aa2e6){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/e849099979801bc865c5a466d2b098b5ac9aa2e6){.btn .btn-sm .btn-primary}
 
 ## 14.5 The README names the docs {#tut-14.5}
 
@@ -335,12 +335,12 @@ git check e1efb48492d7
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source e84909997980 --staged -- :/ && git restore --source e1efb48492d7 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source e84909997980 --staged -- :/ && git restore --source tut-14 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-14.5-what-changed-182c57}
 
-- <a id="tut-14.5-README.md-8ec9a0"></a>`README.md`: a row for `docs/`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/e1efb48492d7223fd0442906d2e55a83e0db481e/README.md).
+- <a id="tut-14.5-README.md-8ec9a0"></a>`README.md`: a row for `docs/`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/e1efb48492d7223fd0442906d2e55a83e0db481e/README.md){.btn .btn-sm .btn-secondary}
   - look at ``| `docs/` | The docs site. `just docs` builds it into `docs/_site`, with the reference made from the code |``
 
 <details open><summary>The patch to <code>README.md</code></summary>
@@ -358,4 +358,6 @@ git restore --source e84909997980 --staged -- :/ && git restore --source e1efb48
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e1efb48492d7223fd0442906d2e55a83e0db481e). [The code after it](https://github.com/rahuldave/babykev/tree/e1efb48492d7223fd0442906d2e55a83e0db481e).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e1efb48492d7223fd0442906d2e55a83e0db481e){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-14`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-14){.btn .btn-sm .btn-primary}

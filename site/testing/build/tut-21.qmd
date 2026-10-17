@@ -6,10 +6,12 @@ title: "21 Integration tests, and the floor"
 
 **Build it yourself.** [Read the tutorial](../read/tut-21.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-20`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-20){.btn .btn-sm .btn-primary}
+
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
 
 ```bash
-git rm -rq --cached --ignore-unmatch -- :/ && git restore --source ebfa2a8cee25 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch -- :/ && git restore --source tut-20 --staged --worktree -- :/
 ```
 
 The tests here run several parts together. When the coverage passes 90%, `just check` gets a floor.
@@ -23,8 +25,6 @@ just setup
 An integration test runs several of our parts together. On the tiny model, it needs no download, and only our code can
 make it fail, so it is hermetic. The tests here check what trains, a pass over records of different lengths,
 and the whole smoke. Then the coverage is over 90%, and `just check` gets a floor.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/ebfa2a8cee251782b3709a379c35af77c80c6170). [The code after it](https://github.com/rahuldave/babykev/tree/922d6ba2495756622ad215301da7c48f2ec33fa9).
 
 ## 21.1 With an adapter, only the adapter and the head train {#tut-21.1}
 
@@ -65,12 +65,12 @@ git check 0be44c1de17b
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source ebfa2a8cee25 --staged -- :/ && git restore --source 0be44c1de17b --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-20 --staged -- :/ && git restore --source 0be44c1de17b --staged --worktree -- :/
 ```
 
 ### What changed {#tut-21.1-what-changed-182c57}
 
-- <a id="tut-21.1-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: one backward pass with an adapter. 22 lines added. [The file](https://github.com/rahuldave/babykev/blob/0be44c1de17b8acb4e18a964a782584eb26fee97/tests/unit/test_model.py).
+- <a id="tut-21.1-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: one backward pass with an adapter. 22 lines added. [The file](https://github.com/rahuldave/babykev/blob/0be44c1de17b8acb4e18a964a782584eb26fee97/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_with_an_adapter_only_the_adapter_and_the_head_train(`
 
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
@@ -113,7 +113,7 @@ git restore --source ebfa2a8cee25 --staged -- :/ && git restore --source 0be44c1
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/0be44c1de17b8acb4e18a964a782584eb26fee97). [The code after it](https://github.com/rahuldave/babykev/tree/0be44c1de17b8acb4e18a964a782584eb26fee97).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0be44c1de17b8acb4e18a964a782584eb26fee97){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/0be44c1de17b8acb4e18a964a782584eb26fee97){.btn .btn-sm .btn-primary}
 
 ## 21.2 Records of different lengths answer in one pass as alone {#tut-21.2}
 
@@ -156,7 +156,7 @@ git restore --source 0be44c1de17b --staged -- :/ && git restore --source e6248c7
 
 ### What changed {#tut-21.2-what-changed-182c57}
 
-- <a id="tut-21.2-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a padded pass. 16 lines added. [The file](https://github.com/rahuldave/babykev/blob/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac/tests/unit/test_model.py).
+- <a id="tut-21.2-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a padded pass. 16 lines added. [The file](https://github.com/rahuldave/babykev/blob/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_records_of_different_lengths_answer_in_one_pass_as_alone(`
 
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
@@ -186,7 +186,7 @@ git restore --source 0be44c1de17b --staged -- :/ && git restore --source e6248c7
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac). [The code after it](https://github.com/rahuldave/babykev/tree/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac){.btn .btn-sm .btn-primary}
 
 ## 21.3 The smoke reports on every question, on the tiny model {#tut-21.3}
 
@@ -231,7 +231,7 @@ git restore --source e6248c7e2cf3 --staged -- :/ && git restore --source 08acf0a
 
 ### What changed {#tut-21.3-what-changed-182c57}
 
-- <a id="tut-21.3-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: the whole smoke, on the tiny model. 17 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/08acf0a3770d58ab7fc3ac85eebf5cf9ed0bad0e/tests/unit/test_smoke.py).
+- <a id="tut-21.3-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: the whole smoke, on the tiny model. 17 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/08acf0a3770d58ab7fc3ac85eebf5cf9ed0bad0e/tests/unit/test_smoke.py){.btn .btn-sm .btn-secondary}
   - look at `def test_smoke_reports_on_every_question_of_the_sample(`
 
 <details open><summary>The patch to <code>tests/unit/test_smoke.py</code></summary>
@@ -269,7 +269,7 @@ git restore --source e6248c7e2cf3 --staged -- :/ && git restore --source 08acf0a
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/08acf0a3770d58ab7fc3ac85eebf5cf9ed0bad0e). [The code after it](https://github.com/rahuldave/babykev/tree/08acf0a3770d58ab7fc3ac85eebf5cf9ed0bad0e).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/08acf0a3770d58ab7fc3ac85eebf5cf9ed0bad0e){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/08acf0a3770d58ab7fc3ac85eebf5cf9ed0bad0e){.btn .btn-sm .btn-primary}
 
 ## 21.4 The gate has a floor of 90% {#tut-21.4}
 
@@ -307,7 +307,7 @@ git restore --source 08acf0a3770d --staged -- :/ && git restore --source 5760413
 
 ### What changed {#tut-21.4-what-changed-182c57}
 
-- <a id="tut-21.4-justfile-424f0b"></a>`justfile`: the floor, in the gate. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/57604134d9590c16b1c4db0b1d1a11509a65345b/justfile).
+- <a id="tut-21.4-justfile-424f0b"></a>`justfile`: the floor, in the gate. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/57604134d9590c16b1c4db0b1d1a11509a65345b/justfile){.btn .btn-sm .btn-secondary}
   - look at `    just test -q --cov-fail-under=90`
 
 <details open><summary>The patch to <code>justfile</code></summary>
@@ -335,7 +335,7 @@ git restore --source 08acf0a3770d --staged -- :/ && git restore --source 5760413
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/57604134d9590c16b1c4db0b1d1a11509a65345b). [The code after it](https://github.com/rahuldave/babykev/tree/57604134d9590c16b1c4db0b1d1a11509a65345b).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/57604134d9590c16b1c4db0b1d1a11509a65345b){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/57604134d9590c16b1c4db0b1d1a11509a65345b){.btn .btn-sm .btn-primary}
 
 ## 21.5 The README names the floor {#tut-21.5}
 
@@ -364,12 +364,12 @@ git check 922d6ba24957
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 57604134d959 --staged -- :/ && git restore --source 922d6ba24957 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source 57604134d959 --staged -- :/ && git restore --source tut-21 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-21.5-what-changed-182c57}
 
-- <a id="tut-21.5-README.md-8ec9a0"></a>`README.md`: the floor of 90%, in the lines on `just check`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/922d6ba2495756622ad215301da7c48f2ec33fa9/README.md).
+- <a id="tut-21.5-README.md-8ec9a0"></a>`README.md`: the floor of 90%, in the lines on `just check`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/922d6ba2495756622ad215301da7c48f2ec33fa9/README.md){.btn .btn-sm .btn-secondary}
   - look at ``The tests must run at least 90% of the code. You can run `just check` yourself at any time.``
 
 <details open><summary>The patch to <code>README.md</code></summary>
@@ -390,4 +390,6 @@ git restore --source 57604134d959 --staged -- :/ && git restore --source 922d6ba
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/922d6ba2495756622ad215301da7c48f2ec33fa9). [The code after it](https://github.com/rahuldave/babykev/tree/922d6ba2495756622ad215301da7c48f2ec33fa9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/922d6ba2495756622ad215301da7c48f2ec33fa9){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-21`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-21){.btn .btn-sm .btn-primary}

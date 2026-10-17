@@ -6,6 +6,17 @@ title: "19 The tiny model and fixtures"
 
 **Read the tutorial.** [Build it yourself](../build/tut-19.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-18`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-18){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach tut-18
+```
+
 The whole tutorial then makes a long detour. ruff formats the code and checks it against rules. Every function gets
 types and a docstring, the tests too. `just check` runs every check, and a git hook runs `just check` before git
 records a change. smalldocs builds a docs site from the code.
@@ -27,8 +38,6 @@ The tests of the model need a model. The real one is a download of about 1 GB, a
 GPU. A test of the model checks something exact, such as which token is where, how many probabilities there are, or
 which weights get a gradient. That holds for any weights, trained or random. So the tests get a tiny model, built in memory with random
 weights. A fixture of pytest gives it to each test that asks for it.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/3edcb80f6814f9e0afe70942db6fce959799d9c5). [The code after it](https://github.com/rahuldave/babykev/tree/88b3a9e08db851ce891ecfcfcf26d18892beea90).
 
 ## 19.1 tests/tiny.py, with the tiny tokenizer {#tut-19.1}
 
@@ -65,7 +74,7 @@ token, and no secret. The next move answers it.
 
 ### What changed {#tut-19.1-what-changed-182c57}
 
-- <a id="tut-19.1-tests-tiny.py-70c1c9"></a>`tests/tiny.py`: the tiny tokenizer. New, 23 lines. [The file](https://github.com/rahuldave/babykev/blob/b57593b2f1c324a6349f0f5b58a75754f7f261dc/tests/tiny.py).
+- <a id="tut-19.1-tests-tiny.py-70c1c9"></a>`tests/tiny.py`: the tiny tokenizer. New, 23 lines. [The file](https://github.com/rahuldave/babykev/blob/b57593b2f1c324a6349f0f5b58a75754f7f261dc/tests/tiny.py){.btn .btn-sm .btn-secondary}
   - look at `def tiny_tokenizer() -> PreTrainedTokenizerFast:  # A tokenizer with one token per character`
 
 <details><summary>The diff of <code>tests/tiny.py</code></summary>
@@ -99,7 +108,7 @@ token, and no secret. The next move answers it.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/b57593b2f1c324a6349f0f5b58a75754f7f261dc). [The code after it](https://github.com/rahuldave/babykev/tree/b57593b2f1c324a6349f0f5b58a75754f7f261dc).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b57593b2f1c324a6349f0f5b58a75754f7f261dc){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/b57593b2f1c324a6349f0f5b58a75754f7f261dc){.btn .btn-sm .btn-primary}
 
 ## 19.2 The tests may pass a literal to unk_token {#tut-19.2}
 
@@ -118,7 +127,7 @@ just lint
 
 ### What changed {#tut-19.2-what-changed-182c57}
 
-- <a id="tut-19.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the tests may break `S106`. 3 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/2daaf5f257514e391edb5ad5183c2d2288965de3/pyproject.toml).
+- <a id="tut-19.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the tests may break `S106`. 3 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/2daaf5f257514e391edb5ad5183c2d2288965de3/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `"tests/**" = ["S101", "S106"]`
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
@@ -137,7 +146,7 @@ just lint
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/2daaf5f257514e391edb5ad5183c2d2288965de3). [The code after it](https://github.com/rahuldave/babykev/tree/2daaf5f257514e391edb5ad5183c2d2288965de3).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/2daaf5f257514e391edb5ad5183c2d2288965de3){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/2daaf5f257514e391edb5ad5183c2d2288965de3){.btn .btn-sm .btn-primary}
 
 ## 19.3 The tiny backbone {#tut-19.3}
 
@@ -157,7 +166,7 @@ It prints `24224`, the parameters of the tiny backbone. The backbone of Qwen2.5-
 
 ### What changed {#tut-19.3-what-changed-182c57}
 
-- <a id="tut-19.3-tests-tiny.py-70c1c9"></a>`tests/tiny.py`: the tiny backbone. 20 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a6e3905ee0316fdd0b2e0d3baab9f4a65d0588b5/tests/tiny.py).
+- <a id="tut-19.3-tests-tiny.py-70c1c9"></a>`tests/tiny.py`: the tiny backbone. 20 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a6e3905ee0316fdd0b2e0d3baab9f4a65d0588b5/tests/tiny.py){.btn .btn-sm .btn-secondary}
   - look at `def tiny_backbone(`
 
 <details><summary>The diff of <code>tests/tiny.py</code></summary>
@@ -200,7 +209,7 @@ It prints `24224`, the parameters of the tiny backbone. The backbone of Qwen2.5-
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/a6e3905ee0316fdd0b2e0d3baab9f4a65d0588b5). [The code after it](https://github.com/rahuldave/babykev/tree/a6e3905ee0316fdd0b2e0d3baab9f4a65d0588b5).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a6e3905ee0316fdd0b2e0d3baab9f4a65d0588b5){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/a6e3905ee0316fdd0b2e0d3baab9f4a65d0588b5){.btn .btn-sm .btn-primary}
 
 ## 19.4 conftest.py, with the fixture tok {#tut-19.4}
 
@@ -224,7 +233,7 @@ Python, and not the root of the project. So `tests.tiny` cannot be found. The ne
 
 ### What changed {#tut-19.4-what-changed-182c57}
 
-- <a id="tut-19.4-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `tok`. New, 16 lines. [The file](https://github.com/rahuldave/babykev/blob/14585bbd144a55ac28ff0473f3d3f2c23c03d314/tests/conftest.py).
+- <a id="tut-19.4-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `tok`. New, 16 lines. [The file](https://github.com/rahuldave/babykev/blob/14585bbd144a55ac28ff0473f3d3f2c23c03d314/tests/conftest.py){.btn .btn-sm .btn-secondary}
   - look at `@pytest.fixture(scope="session")`
 
 <details><summary>The diff of <code>tests/conftest.py</code></summary>
@@ -251,7 +260,7 @@ Python, and not the root of the project. So `tests.tiny` cannot be found. The ne
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/14585bbd144a55ac28ff0473f3d3f2c23c03d314). [The code after it](https://github.com/rahuldave/babykev/tree/14585bbd144a55ac28ff0473f3d3f2c23c03d314).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/14585bbd144a55ac28ff0473f3d3f2c23c03d314){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/14585bbd144a55ac28ff0473f3d3f2c23c03d314){.btn .btn-sm .btn-primary}
 
 ## 19.5 pytest can import tests.tiny {#tut-19.5}
 
@@ -279,7 +288,7 @@ just test --fixtures
 
 ### What changed {#tut-19.5-what-changed-182c57}
 
-- <a id="tut-19.5-pyproject.toml-5d07e7"></a>`pyproject.toml`: the root of the project, on the path of pytest. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/b458ae1df2239c8645f7a4eb35832fd2dddc1114/pyproject.toml).
+- <a id="tut-19.5-pyproject.toml-5d07e7"></a>`pyproject.toml`: the root of the project, on the path of pytest. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/b458ae1df2239c8645f7a4eb35832fd2dddc1114/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `pythonpath = ["."]`
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
@@ -298,7 +307,7 @@ just test --fixtures
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/b458ae1df2239c8645f7a4eb35832fd2dddc1114). [The code after it](https://github.com/rahuldave/babykev/tree/b458ae1df2239c8645f7a4eb35832fd2dddc1114).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b458ae1df2239c8645f7a4eb35832fd2dddc1114){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/b458ae1df2239c8645f7a4eb35832fd2dddc1114){.btn .btn-sm .btn-primary}
 
 ## 19.6 The fixture model {#tut-19.6}
 
@@ -319,7 +328,7 @@ new import.
 
 ### What changed {#tut-19.6-what-changed-182c57}
 
-- <a id="tut-19.6-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `model`. 10 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/0806a218722ba7438f265928d3cfbc0b5f0e723e/tests/conftest.py).
+- <a id="tut-19.6-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `model`. 10 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/0806a218722ba7438f265928d3cfbc0b5f0e723e/tests/conftest.py){.btn .btn-sm .btn-secondary}
   - look at `    return DecisionModel("tiny", "cpu", backbone=tiny_backbone(len(tok))).eval()`
 
 <details><summary>The diff of <code>tests/conftest.py</code></summary>
@@ -350,7 +359,7 @@ new import.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/0806a218722ba7438f265928d3cfbc0b5f0e723e). [The code after it](https://github.com/rahuldave/babykev/tree/0806a218722ba7438f265928d3cfbc0b5f0e723e).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0806a218722ba7438f265928d3cfbc0b5f0e723e){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/0806a218722ba7438f265928d3cfbc0b5f0e723e){.btn .btn-sm .btn-primary}
 
 ## 19.7 The fixture record {#tut-19.7}
 
@@ -370,7 +379,7 @@ docstring.
 
 ### What changed {#tut-19.7-what-changed-182c57}
 
-- <a id="tut-19.7-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `record`. 15 lines added. [The file](https://github.com/rahuldave/babykev/blob/b4bf2491e8505697eaa015738f93178c6bd7f3fc/tests/conftest.py).
+- <a id="tut-19.7-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `record`. 15 lines added. [The file](https://github.com/rahuldave/babykev/blob/b4bf2491e8505697eaa015738f93178c6bd7f3fc/tests/conftest.py){.btn .btn-sm .btn-secondary}
   - look at `        "state": "Roquefort. A blue cheese from France, made from sheep's milk.",`
 
 <details><summary>The diff of <code>tests/conftest.py</code></summary>
@@ -406,7 +415,7 @@ docstring.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/b4bf2491e8505697eaa015738f93178c6bd7f3fc). [The code after it](https://github.com/rahuldave/babykev/tree/b4bf2491e8505697eaa015738f93178c6bd7f3fc).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b4bf2491e8505697eaa015738f93178c6bd7f3fc){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/b4bf2491e8505697eaa015738f93178c6bd7f3fc){.btn .btn-sm .btn-primary}
 
 ## 19.8 The first test of the model {#tut-19.8}
 
@@ -446,7 +455,7 @@ In tut-19.5, before this test, `model.py` was at 33%, and the total at 45%.
 
 ### What changed {#tut-19.8-what-changed-182c57}
 
-- <a id="tut-19.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the first test of the model, on the tiny model. New, 20 lines. [The file](https://github.com/rahuldave/babykev/blob/321a8df2c597e0c46d06c9b36c711f0fe270900a/tests/unit/test_model.py).
+- <a id="tut-19.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the first test of the model, on the tiny model. New, 20 lines. [The file](https://github.com/rahuldave/babykev/blob/321a8df2c597e0c46d06c9b36c711f0fe270900a/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_probabilities_sum_to_one_for_every_question(`
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
@@ -477,7 +486,7 @@ In tut-19.5, before this test, `model.py` was at 33%, and the total at 45%.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/321a8df2c597e0c46d06c9b36c711f0fe270900a). [The code after it](https://github.com/rahuldave/babykev/tree/321a8df2c597e0c46d06c9b36c711f0fe270900a).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/321a8df2c597e0c46d06c9b36c711f0fe270900a){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/321a8df2c597e0c46d06c9b36c711f0fe270900a){.btn .btn-sm .btn-primary}
 
 ## 19.9 The README names the fixtures and the tiny model {#tut-19.9}
 
@@ -497,7 +506,7 @@ helpers and the fixtures in it.
 
 ### What changed {#tut-19.9-what-changed-182c57}
 
-- <a id="tut-19.9-README.md-8ec9a0"></a>`README.md`: the rows of the fixtures and of the tiny model. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/88b3a9e08db851ce891ecfcfcf26d18892beea90/README.md).
+- <a id="tut-19.9-README.md-8ec9a0"></a>`README.md`: the rows of the fixtures and of the tiny model. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/88b3a9e08db851ce891ecfcfcf26d18892beea90/README.md){.btn .btn-sm .btn-secondary}
   - look at ``| `tests/tiny.py` | A small tokenizer and backbone, built in memory, in place of the real ones |``
 
 <details><summary>The diff of <code>README.md</code></summary>
@@ -518,4 +527,6 @@ helpers and the fixtures in it.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/88b3a9e08db851ce891ecfcfcf26d18892beea90). [The code after it](https://github.com/rahuldave/babykev/tree/88b3a9e08db851ce891ecfcfcf26d18892beea90).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/88b3a9e08db851ce891ecfcfcf26d18892beea90){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-19`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-19){.btn .btn-sm .btn-primary}

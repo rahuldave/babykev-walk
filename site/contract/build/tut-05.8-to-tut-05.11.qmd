@@ -6,6 +6,8 @@ title: "5.8 to 5.11 From probabilities back to answers"
 
 **Build it yourself.** [Read the tutorial](../read/tut-05.8-to-tut-05.11.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `8368a8202dab`, partway through `tut-05`. [The code before this part](https://github.com/rahuldave/babykev/tree/8368a8202dab8159f95043310e2bf22a24c1e474){.btn .btn-sm .btn-primary}
+
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
 
 ```bash
@@ -18,8 +20,6 @@ just setup
 
 The model gives a probability for each option. The function `to_answers`, in `api.py`, turns them into an answer of
 the type of each question. The moves of this section add a test for each type.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/8368a8202dab8159f95043310e2bf22a24c1e474). [The code after it](https://github.com/rahuldave/babykev/tree/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f).
 
 ## 5.8 The answer of a noul is the probability of yes {#tut-05.8}
 
@@ -55,7 +55,7 @@ git restore --source 8368a8202dab --staged -- :/ && git restore --source 0740c2c
 
 ### What changed {#tut-05.8-what-changed-182c57}
 
-- <a id="tut-05.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the answer of a noul. 10 lines added. [The file](https://github.com/rahuldave/babykev/blob/0740c2c246273e99e34494512152d5b97ea4f7b9/tests/unit/test_api.py).
+- <a id="tut-05.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the answer of a noul. 10 lines added. [The file](https://github.com/rahuldave/babykev/blob/0740c2c246273e99e34494512152d5b97ea4f7b9/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert answers == {"blue": {"type": "noul", "noul": 0.75}}`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -86,7 +86,7 @@ git restore --source 8368a8202dab --staged -- :/ && git restore --source 0740c2c
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/0740c2c246273e99e34494512152d5b97ea4f7b9). [The code after it](https://github.com/rahuldave/babykev/tree/0740c2c246273e99e34494512152d5b97ea4f7b9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0740c2c246273e99e34494512152d5b97ea4f7b9){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/0740c2c246273e99e34494512152d5b97ea4f7b9){.btn .btn-sm .btn-primary}
 
 ## 5.9 A choice names the most likely option {#tut-05.9}
 
@@ -120,7 +120,7 @@ git restore --source 0740c2c24627 --staged -- :/ && git restore --source a27b71f
 
 ### What changed {#tut-05.9-what-changed-182c57}
 
-- <a id="tut-05.9-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the answer of a choice. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/a27b71f6a341bb12029a2d3471d6b3bc19d0d94c/tests/unit/test_api.py).
+- <a id="tut-05.9-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the answer of a choice. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/a27b71f6a341bb12029a2d3471d6b3bc19d0d94c/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert answer["choice"] == "goat"`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -143,7 +143,7 @@ git restore --source 0740c2c24627 --staged -- :/ && git restore --source a27b71f
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/a27b71f6a341bb12029a2d3471d6b3bc19d0d94c). [The code after it](https://github.com/rahuldave/babykev/tree/a27b71f6a341bb12029a2d3471d6b3bc19d0d94c).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a27b71f6a341bb12029a2d3471d6b3bc19d0d94c){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/a27b71f6a341bb12029a2d3471d6b3bc19d0d94c){.btn .btn-sm .btn-primary}
 
 ## 5.10 A score answers with the expected level {#tut-05.10}
 
@@ -178,7 +178,7 @@ git restore --source a27b71f6a341 --staged -- :/ && git restore --source be8c681
 
 ### What changed {#tut-05.10-what-changed-182c57}
 
-- <a id="tut-05.10-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the answer of a score. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/be8c681092973e7ac1e12bbd1817da81bea45e7e/tests/unit/test_api.py).
+- <a id="tut-05.10-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the answer of a score. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/be8c681092973e7ac1e12bbd1817da81bea45e7e/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert answer["score"] == pytest.approx(1.6)`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -203,7 +203,7 @@ git restore --source a27b71f6a341 --staged -- :/ && git restore --source be8c681
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/be8c681092973e7ac1e12bbd1817da81bea45e7e). [The code after it](https://github.com/rahuldave/babykev/tree/be8c681092973e7ac1e12bbd1817da81bea45e7e).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/be8c681092973e7ac1e12bbd1817da81bea45e7e){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/be8c681092973e7ac1e12bbd1817da81bea45e7e){.btn .btn-sm .btn-primary}
 
 ## 5.11 Every question gets an answer of its own type {#tut-05.11}
 
@@ -234,12 +234,12 @@ git check c2f89d37a513
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source be8c68109297 --staged -- :/ && git restore --source c2f89d37a513 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source be8c68109297 --staged -- :/ && git restore --source tut-05 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-05.11-what-changed-182c57}
 
-- <a id="tut-05.11-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: one answer for each question. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f/tests/unit/test_api.py).
+- <a id="tut-05.11-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: one answer for each question. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_every_question_gets_an_answer_of_its_own_type():`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -265,4 +265,6 @@ git restore --source be8c68109297 --staged -- :/ && git restore --source c2f89d3
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f). [The code after it](https://github.com/rahuldave/babykev/tree/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-05`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-05){.btn .btn-sm .btn-primary}

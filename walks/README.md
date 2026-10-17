@@ -13,3 +13,4 @@ Each walk is a set of pages. **Read the tutorial** explains each change, with th
 - **The model of babykev, explained**. [Read the tutorial](model/read.md), [Build it yourself](model/build.md). [Its website](https://rahuldave.github.io/babykev-walk/model/).
 - **The tests of babykev**. [Read the tutorial](testing/read.md), [Build it yourself](testing/build.md). [Its website](https://rahuldave.github.io/babykev-walk/testing/).
 - **The contract of babykev**. [Read the tutorial](contract/read.md), [Build it yourself](contract/build.md). [Its website](https://rahuldave.github.io/babykev-walk/contract/).
+- **babykev, the lecture**. [Read the tutorial](lecture/read.md). [Its website](https://rahuldave.github.io/babykev-walk/lecture/).

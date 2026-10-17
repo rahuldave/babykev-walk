@@ -6,6 +6,17 @@ title: "8.8 The words after `just lint`"
 
 **Read the tutorial.** [Build it yourself](../build/tut-08.8.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `ca9cfc3b70b7`, partway through `tut-08`. [The code before this part](https://github.com/rahuldave/babykev/tree/ca9cfc3b70b7a0c926c9407336c217e3f04c73aa){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach ca9cfc3b70b7
+```
+
 ```bash
 just setup
 ```
@@ -14,8 +25,6 @@ The code now has the fixes of four of the problems, made by hand. The docstring 
 and `X | Y` takes the place of `Union`. `k` and `n` are in lower case, and each `zip` has `strict=True`.
 
 Every word after `lint` goes to ruff, so `just lint --fix` runs `uv run ruff check --fix`.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/ca9cfc3b70b7a0c926c9407336c217e3f04c73aa). [The code after it](https://github.com/rahuldave/babykev/tree/7cdb1ba696a32050cba1c335892fccb68bb4fd24).
 
 ## 8.8 Just lint --fix sorts the imports {#tut-08.8}
 
@@ -42,7 +51,7 @@ prints `53 passed`.
 
 ### What changed {#tut-08.8-what-changed-182c57}
 
-- <a id="tut-08.8-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the imports, sorted. 2 lines added, 1 removed. It comes from `just lint --fix`. [The file](https://github.com/rahuldave/babykev/blob/7cdb1ba696a32050cba1c335892fccb68bb4fd24/src/babykev/api.py).
+- <a id="tut-08.8-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the imports, sorted. 2 lines added, 1 removed. It comes from `just lint --fix`. [The file](https://github.com/rahuldave/babykev/blob/7cdb1ba696a32050cba1c335892fccb68bb4fd24/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `from typing import Any, Literal`
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
@@ -62,4 +71,6 @@ prints `53 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/7cdb1ba696a32050cba1c335892fccb68bb4fd24). [The code after it](https://github.com/rahuldave/babykev/tree/7cdb1ba696a32050cba1c335892fccb68bb4fd24).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7cdb1ba696a32050cba1c335892fccb68bb4fd24){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-08`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-08){.btn .btn-sm .btn-primary}

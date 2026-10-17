@@ -163,6 +163,8 @@ git config alias.check '!f() { i="$(git rev-parse --git-path check-index)" && { 
 
 ## 0 The README, before any code
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part is where the project starts, at `tut-00`. [The code of this part](https://github.com/rahuldave/babykev/tree/tut-00)
+
 The first documentation of a project is its README. Here babykev is only words. There is the README, the licence, the
 notice and `.gitignore`.
 
@@ -194,7 +196,7 @@ git check 70ac5b0a0a1d
 If you are stuck, this command puts the files of this part in place of yours. A file that you made yourself stays:
 
 ```bash
-git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 70ac5b0a0a1d --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch -- :/ && git restore --source tut-00 --staged --worktree -- :/
 ```
 
 ### What changed
@@ -742,16 +744,16 @@ git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 70ac5b0a0a1d 
 
 </details>
 
-[The code](https://github.com/rahuldave/babykev/tree/70ac5b0a0a1d927dfc4da6f8b7b92344917e4a33).
-
 <a id="tut-01.13-to-tut-01.14"></a>
 
 ## 1.13 to 1.14 The README says how to begin
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `9218f21a7842`, partway through `tut-01`. [The code before this part](https://github.com/rahuldave/babykev/tree/9218f21a784277593cf6930e10389b04e41bf9d0)
+
 This part does not start where the part before it ends, because the walk skips some changes. This command puts the files that this part starts from in place of yours. Run it, and then go on:
 
 ```bash
-git restore --source 70ac5b0a0a1d --staged -- :/ && git restore --source 9218f21a7842 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-00 --staged -- :/ && git restore --source 9218f21a7842 --staged --worktree -- :/
 ```
 
 ```bash
@@ -769,8 +771,6 @@ and `just help VERB` explains a recipe.
 
 The description and the help are documentation too, for a person who installs babykev or runs it. The README now says
 how to begin, and what each file is.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/9218f21a784277593cf6930e10389b04e41bf9d0). [The code after it](https://github.com/rahuldave/babykev/tree/7ad3a06605fadc9f34b5e2d8180145a3e53389a9).
 
 <a id="tut-01.13"></a>
 
@@ -864,7 +864,7 @@ git check 7ad3a06605fa
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 0d2e163cca5d --staged -- :/ && git restore --source 7ad3a06605fa --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source 0d2e163cca5d --staged -- :/ && git restore --source tut-01 --staged --worktree -- :/
 ```
 
 #### What changed
@@ -898,16 +898,20 @@ git restore --source 0d2e163cca5d --staged -- :/ && git restore --source 7ad3a06
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/7ad3a06605fadc9f34b5e2d8180145a3e53389a9). [The code after it](https://github.com/rahuldave/babykev/tree/7ad3a06605fadc9f34b5e2d8180145a3e53389a9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7ad3a06605fadc9f34b5e2d8180145a3e53389a9).
+
+This part ends at the code at `tut-01`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-01)
 
 <a id="tut-10"></a>
 
 ## 10 Docstrings
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-09`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-09)
+
 This part does not start where the part before it ends, because the walk skips some changes. This command puts the files that this part starts from in place of yours. Run it, and then go on:
 
 ```bash
-git restore --source 7ad3a06605fa --staged -- :/ && git restore --source b0e8dd74539e --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-01 --staged -- :/ && git restore --source tut-09 --staged --worktree -- :/
 ```
 
 The whole tutorial then gives babykev its code and its checks. `src/babykev/api.py` is the contract, the rules for
@@ -934,8 +938,6 @@ editor show it. kev gave a docstring to some functions of `api.py`, and to none 
 ruff ask for a docstring on every public module, class and function. ruff cannot write one, so each comes by hand,
 one kind at a time.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/b0e8dd74539e4d3b210defc5e0169f53b1670393). [The code after it](https://github.com/rahuldave/babykev/tree/ebd0888f135c00e29b583f6fad0575c290fd4876).
-
 <a id="tut-10.1"></a>
 
 ### 10.1 The rule that every public name has a docstring
@@ -944,31 +946,48 @@ Nothing asks for docstrings yet. The rules `D1` of the family `D`, pydocstyle, j
 part of the family that asks whether a docstring is there. The rest of the family checks how a docstring is written,
 and stays off.
 
-Set the values that this change sets in [`pyproject.toml`](#tut-10.1-pyproject.toml-5d07e7). Run this command from the top of the project. It reads your file with tomlkit, a library for TOML files. It sets each of these values as the project has it, and keeps the rest of your file:
+Set the values that this change sets in [`pyproject.toml`](#tut-10.1-pyproject.toml-5d07e7). Run this command from the top of the project. It reads your file with tomlkit, a library for TOML files. It copies each of these tables and values from the project's file after this change, with their comments, and keeps the rest of your file:
 
 ```bash
 uv run --quiet --no-config --no-project --with tomlkit python - <<'PY'
-import pathlib, tomlkit
+import copy, pathlib, subprocess, tomlkit
+from tomlkit.items import Comment, Table, Whitespace
 path = pathlib.Path('pyproject.toml')
 doc = tomlkit.parse(path.read_text(encoding='utf-8')) if path.exists() else tomlkit.document()
-# Each value that the change sets, by its keys
-SET = [
-    (('tool', 'ruff', 'lint', 'select'), ['E', 'W', 'F', 'I', 'B', 'UP', 'SIM', 'S', 'N', 'ANN', 'D1']),
+# The project's file after this change, from your clone
+project = tomlkit.parse(subprocess.run(['git', 'show', '09ad56d2e465:pyproject.toml'], capture_output=True, text=True,
+                                        check=True).stdout)
+# Each table and value that the change sets, by its keys: each comes from the project's file with its comments
+COPY = [
+    ('tool', 'ruff', 'lint', 'select'),
 ]
 
-def put(table, keys, value):   # make each table on the way; a table goes into the one there, key by key
-    for key in keys[:-1]:
-        if key not in table:
-            table[key] = tomlkit.table(True)
-        table = table[key]
-    if isinstance(value, dict) and isinstance(table.get(keys[-1]), dict):
-        for key, item in value.items():
-            put(table[keys[-1]], [key], item)
-    else:
-        table[keys[-1]] = value
+def body(table):   # the items of a table in their order, with its comment lines
+    inner = table if isinstance(table, tomlkit.TOMLDocument) else getattr(table, 'value', None)
+    return getattr(inner, 'body', [])
 
-for keys, value in SET:
-    put(doc, keys, value)
+def above(table, key):   # the comment lines just above a key
+    found = []
+    for name, item in body(table):
+        if name is not None and name.key == key:
+            return found
+        found = found + [item] if isinstance(item, Comment) else found if isinstance(item, Whitespace) else []
+    return []
+
+for keys in COPY:
+    source, target = project, doc
+    for key in keys[:-1]:   # make each table on the way
+        source = source[key]
+        if key not in target:
+            target[key] = tomlkit.table(True)
+        target = target[key]
+    item = copy.deepcopy(source[keys[-1]])
+    if isinstance(item, Table) and not item.as_string().endswith('\n\n'):
+        item.add(tomlkit.nl())   # a blank line before the table after it
+    if keys[-1] not in target:
+        for comment in above(source, keys[-1]):
+            target.add(copy.deepcopy(comment))
+    target[keys[-1]] = item
 path.write_text(tomlkit.dumps(doc), encoding='utf-8')
 PY
 ```
@@ -993,7 +1012,7 @@ git check 09ad56d2e465
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source b0e8dd74539e --staged -- :/ && git restore --source 09ad56d2e465 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-09 --staged -- :/ && git restore --source 09ad56d2e465 --staged --worktree -- :/
 ```
 
 #### What changed
@@ -1190,7 +1209,7 @@ git check ebd0888f135c
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 9a769c7d9551 --staged -- :/ && git restore --source ebd0888f135c --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source 9a769c7d9551 --staged -- :/ && git restore --source tut-10 --staged --worktree -- :/
 ```
 
 #### What changed
@@ -1229,16 +1248,20 @@ git restore --source 9a769c7d9551 --staged -- :/ && git restore --source ebd0888
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/ebd0888f135c00e29b583f6fad0575c290fd4876). [The code after it](https://github.com/rahuldave/babykev/tree/ebd0888f135c00e29b583f6fad0575c290fd4876).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ebd0888f135c00e29b583f6fad0575c290fd4876).
+
+This part ends at the code at `tut-10`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-10)
 
 <a id="tut-13"></a>
 
 ## 13 Documentation in the code
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-12`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-12)
+
 This part does not start where the part before it ends, because the walk skips some changes. This command puts the files that this part starts from in place of yours. Run it, and then go on:
 
 ```bash
-git restore --source ebd0888f135c --staged -- :/ && git restore --source cbbf9bedfc2b --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-10 --staged -- :/ && git restore --source tut-12 --staged --worktree -- :/
 ```
 
 The whole tutorial then adds a gate. `just check` runs every check, one after another, and stops at the first that
@@ -1259,8 +1282,6 @@ parameter, a return type or a field, on the same line.
 smalldocs reads the signature, the docstring and the docments, and writes the reference of the code from them. It
 also lists what has no documentation, as coverage lists the lines that no test runs. The gaps close one part at a
 time. A long docment then shows what the formatter can do to one, and the gate runs the check.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac). [The code after it](https://github.com/rahuldave/babykev/tree/005b87bdfa2e70c6ceca52dc07197c69702f00be).
 
 <a id="tut-13.1"></a>
 
@@ -1296,7 +1317,7 @@ git check 609d58ce5f8c
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source cbbf9bedfc2b --staged -- :/ && git restore --source 609d58ce5f8c --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-12 --staged -- :/ && git restore --source 609d58ce5f8c --staged --worktree -- :/
 ```
 
 #### What changed
@@ -2180,7 +2201,7 @@ git check 005b87bdfa2e
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 861142a50356 --staged -- :/ && git restore --source 005b87bdfa2e --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source 861142a50356 --staged -- :/ && git restore --source tut-13 --staged --worktree -- :/
 ```
 
 #### What changed
@@ -2212,11 +2233,15 @@ git restore --source 861142a50356 --staged -- :/ && git restore --source 005b87b
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/005b87bdfa2e70c6ceca52dc07197c69702f00be). [The code after it](https://github.com/rahuldave/babykev/tree/005b87bdfa2e70c6ceca52dc07197c69702f00be).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/005b87bdfa2e70c6ceca52dc07197c69702f00be).
+
+This part ends at the code at `tut-13`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-13)
 
 <a id="tut-14"></a>
 
 ## 14 The docs site
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-13`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-13)
 
 So far, `just docs module api` prints the reference of `api.py` as text in the terminal. This section builds a
 website from it, with a front page written by hand.
@@ -2231,8 +2256,6 @@ The reference exists only as Markdown that `just docs module` prints in a termin
 front page that says what babykev is, and a page of reference for each module. smalldocs builds that site from the
 same docstrings and docments. Git first learns to ignore the files that a build writes into `docs/`. Then the recipe
 `docs` builds the site, the site gets its settings and its front page, and the README names it.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/005b87bdfa2e70c6ceca52dc07197c69702f00be). [The code after it](https://github.com/rahuldave/babykev/tree/e1efb48492d7223fd0442906d2e55a83e0db481e).
 
 <a id="tut-14.1"></a>
 
@@ -2267,7 +2290,7 @@ git check 3593f61e4e22
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 005b87bdfa2e --staged -- :/ && git restore --source 3593f61e4e22 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-13 --staged -- :/ && git restore --source 3593f61e4e22 --staged --worktree -- :/
 ```
 
 #### What changed
@@ -2551,7 +2574,7 @@ git check e1efb48492d7
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source e84909997980 --staged -- :/ && git restore --source e1efb48492d7 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source e84909997980 --staged -- :/ && git restore --source tut-14 --staged --worktree -- :/
 ```
 
 #### What changed
@@ -2574,16 +2597,20 @@ git restore --source e84909997980 --staged -- :/ && git restore --source e1efb48
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e1efb48492d7223fd0442906d2e55a83e0db481e). [The code after it](https://github.com/rahuldave/babykev/tree/e1efb48492d7223fd0442906d2e55a83e0db481e).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e1efb48492d7223fd0442906d2e55a83e0db481e).
+
+This part ends at the code at `tut-14`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-14)
 
 <a id="tut-24"></a>
 
 ## 24 The guide to the model
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-23`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-23)
+
 This part does not start where the part before it ends, because the walk skips some changes. This command puts the files that this part starts from in place of yours. Run it, and then go on:
 
 ```bash
-git restore --source e1efb48492d7 --staged -- :/ && git restore --source d9df8f2a02ed --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-14 --staged -- :/ && git restore --source tut-23 --staged --worktree -- :/
 ```
 
 The whole tutorial then builds the model, and tests it. The project adds four packages for the model, torch,
@@ -2612,8 +2639,6 @@ just setup
 The reference pages of the site give the signature and the docstring of each function of `model.py`. They do not say
 why the model is built as it is. Two pages of a guide say it, in prose. The first gives the four ideas of the model,
 and the second draws the mask as a grid. smalldocs runs no code, so a page holds its grids as text.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/d9df8f2a02ed7a7780325aebf281d6107317f9d9). [The code after it](https://github.com/rahuldave/babykev/tree/41d24729682119b9bbb828187c5e9684a2921308).
 
 <a id="tut-24.1"></a>
 
@@ -2647,7 +2672,7 @@ git check b23fa492cea9
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source d9df8f2a02ed --staged -- :/ && git restore --source b23fa492cea9 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-23 --staged -- :/ && git restore --source b23fa492cea9 --staged --worktree -- :/
 ```
 
 #### What changed
@@ -2975,7 +3000,7 @@ git check 41d247296821
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 62f48f0b9de6 --staged -- :/ && git restore --source 41d247296821 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source 62f48f0b9de6 --staged -- :/ && git restore --source tut-24 --staged --worktree -- :/
 ```
 
 #### What changed
@@ -2999,16 +3024,20 @@ git restore --source 62f48f0b9de6 --staged -- :/ && git restore --source 41d2472
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/41d24729682119b9bbb828187c5e9684a2921308). [The code after it](https://github.com/rahuldave/babykev/tree/41d24729682119b9bbb828187c5e9684a2921308).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/41d24729682119b9bbb828187c5e9684a2921308).
+
+This part ends at the code at `tut-24`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-24)
 
 <a id="tut-26.5-to-tut-26.6"></a>
 
 ## 26.5 to 26.6 The docs on GitHub Pages
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `eb0acd148867`, partway through `tut-26`. [The code before this part](https://github.com/rahuldave/babykev/tree/eb0acd148867bdbc6292660b7268b656074fb727)
+
 This part does not start where the part before it ends, because the walk skips some changes. This command puts the files that this part starts from in place of yours. Run it, and then go on:
 
 ```bash
-git restore --source 41d247296821 --staged -- :/ && git restore --source eb0acd148867 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-24 --staged -- :/ && git restore --source eb0acd148867 --staged --worktree -- :/
 ```
 
 ```bash
@@ -3026,8 +3055,6 @@ as the value true. Its settings now let a key be such a word.
 
 The project adds actionlint, a linter of the workflows of GitHub, to its other linters, and `just lint-config` runs
 it. The second workflow builds the site and publishes it.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/eb0acd148867bdbc6292660b7268b656074fb727). [The code after it](https://github.com/rahuldave/babykev/tree/88854e32ebcb4647672742cc4ef709eefc5fde0c).
 
 <a id="tut-26.5"></a>
 
@@ -3159,7 +3186,7 @@ git check 88854e32ebcb
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 606da22657c9 --staged -- :/ && git restore --source 88854e32ebcb --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source 606da22657c9 --staged -- :/ && git restore --source tut-26 --staged --worktree -- :/
 ```
 
 #### What changed
@@ -3202,4 +3229,6 @@ git restore --source 606da22657c9 --staged -- :/ && git restore --source 88854e3
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/88854e32ebcb4647672742cc4ef709eefc5fde0c). [The code after it](https://github.com/rahuldave/babykev/tree/88854e32ebcb4647672742cc4ef709eefc5fde0c).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/88854e32ebcb4647672742cc4ef709eefc5fde0c).
+
+This part ends at the code at `tut-26`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-26)

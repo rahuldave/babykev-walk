@@ -6,6 +6,17 @@ title: "24 The model, explained"
 
 **Read the tutorial.** [Build it yourself](../build/tut-24.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-23`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-23){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach tut-23
+```
+
 ```bash
 just setup
 ```
@@ -15,8 +26,6 @@ just setup
 The reference pages of the site give the signature and the docstring of each function of `model.py`. They do not say
 why the model is built as it is. Two pages of a guide say it, in prose. The first gives the four ideas of the model,
 and the second draws the mask as a grid. smalldocs runs no code, so a page holds its grids as text.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/d9df8f2a02ed7a7780325aebf281d6107317f9d9). [The code after it](https://github.com/rahuldave/babykev/tree/41d24729682119b9bbb828187c5e9684a2921308).
 
 ## 24.1 A page of the guide on the model {#tut-24.1}
 
@@ -38,7 +47,7 @@ the eight links of the page into the reference of `model.py`, `encode` twice. Th
 
 ### What changed {#tut-24.1-what-changed-182c57}
 
-- <a id="tut-24.1-docs-guide-model.qmd-3d8904"></a>`docs/guide/model.qmd`: the four ideas of the model. New, 61 lines. [The file](https://github.com/rahuldave/babykev/blob/b23fa492cea947fd91a783a6ef8c19ee1d4f38eb/docs/guide/model.qmd).
+- <a id="tut-24.1-docs-guide-model.qmd-3d8904"></a>`docs/guide/model.qmd`: the four ideas of the model. New, 61 lines. [The file](https://github.com/rahuldave/babykev/blob/b23fa492cea947fd91a783a6ef8c19ee1d4f38eb/docs/guide/model.qmd){.btn .btn-sm .btn-secondary}
   - look at `## Packing`
 
 <details><summary>The diff of <code>docs/guide/model.qmd</code></summary>
@@ -110,7 +119,7 @@ the eight links of the page into the reference of `model.py`, `encode` twice. Th
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/b23fa492cea947fd91a783a6ef8c19ee1d4f38eb). [The code after it](https://github.com/rahuldave/babykev/tree/b23fa492cea947fd91a783a6ef8c19ee1d4f38eb).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b23fa492cea947fd91a783a6ef8c19ee1d4f38eb){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/b23fa492cea947fd91a783a6ef8c19ee1d4f38eb){.btn .btn-sm .btn-primary}
 
 ## 24.2 A page of the guide on the mask {#tut-24.2}
 
@@ -130,7 +139,7 @@ just docs
 
 ### What changed {#tut-24.2-what-changed-182c57}
 
-- <a id="tut-24.2-docs-guide-mask.qmd-5cd81a"></a>`docs/guide/mask.qmd`: the mask, as a grid. New, 52 lines. [The file](https://github.com/rahuldave/babykev/blob/872a008d4a67bfd58f67b5db28198f4293cc34f5/docs/guide/mask.qmd).
+- <a id="tut-24.2-docs-guide-mask.qmd-5cd81a"></a>`docs/guide/mask.qmd`: the mask, as a grid. New, 52 lines. [The file](https://github.com/rahuldave/babykev/blob/872a008d4a67bfd58f67b5db28198f4293cc34f5/docs/guide/mask.qmd){.btn .btn-sm .btn-secondary}
   - look at `## A plain causal mask`
 
 <details><summary>The diff of <code>docs/guide/mask.qmd</code></summary>
@@ -193,7 +202,7 @@ just docs
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/872a008d4a67bfd58f67b5db28198f4293cc34f5). [The code after it](https://github.com/rahuldave/babykev/tree/872a008d4a67bfd58f67b5db28198f4293cc34f5).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/872a008d4a67bfd58f67b5db28198f4293cc34f5){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/872a008d4a67bfd58f67b5db28198f4293cc34f5){.btn .btn-sm .btn-primary}
 
 ## 24.3 The guide in the sidebar {#tut-24.3}
 
@@ -215,7 +224,7 @@ grep -o 'href="guide/[^"]*"' docs/_site/index.html
 
 ### What changed {#tut-24.3-what-changed-182c57}
 
-- <a id="tut-24.3-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the section `Guide`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/f19e99afaa9f11778658710d44ef1785dbc40ed0/docs/_smalldocs.yml).
+- <a id="tut-24.3-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the section `Guide`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/f19e99afaa9f11778658710d44ef1785dbc40ed0/docs/_smalldocs.yml){.btn .btn-sm .btn-secondary}
   - look at `      - section: Guide`
 
 <details><summary>The diff of <code>docs/_smalldocs.yml</code></summary>
@@ -236,7 +245,7 @@ grep -o 'href="guide/[^"]*"' docs/_site/index.html
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/f19e99afaa9f11778658710d44ef1785dbc40ed0). [The code after it](https://github.com/rahuldave/babykev/tree/f19e99afaa9f11778658710d44ef1785dbc40ed0).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/f19e99afaa9f11778658710d44ef1785dbc40ed0){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/f19e99afaa9f11778658710d44ef1785dbc40ed0){.btn .btn-sm .btn-primary}
 
 ## 24.4 The front page names the guide {#tut-24.4}
 
@@ -256,7 +265,7 @@ paragraph.
 
 ### What changed {#tut-24.4-what-changed-182c57}
 
-- <a id="tut-24.4-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the links to the guide. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/62f48f0b9de6c97825153cd50a7f131a5c07b0c7/docs/index.qmd).
+- <a id="tut-24.4-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the links to the guide. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/62f48f0b9de6c97825153cd50a7f131a5c07b0c7/docs/index.qmd){.btn .btn-sm .btn-secondary}
   - look at ``The pages under Guide explain the model. [The model](guide/model.qmd) gives the four ideas of `model.py`, and``
 
 <details><summary>The diff of <code>docs/index.qmd</code></summary>
@@ -276,7 +285,7 @@ paragraph.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/62f48f0b9de6c97825153cd50a7f131a5c07b0c7). [The code after it](https://github.com/rahuldave/babykev/tree/62f48f0b9de6c97825153cd50a7f131a5c07b0c7).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/62f48f0b9de6c97825153cd50a7f131a5c07b0c7){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/62f48f0b9de6c97825153cd50a7f131a5c07b0c7){.btn .btn-sm .btn-primary}
 
 ## 24.5 The README names the guide {#tut-24.5}
 
@@ -295,7 +304,7 @@ just check
 
 ### What changed {#tut-24.5-what-changed-182c57}
 
-- <a id="tut-24.5-README.md-8ec9a0"></a>`README.md`: the guide, in the row of `docs/`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/41d24729682119b9bbb828187c5e9684a2921308/README.md).
+- <a id="tut-24.5-README.md-8ec9a0"></a>`README.md`: the guide, in the row of `docs/`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/41d24729682119b9bbb828187c5e9684a2921308/README.md){.btn .btn-sm .btn-secondary}
   - look at ``The two pages of `docs/guide/` explain the model and its mask |``
 
 <details><summary>The diff of <code>README.md</code></summary>
@@ -314,4 +323,6 @@ just check
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/41d24729682119b9bbb828187c5e9684a2921308). [The code after it](https://github.com/rahuldave/babykev/tree/41d24729682119b9bbb828187c5e9684a2921308).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/41d24729682119b9bbb828187c5e9684a2921308){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-24`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-24){.btn .btn-sm .btn-primary}

@@ -6,13 +6,22 @@ title: "1.9 to 1.12 The project, and its justfile"
 
 **Read the tutorial.** [Build it yourself](../build/tut-01.9-to-tut-01.12.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `e32c7ba9f798`, partway through `tut-01`. [The code before this part](https://github.com/rahuldave/babykev/tree/e32c7ba9f7983fc03cc8d91411562b1eac1d38e9){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach e32c7ba9f798
+```
+
 The project already has its words and its command. `uv init` made it a Python package, and `uv lock` wrote its lockfile
 `uv.lock`. `src/babykev/cli.py` holds the command `babykev`, which so far prints only its help. There is no
 justfile yet, so do not run `just` before the first move of this section.
 
 The first recipe, `setup`, makes the environment of the project. The second, `help`, explains a verb.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/e32c7ba9f7983fc03cc8d91411562b1eac1d38e9). [The code after it](https://github.com/rahuldave/babykev/tree/9218f21a784277593cf6930e10389b04e41bf9d0).
 
 ## 1.9 A justfile with the recipe setup {#tut-01.9}
 
@@ -46,7 +55,7 @@ the one recipe, under `[setup]`.
 
 ### What changed {#tut-01.9-what-changed-182c57}
 
-- <a id="tut-01.9-justfile-424f0b"></a>`justfile`: the recipe `setup` and its line. New, 10 lines. [The file](https://github.com/rahuldave/babykev/blob/e14dffa877a2d24a53d67d8dd3d54b17204885b1/justfile).
+- <a id="tut-01.9-justfile-424f0b"></a>`justfile`: the recipe `setup` and its line. New, 10 lines. [The file](https://github.com/rahuldave/babykev/blob/e14dffa877a2d24a53d67d8dd3d54b17204885b1/justfile){.btn .btn-sm .btn-secondary}
   - look at `setup:`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -67,7 +76,7 @@ the one recipe, under `[setup]`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e14dffa877a2d24a53d67d8dd3d54b17204885b1). [The code after it](https://github.com/rahuldave/babykev/tree/e14dffa877a2d24a53d67d8dd3d54b17204885b1).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e14dffa877a2d24a53d67d8dd3d54b17204885b1){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/e14dffa877a2d24a53d67d8dd3d54b17204885b1){.btn .btn-sm .btn-primary}
 
 ## 1.10 The recipe help {#tut-01.10}
 
@@ -98,7 +107,7 @@ just help
 
 ### What changed {#tut-01.10-what-changed-182c57}
 
-- <a id="tut-01.10-justfile-424f0b"></a>`justfile`: the recipe `help`. 12 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a55c90355687e4bf94dfad2277262548ba4ea682/justfile).
+- <a id="tut-01.10-justfile-424f0b"></a>`justfile`: the recipe `help`. 12 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a55c90355687e4bf94dfad2277262548ba4ea682/justfile){.btn .btn-sm .btn-secondary}
   - look at `help *verb:`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -130,7 +139,7 @@ just help
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/a55c90355687e4bf94dfad2277262548ba4ea682). [The code after it](https://github.com/rahuldave/babykev/tree/a55c90355687e4bf94dfad2277262548ba4ea682).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a55c90355687e4bf94dfad2277262548ba4ea682){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/a55c90355687e4bf94dfad2277262548ba4ea682){.btn .btn-sm .btn-primary}
 
 ## 1.11 setup answers help {#tut-01.11}
 
@@ -153,7 +162,7 @@ longer prints `uv sync --locked` first, because of the `@`.
 
 ### What changed {#tut-01.11-what-changed-182c57}
 
-- <a id="tut-01.11-justfile-424f0b"></a>`justfile`: `setup` answers `help`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/3016e7ee53854d719456c12a48c8c8e620614bde/justfile).
+- <a id="tut-01.11-justfile-424f0b"></a>`justfile`: `setup` answers `help`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/3016e7ee53854d719456c12a48c8c8e620614bde/justfile){.btn .btn-sm .btn-secondary}
   - look at `@{{ if args == "help" { "just help setup" } else { "uv sync --locked" } }}`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -171,7 +180,7 @@ longer prints `uv sync --locked` first, because of the `@`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/3016e7ee53854d719456c12a48c8c8e620614bde). [The code after it](https://github.com/rahuldave/babykev/tree/3016e7ee53854d719456c12a48c8c8e620614bde).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3016e7ee53854d719456c12a48c8c8e620614bde){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/3016e7ee53854d719456c12a48c8c8e620614bde){.btn .btn-sm .btn-primary}
 
 ## 1.12 help gives the help of the program too {#tut-01.12}
 
@@ -197,7 +206,7 @@ just help setup
 
 ### What changed {#tut-01.12-what-changed-182c57}
 
-- <a id="tut-01.12-justfile-424f0b"></a>`justfile`: the variable `program`, and the branch of `help` that runs the program's help. 6 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/9218f21a784277593cf6930e10389b04e41bf9d0/justfile).
+- <a id="tut-01.12-justfile-424f0b"></a>`justfile`: the variable `program`, and the branch of `help` that runs the program's help. 6 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/9218f21a784277593cf6930e10389b04e41bf9d0/justfile){.btn .btn-sm .btn-secondary}
   - look at `program := "babykev"`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -233,4 +242,6 @@ just help setup
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/9218f21a784277593cf6930e10389b04e41bf9d0). [The code after it](https://github.com/rahuldave/babykev/tree/9218f21a784277593cf6930e10389b04e41bf9d0).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9218f21a784277593cf6930e10389b04e41bf9d0){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `9218f21a7842`, partway through `tut-01`. [The code after this part](https://github.com/rahuldave/babykev/tree/9218f21a784277593cf6930e10389b04e41bf9d0){.btn .btn-sm .btn-primary}

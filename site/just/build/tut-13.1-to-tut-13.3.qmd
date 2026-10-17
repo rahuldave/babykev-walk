@@ -6,10 +6,12 @@ title: "13.1 to 13.3 `just docs`"
 
 **Build it yourself.** [Read the tutorial](../read/tut-13.1-to-tut-13.3.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-12`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-12){.btn .btn-sm .btn-primary}
+
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
 
 ```bash
-git rm -rq --cached --ignore-unmatch -- :/ && git restore --source cbbf9bedfc2b --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch -- :/ && git restore --source tut-12 --staged --worktree -- :/
 ```
 
 ```bash
@@ -18,8 +20,6 @@ just setup
 
 Nothing says which parts of the code have documentation. smalldocs comes in, and `just docs check` counts what has
 documentation. The words after `docs` go to `smalldocs api`.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac). [The code after it](https://github.com/rahuldave/babykev/tree/a582ad38e75bb188174b75a5e80405cebcd1259d).
 
 ## 13.1 Smalldocs, in the group docs {#tut-13.1}
 
@@ -53,14 +53,14 @@ git check 609d58ce5f8c
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source cbbf9bedfc2b --staged -- :/ && git restore --source 609d58ce5f8c --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-12 --staged -- :/ && git restore --source 609d58ce5f8c --staged --worktree -- :/
 ```
 
 ### What changed {#tut-13.1-what-changed-182c57}
 
-- <a id="tut-13.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the group `docs`, with smalldocs. 3 lines added. It comes from `uv add --group docs smalldocs`. [The file](https://github.com/rahuldave/babykev/blob/609d58ce5f8c0fb8e7b60548c8ee097766446ff5/pyproject.toml).
+- <a id="tut-13.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the group `docs`, with smalldocs. 3 lines added. It comes from `uv add --group docs smalldocs`. [The file](https://github.com/rahuldave/babykev/blob/609d58ce5f8c0fb8e7b60548c8ee097766446ff5/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `"smalldocs>=0.1.5",`
-- <a id="tut-13.1-uv.lock-8356d8"></a>`uv.lock`: the exact version of smalldocs, and of the packages that it needs. 62 lines added. It comes from `uv add --group docs smalldocs`. [The file](https://github.com/rahuldave/babykev/blob/609d58ce5f8c0fb8e7b60548c8ee097766446ff5/uv.lock).
+- <a id="tut-13.1-uv.lock-8356d8"></a>`uv.lock`: the exact version of smalldocs, and of the packages that it needs. 62 lines added. It comes from `uv add --group docs smalldocs`. [The file](https://github.com/rahuldave/babykev/blob/609d58ce5f8c0fb8e7b60548c8ee097766446ff5/uv.lock){.btn .btn-sm .btn-secondary}
 
 <details><summary>The diff that <code>uv add --group docs smalldocs</code> makes in <code>pyproject.toml</code></summary>
 
@@ -79,7 +79,7 @@ git restore --source cbbf9bedfc2b --staged -- :/ && git restore --source 609d58c
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/609d58ce5f8c0fb8e7b60548c8ee097766446ff5). [The code after it](https://github.com/rahuldave/babykev/tree/609d58ce5f8c0fb8e7b60548c8ee097766446ff5).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/609d58ce5f8c0fb8e7b60548c8ee097766446ff5){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/609d58ce5f8c0fb8e7b60548c8ee097766446ff5){.btn .btn-sm .btn-primary}
 
 ## 13.2 The settings of smalldocs {#tut-13.2}
 
@@ -134,7 +134,7 @@ git restore --source 609d58ce5f8c --staged -- :/ && git restore --source 4444b1e
 
 ### What changed {#tut-13.2-what-changed-182c57}
 
-- <a id="tut-13.2-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the package to document, and the tests to check. New, 5 lines. [The file](https://github.com/rahuldave/babykev/blob/4444b1e809427e92a5dc08a9e9fdbbddab7de830/docs/_smalldocs.yml).
+- <a id="tut-13.2-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the package to document, and the tests to check. New, 5 lines. [The file](https://github.com/rahuldave/babykev/blob/4444b1e809427e92a5dc08a9e9fdbbddab7de830/docs/_smalldocs.yml){.btn .btn-sm .btn-secondary}
   - look at `  packages: [babykev]`
 
 <details open><summary>The patch to <code>docs/_smalldocs.yml</code></summary>
@@ -150,7 +150,7 @@ git restore --source 609d58ce5f8c --staged -- :/ && git restore --source 4444b1e
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/4444b1e809427e92a5dc08a9e9fdbbddab7de830). [The code after it](https://github.com/rahuldave/babykev/tree/4444b1e809427e92a5dc08a9e9fdbbddab7de830).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/4444b1e809427e92a5dc08a9e9fdbbddab7de830){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/4444b1e809427e92a5dc08a9e9fdbbddab7de830){.btn .btn-sm .btn-primary}
 
 ## 13.3 The recipe docs {#tut-13.3}
 
@@ -187,7 +187,7 @@ git restore --source 4444b1e80942 --staged -- :/ && git restore --source a582ad3
 
 ### What changed {#tut-13.3-what-changed-182c57}
 
-- <a id="tut-13.3-justfile-424f0b"></a>`justfile`: the recipe `docs`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/a582ad38e75bb188174b75a5e80405cebcd1259d/justfile).
+- <a id="tut-13.3-justfile-424f0b"></a>`justfile`: the recipe `docs`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/a582ad38e75bb188174b75a5e80405cebcd1259d/justfile){.btn .btn-sm .btn-secondary}
   - look at `docs *args:`
 
 <details open><summary>The patch to <code>justfile</code></summary>
@@ -207,4 +207,6 @@ git restore --source 4444b1e80942 --staged -- :/ && git restore --source a582ad3
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/a582ad38e75bb188174b75a5e80405cebcd1259d). [The code after it](https://github.com/rahuldave/babykev/tree/a582ad38e75bb188174b75a5e80405cebcd1259d).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a582ad38e75bb188174b75a5e80405cebcd1259d){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `a582ad38e75b`, partway through `tut-13`. [The code after this part](https://github.com/rahuldave/babykev/tree/a582ad38e75bb188174b75a5e80405cebcd1259d){.btn .btn-sm .btn-primary}

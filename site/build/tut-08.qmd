@@ -6,10 +6,12 @@ title: "8 Lint"
 
 **Build it yourself.** [Read the tutorial](../read/tut-08.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-07`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-07){.btn .btn-sm .btn-primary}
+
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
 
 ```bash
-git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 84b3ac0ce858 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch -- :/ && git restore --source tut-07 --staged --worktree -- :/
 ```
 
 ```bash
@@ -23,39 +25,54 @@ and reports what breaks them, from an import that nobody uses to a `zip` that dr
 linter too, and the families of rules come first. The linter finds 8 problems in `api.py`, and each rule then gets
 a fix of its own. ruff makes the last fix itself.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/84b3ac0ce858d907d8d59ffdc9c9096ab8cb2ac4). [The code after it](https://github.com/rahuldave/babykev/tree/7cdb1ba696a32050cba1c335892fccb68bb4fd24).
-
 ## 8.1 The rules of the linter {#tut-08.1}
 
 ruff has more than 900 rules. The table `[tool.ruff.lint]` chooses which to check, with `select`. Each family of
 rules has a prefix, such as `E` or `B`. The list has one family on each line, with a comment that says what it
 finds.
 
-Set the values that this change sets in [`pyproject.toml`](#tut-08.1-pyproject.toml-5d07e7). Run this command from the top of the project. It reads your file with tomlkit, a library for TOML files. It sets each of these values as the project has it, and keeps the rest of your file:
+Set the values that this change sets in [`pyproject.toml`](#tut-08.1-pyproject.toml-5d07e7). Run this command from the top of the project. It reads your file with tomlkit, a library for TOML files. It copies each of these tables and values from the project's file after this change, with their comments, and keeps the rest of your file:
 
 ```bash
 uv run --quiet --no-config --no-project --with tomlkit python - <<'PY'
-import pathlib, tomlkit
+import copy, pathlib, subprocess, tomlkit
+from tomlkit.items import Comment, Table, Whitespace
 path = pathlib.Path('pyproject.toml')
 doc = tomlkit.parse(path.read_text(encoding='utf-8')) if path.exists() else tomlkit.document()
-# Each value that the change sets, by its keys
-SET = [
-    (('tool', 'ruff', 'lint'), {'select': ['E', 'W', 'F', 'I', 'B', 'UP', 'SIM', 'S', 'N']}),
+# The project's file after this change, from your clone
+project = tomlkit.parse(subprocess.run(['git', 'show', '1a067ec6d902:pyproject.toml'], capture_output=True, text=True,
+                                        check=True).stdout)
+# Each table and value that the change sets, by its keys: each comes from the project's file with its comments
+COPY = [
+    ('tool', 'ruff', 'lint'),
 ]
 
-def put(table, keys, value):   # make each table on the way; a table goes into the one there, key by key
-    for key in keys[:-1]:
-        if key not in table:
-            table[key] = tomlkit.table(True)
-        table = table[key]
-    if isinstance(value, dict) and isinstance(table.get(keys[-1]), dict):
-        for key, item in value.items():
-            put(table[keys[-1]], [key], item)
-    else:
-        table[keys[-1]] = value
+def body(table):   # the items of a table in their order, with its comment lines
+    inner = table if isinstance(table, tomlkit.TOMLDocument) else getattr(table, 'value', None)
+    return getattr(inner, 'body', [])
 
-for keys, value in SET:
-    put(doc, keys, value)
+def above(table, key):   # the comment lines just above a key
+    found = []
+    for name, item in body(table):
+        if name is not None and name.key == key:
+            return found
+        found = found + [item] if isinstance(item, Comment) else found if isinstance(item, Whitespace) else []
+    return []
+
+for keys in COPY:
+    source, target = project, doc
+    for key in keys[:-1]:   # make each table on the way
+        source = source[key]
+        if key not in target:
+            target[key] = tomlkit.table(True)
+        target = target[key]
+    item = copy.deepcopy(source[keys[-1]])
+    if isinstance(item, Table) and not item.as_string().endswith('\n\n'):
+        item.add(tomlkit.nl())   # a blank line before the table after it
+    if keys[-1] not in target:
+        for comment in above(source, keys[-1]):
+            target.add(copy.deepcopy(comment))
+    target[keys[-1]] = item
 path.write_text(tomlkit.dumps(doc), encoding='utf-8')
 PY
 ```
@@ -80,12 +97,12 @@ git check 1a067ec6d902
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 84b3ac0ce858 --staged -- :/ && git restore --source 1a067ec6d902 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-07 --staged -- :/ && git restore --source 1a067ec6d902 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-08.1-what-changed-182c57}
 
-- <a id="tut-08.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: a family of rules on each line. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/1a067ec6d90256e2f0142390db307c537909c047/pyproject.toml).
+- <a id="tut-08.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: a family of rules on each line. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/1a067ec6d90256e2f0142390db307c537909c047/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `    "B",   # bugbear: code that is likely a bug, such as a zip that drops items silently`
 
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
@@ -113,7 +130,7 @@ git restore --source 84b3ac0ce858 --staged -- :/ && git restore --source 1a067ec
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/1a067ec6d90256e2f0142390db307c537909c047). [The code after it](https://github.com/rahuldave/babykev/tree/1a067ec6d90256e2f0142390db307c537909c047).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/1a067ec6d90256e2f0142390db307c537909c047){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/1a067ec6d90256e2f0142390db307c537909c047){.btn .btn-sm .btn-primary}
 
 ## 8.2 The tests may use assert {#tut-08.2}
 
@@ -121,31 +138,48 @@ The 44 `S101` hide the 8 problems of `api.py`. A test is written with `assert`, 
 `python -O`. The table `[tool.ruff.lint.per-file-ignores]` lets the files under `tests/` break `S101`. The package
 still may not use `assert`.
 
-Set the values that this change sets in [`pyproject.toml`](#tut-08.2-pyproject.toml-5d07e7). Run this command from the top of the project. It reads your file with tomlkit, a library for TOML files. It sets each of these values as the project has it, and keeps the rest of your file:
+Set the values that this change sets in [`pyproject.toml`](#tut-08.2-pyproject.toml-5d07e7). Run this command from the top of the project. It reads your file with tomlkit, a library for TOML files. It copies each of these tables and values from the project's file after this change, with their comments, and keeps the rest of your file:
 
 ```bash
 uv run --quiet --no-config --no-project --with tomlkit python - <<'PY'
-import pathlib, tomlkit
+import copy, pathlib, subprocess, tomlkit
+from tomlkit.items import Comment, Table, Whitespace
 path = pathlib.Path('pyproject.toml')
 doc = tomlkit.parse(path.read_text(encoding='utf-8')) if path.exists() else tomlkit.document()
-# Each value that the change sets, by its keys
-SET = [
-    (('tool', 'ruff', 'lint', 'per-file-ignores'), {'tests/**': ['S101']}),
+# The project's file after this change, from your clone
+project = tomlkit.parse(subprocess.run(['git', 'show', 'a6325da466f1:pyproject.toml'], capture_output=True, text=True,
+                                        check=True).stdout)
+# Each table and value that the change sets, by its keys: each comes from the project's file with its comments
+COPY = [
+    ('tool', 'ruff', 'lint', 'per-file-ignores'),
 ]
 
-def put(table, keys, value):   # make each table on the way; a table goes into the one there, key by key
-    for key in keys[:-1]:
-        if key not in table:
-            table[key] = tomlkit.table(True)
-        table = table[key]
-    if isinstance(value, dict) and isinstance(table.get(keys[-1]), dict):
-        for key, item in value.items():
-            put(table[keys[-1]], [key], item)
-    else:
-        table[keys[-1]] = value
+def body(table):   # the items of a table in their order, with its comment lines
+    inner = table if isinstance(table, tomlkit.TOMLDocument) else getattr(table, 'value', None)
+    return getattr(inner, 'body', [])
 
-for keys, value in SET:
-    put(doc, keys, value)
+def above(table, key):   # the comment lines just above a key
+    found = []
+    for name, item in body(table):
+        if name is not None and name.key == key:
+            return found
+        found = found + [item] if isinstance(item, Comment) else found if isinstance(item, Whitespace) else []
+    return []
+
+for keys in COPY:
+    source, target = project, doc
+    for key in keys[:-1]:   # make each table on the way
+        source = source[key]
+        if key not in target:
+            target[key] = tomlkit.table(True)
+        target = target[key]
+    item = copy.deepcopy(source[keys[-1]])
+    if isinstance(item, Table) and not item.as_string().endswith('\n\n'):
+        item.add(tomlkit.nl())   # a blank line before the table after it
+    if keys[-1] not in target:
+        for comment in above(source, keys[-1]):
+            target.add(copy.deepcopy(comment))
+    target[keys[-1]] = item
 path.write_text(tomlkit.dumps(doc), encoding='utf-8')
 PY
 ```
@@ -173,7 +207,7 @@ git restore --source 1a067ec6d902 --staged -- :/ && git restore --source a6325da
 
 ### What changed {#tut-08.2-what-changed-182c57}
 
-- <a id="tut-08.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the tests may use `assert`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/a6325da466f16c6379613b62554e1e4cf2144e7e/pyproject.toml).
+- <a id="tut-08.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the tests may use `assert`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/a6325da466f16c6379613b62554e1e4cf2144e7e/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `"tests/**" = ["S101"]`
 
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
@@ -191,7 +225,7 @@ git restore --source 1a067ec6d902 --staged -- :/ && git restore --source a6325da
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/a6325da466f16c6379613b62554e1e4cf2144e7e). [The code after it](https://github.com/rahuldave/babykev/tree/a6325da466f16c6379613b62554e1e4cf2144e7e).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a6325da466f16c6379613b62554e1e4cf2144e7e){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/a6325da466f16c6379613b62554e1e4cf2144e7e){.btn .btn-sm .btn-primary}
 
 ## 8.3 The recipe lint {#tut-08.3}
 
@@ -241,7 +275,7 @@ git restore --source a6325da466f1 --staged -- :/ && git restore --source 58d6ece
 
 ### What changed {#tut-08.3-what-changed-182c57}
 
-- <a id="tut-08.3-justfile-424f0b"></a>`justfile`: the recipe `lint`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/58d6ece95cf464e01996ad8dbed1d98e92bcc502/justfile).
+- <a id="tut-08.3-justfile-424f0b"></a>`justfile`: the recipe `lint`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/58d6ece95cf464e01996ad8dbed1d98e92bcc502/justfile){.btn .btn-sm .btn-secondary}
   - look at `lint *args:`
 
 <details open><summary>The patch to <code>justfile</code></summary>
@@ -264,7 +298,7 @@ git restore --source a6325da466f1 --staged -- :/ && git restore --source 58d6ece
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/58d6ece95cf464e01996ad8dbed1d98e92bcc502). [The code after it](https://github.com/rahuldave/babykev/tree/58d6ece95cf464e01996ad8dbed1d98e92bcc502).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/58d6ece95cf464e01996ad8dbed1d98e92bcc502){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/58d6ece95cf464e01996ad8dbed1d98e92bcc502){.btn .btn-sm .btn-primary}
 
 ## 8.4 The docstring of api.py fits in 100 characters {#tut-08.4}
 
@@ -304,7 +338,7 @@ git restore --source 58d6ece95cf4 --staged -- :/ && git restore --source 4a25204
 
 ### What changed {#tut-08.4-what-changed-182c57}
 
-- <a id="tut-08.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the table of the docstring, in 97 characters. 3 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/4a25204449af75e24305189a1395c418ec0295d3/src/babykev/api.py).
+- <a id="tut-08.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the table of the docstring, in 97 characters. 3 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/4a25204449af75e24305189a1395c418ec0295d3/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `Score  -> options = the levels, in order; answer = expected level, legend, probabilities by index`
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
@@ -326,7 +360,7 @@ git restore --source 58d6ece95cf4 --staged -- :/ && git restore --source 4a25204
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/4a25204449af75e24305189a1395c418ec0295d3). [The code after it](https://github.com/rahuldave/babykev/tree/4a25204449af75e24305189a1395c418ec0295d3).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/4a25204449af75e24305189a1395c418ec0295d3){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/4a25204449af75e24305189a1395c418ec0295d3){.btn .btn-sm .btn-primary}
 
 ## 8.5 X | Y in place of Union {#tut-08.5}
 
@@ -368,7 +402,7 @@ git restore --source 4a25204449af --staged -- :/ && git restore --source 01c4956
 
 ### What changed {#tut-08.5-what-changed-182c57}
 
-- <a id="tut-08.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: two unions, written with `|`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/01c4956b31ad768bd11dc5da0c13128a7a3ab0fc/src/babykev/api.py).
+- <a id="tut-08.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: two unions, written with `|`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/01c4956b31ad768bd11dc5da0c13128a7a3ab0fc/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `JSONContent = str | dict | list | int | float | bool | None`
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
@@ -396,7 +430,7 @@ git restore --source 4a25204449af --staged -- :/ && git restore --source 01c4956
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/01c4956b31ad768bd11dc5da0c13128a7a3ab0fc). [The code after it](https://github.com/rahuldave/babykev/tree/01c4956b31ad768bd11dc5da0c13128a7a3ab0fc).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/01c4956b31ad768bd11dc5da0c13128a7a3ab0fc){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/01c4956b31ad768bd11dc5da0c13128a7a3ab0fc){.btn .btn-sm .btn-primary}
 
 ## 8.6 K and n, in lower case {#tut-08.6}
 
@@ -435,7 +469,7 @@ git restore --source 01c4956b31ad --staged -- :/ && git restore --source 37fed4d
 
 ### What changed {#tut-08.6-what-changed-182c57}
 
-- <a id="tut-08.6-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: two names, in lower case. 6 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/37fed4d2a9bff48f0a928851c8eb640736c7e313/src/babykev/api.py).
+- <a id="tut-08.6-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: two names, in lower case. 6 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/37fed4d2a9bff48f0a928851c8eb640736c7e313/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `    n = len(p)`
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
@@ -473,7 +507,7 @@ git restore --source 01c4956b31ad --staged -- :/ && git restore --source 37fed4d
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/37fed4d2a9bff48f0a928851c8eb640736c7e313). [The code after it](https://github.com/rahuldave/babykev/tree/37fed4d2a9bff48f0a928851c8eb640736c7e313).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/37fed4d2a9bff48f0a928851c8eb640736c7e313){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/37fed4d2a9bff48f0a928851c8eb640736c7e313){.btn .btn-sm .btn-primary}
 
 ## 8.7 Zip with strict=True {#tut-08.7}
 
@@ -516,7 +550,7 @@ git restore --source 37fed4d2a9bf --staged -- :/ && git restore --source ca9cfc3
 
 ### What changed {#tut-08.7-what-changed-182c57}
 
-- <a id="tut-08.7-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: two calls of `zip`, with `strict=True`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/ca9cfc3b70b7a0c926c9407336c217e3f04c73aa/src/babykev/api.py).
+- <a id="tut-08.7-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: two calls of `zip`, with `strict=True`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/ca9cfc3b70b7a0c926c9407336c217e3f04c73aa/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `    for p, m in zip(probs, meta, strict=True):`
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
@@ -540,7 +574,7 @@ git restore --source 37fed4d2a9bf --staged -- :/ && git restore --source ca9cfc3
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/ca9cfc3b70b7a0c926c9407336c217e3f04c73aa). [The code after it](https://github.com/rahuldave/babykev/tree/ca9cfc3b70b7a0c926c9407336c217e3f04c73aa).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ca9cfc3b70b7a0c926c9407336c217e3f04c73aa){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/ca9cfc3b70b7a0c926c9407336c217e3f04c73aa){.btn .btn-sm .btn-primary}
 
 ## 8.8 Just lint --fix sorts the imports {#tut-08.8}
 
@@ -573,12 +607,12 @@ git check 7cdb1ba696a3
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source ca9cfc3b70b7 --staged -- :/ && git restore --source 7cdb1ba696a3 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source ca9cfc3b70b7 --staged -- :/ && git restore --source tut-08 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-08.8-what-changed-182c57}
 
-- <a id="tut-08.8-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the imports, sorted. 2 lines added, 1 removed. It comes from `just lint --fix`. [The file](https://github.com/rahuldave/babykev/blob/7cdb1ba696a32050cba1c335892fccb68bb4fd24/src/babykev/api.py).
+- <a id="tut-08.8-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the imports, sorted. 2 lines added, 1 removed. It comes from `just lint --fix`. [The file](https://github.com/rahuldave/babykev/blob/7cdb1ba696a32050cba1c335892fccb68bb4fd24/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `from typing import Any, Literal`
 
 <details><summary>The diff that <code>just lint --fix</code> makes in <code>src/babykev/api.py</code></summary>
@@ -598,4 +632,6 @@ git restore --source ca9cfc3b70b7 --staged -- :/ && git restore --source 7cdb1ba
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/7cdb1ba696a32050cba1c335892fccb68bb4fd24). [The code after it](https://github.com/rahuldave/babykev/tree/7cdb1ba696a32050cba1c335892fccb68bb4fd24).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7cdb1ba696a32050cba1c335892fccb68bb4fd24){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-08`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-08){.btn .btn-sm .btn-primary}

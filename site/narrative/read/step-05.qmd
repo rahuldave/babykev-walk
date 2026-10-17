@@ -4,6 +4,17 @@ title: "5 A second file: model.py"
 
 <!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `step-04b`. [The code before this part](https://github.com/rahuldave/babykev/tree/step-04b){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach step-04b
+```
+
 **Init.** `just setup` brings the model's stack: torch (the CPU build, from PyTorch's own index), transformers, peft, safetensors and what they need, hypothesis for the tests, and ty, the type checker. 64 packages in `.venv`, up from 30. From uv's cache it takes a second; the first time on a machine it is a download of a few hundred megabytes.
 
 ```bash
@@ -204,20 +215,20 @@ EOF
 
 ## What changed {#step-05-what-changed-182c57}
 
-- <a id="step-05-README.md-8ec9a0"></a>`README.md`: 19 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/README.md).
-- <a id="step-05-justfile-424f0b"></a>`justfile`: adds `recipe smoke`, `recipe types`. 17 lines added. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/justfile).
-- <a id="step-05-pyproject.toml-5d07e7"></a>`pyproject.toml`: 20 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/pyproject.toml).
-- <a id="step-05-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: changes `main`. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/src/babykev/cli.py).
-- <a id="step-05-src-babykev-docs.py-267fa4"></a>`src/babykev/docs.py`: adds `key_comments`, `keys_table`, `python_files`, `unwrapped`; changes `check`, `entry`, `file_modules`, `gaps_of`, `main`, `methods`, `own`. 56 lines added, 12 removed. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/src/babykev/docs.py).
-- <a id="step-05-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: adds `__init__`, `branch_mask`, `class DecisionModel`, `class Encoded`, `class PointerHead`, `encode`, `forward`, `hidden`, `load_tokenizer`, `pick_device`, `probs`, `trainable_parameters`, `user_tokens`. New, 232 lines. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/src/babykev/model.py).
-- <a id="step-05-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: adds `answer`, `main`, `read_lines`, `smoke`, `verdict`. New, 122 lines. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/src/babykev/smoke.py).
-- <a id="step-05-tests-conftest.py-626af3"></a>`tests/conftest.py`: adds `model`, `record`, `tok`. New, 40 lines. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/tests/conftest.py).
-- <a id="step-05-tests-tiny.py-70c1c9"></a>`tests/tiny.py`: adds `tiny_backbone`, `tiny_tokenizer`. New, 46 lines. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/tests/tiny.py).
-- <a id="step-05-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: adds `test_smoke_runs_the_smoke`. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/tests/unit/test_cli.py).
-- <a id="step-05-tests-unit-test_docs.py-31dd08"></a>`tests/unit/test_docs.py`: adds `class Point`, `grow`, `inner`, `logged`, `test_a_decorated_method_is_seen_through_its_decorator`, `test_check_holds_the_tests_and_the_root_and_docs_files_too`, `test_markdown_shows_a_typeddict_as_a_table_of_keys`; changes `test_check_prints_a_count_per_module_then_every_gap_and_fails`, `test_gaps_names_what_each_symbol_is_missing`, `test_inventory_lists_the_public_symbols_in_source_order`, `test_list_prints_one_line_per_symbol`; removes `test_check_holds_the_tests_to_the_convention_too`. 69 lines added, 12 removed. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/tests/unit/test_docs.py).
-- <a id="step-05-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: adds `logits_of`, `test_a_packed_record_has_exactly_the_delimiters_its_shape_needs`, `test_a_question_that_does_not_fit_is_refused`, `test_a_tokenizer_alone_would_let_text_forge_a_delimiter`, `test_packed_lists_always_line_up`, `test_packing_marks_every_part_with_its_delimiter`, `test_pick_device_finds_something_to_run_on`, `test_pick_device_takes_an_override`, `test_pointer_head_gives_one_logit_per_option`, `test_positions_restart_after_the_state`, `test_probabilities_sum_to_one_for_every_question`, `test_user_text_cannot_forge_a_delimiter`, `test_with_an_adapter_only_the_adapter_and_the_head_train`. New, 190 lines. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/tests/unit/test_model.py).
-- <a id="step-05-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: adds `test_smoke_reports_on_every_question_of_the_sample`, `test_verdict_agrees_when_the_answer_is_the_label`, `test_verdict_reads_a_noul_answer_as_yes_from_one_half`, `test_verdict_reads_a_score_answer_as_its_most_likely_level`. New, 44 lines. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/tests/unit/test_smoke.py).
-- <a id="step-05-uv.lock-8356d8"></a>`uv.lock`: 766 lines added, 13 removed. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/uv.lock).
+- <a id="step-05-README.md-8ec9a0"></a>`README.md`: 19 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/README.md){.btn .btn-sm .btn-secondary}
+- <a id="step-05-justfile-424f0b"></a>`justfile`: adds `recipe smoke`, `recipe types`. 17 lines added. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/justfile){.btn .btn-sm .btn-secondary}
+- <a id="step-05-pyproject.toml-5d07e7"></a>`pyproject.toml`: 20 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/pyproject.toml){.btn .btn-sm .btn-secondary}
+- <a id="step-05-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: changes `main`. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/src/babykev/cli.py){.btn .btn-sm .btn-secondary}
+- <a id="step-05-src-babykev-docs.py-267fa4"></a>`src/babykev/docs.py`: adds `key_comments`, `keys_table`, `python_files`, `unwrapped`; changes `check`, `entry`, `file_modules`, `gaps_of`, `main`, `methods`, `own`. 56 lines added, 12 removed. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/src/babykev/docs.py){.btn .btn-sm .btn-secondary}
+- <a id="step-05-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: adds `__init__`, `branch_mask`, `class DecisionModel`, `class Encoded`, `class PointerHead`, `encode`, `forward`, `hidden`, `load_tokenizer`, `pick_device`, `probs`, `trainable_parameters`, `user_tokens`. New, 232 lines. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/src/babykev/model.py){.btn .btn-sm .btn-secondary}
+- <a id="step-05-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: adds `answer`, `main`, `read_lines`, `smoke`, `verdict`. New, 122 lines. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/src/babykev/smoke.py){.btn .btn-sm .btn-secondary}
+- <a id="step-05-tests-conftest.py-626af3"></a>`tests/conftest.py`: adds `model`, `record`, `tok`. New, 40 lines. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/tests/conftest.py){.btn .btn-sm .btn-secondary}
+- <a id="step-05-tests-tiny.py-70c1c9"></a>`tests/tiny.py`: adds `tiny_backbone`, `tiny_tokenizer`. New, 46 lines. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/tests/tiny.py){.btn .btn-sm .btn-secondary}
+- <a id="step-05-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: adds `test_smoke_runs_the_smoke`. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/tests/unit/test_cli.py){.btn .btn-sm .btn-secondary}
+- <a id="step-05-tests-unit-test_docs.py-31dd08"></a>`tests/unit/test_docs.py`: adds `class Point`, `grow`, `inner`, `logged`, `test_a_decorated_method_is_seen_through_its_decorator`, `test_check_holds_the_tests_and_the_root_and_docs_files_too`, `test_markdown_shows_a_typeddict_as_a_table_of_keys`; changes `test_check_prints_a_count_per_module_then_every_gap_and_fails`, `test_gaps_names_what_each_symbol_is_missing`, `test_inventory_lists_the_public_symbols_in_source_order`, `test_list_prints_one_line_per_symbol`; removes `test_check_holds_the_tests_to_the_convention_too`. 69 lines added, 12 removed. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/tests/unit/test_docs.py){.btn .btn-sm .btn-secondary}
+- <a id="step-05-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: adds `logits_of`, `test_a_packed_record_has_exactly_the_delimiters_its_shape_needs`, `test_a_question_that_does_not_fit_is_refused`, `test_a_tokenizer_alone_would_let_text_forge_a_delimiter`, `test_packed_lists_always_line_up`, `test_packing_marks_every_part_with_its_delimiter`, `test_pick_device_finds_something_to_run_on`, `test_pick_device_takes_an_override`, `test_pointer_head_gives_one_logit_per_option`, `test_positions_restart_after_the_state`, `test_probabilities_sum_to_one_for_every_question`, `test_user_text_cannot_forge_a_delimiter`, `test_with_an_adapter_only_the_adapter_and_the_head_train`. New, 190 lines. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
+- <a id="step-05-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: adds `test_smoke_reports_on_every_question_of_the_sample`, `test_verdict_agrees_when_the_answer_is_the_label`, `test_verdict_reads_a_noul_answer_as_yes_from_one_half`, `test_verdict_reads_a_score_answer_as_its_most_likely_level`. New, 44 lines. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/tests/unit/test_smoke.py){.btn .btn-sm .btn-secondary}
+- <a id="step-05-uv.lock-8356d8"></a>`uv.lock`: 766 lines added, 13 removed. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/uv.lock){.btn .btn-sm .btn-secondary}
 
 <details><summary>The diff of <code>README.md</code></summary>
 
@@ -1467,4 +1478,6 @@ EOF
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/compare/a9a391de1f271392a948cdd16afe2f3b1cfdd437...46cf8625a031e10049355df4c37abcb7af58d847). [The code after it](https://github.com/rahuldave/babykev/tree/46cf8625a031e10049355df4c37abcb7af58d847).
+[This change on GitHub](https://github.com/rahuldave/babykev/compare/a9a391de1f271392a948cdd16afe2f3b1cfdd437...46cf8625a031e10049355df4c37abcb7af58d847){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `step-05`. [The code after this part](https://github.com/rahuldave/babykev/tree/step-05){.btn .btn-sm .btn-primary}

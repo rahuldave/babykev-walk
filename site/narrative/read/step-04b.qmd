@@ -4,6 +4,17 @@ title: "4b Every function documented"
 
 <!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `step-04`. [The code before this part](https://github.com/rahuldave/babykev/tree/step-04){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach step-04
+```
+
 **Init.** `just setup` changes nothing in `.venv`: no dependency arrived. It prints `Checked 29 packages` and reinstalls the hook. 0.4 s.
 
 ```bash
@@ -71,12 +82,12 @@ just check
 
 ## What changed {#step-04b-what-changed-182c57}
 
-- <a id="step-04b-README.md-8ec9a0"></a>`README.md`: 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a9a391de1f271392a948cdd16afe2f3b1cfdd437/README.md).
-- <a id="step-04b-justfile-424f0b"></a>`justfile`: 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a9a391de1f271392a948cdd16afe2f3b1cfdd437/justfile).
-- <a id="step-04b-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: changes `Choice`, `Noul`, `Score`, `SystemOneRequest`, `_check`, `choice_confidence`, `option_text`, `render`, `round_prob`, `score_confidence`, `to_answers`, `to_record`. 48 lines added, 19 removed. [The file](https://github.com/rahuldave/babykev/blob/a9a391de1f271392a948cdd16afe2f3b1cfdd437/src/babykev/api.py).
-- <a id="step-04b-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: changes `cheese_request`, `test_option_text_adds_a_description_only_when_there_is_one`, `test_render_flattens_json_into_text`, `test_sample_line_fits_the_contract`, `test_sample_line_has_a_usable_label_on_every_question`, `test_score_confidence_is_one_when_certain`. 17 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/a9a391de1f271392a948cdd16afe2f3b1cfdd437/tests/unit/test_api.py).
-- <a id="step-04b-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: changes `run`, `test_an_unknown_command_is_refused_with_exit_code_2`, `test_docs_is_passed_to_the_docs_command`, `test_help_is_printed_for_help_and_for_no_words`. 11 lines added, 4 removed. [The file](https://github.com/rahuldave/babykev/blob/a9a391de1f271392a948cdd16afe2f3b1cfdd437/tests/unit/test_cli.py).
-- <a id="step-04b-tests-unit-test_docs.py-31dd08"></a>`tests/unit/test_docs.py`: changes `example`, `test_a_return_that_is_not_none_needs_a_docment`, `test_an_unknown_module_is_a_lookup_error`, `test_check_holds_the_tests_to_the_convention_too`, `test_check_prints_a_count_per_module_then_every_gap_and_fails`, `test_gaps_names_what_each_symbol_is_missing`, `test_help_and_a_bad_word`, `test_inventory_knows_the_line_of_each_symbol`, `test_inventory_lists_the_public_symbols_in_source_order`, `test_list_prints_one_line_per_symbol`, `test_markdown_has_a_heading_a_signature_a_docstring_and_a_table_per_function`, `test_markdown_has_no_links_and_no_ids`, `test_markdown_shows_a_class_and_its_public_methods_only`, `test_markdown_shows_a_pydantic_model_as_a_table_of_fields`, `test_markdown_writes_a_type_alias_by_its_name`, `test_module_prints_the_markdown_and_an_unknown_name_is_refused`. 41 lines added, 16 removed. [The file](https://github.com/rahuldave/babykev/blob/a9a391de1f271392a948cdd16afe2f3b1cfdd437/tests/unit/test_docs.py).
+- <a id="step-04b-README.md-8ec9a0"></a>`README.md`: 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a9a391de1f271392a948cdd16afe2f3b1cfdd437/README.md){.btn .btn-sm .btn-secondary}
+- <a id="step-04b-justfile-424f0b"></a>`justfile`: 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a9a391de1f271392a948cdd16afe2f3b1cfdd437/justfile){.btn .btn-sm .btn-secondary}
+- <a id="step-04b-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: changes `Choice`, `Noul`, `Score`, `SystemOneRequest`, `_check`, `choice_confidence`, `option_text`, `render`, `round_prob`, `score_confidence`, `to_answers`, `to_record`. 48 lines added, 19 removed. [The file](https://github.com/rahuldave/babykev/blob/a9a391de1f271392a948cdd16afe2f3b1cfdd437/src/babykev/api.py){.btn .btn-sm .btn-secondary}
+- <a id="step-04b-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: changes `cheese_request`, `test_option_text_adds_a_description_only_when_there_is_one`, `test_render_flattens_json_into_text`, `test_sample_line_fits_the_contract`, `test_sample_line_has_a_usable_label_on_every_question`, `test_score_confidence_is_one_when_certain`. 17 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/a9a391de1f271392a948cdd16afe2f3b1cfdd437/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
+- <a id="step-04b-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: changes `run`, `test_an_unknown_command_is_refused_with_exit_code_2`, `test_docs_is_passed_to_the_docs_command`, `test_help_is_printed_for_help_and_for_no_words`. 11 lines added, 4 removed. [The file](https://github.com/rahuldave/babykev/blob/a9a391de1f271392a948cdd16afe2f3b1cfdd437/tests/unit/test_cli.py){.btn .btn-sm .btn-secondary}
+- <a id="step-04b-tests-unit-test_docs.py-31dd08"></a>`tests/unit/test_docs.py`: changes `example`, `test_a_return_that_is_not_none_needs_a_docment`, `test_an_unknown_module_is_a_lookup_error`, `test_check_holds_the_tests_to_the_convention_too`, `test_check_prints_a_count_per_module_then_every_gap_and_fails`, `test_gaps_names_what_each_symbol_is_missing`, `test_help_and_a_bad_word`, `test_inventory_knows_the_line_of_each_symbol`, `test_inventory_lists_the_public_symbols_in_source_order`, `test_list_prints_one_line_per_symbol`, `test_markdown_has_a_heading_a_signature_a_docstring_and_a_table_per_function`, `test_markdown_has_no_links_and_no_ids`, `test_markdown_shows_a_class_and_its_public_methods_only`, `test_markdown_shows_a_pydantic_model_as_a_table_of_fields`, `test_markdown_writes_a_type_alias_by_its_name`, `test_module_prints_the_markdown_and_an_unknown_name_is_refused`. 41 lines added, 16 removed. [The file](https://github.com/rahuldave/babykev/blob/a9a391de1f271392a948cdd16afe2f3b1cfdd437/tests/unit/test_docs.py){.btn .btn-sm .btn-secondary}
 
 <details><summary>The diff of <code>README.md</code></summary>
 
@@ -558,4 +569,6 @@ just check
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/compare/d27a7f152ade46e9024f0b97481b85fcce07a16c...a9a391de1f271392a948cdd16afe2f3b1cfdd437). [The code after it](https://github.com/rahuldave/babykev/tree/a9a391de1f271392a948cdd16afe2f3b1cfdd437).
+[This change on GitHub](https://github.com/rahuldave/babykev/compare/d27a7f152ade46e9024f0b97481b85fcce07a16c...a9a391de1f271392a948cdd16afe2f3b1cfdd437){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `step-04b`. [The code after this part](https://github.com/rahuldave/babykev/tree/step-04b){.btn .btn-sm .btn-primary}

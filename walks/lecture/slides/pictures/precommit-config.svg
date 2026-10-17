@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1420 656">
+<rect width="1420" height="656" fill="#ffffff"/>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#a85b00"/></marker></defs>
+<rect x="12" y="18" width="921" height="622" rx="8" fill="#f6f8fa"/>
+<g font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="15" fill="#24292e">
+<text x="24" y="40"><tspan fill="#005cc5">repos</tspan>:<tspan fill="#032f62"></tspan></text>
+<text x="42" y="70"><tspan fill="#d73a49">- </tspan><tspan fill="#005cc5">repo</tspan>:<tspan fill="#032f62"> https://github.com/pre-commit/pre-commit-hooks</tspan></text>
+<text x="60" y="100"><tspan fill="#005cc5">rev</tspan>:<tspan fill="#032f62"> v6.0.0</tspan></text>
+<text x="60" y="130"><tspan fill="#005cc5">hooks</tspan>:<tspan fill="#032f62"></tspan></text>
+<text x="78" y="160"><tspan fill="#d73a49">- </tspan><tspan fill="#005cc5">id</tspan>:<tspan fill="#032f62"> check-added-large-files</tspan></text>
+<text x="96" y="190"><tspan fill="#005cc5">args</tspan>:<tspan fill="#032f62"> [--maxkb=1000]</tspan></text>
+<text x="78" y="220"><tspan fill="#d73a49">- </tspan><tspan fill="#005cc5">id</tspan>:<tspan fill="#032f62"> check-merge-conflict</tspan></text>
+<text x="42" y="250"><tspan fill="#d73a49">- </tspan><tspan fill="#005cc5">repo</tspan>:<tspan fill="#032f62"> local</tspan></text>
+<text x="60" y="280"><tspan fill="#005cc5">hooks</tspan>:<tspan fill="#032f62"></tspan></text>
+<text x="78" y="310"><tspan fill="#d73a49">- </tspan><tspan fill="#005cc5">id</tspan>:<tspan fill="#032f62"> no-env-file</tspan></text>
+<text x="96" y="340"><tspan fill="#005cc5">name</tspan>:<tspan fill="#032f62"> no .env file</tspan></text>
+<text x="96" y="370"><tspan fill="#005cc5">entry</tspan>:<tspan fill="#032f62"> A .env file holds the settings and secrets of one machine. It is never committed</tspan></text>
+<text x="96" y="400"><tspan fill="#005cc5">language</tspan>:<tspan fill="#032f62"> fail</tspan></text>
+<text x="96" y="430"><tspan fill="#005cc5">files</tspan>:<tspan fill="#032f62"> (^|/)\.env$</tspan></text>
+<text x="78" y="460"><tspan fill="#d73a49">- </tspan><tspan fill="#005cc5">id</tspan>:<tspan fill="#032f62"> check</tspan></text>
+<text x="96" y="490"><tspan fill="#005cc5">name</tspan>:<tspan fill="#032f62"> just check</tspan></text>
+<text x="96" y="520"><tspan fill="#005cc5">entry</tspan>:<tspan fill="#032f62"> just check</tspan></text>
+<text x="96" y="550"><tspan fill="#005cc5">language</tspan>:<tspan fill="#032f62"> system</tspan></text>
+<text x="96" y="580"><tspan fill="#005cc5">pass_filenames</tspan>:<tspan fill="#032f62"> false</tspan></text>
+<text x="96" y="610"><tspan fill="#005cc5">always_run</tspan>:<tspan fill="#032f62"> true</tspan></text>
+</g>
+<g stroke="#a85b00" stroke-width="1.8" fill="none">
+<line x1="967" y1="30.0" x2="88" y2="35" marker-end="url(#a)"/>
+<path d="M538,54 H544 V105 H538"/>
+<line x1="967" y1="75.0" x2="548" y2="80.0" marker-end="url(#a)"/>
+<path d="M348,114 H354 V195 H348"/>
+<line x1="967" y1="150.0" x2="358" y2="155.0" marker-end="url(#a)"/>
+<line x1="967" y1="210.0" x2="323" y2="215" marker-end="url(#a)"/>
+<path d="M167,234 H173 V285 H167"/>
+<line x1="967" y1="255.0" x2="177" y2="260.0" marker-end="url(#a)"/>
+<path d="M267,294 H273 V345 H267"/>
+<line x1="967" y1="315.0" x2="277" y2="320.0" marker-end="url(#a)"/>
+<line x1="967" y1="360.0" x2="892" y2="365" marker-end="url(#a)"/>
+<line x1="967" y1="398.5" x2="233" y2="395" marker-end="url(#a)"/>
+<line x1="967" y1="446.5" x2="269" y2="425" marker-end="url(#a)"/>
+<path d="M258,444 H264 V555 H258"/>
+<line x1="967" y1="495.0" x2="268" y2="500.0" marker-end="url(#a)"/>
+<path d="M294,564 H300 V615 H294"/>
+<line x1="967" y1="585.0" x2="304" y2="590.0" marker-end="url(#a)"/>
+</g>
+<g font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="15" fill="#17202b">
+<text x="975" y="35">A list of places the hooks come from</text>
+<text x="975" y="70">A collection of hooks published on GitHub, at version</text>
+<text x="975" y="90">6.0.0. pre-commit downloads it once and keeps it</text>
+<text x="975" y="146">Which of its hooks to run, by name. This one refuses</text>
+<text x="975" y="164">any file over 1000 KB: <tspan font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" fill="#a85b00">args</tspan> are passed to the hook</text>
+<text x="975" y="206">Refuses a file that still has the markers a merge</text>
+<text x="975" y="224">conflict leaves, such as <tspan font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" fill="#a85b00">&lt;&lt;&lt;&lt;&lt;&lt;&lt;</tspan></text>
+<text x="975" y="260">Hooks written here, in this file. Nothing to download</text>
+<text x="975" y="310">Our first hook: its id, and the name pre-commit</text>
+<text x="975" y="330">prints when it runs</text>
+<text x="975" y="365">The message printed when the hook fails</text>
+<text x="975" y="394"><tspan font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" fill="#a85b00">fail</tspan>: this hook does nothing but fail, whenever</text>
+<text x="975" y="413">it is given a file</text>
+<text x="975" y="442">It is given only files that match this pattern:</text>
+<text x="975" y="461">a file named <tspan font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" fill="#a85b00">.env</tspan>, in any folder</text>
+<text x="975" y="490">Our second hook runs <tspan font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" fill="#a85b00">just check</tspan>, the command as it</text>
+<text x="975" y="510">is on this machine (<tspan font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" fill="#a85b00">system</tspan>)</text>
+<text x="975" y="580">Do not add the changed files&#x27; names to the command,</text>
+<text x="975" y="600">and run it at every commit, whatever changed</text>
+</g></svg>

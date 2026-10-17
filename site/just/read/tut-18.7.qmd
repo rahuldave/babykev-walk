@@ -6,6 +6,17 @@ title: "18.7 `just smoke`"
 
 **Read the tutorial.** [Build it yourself](../build/tut-18.7.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `117a59e9838e`, partway through `tut-18`. [The code before this part](https://github.com/rahuldave/babykev/tree/117a59e9838e0fa2e28ad29d02d5aeba3a8622f9){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach 117a59e9838e
+```
+
 ```bash
 just setup
 ```
@@ -15,8 +26,6 @@ of the sample data, and prints each answer beside its label. The command `babyke
 downloads the model from the Hugging Face Hub.
 
 The smoke gets a recipe of its own, in a group `model`. `just check` does not run it.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/117a59e9838e0fa2e28ad29d02d5aeba3a8622f9). [The code after it](https://github.com/rahuldave/babykev/tree/55844b2320b632b40dd3f34f0a6b5bb962551005).
 
 ## 18.7 The recipe smoke {#tut-18.7}
 
@@ -47,7 +56,7 @@ the usage of the program.
 
 ### What changed {#tut-18.7-what-changed-182c57}
 
-- <a id="tut-18.7-justfile-424f0b"></a>`justfile`: the recipe `smoke`. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/55844b2320b632b40dd3f34f0a6b5bb962551005/justfile).
+- <a id="tut-18.7-justfile-424f0b"></a>`justfile`: the recipe `smoke`. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/55844b2320b632b40dd3f34f0a6b5bb962551005/justfile){.btn .btn-sm .btn-secondary}
   - look at `smoke *args:`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -69,4 +78,6 @@ the usage of the program.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/55844b2320b632b40dd3f34f0a6b5bb962551005). [The code after it](https://github.com/rahuldave/babykev/tree/55844b2320b632b40dd3f34f0a6b5bb962551005).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/55844b2320b632b40dd3f34f0a6b5bb962551005){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `55844b2320b6`, partway through `tut-18`. [The code after this part](https://github.com/rahuldave/babykev/tree/55844b2320b632b40dd3f34f0a6b5bb962551005){.btn .btn-sm .btn-primary}

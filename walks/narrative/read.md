@@ -14,6 +14,8 @@ one move at a time.
 
 ## 0 Where we start
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part is where the project starts, at `step-00`. [The code of this part](https://github.com/rahuldave/babykev/tree/step-00)
+
 **The first three slides.** No commands. The title, SOFTWARE DEVELOPMENT FOR MACHINE LEARNING, with Rahul Dave's name under it. Then the worried Pavlos, the cartoon, with a hand raised: he is worried about this lecture. Then a picture of Rahul, in a T-shirt that says "You're Absolutely Right!". After them the first slide of the talk, "What goes into a machine-learning project?". The pictures are `walks/narrative/slides/pictures/pavlos-worried.png` and `walks/narrative/slides/pictures/rahul.jpg`.
 
 **Init.** The environment is made by uv, before any recipe. `uv sync --locked` reads `pyproject.toml` and `uv.lock` and makes `.venv` with exactly what the lockfile says: Python 3.13 from `.python-version`, and babykev alone, editable. It prints `Resolved 1 package` and what it installed (or `Checked 1 package` when the venv already matches). `--locked` means: refuse if the lockfile is out of date with `pyproject.toml`, never re-lock on the quiet.
@@ -543,11 +545,11 @@ cat pyproject.toml
 
 </details>
 
-[The code](https://github.com/rahuldave/babykev/tree/ee96429002cd04cb95e86e9a77e9c3d02a0e9497).
-
 <a id="step-01"></a>
 
 ## 1 The contract, and its tests
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `step-00`. [The code before this part](https://github.com/rahuldave/babykev/tree/step-00)
 
 **Init.** `just setup` adds 13 packages: pydantic and pydantic-core, pytest, pytest-cov and coverage, and their dependencies. `.venv` goes from 1 package to 14.
 
@@ -1193,11 +1195,15 @@ sed -i '' 's/option_text("no", c.get("false"))/option_text("NO", c.get("false"))
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/compare/ee96429002cd04cb95e86e9a77e9c3d02a0e9497...9cc0343527b93a817207a11a2866752807f0013d). [The code after it](https://github.com/rahuldave/babykev/tree/9cc0343527b93a817207a11a2866752807f0013d).
+[This change on GitHub](https://github.com/rahuldave/babykev/compare/ee96429002cd04cb95e86e9a77e9c3d02a0e9497...9cc0343527b93a817207a11a2866752807f0013d).
+
+This part ends at the code at `step-01`. [The code after this part](https://github.com/rahuldave/babykev/tree/step-01)
 
 <a id="step-02"></a>
 
 ## 2 Format and lint arrive
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `step-01`. [The code before this part](https://github.com/rahuldave/babykev/tree/step-01)
 
 **Init.** `just setup` adds one package, ruff. `.venv`: 15 packages. (Coming from step-00 instead of step-01, it adds 14.)
 
@@ -1506,11 +1512,15 @@ just lint --statistics
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/compare/9cc0343527b93a817207a11a2866752807f0013d...4681f251318456e721cb4a7dcecbb9f73d3589cf). [The code after it](https://github.com/rahuldave/babykev/tree/4681f251318456e721cb4a7dcecbb9f73d3589cf).
+[This change on GitHub](https://github.com/rahuldave/babykev/compare/9cc0343527b93a817207a11a2866752807f0013d...4681f251318456e721cb4a7dcecbb9f73d3589cf).
+
+This part ends at the code at `step-02`. [The code after this part](https://github.com/rahuldave/babykev/tree/step-02)
 
 <a id="step-03"></a>
 
 ## 3 Clean, and kept clean
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `step-02`. [The code before this part](https://github.com/rahuldave/babykev/tree/step-02)
 
 **Init.** `just setup` adds 15 packages (pre-commit, yamllint, validate-pyproject and what they need) and then prints `pre-commit installed at ...git/hooks/pre-commit`.
 
@@ -2303,11 +2313,15 @@ git rm --cached -q .env && rm .env
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/compare/4681f251318456e721cb4a7dcecbb9f73d3589cf...651cd62cf2d09d53225ed11c9befd7c2316ec1aa). [The code after it](https://github.com/rahuldave/babykev/tree/651cd62cf2d09d53225ed11c9befd7c2316ec1aa).
+[This change on GitHub](https://github.com/rahuldave/babykev/compare/4681f251318456e721cb4a7dcecbb9f73d3589cf...651cd62cf2d09d53225ed11c9befd7c2316ec1aa).
+
+This part ends at the code at `step-03`. [The code after this part](https://github.com/rahuldave/babykev/tree/step-03)
 
 <a id="step-04"></a>
 
 ## 4 Documentation from the code
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `step-03`. [The code before this part](https://github.com/rahuldave/babykev/tree/step-03)
 
 **Init.** `just setup` adds one package, fastcore 2.2.32, and rebuilds babykev because `pyproject.toml` changed; then `pre-commit installed at .git/hooks/pre-commit`. The recipe is a script now, like `check`: `uv sync --locked`, `uv run pre-commit install`, and a line that says if Quarto is not on the machine (it is, so nothing is printed). 0.4 s.
 
@@ -3508,11 +3522,15 @@ just check
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/compare/651cd62cf2d09d53225ed11c9befd7c2316ec1aa...d27a7f152ade46e9024f0b97481b85fcce07a16c). [The code after it](https://github.com/rahuldave/babykev/tree/d27a7f152ade46e9024f0b97481b85fcce07a16c).
+[This change on GitHub](https://github.com/rahuldave/babykev/compare/651cd62cf2d09d53225ed11c9befd7c2316ec1aa...d27a7f152ade46e9024f0b97481b85fcce07a16c).
+
+This part ends at the code at `step-04`. [The code after this part](https://github.com/rahuldave/babykev/tree/step-04)
 
 <a id="step-04b"></a>
 
 ## 4b Every function documented
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `step-04`. [The code before this part](https://github.com/rahuldave/babykev/tree/step-04)
 
 **Init.** `just setup` changes nothing in `.venv`: no dependency arrived. It prints `Checked 29 packages` and reinstalls the hook. 0.4 s.
 
@@ -4068,11 +4086,15 @@ just check
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/compare/d27a7f152ade46e9024f0b97481b85fcce07a16c...a9a391de1f271392a948cdd16afe2f3b1cfdd437). [The code after it](https://github.com/rahuldave/babykev/tree/a9a391de1f271392a948cdd16afe2f3b1cfdd437).
+[This change on GitHub](https://github.com/rahuldave/babykev/compare/d27a7f152ade46e9024f0b97481b85fcce07a16c...a9a391de1f271392a948cdd16afe2f3b1cfdd437).
+
+This part ends at the code at `step-04b`. [The code after this part](https://github.com/rahuldave/babykev/tree/step-04b)
 
 <a id="step-05"></a>
 
 ## 5 A second file: model.py
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `step-04b`. [The code before this part](https://github.com/rahuldave/babykev/tree/step-04b)
 
 **Init.** `just setup` brings the model's stack: torch (the CPU build, from PyTorch's own index), transformers, peft, safetensors and what they need, hypothesis for the tests, and ty, the type checker. 64 packages in `.venv`, up from 30. From uv's cache it takes a second; the first time on a machine it is a download of a few hundred megabytes.
 
@@ -5537,11 +5559,15 @@ EOF
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/compare/a9a391de1f271392a948cdd16afe2f3b1cfdd437...46cf8625a031e10049355df4c37abcb7af58d847). [The code after it](https://github.com/rahuldave/babykev/tree/46cf8625a031e10049355df4c37abcb7af58d847).
+[This change on GitHub](https://github.com/rahuldave/babykev/compare/a9a391de1f271392a948cdd16afe2f3b1cfdd437...46cf8625a031e10049355df4c37abcb7af58d847).
+
+This part ends at the code at `step-05`. [The code after this part](https://github.com/rahuldave/babykev/tree/step-05)
 
 <a id="step-05a"></a>
 
 ## 5a The tests that could tell
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `step-05`. [The code before this part](https://github.com/rahuldave/babykev/tree/step-05)
 
 **Init.** `just setup` changes nothing in `.venv`: no new package. 0.5 s.
 
@@ -6437,11 +6463,15 @@ just test -k notebook
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/compare/46cf8625a031e10049355df4c37abcb7af58d847...c954af4beae61eaab89bcb2d4724eea4f2706703). [The code after it](https://github.com/rahuldave/babykev/tree/c954af4beae61eaab89bcb2d4724eea4f2706703).
+[This change on GitHub](https://github.com/rahuldave/babykev/compare/46cf8625a031e10049355df4c37abcb7af58d847...c954af4beae61eaab89bcb2d4724eea4f2706703).
+
+This part ends at the code at `step-05a`. [The code after this part](https://github.com/rahuldave/babykev/tree/step-05a)
 
 <a id="step-05b"></a>
 
 ## 5b Two images from one lockfile
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `step-05a`. [The code before this part](https://github.com/rahuldave/babykev/tree/step-05a)
 
 **Init.** `just setup` brings one package, hadolint 2.15.1, the Dockerfile's linter, as a wheel from PyPI: there are wheels for the Mac and for Linux on both architectures. 0.5 s.
 
@@ -7040,4 +7070,6 @@ just docs publish
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/compare/c954af4beae61eaab89bcb2d4724eea4f2706703...47b43c0916ac186e3efdf42e15dbcf1f04edb1a0). [The code after it](https://github.com/rahuldave/babykev/tree/47b43c0916ac186e3efdf42e15dbcf1f04edb1a0).
+[This change on GitHub](https://github.com/rahuldave/babykev/compare/c954af4beae61eaab89bcb2d4724eea4f2706703...47b43c0916ac186e3efdf42e15dbcf1f04edb1a0).
+
+This part ends at the code at `step-05b`. [The code after this part](https://github.com/rahuldave/babykev/tree/step-05b)

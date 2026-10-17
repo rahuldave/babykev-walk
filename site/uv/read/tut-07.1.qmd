@@ -6,6 +6,17 @@ title: "7.1 A second group, for the checks"
 
 **Read the tutorial.** [Build it yourself](../build/tut-07.1.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-06`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-06){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach tut-06
+```
+
 ```bash
 just setup
 ```
@@ -13,8 +24,6 @@ just setup
 The whole tutorial then brings in the contract, `api.py`, which says what a request and an answer are. Then come its
 tests, the code that turns the probabilities of the model into answers, and the fixes of two bugs in it. ruff
 formats the code and checks it, and a user of babykev does not need it. So ruff starts a second group, `lint`.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/910716f0cec79c3f31afb34cf3a2593f0cd51315). [The code after it](https://github.com/rahuldave/babykev/tree/5085d2a6ae47a58d6259dfa06679bb2a9be692e1).
 
 ## 7.1 Ruff, in the group lint {#tut-07.1}
 
@@ -43,9 +52,9 @@ line run to 88 characters. Line 19 of `cli.py` has 94 characters, so ruff would 
 
 ### What changed {#tut-07.1-what-changed-182c57}
 
-- <a id="tut-07.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the group `lint`, with ruff. 3 lines added. It comes from `uv add --group lint ruff`. [The file](https://github.com/rahuldave/babykev/blob/5085d2a6ae47a58d6259dfa06679bb2a9be692e1/pyproject.toml).
+- <a id="tut-07.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the group `lint`, with ruff. 3 lines added. It comes from `uv add --group lint ruff`. [The file](https://github.com/rahuldave/babykev/blob/5085d2a6ae47a58d6259dfa06679bb2a9be692e1/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `"ruff>=0.17.1",`
-- <a id="tut-07.1-uv.lock-8356d8"></a>`uv.lock`: ruff, at its exact version. 29 lines added. It comes from `uv add --group lint ruff`. [The file](https://github.com/rahuldave/babykev/blob/5085d2a6ae47a58d6259dfa06679bb2a9be692e1/uv.lock).
+- <a id="tut-07.1-uv.lock-8356d8"></a>`uv.lock`: ruff, at its exact version. 29 lines added. It comes from `uv add --group lint ruff`. [The file](https://github.com/rahuldave/babykev/blob/5085d2a6ae47a58d6259dfa06679bb2a9be692e1/uv.lock){.btn .btn-sm .btn-secondary}
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -64,4 +73,6 @@ line run to 88 characters. Line 19 of `cli.py` has 94 characters, so ruff would 
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/5085d2a6ae47a58d6259dfa06679bb2a9be692e1). [The code after it](https://github.com/rahuldave/babykev/tree/5085d2a6ae47a58d6259dfa06679bb2a9be692e1).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/5085d2a6ae47a58d6259dfa06679bb2a9be692e1){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `5085d2a6ae47`, partway through `tut-07`. [The code after this part](https://github.com/rahuldave/babykev/tree/5085d2a6ae47a58d6259dfa06679bb2a9be692e1){.btn .btn-sm .btn-primary}

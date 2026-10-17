@@ -6,16 +6,18 @@ title: "3.1 to 3.2 The contract, in pydantic"
 
 **Build it yourself.** [Read the tutorial](../read/tut-03.1-to-tut-03.2.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-02`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-02){.btn .btn-sm .btn-primary}
+
 This part does not start where the part before it ends, because the walk skips some changes. This command puts the files that this part starts from in place of yours. Run it, and then go on:
 
 ```bash
-git restore --source 70ac5b0a0a1d --staged -- :/ && git restore --source 4640589d80e4 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-00 --staged -- :/ && git restore --source tut-02 --staged --worktree -- :/
 ```
 
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
 
 ```bash
-git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 4640589d80e4 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch -- :/ && git restore --source tut-02 --staged --worktree -- :/
 ```
 
 ```bash
@@ -26,8 +28,6 @@ The whole tutorial first made babykev a Python project with uv. It gave babykev 
 `src/babykev/cli.py`. It also added a justfile, a file of short named commands called recipes, with the recipes
 `setup` and `help`. Then it added pytest, a tool that runs tests, and coverage, which shows the lines of code that the
 tests run. The recipe `just test` runs them both, and five tests check the command. The project has no contract yet.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/4640589d80e4f224a4b2c1fd9567e952f564f102). [The code after it](https://github.com/rahuldave/babykev/tree/e8e2e72adad9364a58be21dadf6d757e84436b97).
 
 ## 3.1 Pydantic, the first dependency {#tut-03.1}
 
@@ -60,14 +60,14 @@ git check 96502df0a92f
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 4640589d80e4 --staged -- :/ && git restore --source 96502df0a92f --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-02 --staged -- :/ && git restore --source 96502df0a92f --staged --worktree -- :/
 ```
 
 ### What changed {#tut-03.1-what-changed-182c57}
 
-- <a id="tut-03.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the first dependency. `>=2.14.1` is the version that `uv add` found, as the lowest version to accept. 3 lines added, 1 removed. It comes from `uv add pydantic`. [The file](https://github.com/rahuldave/babykev/blob/96502df0a92f6f7090d6f624cda901a271dac9a7/pyproject.toml).
+- <a id="tut-03.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the first dependency. `>=2.14.1` is the version that `uv add` found, as the lowest version to accept. 3 lines added, 1 removed. It comes from `uv add pydantic`. [The file](https://github.com/rahuldave/babykev/blob/96502df0a92f6f7090d6f624cda901a271dac9a7/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `"pydantic>=2.14.1",`
-- <a id="tut-03.1-uv.lock-8356d8"></a>`uv.lock`: pydantic and the four packages it needs, each with its exact version. 136 lines added. It comes from `uv add pydantic`. [The file](https://github.com/rahuldave/babykev/blob/96502df0a92f6f7090d6f624cda901a271dac9a7/uv.lock).
+- <a id="tut-03.1-uv.lock-8356d8"></a>`uv.lock`: pydantic and the four packages it needs, each with its exact version. 136 lines added. It comes from `uv add pydantic`. [The file](https://github.com/rahuldave/babykev/blob/96502df0a92f6f7090d6f624cda901a271dac9a7/uv.lock){.btn .btn-sm .btn-secondary}
 
 <details><summary>The diff that <code>uv add pydantic</code> makes in <code>pyproject.toml</code></summary>
 
@@ -87,7 +87,7 @@ git restore --source 4640589d80e4 --staged -- :/ && git restore --source 96502df
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/96502df0a92f6f7090d6f624cda901a271dac9a7). [The code after it](https://github.com/rahuldave/babykev/tree/96502df0a92f6f7090d6f624cda901a271dac9a7).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/96502df0a92f6f7090d6f624cda901a271dac9a7){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/96502df0a92f6f7090d6f624cda901a271dac9a7){.btn .btn-sm .btn-primary}
 
 ## 3.2 api.py, the contract {#tut-03.2}
 
@@ -131,7 +131,7 @@ git restore --source 96502df0a92f --staged -- :/ && git restore --source e8e2e72
 
 ### What changed {#tut-03.2-what-changed-182c57}
 
-- <a id="tut-03.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a request has a state and its questions by name. Each question is a `Noul`, a `Choice` or a `Score`, and its field `type` says which. New, 111 lines. [The file](https://github.com/rahuldave/babykev/blob/e8e2e72adad9364a58be21dadf6d757e84436b97/src/babykev/api.py).
+- <a id="tut-03.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a request has a state and its questions by name. Each question is a `Noul`, a `Choice` or a `Score`, and its field `type` says which. New, 111 lines. [The file](https://github.com/rahuldave/babykev/blob/e8e2e72adad9364a58be21dadf6d757e84436b97/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `class SystemOneRequest(BaseModel):`
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
@@ -253,4 +253,6 @@ git restore --source 96502df0a92f --staged -- :/ && git restore --source e8e2e72
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e8e2e72adad9364a58be21dadf6d757e84436b97). [The code after it](https://github.com/rahuldave/babykev/tree/e8e2e72adad9364a58be21dadf6d757e84436b97).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e8e2e72adad9364a58be21dadf6d757e84436b97){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `e8e2e72adad9`, partway through `tut-03`. [The code after this part](https://github.com/rahuldave/babykev/tree/e8e2e72adad9364a58be21dadf6d757e84436b97){.btn .btn-sm .btn-primary}

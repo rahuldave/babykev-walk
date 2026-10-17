@@ -6,6 +6,17 @@ title: "26.5 to 26.6 The docs on GitHub Pages"
 
 **Read the tutorial.** [Build it yourself](../build/tut-26.5-to-tut-26.6.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `eb0acd148867`, partway through `tut-26`. [The code before this part](https://github.com/rahuldave/babykev/tree/eb0acd148867bdbc6292660b7268b656074fb727){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach eb0acd148867
+```
+
 ```bash
 just setup
 ```
@@ -21,8 +32,6 @@ as the value true. Its settings now let a key be such a word.
 
 The project adds actionlint, a linter of the workflows of GitHub, to its other linters, and `just lint-config` runs
 it. The second workflow builds the site and publishes it.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/eb0acd148867bdbc6292660b7268b656074fb727). [The code after it](https://github.com/rahuldave/babykev/tree/88854e32ebcb4647672742cc4ef709eefc5fde0c).
 
 ## 26.5 GitHub Pages publishes the docs {#tut-26.5}
 
@@ -50,7 +59,7 @@ workflows on, on the tab **Actions**. Pages publishes from a workflow when **Set
 
 ### What changed {#tut-26.5-what-changed-182c57}
 
-- <a id="tut-26.5-.github-workflows-docs.yaml-ce7835"></a>`.github/workflows/docs.yaml`: the docs site, built with the group `docs` alone, then published. New, 40 lines. [The file](https://github.com/rahuldave/babykev/blob/606da22657c965404206b25f8fbcccffbe3f2756/.github/workflows/docs.yaml).
+- <a id="tut-26.5-.github-workflows-docs.yaml-ce7835"></a>`.github/workflows/docs.yaml`: the docs site, built with the group `docs` alone, then published. New, 40 lines. [The file](https://github.com/rahuldave/babykev/blob/606da22657c965404206b25f8fbcccffbe3f2756/.github/workflows/docs.yaml){.btn .btn-sm .btn-secondary}
   - look at `      - run: uv run --locked --no-default-groups --group docs smalldocs render docs`
 
 <details><summary>The diff of <code>.github/workflows/docs.yaml</code></summary>
@@ -101,7 +110,7 @@ workflows on, on the tab **Actions**. Pages publishes from a workflow when **Set
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/606da22657c965404206b25f8fbcccffbe3f2756). [The code after it](https://github.com/rahuldave/babykev/tree/606da22657c965404206b25f8fbcccffbe3f2756).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/606da22657c965404206b25f8fbcccffbe3f2756){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/606da22657c965404206b25f8fbcccffbe3f2756){.btn .btn-sm .btn-primary}
 
 ## 26.6 The README names the workflows {#tut-26.6}
 
@@ -123,7 +132,7 @@ This tutorial ends here. The [whole tutorial](https://rahuldave.com/babykev-walk
 
 ### What changed {#tut-26.6-what-changed-182c57}
 
-- <a id="tut-26.6-README.md-8ec9a0"></a>`README.md`: the section on GitHub, and the row of the workflows. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/88854e32ebcb4647672742cc4ef709eefc5fde0c/README.md).
+- <a id="tut-26.6-README.md-8ec9a0"></a>`README.md`: the section on GitHub, and the row of the workflows. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/88854e32ebcb4647672742cc4ef709eefc5fde0c/README.md){.btn .btn-sm .btn-secondary}
   - look at `## On GitHub`
 
 <details><summary>The diff of <code>README.md</code></summary>
@@ -161,4 +170,6 @@ This tutorial ends here. The [whole tutorial](https://rahuldave.com/babykev-walk
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/88854e32ebcb4647672742cc4ef709eefc5fde0c). [The code after it](https://github.com/rahuldave/babykev/tree/88854e32ebcb4647672742cc4ef709eefc5fde0c).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/88854e32ebcb4647672742cc4ef709eefc5fde0c){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-26`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-26){.btn .btn-sm .btn-primary}

@@ -6,14 +6,23 @@ title: "16.1 The model, and the decoder under it"
 
 **Read the tutorial.** [Build it yourself](../build/tut-16.1.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-15`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-15){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach tut-15
+```
+
 ```bash
 just setup
 ```
 
 `just setup` prints `Resolved 66 packages`. The model is one file, `src/babykev/model.py`. It comes in whole, and we
 read its docstring first.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/c7037ec460963acd41edf1f63a6a03d2e52e5bae). [The code after it](https://github.com/rahuldave/babykev/tree/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93).
 
 ## 16.1 model.py, the model {#tut-16.1}
 
@@ -107,7 +116,7 @@ the decoder, and the layers stay as they are. The fourth idea reads `last_hidden
 
 ### What changed {#tut-16.1-what-changed-182c57}
 
-- <a id="tut-16.1-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the model. It packs a request into tokens, masks it, and points at the options. New, 274 lines. [The file](https://github.com/rahuldave/babykev/blob/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93/src/babykev/model.py).
+- <a id="tut-16.1-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the model. It packs a request into tokens, masks it, and points at the options. New, 274 lines. [The file](https://github.com/rahuldave/babykev/blob/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93/src/babykev/model.py){.btn .btn-sm .btn-secondary}
   - look at `class DecisionModel(nn.Module):`
 
 <details><summary>The diff of <code>src/babykev/model.py</code></summary>
@@ -392,4 +401,6 @@ the decoder, and the layers stay as they are. The fourth idea reads `last_hidden
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93). [The code after it](https://github.com/rahuldave/babykev/tree/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `c4c288ccc7e4`, partway through `tut-16`. [The code after this part](https://github.com/rahuldave/babykev/tree/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93){.btn .btn-sm .btn-primary}

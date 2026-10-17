@@ -6,10 +6,19 @@ title: "1.1 to 1.2 The project, and its lockfile"
 
 **Read the tutorial.** [Build it yourself](../build/tut-01.1-to-tut-01.2.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-00`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-00){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach tut-00
+```
+
 The folder has a README, a licence and `.gitignore`, and nothing that Python can build or run. `uv init` makes the
 project, and `uv lock` writes its lockfile. There is no justfile yet, so these two sections run no `just`.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/70ac5b0a0a1d927dfc4da6f8b7b92344917e4a33). [The code after it](https://github.com/rahuldave/babykev/tree/489f27fad816149652a8d608b162fa98c37563f5).
 
 ## 1.1 uv makes the project {#tut-01.1}
 
@@ -43,10 +52,10 @@ git status --short
 
 ### What changed {#tut-01.1-what-changed-182c57}
 
-- <a id="tut-01.1-.python-version-7696e9"></a>`.python-version`: `3.13`, the version of Python that uv installs for the project. New, 1 line. It comes from `uv init --package --name babykev --python 3.13`. [The file](https://github.com/rahuldave/babykev/blob/eac75e0becc78c9a872e734ea715ac3903947844/.python-version).
-- <a id="tut-01.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: `[project.scripts]` makes a command `babykev` that runs `main` of the package `babykev`. `[build-system]` names `uv_build`, the tool that builds the package. New, 14 lines. It comes from `uv init --package --name babykev --python 3.13`. [The file](https://github.com/rahuldave/babykev/blob/eac75e0becc78c9a872e734ea715ac3903947844/pyproject.toml).
+- <a id="tut-01.1-.python-version-7696e9"></a>`.python-version`: `3.13`, the version of Python that uv installs for the project. New, 1 line. It comes from `uv init --package --name babykev --python 3.13`. [The file](https://github.com/rahuldave/babykev/blob/eac75e0becc78c9a872e734ea715ac3903947844/.python-version){.btn .btn-sm .btn-secondary}
+- <a id="tut-01.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: `[project.scripts]` makes a command `babykev` that runs `main` of the package `babykev`. `[build-system]` names `uv_build`, the tool that builds the package. New, 14 lines. It comes from `uv init --package --name babykev --python 3.13`. [The file](https://github.com/rahuldave/babykev/blob/eac75e0becc78c9a872e734ea715ac3903947844/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `babykev = "babykev:main"`
-- <a id="tut-01.1-src-babykev-__init__.py-a40393"></a>`src/babykev/__init__.py`: the function that the command runs. It prints a greeting. New, 2 lines. It comes from `uv init --package --name babykev --python 3.13`. [The file](https://github.com/rahuldave/babykev/blob/eac75e0becc78c9a872e734ea715ac3903947844/src/babykev/__init__.py).
+- <a id="tut-01.1-src-babykev-__init__.py-a40393"></a>`src/babykev/__init__.py`: the function that the command runs. It prints a greeting. New, 2 lines. It comes from `uv init --package --name babykev --python 3.13`. [The file](https://github.com/rahuldave/babykev/blob/eac75e0becc78c9a872e734ea715ac3903947844/src/babykev/__init__.py){.btn .btn-sm .btn-secondary}
   - look at `print("Hello from babykev!")`
 
 <details><summary>The diff of <code>.python-version</code></summary>
@@ -90,7 +99,7 @@ git status --short
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/eac75e0becc78c9a872e734ea715ac3903947844). [The code after it](https://github.com/rahuldave/babykev/tree/eac75e0becc78c9a872e734ea715ac3903947844).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/eac75e0becc78c9a872e734ea715ac3903947844){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/eac75e0becc78c9a872e734ea715ac3903947844){.btn .btn-sm .btn-primary}
 
 ## 1.2 uv lock writes the lockfile {#tut-01.2}
 
@@ -115,7 +124,9 @@ then changes the packages of `.venv` to match, and does not print `Creating virt
 
 ### What changed {#tut-01.2-what-changed-182c57}
 
-- <a id="tut-01.2-uv.lock-8356d8"></a>`uv.lock`: babykev itself, installed from this folder. `editable` means that a change to the code shows at the next run, with no new install. New, 8 lines. It comes from `uv lock`. [The file](https://github.com/rahuldave/babykev/blob/489f27fad816149652a8d608b162fa98c37563f5/uv.lock).
+- <a id="tut-01.2-uv.lock-8356d8"></a>`uv.lock`: babykev itself, installed from this folder. `editable` means that a change to the code shows at the next run, with no new install. New, 8 lines. It comes from `uv lock`. [The file](https://github.com/rahuldave/babykev/blob/489f27fad816149652a8d608b162fa98c37563f5/uv.lock){.btn .btn-sm .btn-secondary}
   - look at `source = { editable = "." }`
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/489f27fad816149652a8d608b162fa98c37563f5). [The code after it](https://github.com/rahuldave/babykev/tree/489f27fad816149652a8d608b162fa98c37563f5).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/489f27fad816149652a8d608b162fa98c37563f5){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `489f27fad816`, partway through `tut-01`. [The code after this part](https://github.com/rahuldave/babykev/tree/489f27fad816149652a8d608b162fa98c37563f5){.btn .btn-sm .btn-primary}

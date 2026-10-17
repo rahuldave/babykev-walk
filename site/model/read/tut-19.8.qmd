@@ -6,6 +6,17 @@ title: "19.8 A tiny model for the tests"
 
 **Read the tutorial.** [Build it yourself](../build/tut-19.8.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `b4bf2491e850`, partway through `tut-19`. [The code before this part](https://github.com/rahuldave/babykev/tree/b4bf2491e8505697eaa015738f93178c6bd7f3fc){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach b4bf2491e850
+```
+
 ```bash
 just setup
 ```
@@ -41,8 +52,6 @@ sed -n '22,27p' tests/conftest.py
 
 The fixture `model` is a `DecisionModel` on the tiny backbone, on the CPU. The code that runs is the real
 `DecisionModel`. Only the backbone and the tokenizer under it are small.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/b4bf2491e8505697eaa015738f93178c6bd7f3fc). [The code after it](https://github.com/rahuldave/babykev/tree/321a8df2c597e0c46d06c9b36c711f0fe270900a).
 
 ## 19.8 The first test of the model {#tut-19.8}
 
@@ -84,7 +93,7 @@ Every test in the rest of this walk asks for these fixtures, and runs on the tin
 
 ### What changed {#tut-19.8-what-changed-182c57}
 
-- <a id="tut-19.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the first test of the model, on the tiny model. New, 20 lines. [The file](https://github.com/rahuldave/babykev/blob/321a8df2c597e0c46d06c9b36c711f0fe270900a/tests/unit/test_model.py).
+- <a id="tut-19.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the first test of the model, on the tiny model. New, 20 lines. [The file](https://github.com/rahuldave/babykev/blob/321a8df2c597e0c46d06c9b36c711f0fe270900a/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_probabilities_sum_to_one_for_every_question(`
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
@@ -115,4 +124,6 @@ Every test in the rest of this walk asks for these fixtures, and runs on the tin
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/321a8df2c597e0c46d06c9b36c711f0fe270900a). [The code after it](https://github.com/rahuldave/babykev/tree/321a8df2c597e0c46d06c9b36c711f0fe270900a).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/321a8df2c597e0c46d06c9b36c711f0fe270900a){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `321a8df2c597`, partway through `tut-19`. [The code after this part](https://github.com/rahuldave/babykev/tree/321a8df2c597e0c46d06c9b36c711f0fe270900a){.btn .btn-sm .btn-primary}

@@ -6,6 +6,17 @@ title: "20.5 to 20.6 A caller's text cannot forge a delimiter"
 
 **Read the tutorial.** [Build it yourself](../build/tut-20.5-to-tut-20.6.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `e3b3ab01357c`, partway through `tut-20`. [The code before this part](https://github.com/rahuldave/babykev/tree/e3b3ab01357c19f3325d481c80e67ad1f13c1522){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach e3b3ab01357c
+```
+
 ```bash
 just setup
 ```
@@ -32,8 +43,6 @@ uv run python -c "from tests.tiny import tiny_tokenizer; from babykev.model impo
 The tokenizer alone gives three tokens, `n`, `o` and the decide delimiter. `user_tokens` gives 16 ordinary tokens. The
 tiny tokenizer has no token for `¦`, so it gives `[UNK]` there. The tokenizer of the base model has tokens for it.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/e3b3ab01357c19f3325d481c80e67ad1f13c1522). [The code after it](https://github.com/rahuldave/babykev/tree/e30ea2eb52ae23815152f60b09d07d9d0dd1fd3a).
-
 ## 20.5 A tokenizer alone would let text forge a delimiter {#tut-20.5}
 
 A caller writes the state, the instructions and the options. A tokenizer turns the text `<|fim_suffix|>` into the
@@ -54,7 +63,7 @@ tokens. pytest prints `1 passed`. The danger is real.
 
 ### What changed {#tut-20.5-what-changed-182c57}
 
-- <a id="tut-20.5-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the danger, a forged delimiter. 9 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/1782e1e6803efd49be04e682f3453e39c1c2fc23/tests/unit/test_model.py).
+- <a id="tut-20.5-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the danger, a forged delimiter. 9 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/1782e1e6803efd49be04e682f3453e39c1c2fc23/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_a_tokenizer_alone_would_let_text_forge_a_delimiter(`
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
@@ -85,7 +94,7 @@ tokens. pytest prints `1 passed`. The danger is real.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/1782e1e6803efd49be04e682f3453e39c1c2fc23). [The code after it](https://github.com/rahuldave/babykev/tree/1782e1e6803efd49be04e682f3453e39c1c2fc23).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/1782e1e6803efd49be04e682f3453e39c1c2fc23){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/1782e1e6803efd49be04e682f3453e39c1c2fc23){.btn .btn-sm .btn-primary}
 
 ## 20.6 User text cannot forge a delimiter {#tut-20.6}
 
@@ -121,7 +130,7 @@ token of the text is a delimiter.
 
 ### What changed {#tut-20.6-what-changed-182c57}
 
-- <a id="tut-20.6-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the defence, for each of the five delimiters. 11 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/e30ea2eb52ae23815152f60b09d07d9d0dd1fd3a/tests/unit/test_model.py).
+- <a id="tut-20.6-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the defence, for each of the five delimiters. 11 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/e30ea2eb52ae23815152f60b09d07d9d0dd1fd3a/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_user_text_cannot_forge_a_delimiter(`
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
@@ -154,4 +163,6 @@ token of the text is a delimiter.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e30ea2eb52ae23815152f60b09d07d9d0dd1fd3a). [The code after it](https://github.com/rahuldave/babykev/tree/e30ea2eb52ae23815152f60b09d07d9d0dd1fd3a).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e30ea2eb52ae23815152f60b09d07d9d0dd1fd3a){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `e30ea2eb52ae`, partway through `tut-20`. [The code after this part](https://github.com/rahuldave/babykev/tree/e30ea2eb52ae23815152f60b09d07d9d0dd1fd3a){.btn .btn-sm .btn-primary}

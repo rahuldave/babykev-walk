@@ -6,6 +6,17 @@ title: "9 Types in every signature"
 
 **Read the tutorial.** [Build it yourself](../build/tut-09.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-08`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-08){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach tut-08
+```
+
 ```bash
 just setup
 ```
@@ -16,8 +27,6 @@ A reader of `def to_record(req: SystemOneRequest):` knows what the function take
 annotation says it, in the signature. Python does not check annotations when it runs, but a reader does, and a type
 checker can, later. The family `ANN` of ruff asks for the type of every parameter and of every return value. A
 person writes each type that ruff cannot guess, and ruff writes the rest.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/7cdb1ba696a32050cba1c335892fccb68bb4fd24). [The code after it](https://github.com/rahuldave/babykev/tree/b0e8dd74539e4d3b210defc5e0169f53b1670393).
 
 ## 9.1 The rule that every function has types {#tut-09.1}
 
@@ -45,7 +54,7 @@ nothing.
 
 ### What changed {#tut-09.1-what-changed-182c57}
 
-- <a id="tut-09.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the family `ANN`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/902428993991b5ffbb8ce7630556d7524f04f4ce/pyproject.toml).
+- <a id="tut-09.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the family `ANN`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/902428993991b5ffbb8ce7630556d7524f04f4ce/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `    "ANN", # annotations: every parameter and every return value has a type`
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
@@ -63,7 +72,7 @@ nothing.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/902428993991b5ffbb8ce7630556d7524f04f4ce). [The code after it](https://github.com/rahuldave/babykev/tree/902428993991b5ffbb8ce7630556d7524f04f4ce).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/902428993991b5ffbb8ce7630556d7524f04f4ce){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/902428993991b5ffbb8ce7630556d7524f04f4ce){.btn .btn-sm .btn-primary}
 
 ## 9.2 _check returns Self {#tut-09.2}
 
@@ -84,7 +93,7 @@ their name, and prints `7 passed, 46 deselected`. Two of them check the limits t
 
 ### What changed {#tut-09.2-what-changed-182c57}
 
-- <a id="tut-09.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the return type of `_check`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/620ea02cd62d1dafd9014783e29d8fe85216175c/src/babykev/api.py).
+- <a id="tut-09.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the return type of `_check`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/620ea02cd62d1dafd9014783e29d8fe85216175c/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `    def _check(self) -> Self:`
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
@@ -112,7 +121,7 @@ their name, and prints `7 passed, 46 deselected`. Two of them check the limits t
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/620ea02cd62d1dafd9014783e29d8fe85216175c). [The code after it](https://github.com/rahuldave/babykev/tree/620ea02cd62d1dafd9014783e29d8fe85216175c).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/620ea02cd62d1dafd9014783e29d8fe85216175c){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/620ea02cd62d1dafd9014783e29d8fe85216175c){.btn .btn-sm .btn-primary}
 
 ## 9.3 The two return types that ruff cannot guess {#tut-09.3}
 
@@ -136,9 +145,9 @@ just lint --statistics
 
 ### What changed {#tut-09.3-what-changed-182c57}
 
-- <a id="tut-09.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the return type of `to_record`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/36b5e61136c9bad356ca74b2d790edf10076fdcb/src/babykev/api.py).
+- <a id="tut-09.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the return type of `to_record`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/36b5e61136c9bad356ca74b2d790edf10076fdcb/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `def to_record(req: SystemOneRequest) -> tuple[dict[str, Any], list[dict[str, Any]]]:`
-- <a id="tut-09.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the return type of `cheese_request`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/36b5e61136c9bad356ca74b2d790edf10076fdcb/tests/unit/test_api.py).
+- <a id="tut-09.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the return type of `cheese_request`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/36b5e61136c9bad356ca74b2d790edf10076fdcb/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def cheese_request() -> SystemOneRequest:`
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
@@ -173,7 +182,7 @@ just lint --statistics
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/36b5e61136c9bad356ca74b2d790edf10076fdcb). [The code after it](https://github.com/rahuldave/babykev/tree/36b5e61136c9bad356ca74b2d790edf10076fdcb).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/36b5e61136c9bad356ca74b2d790edf10076fdcb){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/36b5e61136c9bad356ca74b2d790edf10076fdcb){.btn .btn-sm .btn-primary}
 
 ## 9.4 The types of the fixtures of pytest {#tut-09.4}
 
@@ -201,7 +210,7 @@ command passes with the types, as it did without them.
 
 ### What changed {#tut-09.4-what-changed-182c57}
 
-- <a id="tut-09.4-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: the types of the fixtures. 7 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/ea931bef025598ffea0652a14e5051bffb491ef9/tests/unit/test_cli.py).
+- <a id="tut-09.4-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: the types of the fixtures. 7 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/ea931bef025598ffea0652a14e5051bffb491ef9/tests/unit/test_cli.py){.btn .btn-sm .btn-secondary}
   - look at `    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]`
 
 <details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
@@ -239,7 +248,7 @@ command passes with the types, as it did without them.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/ea931bef025598ffea0652a14e5051bffb491ef9). [The code after it](https://github.com/rahuldave/babykev/tree/ea931bef025598ffea0652a14e5051bffb491ef9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ea931bef025598ffea0652a14e5051bffb491ef9){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/ea931bef025598ffea0652a14e5051bffb491ef9){.btn .btn-sm .btn-primary}
 
 ## 9.5 The types of the parameters of the tests {#tut-09.5}
 
@@ -270,9 +279,9 @@ just test
 
 ### What changed {#tut-09.5-what-changed-182c57}
 
-- <a id="tut-09.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the types of the parameters, and two imports. 9 lines added, 5 removed. [The file](https://github.com/rahuldave/babykev/blob/e7648b1239e17f96443a9477a85ed36d8b1e6cc6/tests/unit/test_api.py).
+- <a id="tut-09.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the types of the parameters, and two imports. 9 lines added, 5 removed. [The file](https://github.com/rahuldave/babykev/blob/e7648b1239e17f96443a9477a85ed36d8b1e6cc6/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_render_flattens_json_into_text(value: JSONContent, text: str):`
-- <a id="tut-09.5-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: the type of `words`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/e7648b1239e17f96443a9477a85ed36d8b1e6cc6/tests/unit/test_cli.py).
+- <a id="tut-09.5-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: the type of `words`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/e7648b1239e17f96443a9477a85ed36d8b1e6cc6/tests/unit/test_cli.py){.btn .btn-sm .btn-secondary}
   - look at `    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str], words: tuple[str, ...]`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -361,7 +370,7 @@ just test
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e7648b1239e17f96443a9477a85ed36d8b1e6cc6). [The code after it](https://github.com/rahuldave/babykev/tree/e7648b1239e17f96443a9477a85ed36d8b1e6cc6).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e7648b1239e17f96443a9477a85ed36d8b1e6cc6){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/e7648b1239e17f96443a9477a85ed36d8b1e6cc6){.btn .btn-sm .btn-primary}
 
 ## 9.6 The words of run are strings {#tut-09.6}
 
@@ -382,7 +391,7 @@ says `31 fixable with --fix`. Neither command changes a file.
 
 ### What changed {#tut-09.6-what-changed-182c57}
 
-- <a id="tut-09.6-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: the type of `*words`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/e0ff9f81ef10ee224eefb9a706f2903aa540463a/tests/unit/test_cli.py).
+- <a id="tut-09.6-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: the type of `*words`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/e0ff9f81ef10ee224eefb9a706f2903aa540463a/tests/unit/test_cli.py){.btn .btn-sm .btn-secondary}
   - look at `def run(monkeypatch: pytest.MonkeyPatch, *words: str):`
 
 <details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
@@ -401,7 +410,7 @@ says `31 fixable with --fix`. Neither command changes a file.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e0ff9f81ef10ee224eefb9a706f2903aa540463a). [The code after it](https://github.com/rahuldave/babykev/tree/e0ff9f81ef10ee224eefb9a706f2903aa540463a).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e0ff9f81ef10ee224eefb9a706f2903aa540463a){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/e0ff9f81ef10ee224eefb9a706f2903aa540463a){.btn .btn-sm .btn-primary}
 
 ## 9.7 Just lint --fix --unsafe-fixes writes -> None {#tut-09.7}
 
@@ -427,9 +436,9 @@ characters with `-> None`. `just test` prints `53 passed`.
 
 ### What changed {#tut-09.7-what-changed-182c57}
 
-- <a id="tut-09.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: `-> None` on 28 functions. 28 lines added, 28 removed. It comes from `just lint --fix --unsafe-fixes`. [The file](https://github.com/rahuldave/babykev/blob/b0e8dd74539e4d3b210defc5e0169f53b1670393/tests/unit/test_api.py).
+- <a id="tut-09.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: `-> None` on 28 functions. 28 lines added, 28 removed. It comes from `just lint --fix --unsafe-fixes`. [The file](https://github.com/rahuldave/babykev/blob/b0e8dd74539e4d3b210defc5e0169f53b1670393/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_sample_line_fits_the_contract(line: dict[str, Any]) -> None:`
-- <a id="tut-09.7-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: `-> None` on `run` and the two tests. 3 lines added, 3 removed. It comes from `just lint --fix --unsafe-fixes`. [The file](https://github.com/rahuldave/babykev/blob/b0e8dd74539e4d3b210defc5e0169f53b1670393/tests/unit/test_cli.py).
+- <a id="tut-09.7-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: `-> None` on `run` and the two tests. 3 lines added, 3 removed. It comes from `just lint --fix --unsafe-fixes`. [The file](https://github.com/rahuldave/babykev/blob/b0e8dd74539e4d3b210defc5e0169f53b1670393/tests/unit/test_cli.py){.btn .btn-sm .btn-secondary}
   - look at `def run(monkeypatch: pytest.MonkeyPatch, *words: str) -> None:`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -699,4 +708,6 @@ characters with `-> None`. `just test` prints `53 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/b0e8dd74539e4d3b210defc5e0169f53b1670393). [The code after it](https://github.com/rahuldave/babykev/tree/b0e8dd74539e4d3b210defc5e0169f53b1670393).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b0e8dd74539e4d3b210defc5e0169f53b1670393){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-09`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-09){.btn .btn-sm .btn-primary}

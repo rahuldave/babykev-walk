@@ -6,6 +6,8 @@ title: "0 The README, before any code"
 
 **Build it yourself.** [Read the tutorial](../read/tut-00.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part is where the project starts, at `tut-00`. [The code of this part](https://github.com/rahuldave/babykev/tree/tut-00){.btn .btn-sm .btn-primary}
+
 The first documentation of a project is its README. Here babykev is only words. There is the README, the licence, the
 notice and `.gitignore`.
 
@@ -37,16 +39,16 @@ git check 70ac5b0a0a1d
 If you are stuck, this command puts the files of this part in place of yours. A file that you made yourself stays:
 
 ```bash
-git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 70ac5b0a0a1d --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch -- :/ && git restore --source tut-00 --staged --worktree -- :/
 ```
 
 ## What changed {#tut-00-what-changed-182c57}
 
-- <a id="tut-00-.gitignore-a5cc29"></a>`.gitignore`: GitHub's template for Python, from github/gitignore. New, 220 lines. [The file](https://github.com/rahuldave/babykev/blob/70ac5b0a0a1d927dfc4da6f8b7b92344917e4a33/.gitignore).
+- <a id="tut-00-.gitignore-a5cc29"></a>`.gitignore`: GitHub's template for Python, from github/gitignore. New, 220 lines. [The file](https://github.com/rahuldave/babykev/blob/70ac5b0a0a1d927dfc4da6f8b7b92344917e4a33/.gitignore){.btn .btn-sm .btn-secondary}
   - look at `.venv`
-- <a id="tut-00-LICENSE-0398cc"></a>`LICENSE`: the Apache License, Version 2.0, the licence of kev. New, 202 lines. [The file](https://github.com/rahuldave/babykev/blob/70ac5b0a0a1d927dfc4da6f8b7b92344917e4a33/LICENSE).
-- <a id="tut-00-NOTICE-fe7187"></a>`NOTICE`: the credit to kev. New, 8 lines. [The file](https://github.com/rahuldave/babykev/blob/70ac5b0a0a1d927dfc4da6f8b7b92344917e4a33/NOTICE).
-- <a id="tut-00-README.md-8ec9a0"></a>`README.md`: what babykev is, and the request it reads. The table gives the three types of question. New, 74 lines. [The file](https://github.com/rahuldave/babykev/blob/70ac5b0a0a1d927dfc4da6f8b7b92344917e4a33/README.md).
+- <a id="tut-00-LICENSE-0398cc"></a>`LICENSE`: the Apache License, Version 2.0, the licence of kev. New, 202 lines. [The file](https://github.com/rahuldave/babykev/blob/70ac5b0a0a1d927dfc4da6f8b7b92344917e4a33/LICENSE){.btn .btn-sm .btn-secondary}
+- <a id="tut-00-NOTICE-fe7187"></a>`NOTICE`: the credit to kev. New, 8 lines. [The file](https://github.com/rahuldave/babykev/blob/70ac5b0a0a1d927dfc4da6f8b7b92344917e4a33/NOTICE){.btn .btn-sm .btn-secondary}
+- <a id="tut-00-README.md-8ec9a0"></a>`README.md`: what babykev is, and the request it reads. The table gives the three types of question. New, 74 lines. [The file](https://github.com/rahuldave/babykev/blob/70ac5b0a0a1d927dfc4da6f8b7b92344917e4a33/README.md){.btn .btn-sm .btn-secondary}
   - look at ``| `noul` | Yes or no | The probability of yes |``
 
 <details><summary>The diff of <code>.gitignore</code></summary>
@@ -584,5 +586,3 @@ git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 70ac5b0a0a1d 
 ````
 
 </details>
-
-[The code](https://github.com/rahuldave/babykev/tree/70ac5b0a0a1d927dfc4da6f8b7b92344917e4a33).

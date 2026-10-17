@@ -6,10 +6,12 @@ title: "14.1 to 14.2 `just docs` alone builds the site"
 
 **Build it yourself.** [Read the tutorial](../read/tut-14.1-to-tut-14.2.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-13`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-13){.btn .btn-sm .btn-primary}
+
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
 
 ```bash
-git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 005b87bdfa2e --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch -- :/ && git restore --source tut-13 --staged --worktree -- :/
 ```
 
 ```bash
@@ -18,8 +20,6 @@ just setup
 
 The reference is text in a terminal. The recipe `docs` changes. With no words, it builds a site. With words, it works
 as before, so `just docs check` is the same command.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/005b87bdfa2e70c6ceca52dc07197c69702f00be). [The code after it](https://github.com/rahuldave/babykev/tree/64de40516df5aa215bfac1c0198e898ac0960061).
 
 ## 14.1 Git ignores what a build of the docs makes {#tut-14.1}
 
@@ -52,12 +52,12 @@ git check 3593f61e4e22
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 005b87bdfa2e --staged -- :/ && git restore --source 3593f61e4e22 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-13 --staged -- :/ && git restore --source 3593f61e4e22 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-14.1-what-changed-182c57}
 
-- <a id="tut-14.1-.gitignore-a5cc29"></a>`.gitignore`: the files that a build of the docs makes. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/3593f61e4e221b04f00f360fe96e6dc4243b02dd/.gitignore).
+- <a id="tut-14.1-.gitignore-a5cc29"></a>`.gitignore`: the files that a build of the docs makes. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/3593f61e4e221b04f00f360fe96e6dc4243b02dd/.gitignore){.btn .btn-sm .btn-secondary}
   - look at `/docs/_site/`
 
 <details open><summary>The patch to <code>.gitignore</code></summary>
@@ -76,7 +76,7 @@ git restore --source 005b87bdfa2e --staged -- :/ && git restore --source 3593f61
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/3593f61e4e221b04f00f360fe96e6dc4243b02dd). [The code after it](https://github.com/rahuldave/babykev/tree/3593f61e4e221b04f00f360fe96e6dc4243b02dd).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3593f61e4e221b04f00f360fe96e6dc4243b02dd){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/3593f61e4e221b04f00f360fe96e6dc4243b02dd){.btn .btn-sm .btn-primary}
 
 ## 14.2 Just docs, alone, builds the site {#tut-14.2}
 
@@ -121,7 +121,7 @@ git restore --source 3593f61e4e22 --staged -- :/ && git restore --source 64de405
 
 ### What changed {#tut-14.2-what-changed-182c57}
 
-- <a id="tut-14.2-justfile-424f0b"></a>`justfile`: with no words, `docs` builds the site. 5 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/64de40516df5aa215bfac1c0198e898ac0960061/justfile).
+- <a id="tut-14.2-justfile-424f0b"></a>`justfile`: with no words, `docs` builds the site. 5 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/64de40516df5aa215bfac1c0198e898ac0960061/justfile){.btn .btn-sm .btn-secondary}
   - look at `    if [ "$#" -eq 0 ]; then exec uv run smalldocs render docs; fi`
 
 <details open><summary>The patch to <code>justfile</code></summary>
@@ -145,4 +145,6 @@ git restore --source 3593f61e4e22 --staged -- :/ && git restore --source 64de405
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/64de40516df5aa215bfac1c0198e898ac0960061). [The code after it](https://github.com/rahuldave/babykev/tree/64de40516df5aa215bfac1c0198e898ac0960061).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/64de40516df5aa215bfac1c0198e898ac0960061){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `64de40516df5`, partway through `tut-14`. [The code after this part](https://github.com/rahuldave/babykev/tree/64de40516df5aa215bfac1c0198e898ac0960061){.btn .btn-sm .btn-primary}

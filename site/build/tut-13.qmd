@@ -6,10 +6,12 @@ title: "13 Documentation in the code"
 
 **Build it yourself.** [Read the tutorial](../read/tut-13.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-12`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-12){.btn .btn-sm .btn-primary}
+
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
 
 ```bash
-git rm -rq --cached --ignore-unmatch -- :/ && git restore --source cbbf9bedfc2b --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch -- :/ && git restore --source tut-12 --staged --worktree -- :/
 ```
 
 ```bash
@@ -25,8 +27,6 @@ parameter, a return type or a field, on the same line.
 smalldocs reads the signature, the docstring and the docments, and writes the reference of the code from them. It
 also lists what has no documentation, as coverage lists the lines that no test runs. The gaps close one part at a
 time. A long docment then shows what the formatter can do to one, and the gate runs the check.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac). [The code after it](https://github.com/rahuldave/babykev/tree/005b87bdfa2e70c6ceca52dc07197c69702f00be).
 
 ## 13.1 Smalldocs, in the group docs {#tut-13.1}
 
@@ -60,14 +60,14 @@ git check 609d58ce5f8c
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source cbbf9bedfc2b --staged -- :/ && git restore --source 609d58ce5f8c --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-12 --staged -- :/ && git restore --source 609d58ce5f8c --staged --worktree -- :/
 ```
 
 ### What changed {#tut-13.1-what-changed-182c57}
 
-- <a id="tut-13.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the group `docs`, with smalldocs. 3 lines added. It comes from `uv add --group docs smalldocs`. [The file](https://github.com/rahuldave/babykev/blob/609d58ce5f8c0fb8e7b60548c8ee097766446ff5/pyproject.toml).
+- <a id="tut-13.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the group `docs`, with smalldocs. 3 lines added. It comes from `uv add --group docs smalldocs`. [The file](https://github.com/rahuldave/babykev/blob/609d58ce5f8c0fb8e7b60548c8ee097766446ff5/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `"smalldocs>=0.1.5",`
-- <a id="tut-13.1-uv.lock-8356d8"></a>`uv.lock`: the exact version of smalldocs, and of the packages that it needs. 62 lines added. It comes from `uv add --group docs smalldocs`. [The file](https://github.com/rahuldave/babykev/blob/609d58ce5f8c0fb8e7b60548c8ee097766446ff5/uv.lock).
+- <a id="tut-13.1-uv.lock-8356d8"></a>`uv.lock`: the exact version of smalldocs, and of the packages that it needs. 62 lines added. It comes from `uv add --group docs smalldocs`. [The file](https://github.com/rahuldave/babykev/blob/609d58ce5f8c0fb8e7b60548c8ee097766446ff5/uv.lock){.btn .btn-sm .btn-secondary}
 
 <details><summary>The diff that <code>uv add --group docs smalldocs</code> makes in <code>pyproject.toml</code></summary>
 
@@ -86,7 +86,7 @@ git restore --source cbbf9bedfc2b --staged -- :/ && git restore --source 609d58c
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/609d58ce5f8c0fb8e7b60548c8ee097766446ff5). [The code after it](https://github.com/rahuldave/babykev/tree/609d58ce5f8c0fb8e7b60548c8ee097766446ff5).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/609d58ce5f8c0fb8e7b60548c8ee097766446ff5){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/609d58ce5f8c0fb8e7b60548c8ee097766446ff5){.btn .btn-sm .btn-primary}
 
 ## 13.2 The settings of smalldocs {#tut-13.2}
 
@@ -141,7 +141,7 @@ git restore --source 609d58ce5f8c --staged -- :/ && git restore --source 4444b1e
 
 ### What changed {#tut-13.2-what-changed-182c57}
 
-- <a id="tut-13.2-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the package to document, and the tests to check. New, 5 lines. [The file](https://github.com/rahuldave/babykev/blob/4444b1e809427e92a5dc08a9e9fdbbddab7de830/docs/_smalldocs.yml).
+- <a id="tut-13.2-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the package to document, and the tests to check. New, 5 lines. [The file](https://github.com/rahuldave/babykev/blob/4444b1e809427e92a5dc08a9e9fdbbddab7de830/docs/_smalldocs.yml){.btn .btn-sm .btn-secondary}
   - look at `  packages: [babykev]`
 
 <details open><summary>The patch to <code>docs/_smalldocs.yml</code></summary>
@@ -157,7 +157,7 @@ git restore --source 609d58ce5f8c --staged -- :/ && git restore --source 4444b1e
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/4444b1e809427e92a5dc08a9e9fdbbddab7de830). [The code after it](https://github.com/rahuldave/babykev/tree/4444b1e809427e92a5dc08a9e9fdbbddab7de830).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/4444b1e809427e92a5dc08a9e9fdbbddab7de830){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/4444b1e809427e92a5dc08a9e9fdbbddab7de830){.btn .btn-sm .btn-primary}
 
 ## 13.3 The recipe docs {#tut-13.3}
 
@@ -194,7 +194,7 @@ git restore --source 4444b1e80942 --staged -- :/ && git restore --source a582ad3
 
 ### What changed {#tut-13.3-what-changed-182c57}
 
-- <a id="tut-13.3-justfile-424f0b"></a>`justfile`: the recipe `docs`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/a582ad38e75bb188174b75a5e80405cebcd1259d/justfile).
+- <a id="tut-13.3-justfile-424f0b"></a>`justfile`: the recipe `docs`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/a582ad38e75bb188174b75a5e80405cebcd1259d/justfile){.btn .btn-sm .btn-secondary}
   - look at `docs *args:`
 
 <details open><summary>The patch to <code>justfile</code></summary>
@@ -214,7 +214,7 @@ git restore --source 4444b1e80942 --staged -- :/ && git restore --source a582ad3
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/a582ad38e75bb188174b75a5e80405cebcd1259d). [The code after it](https://github.com/rahuldave/babykev/tree/a582ad38e75bb188174b75a5e80405cebcd1259d).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a582ad38e75bb188174b75a5e80405cebcd1259d){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/a582ad38e75bb188174b75a5e80405cebcd1259d){.btn .btn-sm .btn-primary}
 
 ## 13.4 Docments on the functions of api.py {#tut-13.4}
 
@@ -257,7 +257,7 @@ git restore --source a582ad38e75b --staged -- :/ && git restore --source ae28dff
 
 ### What changed {#tut-13.4-what-changed-182c57}
 
-- <a id="tut-13.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docment on each parameter and each return of seven functions. 24 lines added, 7 removed. [The file](https://github.com/rahuldave/babykev/blob/ae28dff704c768a862e416a894ac42443ab3468c/src/babykev/api.py).
+- <a id="tut-13.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docment on each parameter and each return of seven functions. 24 lines added, 7 removed. [The file](https://github.com/rahuldave/babykev/blob/ae28dff704c768a862e416a894ac42443ab3468c/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `) -> str:  # The text that the model sees`
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
@@ -340,7 +340,7 @@ git restore --source a582ad38e75b --staged -- :/ && git restore --source ae28dff
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/ae28dff704c768a862e416a894ac42443ab3468c). [The code after it](https://github.com/rahuldave/babykev/tree/ae28dff704c768a862e416a894ac42443ab3468c).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ae28dff704c768a862e416a894ac42443ab3468c){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/ae28dff704c768a862e416a894ac42443ab3468c){.btn .btn-sm .btn-primary}
 
 ## 13.5 _check says what it checks {#tut-13.5}
 
@@ -377,7 +377,7 @@ git restore --source ae28dff704c7 --staged -- :/ && git restore --source a064e34
 
 ### What changed {#tut-13.5-what-changed-182c57}
 
-- <a id="tut-13.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring and a docment for `_check`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a064e34557be7fc006863c995c8cd39e85491b31/src/babykev/api.py).
+- <a id="tut-13.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring and a docment for `_check`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a064e34557be7fc006863c995c8cd39e85491b31/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `    def _check(self) -> Self:  # The choice itself, unchanged`
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
@@ -397,7 +397,7 @@ git restore --source ae28dff704c7 --staged -- :/ && git restore --source a064e34
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/a064e34557be7fc006863c995c8cd39e85491b31). [The code after it](https://github.com/rahuldave/babykev/tree/a064e34557be7fc006863c995c8cd39e85491b31).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a064e34557be7fc006863c995c8cd39e85491b31){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/a064e34557be7fc006863c995c8cd39e85491b31){.btn .btn-sm .btn-primary}
 
 ## 13.6 A description on every field of a request {#tut-13.6}
 
@@ -439,7 +439,7 @@ git restore --source a064e34557be --staged -- :/ && git restore --source 6ad6c02
 
 ### What changed {#tut-13.6-what-changed-182c57}
 
-- <a id="tut-13.6-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a description on every field of the four classes. 22 lines added, 11 removed. [The file](https://github.com/rahuldave/babykev/blob/6ad6c02267070b7c260934e3165ea40aeb49a035/src/babykev/api.py).
+- <a id="tut-13.6-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a description on every field of the four classes. 22 lines added, 11 removed. [The file](https://github.com/rahuldave/babykev/blob/6ad6c02267070b7c260934e3165ea40aeb49a035/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `    type: Literal["noul"] = Field(description="Marks the question as one of yes or no")`
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
@@ -508,7 +508,7 @@ git restore --source a064e34557be --staged -- :/ && git restore --source 6ad6c02
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/6ad6c02267070b7c260934e3165ea40aeb49a035). [The code after it](https://github.com/rahuldave/babykev/tree/6ad6c02267070b7c260934e3165ea40aeb49a035).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/6ad6c02267070b7c260934e3165ea40aeb49a035){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/6ad6c02267070b7c260934e3165ea40aeb49a035){.btn .btn-sm .btn-primary}
 
 ## 13.7 Docments on the tests of the command {#tut-13.7}
 
@@ -552,7 +552,7 @@ git restore --source 6ad6c0226707 --staged -- :/ && git restore --source 28caad3
 
 ### What changed {#tut-13.7-what-changed-182c57}
 
-- <a id="tut-13.7-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: a docment on each parameter. 9 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/28caad31e7a7fbab5acefd39c2b2b9e153f096b0/tests/unit/test_cli.py).
+- <a id="tut-13.7-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: a docment on each parameter. 9 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/28caad31e7a7fbab5acefd39c2b2b9e153f096b0/tests/unit/test_cli.py){.btn .btn-sm .btn-secondary}
   - look at `    capsys: pytest.CaptureFixture[str],  # Catches the message of the refusal`
 
 <details open><summary>The patch to <code>tests/unit/test_cli.py</code></summary>
@@ -595,7 +595,7 @@ git restore --source 6ad6c0226707 --staged -- :/ && git restore --source 28caad3
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/28caad31e7a7fbab5acefd39c2b2b9e153f096b0). [The code after it](https://github.com/rahuldave/babykev/tree/28caad31e7a7fbab5acefd39c2b2b9e153f096b0).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/28caad31e7a7fbab5acefd39c2b2b9e153f096b0){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/28caad31e7a7fbab5acefd39c2b2b9e153f096b0){.btn .btn-sm .btn-primary}
 
 ## 13.8 Docments on the tests of the contract {#tut-13.8}
 
@@ -636,7 +636,7 @@ git restore --source 28caad31e7a7 --staged -- :/ && git restore --source 4bd145b
 
 ### What changed {#tut-13.8-what-changed-182c57}
 
-- <a id="tut-13.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a docment on each parameter, and on the return of `cheese_request`. 17 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/4bd145b7895a9e6f7841a997995efcd343d0049c/tests/unit/test_api.py).
+- <a id="tut-13.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a docment on each parameter, and on the return of `cheese_request`. 17 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/4bd145b7895a9e6f7841a997995efcd343d0049c/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `    description: JSONContent,  # Its description, or None or "" for none`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -711,7 +711,7 @@ git restore --source 28caad31e7a7 --staged -- :/ && git restore --source 4bd145b
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/4bd145b7895a9e6f7841a997995efcd343d0049c). [The code after it](https://github.com/rahuldave/babykev/tree/4bd145b7895a9e6f7841a997995efcd343d0049c).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/4bd145b7895a9e6f7841a997995efcd343d0049c){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/4bd145b7895a9e6f7841a997995efcd343d0049c){.btn .btn-sm .btn-primary}
 
 ## 13.9 A docment too long for its line, on purpose {#tut-13.9}
 
@@ -751,7 +751,7 @@ git restore --source 4bd145b7895a --staged -- :/ && git restore --source 95ebd81
 
 ### What changed {#tut-13.9-what-changed-182c57}
 
-- <a id="tut-13.9-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docment longer than its line, on purpose. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/95ebd81a9d15158c39a8adf35237da700e9334b2/src/babykev/api.py).
+- <a id="tut-13.9-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docment longer than its line, on purpose. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/95ebd81a9d15158c39a8adf35237da700e9334b2/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `) -> tuple[dict[str, Any], list[dict[str, Any]]]:  # The record that the model reads, and the metadata of each question`
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
@@ -770,7 +770,7 @@ git restore --source 4bd145b7895a --staged -- :/ && git restore --source 95ebd81
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/95ebd81a9d15158c39a8adf35237da700e9334b2). [The code after it](https://github.com/rahuldave/babykev/tree/95ebd81a9d15158c39a8adf35237da700e9334b2).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/95ebd81a9d15158c39a8adf35237da700e9334b2){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/95ebd81a9d15158c39a8adf35237da700e9334b2){.btn .btn-sm .btn-primary}
 
 ## 13.10 Just fmt wraps the return type {#tut-13.10}
 
@@ -809,7 +809,7 @@ git restore --source 95ebd81a9d15 --staged -- :/ && git restore --source 54535b1
 
 ### What changed {#tut-13.10-what-changed-182c57}
 
-- <a id="tut-13.10-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the return type of `to_record`, over three lines. 3 lines added, 1 removed. It comes from `just fmt`. [The file](https://github.com/rahuldave/babykev/blob/54535b100f054ffd8b787c50cac1d3a828770ec9/src/babykev/api.py).
+- <a id="tut-13.10-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the return type of `to_record`, over three lines. 3 lines added, 1 removed. It comes from `just fmt`. [The file](https://github.com/rahuldave/babykev/blob/54535b100f054ffd8b787c50cac1d3a828770ec9/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `]:  # The record that the model reads, and the metadata of each question`
 
 <details><summary>The diff that <code>just fmt</code> makes in <code>src/babykev/api.py</code></summary>
@@ -830,7 +830,7 @@ git restore --source 95ebd81a9d15 --staged -- :/ && git restore --source 54535b1
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/54535b100f054ffd8b787c50cac1d3a828770ec9). [The code after it](https://github.com/rahuldave/babykev/tree/54535b100f054ffd8b787c50cac1d3a828770ec9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/54535b100f054ffd8b787c50cac1d3a828770ec9){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/54535b100f054ffd8b787c50cac1d3a828770ec9){.btn .btn-sm .btn-primary}
 
 ## 13.11 The docment, short enough {#tut-13.11}
 
@@ -867,7 +867,7 @@ git restore --source 54535b100f05 --staged -- :/ && git restore --source 861142a
 
 ### What changed {#tut-13.11-what-changed-182c57}
 
-- <a id="tut-13.11-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the return type on one line, with its short docment. 1 line added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/861142a50356963bb5e371fe8226ba73b87eef93/src/babykev/api.py).
+- <a id="tut-13.11-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the return type on one line, with its short docment. 1 line added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/861142a50356963bb5e371fe8226ba73b87eef93/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `) -> tuple[dict[str, Any], list[dict[str, Any]]]:  # The record, and the metadata of each question`
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
@@ -888,7 +888,7 @@ git restore --source 54535b100f05 --staged -- :/ && git restore --source 861142a
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/861142a50356963bb5e371fe8226ba73b87eef93). [The code after it](https://github.com/rahuldave/babykev/tree/861142a50356963bb5e371fe8226ba73b87eef93).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/861142a50356963bb5e371fe8226ba73b87eef93){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/861142a50356963bb5e371fe8226ba73b87eef93){.btn .btn-sm .btn-primary}
 
 ## 13.12 The gate checks the docs {#tut-13.12}
 
@@ -922,12 +922,12 @@ git check 005b87bdfa2e
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 861142a50356 --staged -- :/ && git restore --source 005b87bdfa2e --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source 861142a50356 --staged -- :/ && git restore --source tut-13 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-13.12-what-changed-182c57}
 
-- <a id="tut-13.12-justfile-424f0b"></a>`justfile`: the docs check, in the gate. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/005b87bdfa2e70c6ceca52dc07197c69702f00be/justfile).
+- <a id="tut-13.12-justfile-424f0b"></a>`justfile`: the docs check, in the gate. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/005b87bdfa2e70c6ceca52dc07197c69702f00be/justfile){.btn .btn-sm .btn-secondary}
   - look at `    just docs check`
 
 <details open><summary>The patch to <code>justfile</code></summary>
@@ -954,4 +954,6 @@ git restore --source 861142a50356 --staged -- :/ && git restore --source 005b87b
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/005b87bdfa2e70c6ceca52dc07197c69702f00be). [The code after it](https://github.com/rahuldave/babykev/tree/005b87bdfa2e70c6ceca52dc07197c69702f00be).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/005b87bdfa2e70c6ceca52dc07197c69702f00be){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-13`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-13){.btn .btn-sm .btn-primary}

@@ -24,10 +24,10 @@ did, and begins from the code that they left. It first runs `just setup`, which 
 
 ## 1.1 to 1.2 The project, and its lockfile
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-00`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-00)
+
 The folder has a README, a licence and `.gitignore`, and nothing that Python can build or run. `uv init` makes the
 project, and `uv lock` writes its lockfile. There is no justfile yet, so these two sections run no `just`.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/70ac5b0a0a1d927dfc4da6f8b7b92344917e4a33). [The code after it](https://github.com/rahuldave/babykev/tree/489f27fad816149652a8d608b162fa98c37563f5).
 
 <a id="tut-01.1"></a>
 
@@ -140,16 +140,18 @@ then changes the packages of `.venv` to match, and does not print `Creating virt
 - <a id="tut-01.2-uv.lock-8356d8"></a>`uv.lock`: babykev itself, installed from this folder. `editable` means that a change to the code shows at the next run, with no new install. New, 8 lines. It comes from `uv lock`. [The file](https://github.com/rahuldave/babykev/blob/489f27fad816149652a8d608b162fa98c37563f5/uv.lock).
   - look at `source = { editable = "." }`
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/489f27fad816149652a8d608b162fa98c37563f5). [The code after it](https://github.com/rahuldave/babykev/tree/489f27fad816149652a8d608b162fa98c37563f5).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/489f27fad816149652a8d608b162fa98c37563f5).
+
+This part ends at the code at `489f27fad816`, partway through `tut-01`. [The code after this part](https://github.com/rahuldave/babykev/tree/489f27fad816149652a8d608b162fa98c37563f5)
 
 <a id="tut-01.3-to-tut-01.5"></a>
 
 ## 1.3 to 1.5 The settings of the project
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `489f27fad816`, partway through `tut-01`. [The code before this part](https://github.com/rahuldave/babykev/tree/489f27fad816149652a8d608b162fa98c37563f5)
+
 `pyproject.toml` still has the words of uv. Three settings say what babykev is, under which licence others may use
 it, and who wrote it. None of them is a dependency, so the lockfile stays as it was.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/489f27fad816149652a8d608b162fa98c37563f5). [The code after it](https://github.com/rahuldave/babykev/tree/7f38877e597f5404208fdca2eabb176077d95a8e).
 
 <a id="tut-01.3"></a>
 
@@ -269,11 +271,15 @@ exit code 0. The words of the three moves change no dependency, so `uv.lock` sta
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/7f38877e597f5404208fdca2eabb176077d95a8e). [The code after it](https://github.com/rahuldave/babykev/tree/7f38877e597f5404208fdca2eabb176077d95a8e).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7f38877e597f5404208fdca2eabb176077d95a8e).
+
+This part ends at the code at `7f38877e597f`, partway through `tut-01`. [The code after this part](https://github.com/rahuldave/babykev/tree/7f38877e597f5404208fdca2eabb176077d95a8e)
 
 <a id="tut-02.1-to-tut-02.3"></a>
 
 ## 2.1 to 2.3 Every group, and the group test
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-01`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-01)
 
 ```bash
 just setup
@@ -282,8 +288,6 @@ just setup
 The whole tutorial then writes the command `babykev`, in `src/babykev/cli.py`, and a justfile with the recipe
 `setup`. `just setup` runs `uv sync --locked`. The tests of the command need pytest, and a user of babykev does not.
 So pytest goes into a dependency group, `test`, and a recipe runs it.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/7ad3a06605fadc9f34b5e2d8180145a3e53389a9). [The code after it](https://github.com/rahuldave/babykev/tree/b0840709e371a548d4b922c57c679ba040dd2c1a).
 
 <a id="tut-02.1"></a>
 
@@ -426,11 +430,15 @@ exit code 5. `just` prints no line of its own about the error. `just help test` 
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/b0840709e371a548d4b922c57c679ba040dd2c1a). [The code after it](https://github.com/rahuldave/babykev/tree/b0840709e371a548d4b922c57c679ba040dd2c1a).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b0840709e371a548d4b922c57c679ba040dd2c1a).
+
+This part ends at the code at `b0840709e371`, partway through `tut-02`. [The code after this part](https://github.com/rahuldave/babykev/tree/b0840709e371a548d4b922c57c679ba040dd2c1a)
 
 <a id="tut-03.1"></a>
 
 ## 3.1 The first dependency, pydantic
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-02`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-02)
 
 ```bash
 just setup
@@ -439,8 +447,6 @@ just setup
 The whole tutorial then adds five tests of the command. pytest-cov, which measures which
 lines the tests run, joins pytest in the group `test`. babykev itself needs pydantic to run, so it goes into the
 dependencies of the project, and into no group.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/4640589d80e4f224a4b2c1fd9567e952f564f102). [The code after it](https://github.com/rahuldave/babykev/tree/96502df0a92f6f7090d6f624cda901a271dac9a7).
 
 ### 3.1 Pydantic, the first dependency
 
@@ -486,11 +492,15 @@ pydantic and its version, and the group `test` with pytest and pytest-cov.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/96502df0a92f6f7090d6f624cda901a271dac9a7). [The code after it](https://github.com/rahuldave/babykev/tree/96502df0a92f6f7090d6f624cda901a271dac9a7).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/96502df0a92f6f7090d6f624cda901a271dac9a7).
+
+This part ends at the code at `96502df0a92f`, partway through `tut-03`. [The code after this part](https://github.com/rahuldave/babykev/tree/96502df0a92f6f7090d6f624cda901a271dac9a7)
 
 <a id="tut-07.1"></a>
 
 ## 7.1 A second group, for the checks
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-06`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-06)
 
 ```bash
 just setup
@@ -499,8 +509,6 @@ just setup
 The whole tutorial then brings in the contract, `api.py`, which says what a request and an answer are. Then come its
 tests, the code that turns the probabilities of the model into answers, and the fixes of two bugs in it. ruff
 formats the code and checks it, and a user of babykev does not need it. So ruff starts a second group, `lint`.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/910716f0cec79c3f31afb34cf3a2593f0cd51315). [The code after it](https://github.com/rahuldave/babykev/tree/5085d2a6ae47a58d6259dfa06679bb2a9be692e1).
 
 ### 7.1 Ruff, in the group lint
 
@@ -550,11 +558,15 @@ line run to 88 characters. Line 19 of `cli.py` has 94 characters, so ruff would 
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/5085d2a6ae47a58d6259dfa06679bb2a9be692e1). [The code after it](https://github.com/rahuldave/babykev/tree/5085d2a6ae47a58d6259dfa06679bb2a9be692e1).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/5085d2a6ae47a58d6259dfa06679bb2a9be692e1).
+
+This part ends at the code at `5085d2a6ae47`, partway through `tut-07`. [The code after this part](https://github.com/rahuldave/babykev/tree/5085d2a6ae47a58d6259dfa06679bb2a9be692e1)
 
 <a id="tut-15.1-to-tut-15.7"></a>
 
 ## 15.1 to 15.7 The packages of the model
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-14`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-14)
 
 ```bash
 just setup
@@ -567,8 +579,6 @@ other change.
 
 The model needs four packages, and they are dependencies of the project. torch comes first, from an index of its
 own.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/e1efb48492d7223fd0442906d2e55a83e0db481e). [The code after it](https://github.com/rahuldave/babykev/tree/c7037ec460963acd41edf1f63a6a03d2e52e5bae).
 
 <a id="tut-15.1"></a>
 
@@ -900,11 +910,15 @@ du -sh .venv .venv/lib/python3.13/site-packages/torch
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/c7037ec460963acd41edf1f63a6a03d2e52e5bae). [The code after it](https://github.com/rahuldave/babykev/tree/c7037ec460963acd41edf1f63a6a03d2e52e5bae).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/c7037ec460963acd41edf1f63a6a03d2e52e5bae).
+
+This part ends at the code at `tut-15`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-15)
 
 <a id="tut-25.1"></a>
 
 ## 25.1 The run image installs no group
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-24`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-24)
 
 ```bash
 just setup
@@ -913,8 +927,6 @@ just setup
 The whole tutorial then writes the model, and its tests. ty, which checks the types, joins the group `lint`.
 hypothesis, which draws many inputs for one test, joins the group `test`. The run image is babykev as a user runs
 it. It needs the dependencies of the project, and no group.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/41d24729682119b9bbb828187c5e9684a2921308). [The code after it](https://github.com/rahuldave/babykev/tree/570bb2134f032a64a34d14852c82fa1a199f69f6).
 
 ### 25.1 The Dockerfile, with the run image
 
@@ -1011,11 +1023,15 @@ The stage `build` runs `uv sync --locked --no-default-groups`. `--no-default-gro
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/570bb2134f032a64a34d14852c82fa1a199f69f6). [The code after it](https://github.com/rahuldave/babykev/tree/570bb2134f032a64a34d14852c82fa1a199f69f6).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/570bb2134f032a64a34d14852c82fa1a199f69f6).
+
+This part ends at the code at `570bb2134f03`, partway through `tut-25`. [The code after this part](https://github.com/rahuldave/babykev/tree/570bb2134f032a64a34d14852c82fa1a199f69f6)
 
 <a id="tut-25.2-to-tut-25.3"></a>
 
 ## 25.2 to 25.3 The dev image installs every group
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `570bb2134f03`, partway through `tut-25`. [The code before this part](https://github.com/rahuldave/babykev/tree/570bb2134f032a64a34d14852c82fa1a199f69f6)
 
 ```bash
 just setup
@@ -1023,8 +1039,6 @@ just setup
 
 The dev image is for working on the project, so it installs every group. Its build runs `uv sync --locked`, with no
 `--no-default-groups`, and `default-groups = "all"` holds.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/570bb2134f032a64a34d14852c82fa1a199f69f6). [The code after it](https://github.com/rahuldave/babykev/tree/f0862402733db839738f0b350a049b2ee5e2a2aa).
 
 <a id="tut-25.2"></a>
 
@@ -1169,11 +1183,15 @@ docker run --rm -v "$PWD":/work babykev-dev just check
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/f0862402733db839738f0b350a049b2ee5e2a2aa). [The code after it](https://github.com/rahuldave/babykev/tree/f0862402733db839738f0b350a049b2ee5e2a2aa).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/f0862402733db839738f0b350a049b2ee5e2a2aa).
+
+This part ends at the code at `f0862402733d`, partway through `tut-25`. [The code after this part](https://github.com/rahuldave/babykev/tree/f0862402733db839738f0b350a049b2ee5e2a2aa)
 
 <a id="tut-25.9"></a>
 
 ## 25.9 An image holds the lockfile of its build
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `fd4dc5172346`, partway through `tut-25`. [The code before this part](https://github.com/rahuldave/babykev/tree/fd4dc51723462cdeaf072a4f2a18472a0cf6a645)
 
 ```bash
 just setup
@@ -1183,8 +1201,6 @@ The whole tutorial then turns off the time limit of hypothesis, and adds the rec
 dev` builds the dev image, and `just image shell` runs a command in it, with this folder at `/work`. hadolint, a
 linter for the `Dockerfile`, joins the group `lint`. Its one finding stays
 out, with the reason in a comment. Docker built the dev image before hadolint came in.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/fd4dc51723462cdeaf072a4f2a18472a0cf6a645). [The code after it](https://github.com/rahuldave/babykev/tree/6c85dd08f3cd441259b3749ac38cceaf7f2392e0).
 
 ### 25.9 The README names the two images
 
@@ -1263,4 +1279,6 @@ just image shell --network none -- just check
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/6c85dd08f3cd441259b3749ac38cceaf7f2392e0). [The code after it](https://github.com/rahuldave/babykev/tree/6c85dd08f3cd441259b3749ac38cceaf7f2392e0).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/6c85dd08f3cd441259b3749ac38cceaf7f2392e0).
+
+This part ends at the code at `tut-25`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-25)

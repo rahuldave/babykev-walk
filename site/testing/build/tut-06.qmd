@@ -6,16 +6,18 @@ title: "6 Tests of rounding and confidence"
 
 **Build it yourself.** [Read the tutorial](../read/tut-06.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-05`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-05){.btn .btn-sm .btn-primary}
+
 This part does not start where the part before it ends, because the walk skips some changes. This command puts the files that this part starts from in place of yours. Run it, and then go on:
 
 ```bash
-git restore --source 1fef13ae49e2 --staged -- :/ && git restore --source c2f89d37a513 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-04 --staged -- :/ && git restore --source tut-05 --staged --worktree -- :/
 ```
 
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
 
 ```bash
-git rm -rq --cached --ignore-unmatch -- :/ && git restore --source c2f89d37a513 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch -- :/ && git restore --source tut-05 --staged --worktree -- :/
 ```
 
 The whole tutorial then adds eleven more tests of `api.py`. They check how a request becomes the text that the model
@@ -30,8 +32,6 @@ just setup
 
 Every line of the contract runs in a test, and two of them are wrong. A test of rounding finds the first. The tests of
 confidence find the second. Each test fails, and the move after it fixes the code.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f). [The code after it](https://github.com/rahuldave/babykev/tree/910716f0cec79c3f31afb34cf3a2593f0cd51315).
 
 ## 6.1 A test of rounding, which fails {#tut-06.1}
 
@@ -70,12 +70,12 @@ git check 9012b28ceacd
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source c2f89d37a513 --staged -- :/ && git restore --source 9012b28ceacd --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-05 --staged -- :/ && git restore --source 9012b28ceacd --staged --worktree -- :/
 ```
 
 ### What changed {#tut-06.1-what-changed-182c57}
 
-- <a id="tut-06.1-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the sum of the rounded probabilities. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/9012b28ceacd0bcc3971154a5df2f822e551443d/tests/unit/test_api.py).
+- <a id="tut-06.1-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the sum of the rounded probabilities. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/9012b28ceacd0bcc3971154a5df2f822e551443d/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `    assert sum(answer["probabilities"].values()) == pytest.approx(1, abs=0.02)`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -98,7 +98,7 @@ git restore --source c2f89d37a513 --staged -- :/ && git restore --source 9012b28
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/9012b28ceacd0bcc3971154a5df2f822e551443d). [The code after it](https://github.com/rahuldave/babykev/tree/9012b28ceacd0bcc3971154a5df2f822e551443d).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9012b28ceacd0bcc3971154a5df2f822e551443d){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/9012b28ceacd0bcc3971154a5df2f822e551443d){.btn .btn-sm .btn-primary}
 
 ## 6.2 Probabilities rounded to four decimals {#tut-06.2}
 
@@ -135,7 +135,7 @@ git restore --source 9012b28ceacd --staged -- :/ && git restore --source 27e93dd
 
 ### What changed {#tut-06.2-what-changed-182c57}
 
-- <a id="tut-06.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: four decimals. 8 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/27e93dd7ee76e609084a1d8a1c1cfbb4f7811da4/src/babykev/api.py).
+- <a id="tut-06.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: four decimals. 8 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/27e93dd7ee76e609084a1d8a1c1cfbb4f7811da4/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `    return round(float(x), 4)`
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
@@ -173,7 +173,7 @@ git restore --source 9012b28ceacd --staged -- :/ && git restore --source 27e93dd
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/27e93dd7ee76e609084a1d8a1c1cfbb4f7811da4). [The code after it](https://github.com/rahuldave/babykev/tree/27e93dd7ee76e609084a1d8a1c1cfbb4f7811da4).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/27e93dd7ee76e609084a1d8a1c1cfbb4f7811da4){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/27e93dd7ee76e609084a1d8a1c1cfbb4f7811da4){.btn .btn-sm .btn-primary}
 
 ## 6.3 A guess between options has confidence 0 {#tut-06.3}
 
@@ -208,7 +208,7 @@ git restore --source 27e93dd7ee76 --staged -- :/ && git restore --source 27f1f23
 
 ### What changed {#tut-06.3-what-changed-182c57}
 
-- <a id="tut-06.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a guess between four options. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/27f1f23cc392446dd80918636dfc7a3c52692aae/tests/unit/test_api.py).
+- <a id="tut-06.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a guess between four options. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/27f1f23cc392446dd80918636dfc7a3c52692aae/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert choice_confidence([0.25] * 4) == pytest.approx(0)`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -238,7 +238,7 @@ git restore --source 27e93dd7ee76 --staged -- :/ && git restore --source 27f1f23
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/27f1f23cc392446dd80918636dfc7a3c52692aae). [The code after it](https://github.com/rahuldave/babykev/tree/27f1f23cc392446dd80918636dfc7a3c52692aae).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/27f1f23cc392446dd80918636dfc7a3c52692aae){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/27f1f23cc392446dd80918636dfc7a3c52692aae){.btn .btn-sm .btn-primary}
 
 ## 6.4 A certain choice has confidence 1 {#tut-06.4}
 
@@ -272,7 +272,7 @@ git restore --source 27f1f23cc392 --staged -- :/ && git restore --source 9ded0b3
 
 ### What changed {#tut-06.4-what-changed-182c57}
 
-- <a id="tut-06.4-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: certainty. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/9ded0b3177719bb849eda76972daa2f5368af069/tests/unit/test_api.py).
+- <a id="tut-06.4-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: certainty. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/9ded0b3177719bb849eda76972daa2f5368af069/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert choice_confidence([0, 1, 0]) == pytest.approx(1)`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -292,7 +292,7 @@ git restore --source 27f1f23cc392 --staged -- :/ && git restore --source 9ded0b3
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/9ded0b3177719bb849eda76972daa2f5368af069). [The code after it](https://github.com/rahuldave/babykev/tree/9ded0b3177719bb849eda76972daa2f5368af069).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9ded0b3177719bb849eda76972daa2f5368af069){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/9ded0b3177719bb849eda76972daa2f5368af069){.btn .btn-sm .btn-primary}
 
 ## 6.5 The confidence of a choice grows with its winner {#tut-06.5}
 
@@ -327,7 +327,7 @@ git restore --source 9ded0b317771 --staged -- :/ && git restore --source 890fbe0
 
 ### What changed {#tut-06.5-what-changed-182c57}
 
-- <a id="tut-06.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a confidence between 0 and 1. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/890fbe0900f6a0f59232ca9d94ce4cc439e21dde/tests/unit/test_api.py).
+- <a id="tut-06.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a confidence between 0 and 1. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/890fbe0900f6a0f59232ca9d94ce4cc439e21dde/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert choice_confidence([0.5, 0.25, 0.25]) == pytest.approx(0.25)`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -346,7 +346,7 @@ git restore --source 9ded0b317771 --staged -- :/ && git restore --source 890fbe0
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/890fbe0900f6a0f59232ca9d94ce4cc439e21dde). [The code after it](https://github.com/rahuldave/babykev/tree/890fbe0900f6a0f59232ca9d94ce4cc439e21dde).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/890fbe0900f6a0f59232ca9d94ce4cc439e21dde){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/890fbe0900f6a0f59232ca9d94ce4cc439e21dde){.btn .btn-sm .btn-primary}
 
 ## 6.6 A certain score has confidence 1 {#tut-06.6}
 
@@ -381,7 +381,7 @@ git restore --source 890fbe0900f6 --staged -- :/ && git restore --source d2564e4
 
 ### What changed {#tut-06.6-what-changed-182c57}
 
-- <a id="tut-06.6-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: certainty, on each level. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/d2564e48ae134802f1d48cc079cfe3b92db14639/tests/unit/test_api.py).
+- <a id="tut-06.6-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: certainty, on each level. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/d2564e48ae134802f1d48cc079cfe3b92db14639/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_score_confidence_is_one_when_certain(level):`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -411,7 +411,7 @@ git restore --source 890fbe0900f6 --staged -- :/ && git restore --source d2564e4
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/d2564e48ae134802f1d48cc079cfe3b92db14639). [The code after it](https://github.com/rahuldave/babykev/tree/d2564e48ae134802f1d48cc079cfe3b92db14639).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d2564e48ae134802f1d48cc079cfe3b92db14639){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/d2564e48ae134802f1d48cc079cfe3b92db14639){.btn .btn-sm .btn-primary}
 
 ## 6.7 A score prefers neighbouring levels {#tut-06.7}
 
@@ -445,7 +445,7 @@ git restore --source d2564e48ae13 --staged -- :/ && git restore --source 795356b
 
 ### What changed {#tut-06.7-what-changed-182c57}
 
-- <a id="tut-06.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: near is better than far. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/795356b136ab4b1b1c22c8e63b8175a1a6f6d6de/tests/unit/test_api.py).
+- <a id="tut-06.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: near is better than far. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/795356b136ab4b1b1c22c8e63b8175a1a6f6d6de/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert score_confidence([0.5, 0.5, 0, 0]) > score_confidence([0.5, 0, 0, 0.5])`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -464,7 +464,7 @@ git restore --source d2564e48ae13 --staged -- :/ && git restore --source 795356b
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/795356b136ab4b1b1c22c8e63b8175a1a6f6d6de). [The code after it](https://github.com/rahuldave/babykev/tree/795356b136ab4b1b1c22c8e63b8175a1a6f6d6de).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/795356b136ab4b1b1c22c8e63b8175a1a6f6d6de){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/795356b136ab4b1b1c22c8e63b8175a1a6f6d6de){.btn .btn-sm .btn-primary}
 
 ## 6.8 A guess between levels has confidence 0, and the test fails {#tut-06.8}
 
@@ -512,7 +512,7 @@ git restore --source 795356b136ab --staged -- :/ && git restore --source 72a00ec
 
 ### What changed {#tut-06.8-what-changed-182c57}
 
-- <a id="tut-06.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a guess between three levels. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/72a00ec85ae4b6f3b591cf06fc65903a56f1f7fa/tests/unit/test_api.py).
+- <a id="tut-06.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a guess between three levels. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/72a00ec85ae4b6f3b591cf06fc65903a56f1f7fa/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert score_confidence([1 / 3] * 3) == pytest.approx(0)`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -531,7 +531,7 @@ git restore --source 795356b136ab --staged -- :/ && git restore --source 72a00ec
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/72a00ec85ae4b6f3b591cf06fc65903a56f1f7fa). [The code after it](https://github.com/rahuldave/babykev/tree/72a00ec85ae4b6f3b591cf06fc65903a56f1f7fa).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/72a00ec85ae4b6f3b591cf06fc65903a56f1f7fa){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/72a00ec85ae4b6f3b591cf06fc65903a56f1f7fa){.btn .btn-sm .btn-primary}
 
 ## 6.9 The confidence of a score measures against a guess {#tut-06.9}
 
@@ -580,7 +580,7 @@ git restore --source 72a00ec85ae4 --staged -- :/ && git restore --source e973555
 
 ### What changed {#tut-06.9-what-changed-182c57}
 
-- <a id="tut-06.9-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the spread of a guess, as the measure. 12 lines added, 4 removed. [The file](https://github.com/rahuldave/babykev/blob/e97355545c4001a361257c532330f8784aa51b79/src/babykev/api.py).
+- <a id="tut-06.9-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the spread of a guess, as the measure. 12 lines added, 4 removed. [The file](https://github.com/rahuldave/babykev/blob/e97355545c4001a361257c532330f8784aa51b79/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `    guess = sum(abs(i - (L - 1) / 2) for i in range(L)) / L`
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
@@ -613,7 +613,7 @@ git restore --source 72a00ec85ae4 --staged -- :/ && git restore --source e973555
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e97355545c4001a361257c532330f8784aa51b79). [The code after it](https://github.com/rahuldave/babykev/tree/e97355545c4001a361257c532330f8784aa51b79).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e97355545c4001a361257c532330f8784aa51b79){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/e97355545c4001a361257c532330f8784aa51b79){.btn .btn-sm .btn-primary}
 
 ## 6.10 A test of a scale with one level {#tut-06.10}
 
@@ -643,12 +643,12 @@ git check 910716f0cec7
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source e97355545c40 --staged -- :/ && git restore --source 910716f0cec7 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source e97355545c40 --staged -- :/ && git restore --source tut-06 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-06.10-what-changed-182c57}
 
-- <a id="tut-06.10-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the test calls the function itself. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/910716f0cec79c3f31afb34cf3a2593f0cd51315/tests/unit/test_api.py).
+- <a id="tut-06.10-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the test calls the function itself. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/910716f0cec79c3f31afb34cf3a2593f0cd51315/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `    assert score_confidence([1.0]) == 1.0`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -667,4 +667,6 @@ git restore --source e97355545c40 --staged -- :/ && git restore --source 910716f
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/910716f0cec79c3f31afb34cf3a2593f0cd51315). [The code after it](https://github.com/rahuldave/babykev/tree/910716f0cec79c3f31afb34cf3a2593f0cd51315).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/910716f0cec79c3f31afb34cf3a2593f0cd51315){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-06`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-06){.btn .btn-sm .btn-primary}

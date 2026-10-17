@@ -6,10 +6,12 @@ title: "26 GitHub"
 
 **Build it yourself.** [Read the tutorial](../read/tut-26.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-25`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-25){.btn .btn-sm .btn-primary}
+
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
 
 ```bash
-git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 6c85dd08f3cd --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch -- :/ && git restore --source tut-25 --staged --worktree -- :/
 ```
 
 ```bash
@@ -24,8 +26,6 @@ changes that never met the gate. Also, the docs site exists only on the machine 
 GitHub runs workflows on its own machines. A workflow is a file of YAML in `.github/workflows/`, and its key `on` names
 the events that start it. The first workflow runs the gate after every push, and the second builds the docs site and
 publishes it on GitHub Pages. Nothing is pushed here. GitHub runs the workflows when the branch reaches it.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/6c85dd08f3cd441259b3749ac38cceaf7f2392e0). [The code after it](https://github.com/rahuldave/babykev/tree/88854e32ebcb4647672742cc4ef709eefc5fde0c).
 
 ## 26.1 GitHub runs the gate after every push {#tut-26.1}
 
@@ -58,12 +58,12 @@ git check 2f210829183a
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 6c85dd08f3cd --staged -- :/ && git restore --source 2f210829183a --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-25 --staged -- :/ && git restore --source 2f210829183a --staged --worktree -- :/
 ```
 
 ### What changed {#tut-26.1-what-changed-182c57}
 
-- <a id="tut-26.1-.github-workflows-check.yaml-6ceb50"></a>`.github/workflows/check.yaml`: `just check`, after every push. New, 21 lines. [The file](https://github.com/rahuldave/babykev/blob/2f210829183a3c52bb22f1196d50000716a4beec/.github/workflows/check.yaml).
+- <a id="tut-26.1-.github-workflows-check.yaml-6ceb50"></a>`.github/workflows/check.yaml`: `just check`, after every push. New, 21 lines. [The file](https://github.com/rahuldave/babykev/blob/2f210829183a3c52bb22f1196d50000716a4beec/.github/workflows/check.yaml){.btn .btn-sm .btn-secondary}
   - look at `      - run: just check`
 
 <details open><summary>The patch to <code>.github/workflows/check.yaml</code></summary>
@@ -95,7 +95,7 @@ git restore --source 6c85dd08f3cd --staged -- :/ && git restore --source 2f21082
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/2f210829183a3c52bb22f1196d50000716a4beec). [The code after it](https://github.com/rahuldave/babykev/tree/2f210829183a3c52bb22f1196d50000716a4beec).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/2f210829183a3c52bb22f1196d50000716a4beec){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/2f210829183a3c52bb22f1196d50000716a4beec){.btn .btn-sm .btn-primary}
 
 ## 26.2 yamllint lets a key be a word such as on {#tut-26.2}
 
@@ -130,7 +130,7 @@ git restore --source 2f210829183a --staged -- :/ && git restore --source 7b7e22f
 
 ### What changed {#tut-26.2-what-changed-182c57}
 
-- <a id="tut-26.2-.yamllint-dfe50a"></a>`.yamllint`: the rule `truthy` checks no key. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/7b7e22f04247cefdd2d01adbe6dff64d88a6116c/.yamllint).
+- <a id="tut-26.2-.yamllint-dfe50a"></a>`.yamllint`: the rule `truthy` checks no key. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/7b7e22f04247cefdd2d01adbe6dff64d88a6116c/.yamllint){.btn .btn-sm .btn-secondary}
   - look at `  truthy: {check-keys: false}  # a key may be a word such as on, which YAML 1.1 reads as true`
 
 <details open><summary>The patch to <code>.yamllint</code></summary>
@@ -145,7 +145,7 @@ git restore --source 2f210829183a --staged -- :/ && git restore --source 7b7e22f
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/7b7e22f04247cefdd2d01adbe6dff64d88a6116c). [The code after it](https://github.com/rahuldave/babykev/tree/7b7e22f04247cefdd2d01adbe6dff64d88a6116c).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7b7e22f04247cefdd2d01adbe6dff64d88a6116c){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/7b7e22f04247cefdd2d01adbe6dff64d88a6116c){.btn .btn-sm .btn-primary}
 
 ## 26.3 actionlint, in the group lint {#tut-26.3}
 
@@ -179,9 +179,9 @@ git restore --source 7b7e22f04247 --staged -- :/ && git restore --source bb15f17
 
 ### What changed {#tut-26.3-what-changed-182c57}
 
-- <a id="tut-26.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: actionlint, in the group `lint`. 1 line added. It comes from `uv add --group lint actionlint-py`. [The file](https://github.com/rahuldave/babykev/blob/bb15f17ccbb62cf1f8a61d67d67674bf9d445c86/pyproject.toml).
+- <a id="tut-26.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: actionlint, in the group `lint`. 1 line added. It comes from `uv add --group lint actionlint-py`. [The file](https://github.com/rahuldave/babykev/blob/bb15f17ccbb62cf1f8a61d67d67674bf9d445c86/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `"actionlint-py>=1.7.12.25",`
-- <a id="tut-26.3-uv.lock-8356d8"></a>`uv.lock`: the exact version of actionlint. 8 lines added. It comes from `uv add --group lint actionlint-py`. [The file](https://github.com/rahuldave/babykev/blob/bb15f17ccbb62cf1f8a61d67d67674bf9d445c86/uv.lock).
+- <a id="tut-26.3-uv.lock-8356d8"></a>`uv.lock`: the exact version of actionlint. 8 lines added. It comes from `uv add --group lint actionlint-py`. [The file](https://github.com/rahuldave/babykev/blob/bb15f17ccbb62cf1f8a61d67d67674bf9d445c86/uv.lock){.btn .btn-sm .btn-secondary}
 
 <details><summary>The diff that <code>uv add --group lint actionlint-py</code> makes in <code>pyproject.toml</code></summary>
 
@@ -198,7 +198,7 @@ git restore --source 7b7e22f04247 --staged -- :/ && git restore --source bb15f17
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/bb15f17ccbb62cf1f8a61d67d67674bf9d445c86). [The code after it](https://github.com/rahuldave/babykev/tree/bb15f17ccbb62cf1f8a61d67d67674bf9d445c86).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/bb15f17ccbb62cf1f8a61d67d67674bf9d445c86){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/bb15f17ccbb62cf1f8a61d67d67674bf9d445c86){.btn .btn-sm .btn-primary}
 
 ## 26.4 lint-config runs actionlint {#tut-26.4}
 
@@ -235,7 +235,7 @@ git restore --source bb15f17ccbb6 --staged -- :/ && git restore --source eb0acd1
 
 ### What changed {#tut-26.4-what-changed-182c57}
 
-- <a id="tut-26.4-justfile-424f0b"></a>`justfile`: actionlint, in `lint-config`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/eb0acd148867bdbc6292660b7268b656074fb727/justfile).
+- <a id="tut-26.4-justfile-424f0b"></a>`justfile`: actionlint, in `lint-config`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/eb0acd148867bdbc6292660b7268b656074fb727/justfile){.btn .btn-sm .btn-secondary}
   - look at `    uv run actionlint`
 
 <details open><summary>The patch to <code>justfile</code></summary>
@@ -262,7 +262,7 @@ git restore --source bb15f17ccbb6 --staged -- :/ && git restore --source eb0acd1
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/eb0acd148867bdbc6292660b7268b656074fb727). [The code after it](https://github.com/rahuldave/babykev/tree/eb0acd148867bdbc6292660b7268b656074fb727).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/eb0acd148867bdbc6292660b7268b656074fb727){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/eb0acd148867bdbc6292660b7268b656074fb727){.btn .btn-sm .btn-primary}
 
 ## 26.5 GitHub Pages publishes the docs {#tut-26.5}
 
@@ -305,7 +305,7 @@ git restore --source eb0acd148867 --staged -- :/ && git restore --source 606da22
 
 ### What changed {#tut-26.5-what-changed-182c57}
 
-- <a id="tut-26.5-.github-workflows-docs.yaml-ce7835"></a>`.github/workflows/docs.yaml`: the docs site, built with the group `docs` alone, then published. New, 40 lines. [The file](https://github.com/rahuldave/babykev/blob/606da22657c965404206b25f8fbcccffbe3f2756/.github/workflows/docs.yaml).
+- <a id="tut-26.5-.github-workflows-docs.yaml-ce7835"></a>`.github/workflows/docs.yaml`: the docs site, built with the group `docs` alone, then published. New, 40 lines. [The file](https://github.com/rahuldave/babykev/blob/606da22657c965404206b25f8fbcccffbe3f2756/.github/workflows/docs.yaml){.btn .btn-sm .btn-secondary}
   - look at `      - run: uv run --locked --no-default-groups --group docs smalldocs render docs`
 
 <details open><summary>The patch to <code>.github/workflows/docs.yaml</code></summary>
@@ -356,7 +356,7 @@ git restore --source eb0acd148867 --staged -- :/ && git restore --source 606da22
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/606da22657c965404206b25f8fbcccffbe3f2756). [The code after it](https://github.com/rahuldave/babykev/tree/606da22657c965404206b25f8fbcccffbe3f2756).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/606da22657c965404206b25f8fbcccffbe3f2756){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/606da22657c965404206b25f8fbcccffbe3f2756){.btn .btn-sm .btn-primary}
 
 ## 26.6 The README names the workflows {#tut-26.6}
 
@@ -388,12 +388,12 @@ git check 88854e32ebcb
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 606da22657c9 --staged -- :/ && git restore --source 88854e32ebcb --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source 606da22657c9 --staged -- :/ && git restore --source tut-26 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-26.6-what-changed-182c57}
 
-- <a id="tut-26.6-README.md-8ec9a0"></a>`README.md`: the section on GitHub, and the row of the workflows. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/88854e32ebcb4647672742cc4ef709eefc5fde0c/README.md).
+- <a id="tut-26.6-README.md-8ec9a0"></a>`README.md`: the section on GitHub, and the row of the workflows. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/88854e32ebcb4647672742cc4ef709eefc5fde0c/README.md){.btn .btn-sm .btn-secondary}
   - look at `## On GitHub`
 
 <details open><summary>The patch to <code>README.md</code></summary>
@@ -431,4 +431,6 @@ git restore --source 606da22657c9 --staged -- :/ && git restore --source 88854e3
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/88854e32ebcb4647672742cc4ef709eefc5fde0c). [The code after it](https://github.com/rahuldave/babykev/tree/88854e32ebcb4647672742cc4ef709eefc5fde0c).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/88854e32ebcb4647672742cc4ef709eefc5fde0c){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-26`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-26){.btn .btn-sm .btn-primary}

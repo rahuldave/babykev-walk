@@ -6,6 +6,17 @@ title: "26 GitHub"
 
 **Read the tutorial.** [Build it yourself](../build/tut-26.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-25`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-25){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach tut-25
+```
+
 ```bash
 just setup
 ```
@@ -18,8 +29,6 @@ changes that never met the gate. Also, the docs site exists only on the machine 
 GitHub runs workflows on its own machines. A workflow is a file of YAML in `.github/workflows/`, and its key `on` names
 the events that start it. The first workflow runs the gate after every push, and the second builds the docs site and
 publishes it on GitHub Pages. Nothing is pushed here. GitHub runs the workflows when the branch reaches it.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/6c85dd08f3cd441259b3749ac38cceaf7f2392e0). [The code after it](https://github.com/rahuldave/babykev/tree/88854e32ebcb4647672742cc4ef709eefc5fde0c).
 
 ## 26.1 GitHub runs the gate after every push {#tut-26.1}
 
@@ -42,7 +51,7 @@ word `on` as true. GitHub reads it as the name `on`, and every workflow has it. 
 
 ### What changed {#tut-26.1-what-changed-182c57}
 
-- <a id="tut-26.1-.github-workflows-check.yaml-6ceb50"></a>`.github/workflows/check.yaml`: `just check`, after every push. New, 21 lines. [The file](https://github.com/rahuldave/babykev/blob/2f210829183a3c52bb22f1196d50000716a4beec/.github/workflows/check.yaml).
+- <a id="tut-26.1-.github-workflows-check.yaml-6ceb50"></a>`.github/workflows/check.yaml`: `just check`, after every push. New, 21 lines. [The file](https://github.com/rahuldave/babykev/blob/2f210829183a3c52bb22f1196d50000716a4beec/.github/workflows/check.yaml){.btn .btn-sm .btn-secondary}
   - look at `      - run: just check`
 
 <details><summary>The diff of <code>.github/workflows/check.yaml</code></summary>
@@ -74,7 +83,7 @@ word `on` as true. GitHub reads it as the name `on`, and every workflow has it. 
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/2f210829183a3c52bb22f1196d50000716a4beec). [The code after it](https://github.com/rahuldave/babykev/tree/2f210829183a3c52bb22f1196d50000716a4beec).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/2f210829183a3c52bb22f1196d50000716a4beec){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/2f210829183a3c52bb22f1196d50000716a4beec){.btn .btn-sm .btn-primary}
 
 ## 26.2 yamllint lets a key be a word such as on {#tut-26.2}
 
@@ -93,7 +102,7 @@ just lint-config
 
 ### What changed {#tut-26.2-what-changed-182c57}
 
-- <a id="tut-26.2-.yamllint-dfe50a"></a>`.yamllint`: the rule `truthy` checks no key. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/7b7e22f04247cefdd2d01adbe6dff64d88a6116c/.yamllint).
+- <a id="tut-26.2-.yamllint-dfe50a"></a>`.yamllint`: the rule `truthy` checks no key. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/7b7e22f04247cefdd2d01adbe6dff64d88a6116c/.yamllint){.btn .btn-sm .btn-secondary}
   - look at `  truthy: {check-keys: false}  # a key may be a word such as on, which YAML 1.1 reads as true`
 
 <details><summary>The diff of <code>.yamllint</code></summary>
@@ -108,7 +117,7 @@ just lint-config
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/7b7e22f04247cefdd2d01adbe6dff64d88a6116c). [The code after it](https://github.com/rahuldave/babykev/tree/7b7e22f04247cefdd2d01adbe6dff64d88a6116c).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7b7e22f04247cefdd2d01adbe6dff64d88a6116c){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/7b7e22f04247cefdd2d01adbe6dff64d88a6116c){.btn .btn-sm .btn-primary}
 
 ## 26.3 actionlint, in the group lint {#tut-26.3}
 
@@ -130,9 +139,9 @@ The first line is the version of actionlint.
 
 ### What changed {#tut-26.3-what-changed-182c57}
 
-- <a id="tut-26.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: actionlint, in the group `lint`. 1 line added. It comes from `uv add --group lint actionlint-py`. [The file](https://github.com/rahuldave/babykev/blob/bb15f17ccbb62cf1f8a61d67d67674bf9d445c86/pyproject.toml).
+- <a id="tut-26.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: actionlint, in the group `lint`. 1 line added. It comes from `uv add --group lint actionlint-py`. [The file](https://github.com/rahuldave/babykev/blob/bb15f17ccbb62cf1f8a61d67d67674bf9d445c86/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `"actionlint-py>=1.7.12.25",`
-- <a id="tut-26.3-uv.lock-8356d8"></a>`uv.lock`: the exact version of actionlint. 8 lines added. It comes from `uv add --group lint actionlint-py`. [The file](https://github.com/rahuldave/babykev/blob/bb15f17ccbb62cf1f8a61d67d67674bf9d445c86/uv.lock).
+- <a id="tut-26.3-uv.lock-8356d8"></a>`uv.lock`: the exact version of actionlint. 8 lines added. It comes from `uv add --group lint actionlint-py`. [The file](https://github.com/rahuldave/babykev/blob/bb15f17ccbb62cf1f8a61d67d67674bf9d445c86/uv.lock){.btn .btn-sm .btn-secondary}
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -149,7 +158,7 @@ The first line is the version of actionlint.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/bb15f17ccbb62cf1f8a61d67d67674bf9d445c86). [The code after it](https://github.com/rahuldave/babykev/tree/bb15f17ccbb62cf1f8a61d67d67674bf9d445c86).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/bb15f17ccbb62cf1f8a61d67d67674bf9d445c86){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/bb15f17ccbb62cf1f8a61d67d67674bf9d445c86){.btn .btn-sm .btn-primary}
 
 ## 26.4 lint-config runs actionlint {#tut-26.4}
 
@@ -169,7 +178,7 @@ actionlint prints nothing, and ends with exit code 0. It finds no problem in `ch
 
 ### What changed {#tut-26.4-what-changed-182c57}
 
-- <a id="tut-26.4-justfile-424f0b"></a>`justfile`: actionlint, in `lint-config`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/eb0acd148867bdbc6292660b7268b656074fb727/justfile).
+- <a id="tut-26.4-justfile-424f0b"></a>`justfile`: actionlint, in `lint-config`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/eb0acd148867bdbc6292660b7268b656074fb727/justfile){.btn .btn-sm .btn-secondary}
   - look at `    uv run actionlint`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -196,7 +205,7 @@ actionlint prints nothing, and ends with exit code 0. It finds no problem in `ch
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/eb0acd148867bdbc6292660b7268b656074fb727). [The code after it](https://github.com/rahuldave/babykev/tree/eb0acd148867bdbc6292660b7268b656074fb727).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/eb0acd148867bdbc6292660b7268b656074fb727){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/eb0acd148867bdbc6292660b7268b656074fb727){.btn .btn-sm .btn-primary}
 
 ## 26.5 GitHub Pages publishes the docs {#tut-26.5}
 
@@ -224,7 +233,7 @@ workflows on, on the tab **Actions**. Pages publishes from a workflow when **Set
 
 ### What changed {#tut-26.5-what-changed-182c57}
 
-- <a id="tut-26.5-.github-workflows-docs.yaml-ce7835"></a>`.github/workflows/docs.yaml`: the docs site, built with the group `docs` alone, then published. New, 40 lines. [The file](https://github.com/rahuldave/babykev/blob/606da22657c965404206b25f8fbcccffbe3f2756/.github/workflows/docs.yaml).
+- <a id="tut-26.5-.github-workflows-docs.yaml-ce7835"></a>`.github/workflows/docs.yaml`: the docs site, built with the group `docs` alone, then published. New, 40 lines. [The file](https://github.com/rahuldave/babykev/blob/606da22657c965404206b25f8fbcccffbe3f2756/.github/workflows/docs.yaml){.btn .btn-sm .btn-secondary}
   - look at `      - run: uv run --locked --no-default-groups --group docs smalldocs render docs`
 
 <details><summary>The diff of <code>.github/workflows/docs.yaml</code></summary>
@@ -275,7 +284,7 @@ workflows on, on the tab **Actions**. Pages publishes from a workflow when **Set
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/606da22657c965404206b25f8fbcccffbe3f2756). [The code after it](https://github.com/rahuldave/babykev/tree/606da22657c965404206b25f8fbcccffbe3f2756).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/606da22657c965404206b25f8fbcccffbe3f2756){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/606da22657c965404206b25f8fbcccffbe3f2756){.btn .btn-sm .btn-primary}
 
 ## 26.6 The README names the workflows {#tut-26.6}
 
@@ -295,7 +304,7 @@ just check
 
 ### What changed {#tut-26.6-what-changed-182c57}
 
-- <a id="tut-26.6-README.md-8ec9a0"></a>`README.md`: the section on GitHub, and the row of the workflows. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/88854e32ebcb4647672742cc4ef709eefc5fde0c/README.md).
+- <a id="tut-26.6-README.md-8ec9a0"></a>`README.md`: the section on GitHub, and the row of the workflows. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/88854e32ebcb4647672742cc4ef709eefc5fde0c/README.md){.btn .btn-sm .btn-secondary}
   - look at `## On GitHub`
 
 <details><summary>The diff of <code>README.md</code></summary>
@@ -333,4 +342,6 @@ just check
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/88854e32ebcb4647672742cc4ef709eefc5fde0c). [The code after it](https://github.com/rahuldave/babykev/tree/88854e32ebcb4647672742cc4ef709eefc5fde0c).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/88854e32ebcb4647672742cc4ef709eefc5fde0c){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-26`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-26){.btn .btn-sm .btn-primary}

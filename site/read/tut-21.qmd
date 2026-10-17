@@ -6,6 +6,17 @@ title: "21 Integration tests, and the floor"
 
 **Read the tutorial.** [Build it yourself](../build/tut-21.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-20`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-20){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach tut-20
+```
+
 ```bash
 just setup
 ```
@@ -15,8 +26,6 @@ just setup
 An integration test runs several of our parts together. On the tiny model, it needs no download, and only our code can
 make it fail, so it is hermetic. The tests here check what trains, a pass over records of different lengths,
 and the whole smoke. Then the coverage is over 90%, and `just check` gets a floor.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/ebfa2a8cee251782b3709a379c35af77c80c6170). [The code after it](https://github.com/rahuldave/babykev/tree/922d6ba2495756622ad215301da7c48f2ec33fa9).
 
 ## 21.1 With an adapter, only the adapter and the head train {#tut-21.1}
 
@@ -46,7 +55,7 @@ coverage of 90% not reached. Total coverage: 83.52%`, and ends with exit code 1.
 
 ### What changed {#tut-21.1-what-changed-182c57}
 
-- <a id="tut-21.1-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: one backward pass with an adapter. 22 lines added. [The file](https://github.com/rahuldave/babykev/blob/0be44c1de17b8acb4e18a964a782584eb26fee97/tests/unit/test_model.py).
+- <a id="tut-21.1-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: one backward pass with an adapter. 22 lines added. [The file](https://github.com/rahuldave/babykev/blob/0be44c1de17b8acb4e18a964a782584eb26fee97/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_with_an_adapter_only_the_adapter_and_the_head_train(`
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
@@ -89,7 +98,7 @@ coverage of 90% not reached. Total coverage: 83.52%`, and ends with exit code 1.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/0be44c1de17b8acb4e18a964a782584eb26fee97). [The code after it](https://github.com/rahuldave/babykev/tree/0be44c1de17b8acb4e18a964a782584eb26fee97).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0be44c1de17b8acb4e18a964a782584eb26fee97){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/0be44c1de17b8acb4e18a964a782584eb26fee97){.btn .btn-sm .btn-primary}
 
 ## 21.2 Records of different lengths answer in one pass as alone {#tut-21.2}
 
@@ -116,7 +125,7 @@ still fails.
 
 ### What changed {#tut-21.2-what-changed-182c57}
 
-- <a id="tut-21.2-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a padded pass. 16 lines added. [The file](https://github.com/rahuldave/babykev/blob/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac/tests/unit/test_model.py).
+- <a id="tut-21.2-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a padded pass. 16 lines added. [The file](https://github.com/rahuldave/babykev/blob/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_records_of_different_lengths_answer_in_one_pass_as_alone(`
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
@@ -146,7 +155,7 @@ still fails.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac). [The code after it](https://github.com/rahuldave/babykev/tree/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac){.btn .btn-sm .btn-primary}
 
 ## 21.3 The smoke reports on every question, on the tiny model {#tut-21.3}
 
@@ -175,7 +184,7 @@ need the Hub or a GPU of NVIDIA. They are `63, 72-75, 204-207` of `model.py`, an
 
 ### What changed {#tut-21.3-what-changed-182c57}
 
-- <a id="tut-21.3-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: the whole smoke, on the tiny model. 17 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/08acf0a3770d58ab7fc3ac85eebf5cf9ed0bad0e/tests/unit/test_smoke.py).
+- <a id="tut-21.3-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: the whole smoke, on the tiny model. 17 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/08acf0a3770d58ab7fc3ac85eebf5cf9ed0bad0e/tests/unit/test_smoke.py){.btn .btn-sm .btn-secondary}
   - look at `def test_smoke_reports_on_every_question_of_the_sample(`
 
 <details><summary>The diff of <code>tests/unit/test_smoke.py</code></summary>
@@ -213,7 +222,7 @@ need the Hub or a GPU of NVIDIA. They are `63, 72-75, 204-207` of `model.py`, an
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/08acf0a3770d58ab7fc3ac85eebf5cf9ed0bad0e). [The code after it](https://github.com/rahuldave/babykev/tree/08acf0a3770d58ab7fc3ac85eebf5cf9ed0bad0e).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/08acf0a3770d58ab7fc3ac85eebf5cf9ed0bad0e){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/08acf0a3770d58ab7fc3ac85eebf5cf9ed0bad0e){.btn .btn-sm .btn-primary}
 
 ## 21.4 The gate has a floor of 90% {#tut-21.4}
 
@@ -234,7 +243,7 @@ exit code 0.
 
 ### What changed {#tut-21.4-what-changed-182c57}
 
-- <a id="tut-21.4-justfile-424f0b"></a>`justfile`: the floor, in the gate. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/57604134d9590c16b1c4db0b1d1a11509a65345b/justfile).
+- <a id="tut-21.4-justfile-424f0b"></a>`justfile`: the floor, in the gate. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/57604134d9590c16b1c4db0b1d1a11509a65345b/justfile){.btn .btn-sm .btn-secondary}
   - look at `    just test -q --cov-fail-under=90`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -262,7 +271,7 @@ exit code 0.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/57604134d9590c16b1c4db0b1d1a11509a65345b). [The code after it](https://github.com/rahuldave/babykev/tree/57604134d9590c16b1c4db0b1d1a11509a65345b).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/57604134d9590c16b1c4db0b1d1a11509a65345b){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/57604134d9590c16b1c4db0b1d1a11509a65345b){.btn .btn-sm .btn-primary}
 
 ## 21.5 The README names the floor {#tut-21.5}
 
@@ -280,7 +289,7 @@ grep -n '90%' README.md
 
 ### What changed {#tut-21.5-what-changed-182c57}
 
-- <a id="tut-21.5-README.md-8ec9a0"></a>`README.md`: the floor of 90%, in the lines on `just check`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/922d6ba2495756622ad215301da7c48f2ec33fa9/README.md).
+- <a id="tut-21.5-README.md-8ec9a0"></a>`README.md`: the floor of 90%, in the lines on `just check`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/922d6ba2495756622ad215301da7c48f2ec33fa9/README.md){.btn .btn-sm .btn-secondary}
   - look at ``The tests must run at least 90% of the code. You can run `just check` yourself at any time.``
 
 <details><summary>The diff of <code>README.md</code></summary>
@@ -301,4 +310,6 @@ grep -n '90%' README.md
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/922d6ba2495756622ad215301da7c48f2ec33fa9). [The code after it](https://github.com/rahuldave/babykev/tree/922d6ba2495756622ad215301da7c48f2ec33fa9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/922d6ba2495756622ad215301da7c48f2ec33fa9){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-21`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-21){.btn .btn-sm .btn-primary}

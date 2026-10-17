@@ -6,6 +6,17 @@ title: "17 `just types`"
 
 **Read the tutorial.** [Build it yourself](../build/tut-17.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-16`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-16){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach tut-16
+```
+
 The whole tutorial then gives the site its settings and a front page. It brings in torch, from the index of PyTorch's
 builds for the CPU, and transformers, peft and safetensors. Then `src/babykev/model.py` comes in, the model, with no
 tests of its own yet. So the total coverage falls to 43%. `just check` has no floor on the coverage, so it still
@@ -25,8 +36,6 @@ reading the types, and the linter asks only that they be there. A type checker r
 call and each value with the types that the code and its libraries declare. ty is a type checker. It finds two
 places in `model.py`, and both have one cause, in torch.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/056fe2ced73ff8568dfc329555795524c2465eb1). [The code after it](https://github.com/rahuldave/babykev/tree/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9).
-
 ## 17.1 ty, in the group lint {#tut-17.1}
 
 ty is for working on babykev, so it goes in the group `lint`.
@@ -45,9 +54,9 @@ It prints the version of ty that uv installed. A newer ty can find more, or less
 
 ### What changed {#tut-17.1-what-changed-182c57}
 
-- <a id="tut-17.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: ty, in the group `lint`. 1 line added. It comes from `uv add --group lint ty`. [The file](https://github.com/rahuldave/babykev/blob/aaa8fe6d7d1dfbca863fe23dc0d660dd10d36c2b/pyproject.toml).
+- <a id="tut-17.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: ty, in the group `lint`. 1 line added. It comes from `uv add --group lint ty`. [The file](https://github.com/rahuldave/babykev/blob/aaa8fe6d7d1dfbca863fe23dc0d660dd10d36c2b/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `"ty>=0.0.88",`
-- <a id="tut-17.1-uv.lock-8356d8"></a>`uv.lock`: the exact version of ty. 27 lines added. It comes from `uv add --group lint ty`. [The file](https://github.com/rahuldave/babykev/blob/aaa8fe6d7d1dfbca863fe23dc0d660dd10d36c2b/uv.lock).
+- <a id="tut-17.1-uv.lock-8356d8"></a>`uv.lock`: the exact version of ty. 27 lines added. It comes from `uv add --group lint ty`. [The file](https://github.com/rahuldave/babykev/blob/aaa8fe6d7d1dfbca863fe23dc0d660dd10d36c2b/uv.lock){.btn .btn-sm .btn-secondary}
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -64,7 +73,7 @@ It prints the version of ty that uv installed. A newer ty can find more, or less
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/aaa8fe6d7d1dfbca863fe23dc0d660dd10d36c2b). [The code after it](https://github.com/rahuldave/babykev/tree/aaa8fe6d7d1dfbca863fe23dc0d660dd10d36c2b).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/aaa8fe6d7d1dfbca863fe23dc0d660dd10d36c2b){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/aaa8fe6d7d1dfbca863fe23dc0d660dd10d36c2b){.btn .btn-sm .btn-primary}
 
 ## 17.2 The recipe types {#tut-17.2}
 
@@ -104,7 +113,7 @@ into an attribute. Its example has a `value: int` in a base class and a `value: 
 
 ### What changed {#tut-17.2-what-changed-182c57}
 
-- <a id="tut-17.2-justfile-424f0b"></a>`justfile`: the recipe `types`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/7866ef7f88d528e2e7ee04d55c68e56ce461cff1/justfile).
+- <a id="tut-17.2-justfile-424f0b"></a>`justfile`: the recipe `types`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/7866ef7f88d528e2e7ee04d55c68e56ce461cff1/justfile){.btn .btn-sm .btn-secondary}
   - look at `types *args:`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -127,7 +136,7 @@ into an attribute. Its example has a `value: int` in a base class and a `value: 
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/7866ef7f88d528e2e7ee04d55c68e56ce461cff1). [The code after it](https://github.com/rahuldave/babykev/tree/7866ef7f88d528e2e7ee04d55c68e56ce461cff1).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7866ef7f88d528e2e7ee04d55c68e56ce461cff1){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/7866ef7f88d528e2e7ee04d55c68e56ce461cff1){.btn .btn-sm .btn-primary}
 
 ## 17.3 PointerHead.forward, past ty {#tut-17.3}
 
@@ -165,7 +174,7 @@ or of the return type.
 
 ### What changed {#tut-17.3-what-changed-182c57}
 
-- <a id="tut-17.3-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the rule off on the `forward` of `PointerHead`, with the reason. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/d5312a3ec2ed265ca4dbf5c7dd2492c686024696/src/babykev/model.py).
+- <a id="tut-17.3-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the rule off on the `forward` of `PointerHead`, with the reason. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/d5312a3ec2ed265ca4dbf5c7dd2492c686024696/src/babykev/model.py){.btn .btn-sm .btn-secondary}
   - look at `    # tensors accepts fewer calls, so ty refuses it. torch only calls forward, and never sets it`
 
 <details><summary>The diff of <code>src/babykev/model.py</code></summary>
@@ -186,7 +195,7 @@ or of the return type.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/d5312a3ec2ed265ca4dbf5c7dd2492c686024696). [The code after it](https://github.com/rahuldave/babykev/tree/d5312a3ec2ed265ca4dbf5c7dd2492c686024696).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d5312a3ec2ed265ca4dbf5c7dd2492c686024696){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/d5312a3ec2ed265ca4dbf5c7dd2492c686024696){.btn .btn-sm .btn-primary}
 
 ## 17.4 DecisionModel.forward, past ty {#tut-17.4}
 
@@ -206,7 +215,7 @@ just types
 
 ### What changed {#tut-17.4-what-changed-182c57}
 
-- <a id="tut-17.4-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the rule off on the `forward` of `DecisionModel`, with the reason. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/f14349138824af0b107742451814b1234e72b34a/src/babykev/model.py).
+- <a id="tut-17.4-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the rule off on the `forward` of `DecisionModel`, with the reason. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/f14349138824af0b107742451814b1234e72b34a/src/babykev/model.py){.btn .btn-sm .btn-secondary}
   - look at `    # As in PointerHead, nn.Module declares forward as an attribute, and torch never sets it`
 
 <details><summary>The diff of <code>src/babykev/model.py</code></summary>
@@ -226,7 +235,7 @@ just types
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/f14349138824af0b107742451814b1234e72b34a). [The code after it](https://github.com/rahuldave/babykev/tree/f14349138824af0b107742451814b1234e72b34a).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/f14349138824af0b107742451814b1234e72b34a){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/f14349138824af0b107742451814b1234e72b34a){.btn .btn-sm .btn-primary}
 
 ## 17.5 The gate checks the types {#tut-17.5}
 
@@ -249,7 +258,7 @@ exit code 0. A call that does not match the types now stops `git commit`.
 
 ### What changed {#tut-17.5-what-changed-182c57}
 
-- <a id="tut-17.5-justfile-424f0b"></a>`justfile`: ty, in the gate. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9/justfile).
+- <a id="tut-17.5-justfile-424f0b"></a>`justfile`: ty, in the gate. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9/justfile){.btn .btn-sm .btn-secondary}
   - look at `    just types`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -276,4 +285,6 @@ exit code 0. A call that does not match the types now stops `git commit`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9). [The code after it](https://github.com/rahuldave/babykev/tree/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-17`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-17){.btn .btn-sm .btn-primary}

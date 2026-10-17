@@ -1,0 +1,29 @@
+---
+title: "babykev, the lecture"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+This walk is one of several through the project. The website of the first, [babykev, shown one move at a time](../), lists them all.
+
+The lecture walks through babykev on its branch `tutorial`, in nine stops, from `tut-01` to `tut-26`. Each stop takes
+in all the work since the stop before it, and the code at each stop passes every check of the project. The tutorial,
+on the same branch, builds the same project one move at a time.
+
+Each page is one part. A part is one or more changes to the project, each a section of its page. The code where a part starts and where it ends has a tag on GitHub, such as `tut-01`, or is a commit between two tags. The top of each page says where its part starts, and the bottom says where it ends, each with a link to that code.
+
+Each part ends with a section called **What changed**. It lists every file that the part changes, with a link to the file, and then the whole diff of each file, folded. A lockfile and a binary file have a link alone. The text above it explains the change.
+
+## Read the tutorial
+
+Each change explained, with the code to look at.
+
+- [1 Where we start](read/tut-01.qmd)
+- [5 The contract, and its tests](read/tut-05.qmd)
+- [8 Fix the two bugs, format and lint](read/tut-08.qmd)
+- [12 Clean, and kept clean](read/tut-12.qmd)
+- [13 Documentation from the code](read/tut-13.qmd)
+- [14 The docs site](read/tut-14.qmd)
+- [21 A second file: model.py](read/tut-21.qmd)
+- [22 The tests that could tell](read/tut-22.qmd)
+- [26 Two images from one lockfile](read/tut-26.qmd)

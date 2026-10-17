@@ -6,6 +6,17 @@ title: "11 The gate and the hook"
 
 **Read the tutorial.** [Build it yourself](../build/tut-11.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-10`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-10){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach tut-10
+```
+
 ```bash
 just setup
 ```
@@ -19,8 +30,6 @@ is a gate, and a change that fails it does not go in.
 
 Three more hooks keep out a large file, the markers of a merge conflict and a `.env` file. Last, a mistake on purpose
 shows the gate at work.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/ebd0888f135c00e29b583f6fad0575c290fd4876). [The code after it](https://github.com/rahuldave/babykev/tree/cab87c139ebd3b72771ed6db08b02dd7646c7d02).
 
 ## 11.1 The recipe check {#tut-11.1}
 
@@ -57,7 +66,7 @@ and ends with exit code 0. `just help check` prints the line of the recipe.
 
 ### What changed {#tut-11.1-what-changed-182c57}
 
-- <a id="tut-11.1-justfile-424f0b"></a>`justfile`: the recipe `check`, with three checks. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/dbfc285a2adeb4900fc68c863c4850b84004a04e/justfile).
+- <a id="tut-11.1-justfile-424f0b"></a>`justfile`: the recipe `check`, with three checks. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/dbfc285a2adeb4900fc68c863c4850b84004a04e/justfile){.btn .btn-sm .btn-secondary}
   - look at `    just test -q`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -82,7 +91,7 @@ and ends with exit code 0. `just help check` prints the line of the recipe.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/dbfc285a2adeb4900fc68c863c4850b84004a04e). [The code after it](https://github.com/rahuldave/babykev/tree/dbfc285a2adeb4900fc68c863c4850b84004a04e).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/dbfc285a2adeb4900fc68c863c4850b84004a04e){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/dbfc285a2adeb4900fc68c863c4850b84004a04e){.btn .btn-sm .btn-primary}
 
 ## 11.2 Pre-commit, in the group lint {#tut-11.2}
 
@@ -106,9 +115,9 @@ It prints the version of pre-commit that uv installed. No hook is installed yet.
 
 ### What changed {#tut-11.2-what-changed-182c57}
 
-- <a id="tut-11.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: pre-commit, in the group `lint`. 1 line added. It comes from `uv add --group lint pre-commit`. [The file](https://github.com/rahuldave/babykev/blob/56dee300cda2e0f34bfb18be026897e83bf6981a/pyproject.toml).
+- <a id="tut-11.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: pre-commit, in the group `lint`. 1 line added. It comes from `uv add --group lint pre-commit`. [The file](https://github.com/rahuldave/babykev/blob/56dee300cda2e0f34bfb18be026897e83bf6981a/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `"pre-commit>=4.7.0",`
-- <a id="tut-11.2-uv.lock-8356d8"></a>`uv.lock`: the exact version of pre-commit, and of the packages that it needs. 139 lines added, 1 removed. It comes from `uv add --group lint pre-commit`. [The file](https://github.com/rahuldave/babykev/blob/56dee300cda2e0f34bfb18be026897e83bf6981a/uv.lock).
+- <a id="tut-11.2-uv.lock-8356d8"></a>`uv.lock`: the exact version of pre-commit, and of the packages that it needs. 139 lines added, 1 removed. It comes from `uv add --group lint pre-commit`. [The file](https://github.com/rahuldave/babykev/blob/56dee300cda2e0f34bfb18be026897e83bf6981a/uv.lock){.btn .btn-sm .btn-secondary}
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -125,7 +134,7 @@ It prints the version of pre-commit that uv installed. No hook is installed yet.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/56dee300cda2e0f34bfb18be026897e83bf6981a). [The code after it](https://github.com/rahuldave/babykev/tree/56dee300cda2e0f34bfb18be026897e83bf6981a).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/56dee300cda2e0f34bfb18be026897e83bf6981a){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/56dee300cda2e0f34bfb18be026897e83bf6981a){.btn .btn-sm .btn-primary}
 
 ## 11.3 A hook that runs just check {#tut-11.3}
 
@@ -151,7 +160,7 @@ line for the hook, `just check....Passed`. A hook that passes prints nothing mor
 
 ### What changed {#tut-11.3-what-changed-182c57}
 
-- <a id="tut-11.3-.pre-commit-config.yaml-e7d14d"></a>`.pre-commit-config.yaml`: one hook, which runs `just check`. New, 14 lines. [The file](https://github.com/rahuldave/babykev/blob/0c645eb0a770a34bf7fe3f055dfc9ab4c19aa6fe/.pre-commit-config.yaml).
+- <a id="tut-11.3-.pre-commit-config.yaml-e7d14d"></a>`.pre-commit-config.yaml`: one hook, which runs `just check`. New, 14 lines. [The file](https://github.com/rahuldave/babykev/blob/0c645eb0a770a34bf7fe3f055dfc9ab4c19aa6fe/.pre-commit-config.yaml){.btn .btn-sm .btn-secondary}
   - look at `        entry: just check`
 
 <details><summary>The diff of <code>.pre-commit-config.yaml</code></summary>
@@ -176,7 +185,7 @@ line for the hook, `just check....Passed`. A hook that passes prints nothing mor
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/0c645eb0a770a34bf7fe3f055dfc9ab4c19aa6fe). [The code after it](https://github.com/rahuldave/babykev/tree/0c645eb0a770a34bf7fe3f055dfc9ab4c19aa6fe).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0c645eb0a770a34bf7fe3f055dfc9ab4c19aa6fe){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/0c645eb0a770a34bf7fe3f055dfc9ab4c19aa6fe){.btn .btn-sm .btn-primary}
 
 ## 11.4 The recipe hook {#tut-11.4}
 
@@ -204,7 +213,7 @@ that `git commit` runs first.
 
 ### What changed {#tut-11.4-what-changed-182c57}
 
-- <a id="tut-11.4-justfile-424f0b"></a>`justfile`: the recipe `hook`. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/fbe4cca80366ec49c7fa9c23a11af8b4e1a2bde3/justfile).
+- <a id="tut-11.4-justfile-424f0b"></a>`justfile`: the recipe `hook`. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/fbe4cca80366ec49c7fa9c23a11af8b4e1a2bde3/justfile){.btn .btn-sm .btn-secondary}
   - look at `hook *args:`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -226,7 +235,7 @@ that `git commit` runs first.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/fbe4cca80366ec49c7fa9c23a11af8b4e1a2bde3). [The code after it](https://github.com/rahuldave/babykev/tree/fbe4cca80366ec49c7fa9c23a11af8b4e1a2bde3).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/fbe4cca80366ec49c7fa9c23a11af8b4e1a2bde3){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/fbe4cca80366ec49c7fa9c23a11af8b4e1a2bde3){.btn .btn-sm .btn-primary}
 
 ## 11.5 No file over 1 MB {#tut-11.5}
 
@@ -248,7 +257,7 @@ folder of its own. Then it prints two lines, `check for added large files....Pas
 
 ### What changed {#tut-11.5-what-changed-182c57}
 
-- <a id="tut-11.5-.pre-commit-config.yaml-e7d14d"></a>`.pre-commit-config.yaml`: the hook of large files. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/352e33d87006028ec33ed46ba0e53d48255b3d66/.pre-commit-config.yaml).
+- <a id="tut-11.5-.pre-commit-config.yaml-e7d14d"></a>`.pre-commit-config.yaml`: the hook of large files. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/352e33d87006028ec33ed46ba0e53d48255b3d66/.pre-commit-config.yaml){.btn .btn-sm .btn-secondary}
   - look at `        args: [--maxkb=1000]`
 
 <details><summary>The diff of <code>.pre-commit-config.yaml</code></summary>
@@ -270,7 +279,7 @@ folder of its own. Then it prints two lines, `check for added large files....Pas
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/352e33d87006028ec33ed46ba0e53d48255b3d66). [The code after it](https://github.com/rahuldave/babykev/tree/352e33d87006028ec33ed46ba0e53d48255b3d66).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/352e33d87006028ec33ed46ba0e53d48255b3d66){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/352e33d87006028ec33ed46ba0e53d48255b3d66){.btn .btn-sm .btn-primary}
 
 ## 11.6 No merge-conflict markers {#tut-11.6}
 
@@ -290,7 +299,7 @@ pre-commit prints three lines, each `Passed`. The new one is `check for merge co
 
 ### What changed {#tut-11.6-what-changed-182c57}
 
-- <a id="tut-11.6-.pre-commit-config.yaml-e7d14d"></a>`.pre-commit-config.yaml`: the hook of merge conflicts. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/64d0f4f781da1a8520315f899c4231645623280c/.pre-commit-config.yaml).
+- <a id="tut-11.6-.pre-commit-config.yaml-e7d14d"></a>`.pre-commit-config.yaml`: the hook of merge conflicts. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/64d0f4f781da1a8520315f899c4231645623280c/.pre-commit-config.yaml){.btn .btn-sm .btn-secondary}
   - look at `      - id: check-merge-conflict`
 
 <details><summary>The diff of <code>.pre-commit-config.yaml</code></summary>
@@ -308,7 +317,7 @@ pre-commit prints three lines, each `Passed`. The new one is `check for merge co
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/64d0f4f781da1a8520315f899c4231645623280c). [The code after it](https://github.com/rahuldave/babykev/tree/64d0f4f781da1a8520315f899c4231645623280c).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/64d0f4f781da1a8520315f899c4231645623280c){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/64d0f4f781da1a8520315f899c4231645623280c){.btn .btn-sm .btn-primary}
 
 ## 11.7 No .env file {#tut-11.7}
 
@@ -330,7 +339,7 @@ other three pass.
 
 ### What changed {#tut-11.7-what-changed-182c57}
 
-- <a id="tut-11.7-.pre-commit-config.yaml-e7d14d"></a>`.pre-commit-config.yaml`: the hook that refuses a `.env` file. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/2d080c9e228f2f9959f4eeed801726ea402e66a3/.pre-commit-config.yaml).
+- <a id="tut-11.7-.pre-commit-config.yaml-e7d14d"></a>`.pre-commit-config.yaml`: the hook that refuses a `.env` file. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/2d080c9e228f2f9959f4eeed801726ea402e66a3/.pre-commit-config.yaml){.btn .btn-sm .btn-secondary}
   - look at `        language: fail`
 
 <details><summary>The diff of <code>.pre-commit-config.yaml</code></summary>
@@ -352,7 +361,7 @@ other three pass.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/2d080c9e228f2f9959f4eeed801726ea402e66a3). [The code after it](https://github.com/rahuldave/babykev/tree/2d080c9e228f2f9959f4eeed801726ea402e66a3).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/2d080c9e228f2f9959f4eeed801726ea402e66a3){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/2d080c9e228f2f9959f4eeed801726ea402e66a3){.btn .btn-sm .btn-primary}
 
 ## 11.8 An unused import, on purpose {#tut-11.8}
 
@@ -376,7 +385,7 @@ stop here, and record nothing.
 
 ### What changed {#tut-11.8-what-changed-182c57}
 
-- <a id="tut-11.8-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: an import that nothing uses, on purpose. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/f4fabd3272713cb5ac1c26021e4c23fa33ab15e6/src/babykev/cli.py).
+- <a id="tut-11.8-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: an import that nothing uses, on purpose. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/f4fabd3272713cb5ac1c26021e4c23fa33ab15e6/src/babykev/cli.py){.btn .btn-sm .btn-secondary}
   - look at `import os`
 
 <details><summary>The diff of <code>src/babykev/cli.py</code></summary>
@@ -393,7 +402,7 @@ stop here, and record nothing.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/f4fabd3272713cb5ac1c26021e4c23fa33ab15e6). [The code after it](https://github.com/rahuldave/babykev/tree/f4fabd3272713cb5ac1c26021e4c23fa33ab15e6).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/f4fabd3272713cb5ac1c26021e4c23fa33ab15e6){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/f4fabd3272713cb5ac1c26021e4c23fa33ab15e6){.btn .btn-sm .btn-primary}
 
 ## 11.9 The import goes {#tut-11.9}
 
@@ -411,7 +420,7 @@ The four hooks pass or skip, and pre-commit ends with exit code 0. A `git commit
 
 ### What changed {#tut-11.9-what-changed-182c57}
 
-- <a id="tut-11.9-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: the import of `os` goes. 0 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/054c40b6cc1839f8b35dfab81f9f2ae7c9f1aaf0/src/babykev/cli.py).
+- <a id="tut-11.9-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: the import of `os` goes. 0 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/054c40b6cc1839f8b35dfab81f9f2ae7c9f1aaf0/src/babykev/cli.py){.btn .btn-sm .btn-secondary}
   - look at `import os`
 
 <details><summary>The diff of <code>src/babykev/cli.py</code></summary>
@@ -428,7 +437,7 @@ The four hooks pass or skip, and pre-commit ends with exit code 0. A `git commit
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/054c40b6cc1839f8b35dfab81f9f2ae7c9f1aaf0). [The code after it](https://github.com/rahuldave/babykev/tree/054c40b6cc1839f8b35dfab81f9f2ae7c9f1aaf0).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/054c40b6cc1839f8b35dfab81f9f2ae7c9f1aaf0){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/054c40b6cc1839f8b35dfab81f9f2ae7c9f1aaf0){.btn .btn-sm .btn-primary}
 
 ## 11.10 The README names the hook {#tut-11.10}
 
@@ -447,7 +456,7 @@ grep -n 'just hook' README.md
 
 ### What changed {#tut-11.10-what-changed-182c57}
 
-- <a id="tut-11.10-README.md-8ec9a0"></a>`README.md`: a paragraph on `just hook`, and a row of the table. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/cab87c139ebd3b72771ed6db08b02dd7646c7d02/README.md).
+- <a id="tut-11.10-README.md-8ec9a0"></a>`README.md`: a paragraph on `just hook`, and a row of the table. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/cab87c139ebd3b72771ed6db08b02dd7646c7d02/README.md){.btn .btn-sm .btn-secondary}
   - look at ``Run `just hook` once in each clone. It installs a git hook, which runs `just check` before each commit.``
 
 <details><summary>The diff of <code>README.md</code></summary>
@@ -476,4 +485,6 @@ grep -n 'just hook' README.md
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/cab87c139ebd3b72771ed6db08b02dd7646c7d02). [The code after it](https://github.com/rahuldave/babykev/tree/cab87c139ebd3b72771ed6db08b02dd7646c7d02).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/cab87c139ebd3b72771ed6db08b02dd7646c7d02){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-11`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-11){.btn .btn-sm .btn-primary}

@@ -6,6 +6,17 @@ title: "1.13 to 1.14 The README says how to begin"
 
 **Read the tutorial.** [Build it yourself](../build/tut-01.13-to-tut-01.14.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `9218f21a7842`, partway through `tut-01`. [The code before this part](https://github.com/rahuldave/babykev/tree/9218f21a784277593cf6930e10389b04e41bf9d0){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach 9218f21a7842
+```
+
 ```bash
 just setup
 ```
@@ -21,8 +32,6 @@ and `just help VERB` explains a recipe.
 
 The description and the help are documentation too, for a person who installs babykev or runs it. The README now says
 how to begin, and what each file is.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/9218f21a784277593cf6930e10389b04e41bf9d0). [The code after it](https://github.com/rahuldave/babykev/tree/7ad3a06605fadc9f34b5e2d8180145a3e53389a9).
 
 ## 1.13 The README says how to start {#tut-01.13}
 
@@ -42,7 +51,7 @@ grep -n '^## ' README.md
 
 ### What changed {#tut-01.13-what-changed-182c57}
 
-- <a id="tut-01.13-README.md-8ec9a0"></a>`README.md`: how to start. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/0d2e163cca5d3eeb9fc8f7223fddd8d7da735fde/README.md).
+- <a id="tut-01.13-README.md-8ec9a0"></a>`README.md`: how to start. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/0d2e163cca5d3eeb9fc8f7223fddd8d7da735fde/README.md){.btn .btn-sm .btn-secondary}
   - look at ``Run `just setup` first. It installs Python and every dependency into `.venv`, exactly as `uv.lock` says.``
 
 <details><summary>The diff of <code>README.md</code></summary>
@@ -65,7 +74,7 @@ grep -n '^## ' README.md
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/0d2e163cca5d3eeb9fc8f7223fddd8d7da735fde). [The code after it](https://github.com/rahuldave/babykev/tree/0d2e163cca5d3eeb9fc8f7223fddd8d7da735fde).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0d2e163cca5d3eeb9fc8f7223fddd8d7da735fde){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/0d2e163cca5d3eeb9fc8f7223fddd8d7da735fde){.btn .btn-sm .btn-primary}
 
 ## 1.14 The README says what each file is {#tut-01.14}
 
@@ -86,7 +95,7 @@ Both commands of "Start" work. `just setup` prints `Resolved 1 package` and `Che
 
 ### What changed {#tut-01.14-what-changed-182c57}
 
-- <a id="tut-01.14-README.md-8ec9a0"></a>`README.md`: a table of the files. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/7ad3a06605fadc9f34b5e2d8180145a3e53389a9/README.md).
+- <a id="tut-01.14-README.md-8ec9a0"></a>`README.md`: a table of the files. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/7ad3a06605fadc9f34b5e2d8180145a3e53389a9/README.md){.btn .btn-sm .btn-secondary}
   - look at ``| `justfile` | Every task of the project, one recipe each. `just help` explains them |``
 
 <details><summary>The diff of <code>README.md</code></summary>
@@ -115,4 +124,6 @@ Both commands of "Start" work. `just setup` prints `Resolved 1 package` and `Che
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/7ad3a06605fadc9f34b5e2d8180145a3e53389a9). [The code after it](https://github.com/rahuldave/babykev/tree/7ad3a06605fadc9f34b5e2d8180145a3e53389a9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7ad3a06605fadc9f34b5e2d8180145a3e53389a9){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-01`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-01){.btn .btn-sm .btn-primary}

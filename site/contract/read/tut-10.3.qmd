@@ -6,6 +6,17 @@ title: "10.3 The classes of a request say what they are"
 
 **Read the tutorial.** [Build it yourself](../build/tut-10.3.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `7943e585faa8`, partway through `tut-10`. [The code before this part](https://github.com/rahuldave/babykev/tree/7943e585faa81e4c0400f5e2e9ca7b42ce4bf286){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach 7943e585faa8
+```
+
 ```bash
 just setup
 ```
@@ -19,8 +30,6 @@ the kind of value that each input and the result hold. The tests grew to 53.
 Then the whole tutorial turned on the rules `D1` of ruff. They ask for a docstring on every public file, class and
 function. A name is public when it does not start with `_`. The package, the folder `src/babykev` that holds the code,
 got its docstring first.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/7943e585faa81e4c0400f5e2e9ca7b42ce4bf286). [The code after it](https://github.com/rahuldave/babykev/tree/9a769c7d9551fb181bf7c36d989f94f35f836c2d).
 
 ## 10.3 The docstrings of the four classes of a request {#tut-10.3}
 
@@ -47,7 +56,7 @@ question.
 
 ### What changed {#tut-10.3-what-changed-182c57}
 
-- <a id="tut-10.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring on each class of a request. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/9a769c7d9551fb181bf7c36d989f94f35f836c2d/src/babykev/api.py).
+- <a id="tut-10.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring on each class of a request. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/9a769c7d9551fb181bf7c36d989f94f35f836c2d/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `    """A question answered by a level of a scale, whose criteria are the levels in order."""`
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
@@ -92,4 +101,6 @@ question.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/9a769c7d9551fb181bf7c36d989f94f35f836c2d). [The code after it](https://github.com/rahuldave/babykev/tree/9a769c7d9551fb181bf7c36d989f94f35f836c2d).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9a769c7d9551fb181bf7c36d989f94f35f836c2d){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `9a769c7d9551`, partway through `tut-10`. [The code after this part](https://github.com/rahuldave/babykev/tree/9a769c7d9551fb181bf7c36d989f94f35f836c2d){.btn .btn-sm .btn-primary}

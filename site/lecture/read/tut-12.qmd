@@ -1,0 +1,271 @@
+---
+title: "12 Clean, and kept clean"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-11`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-11){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach tut-11
+```
+
+**Init.** `just setup` installs 14 packages, among them pre-commit, validate-pyproject and yamllint, and the packages that they need. All three are in the group `lint`, on lines 26 to 31 of `pyproject.toml`.
+
+```bash
+just setup
+```
+
+**What is new.** The linter asks for a type in every signature and a docstring on every public name, and the code has them. A recipe `check` runs every check, and a git hook runs `check`. A recipe `lint-config` checks the files that are not Python.
+
+**Types and docstrings.** Line 66 of `pyproject.toml` turns on `ANN`, a type on every parameter and every return value. Line 67 turns on `D1`, a docstring on every public module, class and function. The `git restore` line takes the code and the tests as they were at `tut-08`, and `just lint --statistics` then finds 57 problems. There are 33 of `ANN201`, a public function with no return type. There are 14 of `ANN001`, a parameter with no type, all in the tests.
+
+```bash
+sed -n '66,67p' pyproject.toml
+git restore --source tut-08 src tests
+just lint --statistics
+```
+
+`just lint --fix --unsafe-fixes` prints `Found 57 errors (31 fixed, 26 remaining).` The 31 are `-> None` on the functions that return nothing, because ruff can be sure of `None` and of no other type. `just lint --statistics` shows the 26 that need a person. They are 14 types of parameters in the tests, eight docstrings, two return types that ruff cannot guess, `-> Self` on `_check`, and `*words: str`.
+
+```bash
+just lint --fix --unsafe-fixes
+just lint --statistics
+```
+
+The `git diff` line counts what a person wrote for the 26, against the files that ruff left, 32 lines in 4 files. Each fixture of pytest gets its type, such as `pytest.MonkeyPatch`. Each of the four classes, three functions and the package gets a docstring of one line. The `git restore` line puts the files of `tut-12` back. The two return types are `to_record` on line 78 of `api.py`, a tuple of two parts, and `cheese_request` in the tests. `just lint` prints `All checks passed!`.
+
+```bash
+git diff -R --stat
+git restore src tests
+sed -n '78p' src/babykev/api.py
+just lint
+```
+
+The types are in the tests too. `run`, on lines 8 to 11 of `tests/unit/test_cli.py`, takes `monkeypatch: pytest.MonkeyPatch` and `*words: str`, and returns `None`. `just test -k unknown_command` runs the test that calls it with the word `train`, and it passes.
+
+```bash
+sed -n '8,11p' tests/unit/test_cli.py
+just test -k unknown_command
+```
+
+**`just check`.** `just --show check` prints the recipe, a small shell script. After the line for `help`, it runs `just fmt --check`, `just lint`, `just test -q` and `just lint-config`. `set -e` stops it at the first that fails. `just check` runs the four and prints `6 files already formatted`, `All checks passed!`, `53 passed` with the table at 100%, `Valid file: pyproject.toml` and `Resolved 29 packages`. `check` has no floor on the coverage yet, because the model comes in later with no tests at first.
+
+```bash
+just --show check
+just check
+```
+
+**The hook.** `uv run pre-commit install` is pre-commit, a tool that runs the hooks that `.pre-commit-config.yaml` lists before each `git commit`. `install` writes the script that git runs, and prints `pre-commit installed at .git/hooks/pre-commit`. `just --show hook` prints the recipe around that command, and `just hook` runs it again. `just setup` never runs it, because a hook changes how git behaves, and each clone asks for it once.
+
+```bash
+uv run pre-commit install
+just --show hook
+just hook
+```
+
+**What `install` wrote.** Before each `git commit`, git looks in its folder of hooks for a file named `pre-commit`, and runs it. `git rev-parse --git-path hooks` prints where that folder is. `ls` shows `pre-commit` among the `.sample` files that git puts there. `cat` shows the 20 lines that pre-commit wrote, which start pre-commit from the `.venv` of this clone, with `.pre-commit-config.yaml`. The path is of this machine, so git does not track the file, and each clone runs `just hook` to write its own.
+
+```bash
+ls "$(git rev-parse --git-path hooks)"
+cat "$(git rev-parse --git-path hooks)/pre-commit"
+```
+
+**The hooks it runs.** `.pre-commit-config.yaml` lists four. Lines 10 and 11 refuse a file over 1000 KB, such as a checkpoint of a model. Line 12 refuses the markers that a merge conflict leaves. Lines 15 to 19 refuse a file named `.env`, and lines 20 to 25 run `just check`.
+
+```bash
+cat .pre-commit-config.yaml
+```
+
+**A careless change.** The `perl` line adds `import os` to `api.py`, and nothing uses it. `git commit -am "try"` runs the hooks, and pre-commit prints each with its result. Three say `Passed` or `Skipped`, and then `just check` says `Failed`. Under it is the finding of the linter, `F401 [*] os imported but unused`, with its line and `help: Remove unused import`. `git status` shows `api.py` still changed, and the log still ends at `tut-12`.
+
+```bash
+perl -pi -e 's/^(from typing)/import os\n$1/' src/babykev/api.py
+git commit -am "try"
+git status --short
+git log --oneline -1
+```
+
+The next line puts the file back, because the next try needs `just check` to pass.
+
+```bash
+git restore src/babykev/api.py
+```
+
+**A secret.** The `echo` line writes a `.env` file and adds it with `-f`, because `.gitignore` names `.env`. The try prints `no .env file...Failed`, then the sentence of line 17 of the config, `A .env file holds the settings and secrets of one machine. It is never committed`, and the name of the file. `just check` passes, and git still makes nothing, because one hook failed. The last line takes the file out of git's index, and deletes it.
+
+```bash
+echo X=1 > .env && git add -f .env
+git commit -m "try"
+git rm --cached -q .env && rm .env
+```
+
+**The config files are code too.** `just lint-config` runs four checks, one for each kind of file that is not Python. Each runs by hand first, once on the file as it is and once with one change that breaks it. The `git restore` line after each puts the file back, because the next checks read it.
+
+**validate-pyproject.** `pyproject.toml` has a format that a standard writes down, with the sections, the keys of each and the kind of value of each key. `uv run validate-pyproject pyproject.toml` prints `Valid file: pyproject.toml`. The `sed` line writes `requires_python` in place of `requires-python`. The check then prints 32 lines. uv warns that it found no `requires-python` and builds babykev again, and validate-pyproject prints ``[ERROR] `project` must not contain {'requires_python'} properties`` and `Invalid file: pyproject.toml`.
+
+```bash
+uv run validate-pyproject pyproject.toml
+sed -i '' 's/^requires-python = /requires_python = /' pyproject.toml
+uv run validate-pyproject pyproject.toml
+git restore pyproject.toml
+```
+
+**`uv lock --check`.** uv has this check, so it needs no new package. It compares `uv.lock` with `pyproject.toml`, and changes nothing. When they agree it prints `Resolved 29 packages`. The `sed` line writes `"pydantic>=2.14"` in place of `"pydantic>=2.14.1"`, and nobody runs `uv lock`. The check then fails with an error, which says that the lockfile at `uv.lock` needs to be updated, but `--check` was provided.
+
+```bash
+uv lock --check
+sed -i '' 's/"pydantic>=2.14.1"/"pydantic>=2.14"/' pyproject.toml
+uv lock --check
+```
+
+The recipes refuse such a lockfile too. Line 9 of the justfile exports `UV_LOCKED`, so `just test -q` fails with the same error, with `UV_LOCKED=1` in place of `--check`, and runs no test.
+
+```bash
+sed -n '8,9p' justfile
+just test -q
+git restore pyproject.toml
+```
+
+**`just --fmt --check --unstable`.** just has its own formatter, and needs `--unstable` because just still calls the formatter unstable. It prints nothing when the justfile is formatted. The `sed` line writes `program:="babykev"`, with no spaces. The check then prints the justfile as a diff of 78 lines. Two of them carry the change, `-program:="babykev"` and `+program := "babykev"`, and the last says `error: Formatted justfile differs from original.`
+
+```bash
+just --fmt --check --unstable
+sed -i '' 's/^program := "babykev"/program:="babykev"/' justfile
+just --fmt --check --unstable
+git restore justfile
+```
+
+**yamllint.** `uv run yamllint --strict .` checks every YAML file, and prints nothing when all is well, and `--strict` makes a warning fail too. Here uv first builds babykev again, because `pyproject.toml` changed above. Each setting in `.yamllint` answers a finding of the defaults of yamllint, and the second command runs the defaults on the two YAML files. They find lines over 80 characters, and a missing `---` at the start of each file. Line 3 of `.yamllint` makes yamllint skip what git ignores, such as `.venv`.
+
+```bash
+uv run yamllint --strict .
+uv run yamllint --strict -d default .pre-commit-config.yaml .yamllint
+cat .yamllint
+```
+
+The `sed` line indents the `args:` line of `.pre-commit-config.yaml` two spaces too far. yamllint then names the file, and prints `11:15 error syntax error: mapping values are not allowed here (syntax)`, line 11 and column 15. A broken config of the hook would break every `git commit`, and yamllint sees it first.
+
+```bash
+sed -i '' 's/^        args: \[--maxkb=1000\]$/          args: [--maxkb=1000]/' .pre-commit-config.yaml
+uv run yamllint --strict .
+git restore .pre-commit-config.yaml
+```
+
+**The recipe.** `just --show lint-config` prints the four checks in one script, where `set -e` stops at the first that fails. `just lint-config` prints `Valid file: pyproject.toml` and `Resolved 29 packages`, and nothing from the other two. The last line of `check` runs it, so the hook runs it too.
+
+```bash
+just --show lint-config
+just lint-config
+```
+
+## What changed {#tut-12-what-changed-182c57}
+
+- <a id="tut-12-.yamllint-dfe50a"></a>`.yamllint`: New, 6 lines. [The file](https://github.com/rahuldave/babykev/blob/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac/.yamllint){.btn .btn-sm .btn-secondary}
+- <a id="tut-12-README.md-8ec9a0"></a>`README.md`: 1 line added. [The file](https://github.com/rahuldave/babykev/blob/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac/README.md){.btn .btn-sm .btn-secondary}
+- <a id="tut-12-justfile-424f0b"></a>`justfile`: adds `recipe lint-config`. 17 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac/justfile){.btn .btn-sm .btn-secondary}
+- <a id="tut-12-pyproject.toml-5d07e7"></a>`pyproject.toml`: 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac/pyproject.toml){.btn .btn-sm .btn-secondary}
+- <a id="tut-12-uv.lock-8356d8"></a>`uv.lock`: 47 lines added. [The file](https://github.com/rahuldave/babykev/blob/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac/uv.lock){.btn .btn-sm .btn-secondary}
+
+<details><summary>The diff of <code>.yamllint</code></summary>
+
+```diff
+@@ -0,0 +1,6 @@
++# The settings of yamllint, which checks every YAML file of the project
++extends: default
++ignore-from-file: .gitignore  # the files that git ignores, such as everything in .venv
++rules:
++  document-start: disable  # a file need not start with a line of three dashes
++  line-length: {max: 100}  # as long as a line of the Python code
+```
+
+</details>
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+```diff
+@@ -77,6 +77,7 @@ yourself at any time.
+ | `.python-version` | The version of Python that the project uses |
+ | `.gitignore` | The files that git does not track, for example `.venv` |
+ | `.pre-commit-config.yaml` | The hooks that git runs before each commit, once `just hook` installs them. The last runs `just check` |
++| `.yamllint` | The settings of yamllint, which `just lint-config` runs on every YAML file |
+ 
+ ## How the history is organised
+ 
+```
+
+</details>
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -5,6 +5,9 @@ program := "babykev"
+ # Each word after a recipe's name reaches its commands whole, as "$1", "$2" and so on; "$@" is all of them
+ set positional-arguments
+ 
++# Every uv run in a recipe refuses a lockfile that is out of date, in place of writing a new one
++export UV_LOCKED := "1"
++
+ [private]
+ default:
+     @just --list --unsorted
+@@ -42,13 +45,25 @@ fmt *args:
+ lint *args:
+     @{{ if args == "help" { "just help lint" } else { 'uv run ruff check "$@"' } }}
+ 
++# Check the config files: pyproject.toml, the lockfile, this justfile, and every YAML file
++[group('quality')]
++[no-exit-message]
++lint-config *args:
++    #!/usr/bin/env sh
++    set -e
++    if [ "$*" = help ]; then just help lint-config; exit 0; fi
++    uv run validate-pyproject pyproject.toml
++    uv lock --check
++    just --fmt --check --unstable
++    uv run yamllint --strict .
++
+ # Run the tests. Extra words go to pytest: just test -k render
+ [group('quality')]
+ [no-exit-message]
+ test *args:
+     @{{ if args == "help" { "just help test" } else { 'uv run pytest "$@"' } }}
+ 
+-# Run the checks one after another, and stop at the first that fails: the format, the linter, the tests
++# Run the checks one after another, and stop at the first that fails: the format, the linter, the tests, the config files
+ [group('quality')]
+ [no-exit-message]
+ check *args:
+@@ -58,3 +73,4 @@ check *args:
+     just fmt --check
+     just lint
+     just test -q
++    just lint-config
+```
+
+</details>
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -26,6 +26,8 @@ default-groups = "all"
+ lint = [
+     "pre-commit>=4.7.0",
+     "ruff>=0.17.1",
++    "validate-pyproject>=0.26",
++    "yamllint>=1.38.0",
+ ]
+ test = [
+     "pytest>=9.1.1",
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/compare/cab87c139ebd3b72771ed6db08b02dd7646c7d02...cbbf9bedfc2ba814fc979c43fd2770f5464e3aac){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-12`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-12){.btn .btn-sm .btn-primary}

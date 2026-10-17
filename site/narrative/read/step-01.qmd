@@ -4,6 +4,17 @@ title: "1 The contract, and its tests"
 
 <!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `step-00`. [The code before this part](https://github.com/rahuldave/babykev/tree/step-00){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach step-00
+```
+
 **Init.** `just setup` adds 13 packages: pydantic and pydantic-core, pytest, pytest-cov and coverage, and their dependencies. `.venv` goes from 1 package to 14.
 
 ```bash
@@ -85,14 +96,14 @@ sed -i '' 's/option_text("no", c.get("false"))/option_text("NO", c.get("false"))
 
 ## What changed {#step-01-what-changed-182c57}
 
-- <a id="step-01-README.md-8ec9a0"></a>`README.md`: 9 lines added, 5 removed. [The file](https://github.com/rahuldave/babykev/blob/9cc0343527b93a817207a11a2866752807f0013d/README.md).
-- <a id="step-01-data-cheese-sample.jsonl-79f982"></a>`data/cheese/sample.jsonl`: New, 5 lines. [The file](https://github.com/rahuldave/babykev/blob/9cc0343527b93a817207a11a2866752807f0013d/data/cheese/sample.jsonl).
-- <a id="step-01-justfile-424f0b"></a>`justfile`: adds `recipe test`. 7 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/9cc0343527b93a817207a11a2866752807f0013d/justfile).
-- <a id="step-01-pyproject.toml-5d07e7"></a>`pyproject.toml`: 15 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/9cc0343527b93a817207a11a2866752807f0013d/pyproject.toml).
-- <a id="step-01-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: adds `_check`, `choice_confidence`, `class Choice`, `class Noul`, `class Score`, `class SystemOneRequest`, `option_text`, `r2`, `render`, `score_confidence`, `to_answers`, `to_record`. New, 104 lines. [The file](https://github.com/rahuldave/babykev/blob/9cc0343527b93a817207a11a2866752807f0013d/src/babykev/api.py).
-- <a id="step-01-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: adds `cheese_request`, `test_choice_accepts_the_largest_number_of_options_and_no_more`, `test_choice_answer_names_the_most_likely_option`, `test_choice_becomes_one_option_per_criterion_in_order`, `test_choice_confidence_grows_with_the_winner`, `test_choice_confidence_is_one_when_certain`, `test_choice_confidence_is_zero_for_a_guess`, `test_choice_without_options_is_rejected`, `test_every_question_gets_an_answer_of_its_own_type`, `test_noul_answer_is_the_probability_of_yes`, `test_noul_becomes_no_then_yes`, `test_noul_criteria_describe_no_and_yes`, `test_noul_needs_no_criteria`, `test_option_text_adds_a_description_only_when_there_is_one`, `test_record_keeps_the_state_and_the_order_of_questions`, `test_render_flattens_json_into_text`, `test_request_holds_one_model_per_question_type`, `test_request_without_questions_is_rejected`, `test_rounded_probabilities_still_sum_to_one`, `test_sample_line_fits_the_contract`, `test_sample_line_has_a_usable_label_on_every_question`, `test_score_answer_is_the_expected_level`, `test_score_becomes_one_option_per_level_with_a_legend`, `test_score_confidence_is_one_when_certain`, `test_score_confidence_is_zero_for_a_guess`, `test_score_confidence_prefers_neighbouring_levels`, `test_score_with_one_level_is_rejected`, `test_unknown_question_type_is_rejected`. New, 293 lines. [The file](https://github.com/rahuldave/babykev/blob/9cc0343527b93a817207a11a2866752807f0013d/tests/unit/test_api.py).
-- <a id="step-01-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: adds `run`, `test_an_unknown_command_is_refused_with_exit_code_2`, `test_help_is_printed_for_help_and_for_no_words`. New, 28 lines. [The file](https://github.com/rahuldave/babykev/blob/9cc0343527b93a817207a11a2866752807f0013d/tests/unit/test_cli.py).
-- <a id="step-01-uv.lock-8356d8"></a>`uv.lock`: 286 lines added. [The file](https://github.com/rahuldave/babykev/blob/9cc0343527b93a817207a11a2866752807f0013d/uv.lock).
+- <a id="step-01-README.md-8ec9a0"></a>`README.md`: 9 lines added, 5 removed. [The file](https://github.com/rahuldave/babykev/blob/9cc0343527b93a817207a11a2866752807f0013d/README.md){.btn .btn-sm .btn-secondary}
+- <a id="step-01-data-cheese-sample.jsonl-79f982"></a>`data/cheese/sample.jsonl`: New, 5 lines. [The file](https://github.com/rahuldave/babykev/blob/9cc0343527b93a817207a11a2866752807f0013d/data/cheese/sample.jsonl){.btn .btn-sm .btn-secondary}
+- <a id="step-01-justfile-424f0b"></a>`justfile`: adds `recipe test`. 7 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/9cc0343527b93a817207a11a2866752807f0013d/justfile){.btn .btn-sm .btn-secondary}
+- <a id="step-01-pyproject.toml-5d07e7"></a>`pyproject.toml`: 15 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/9cc0343527b93a817207a11a2866752807f0013d/pyproject.toml){.btn .btn-sm .btn-secondary}
+- <a id="step-01-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: adds `_check`, `choice_confidence`, `class Choice`, `class Noul`, `class Score`, `class SystemOneRequest`, `option_text`, `r2`, `render`, `score_confidence`, `to_answers`, `to_record`. New, 104 lines. [The file](https://github.com/rahuldave/babykev/blob/9cc0343527b93a817207a11a2866752807f0013d/src/babykev/api.py){.btn .btn-sm .btn-secondary}
+- <a id="step-01-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: adds `cheese_request`, `test_choice_accepts_the_largest_number_of_options_and_no_more`, `test_choice_answer_names_the_most_likely_option`, `test_choice_becomes_one_option_per_criterion_in_order`, `test_choice_confidence_grows_with_the_winner`, `test_choice_confidence_is_one_when_certain`, `test_choice_confidence_is_zero_for_a_guess`, `test_choice_without_options_is_rejected`, `test_every_question_gets_an_answer_of_its_own_type`, `test_noul_answer_is_the_probability_of_yes`, `test_noul_becomes_no_then_yes`, `test_noul_criteria_describe_no_and_yes`, `test_noul_needs_no_criteria`, `test_option_text_adds_a_description_only_when_there_is_one`, `test_record_keeps_the_state_and_the_order_of_questions`, `test_render_flattens_json_into_text`, `test_request_holds_one_model_per_question_type`, `test_request_without_questions_is_rejected`, `test_rounded_probabilities_still_sum_to_one`, `test_sample_line_fits_the_contract`, `test_sample_line_has_a_usable_label_on_every_question`, `test_score_answer_is_the_expected_level`, `test_score_becomes_one_option_per_level_with_a_legend`, `test_score_confidence_is_one_when_certain`, `test_score_confidence_is_zero_for_a_guess`, `test_score_confidence_prefers_neighbouring_levels`, `test_score_with_one_level_is_rejected`, `test_unknown_question_type_is_rejected`. New, 293 lines. [The file](https://github.com/rahuldave/babykev/blob/9cc0343527b93a817207a11a2866752807f0013d/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
+- <a id="step-01-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: adds `run`, `test_an_unknown_command_is_refused_with_exit_code_2`, `test_help_is_printed_for_help_and_for_no_words`. New, 28 lines. [The file](https://github.com/rahuldave/babykev/blob/9cc0343527b93a817207a11a2866752807f0013d/tests/unit/test_cli.py){.btn .btn-sm .btn-secondary}
+- <a id="step-01-uv.lock-8356d8"></a>`uv.lock`: 286 lines added. [The file](https://github.com/rahuldave/babykev/blob/9cc0343527b93a817207a11a2866752807f0013d/uv.lock){.btn .btn-sm .btn-secondary}
 
 <details><summary>The diff of <code>README.md</code></summary>
 
@@ -648,4 +659,6 @@ sed -i '' 's/option_text("no", c.get("false"))/option_text("NO", c.get("false"))
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/compare/ee96429002cd04cb95e86e9a77e9c3d02a0e9497...9cc0343527b93a817207a11a2866752807f0013d). [The code after it](https://github.com/rahuldave/babykev/tree/9cc0343527b93a817207a11a2866752807f0013d).
+[This change on GitHub](https://github.com/rahuldave/babykev/compare/ee96429002cd04cb95e86e9a77e9c3d02a0e9497...9cc0343527b93a817207a11a2866752807f0013d){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `step-01`. [The code after this part](https://github.com/rahuldave/babykev/tree/step-01){.btn .btn-sm .btn-primary}

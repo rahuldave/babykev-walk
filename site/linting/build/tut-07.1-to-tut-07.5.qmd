@@ -6,16 +6,18 @@ title: "7.1 to 7.5 Format"
 
 **Build it yourself.** [Read the tutorial](../read/tut-07.1-to-tut-07.5.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-06`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-06){.btn .btn-sm .btn-primary}
+
 This part does not start where the part before it ends, because the walk skips some changes. This command puts the files that this part starts from in place of yours. Run it, and then go on:
 
 ```bash
-git restore --source 70ac5b0a0a1d --staged -- :/ && git restore --source 910716f0cec7 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-00 --staged -- :/ && git restore --source tut-06 --staged --worktree -- :/
 ```
 
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
 
 ```bash
-git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 910716f0cec7 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch -- :/ && git restore --source tut-06 --staged --worktree -- :/
 ```
 
 ```bash
@@ -33,8 +35,6 @@ two changes fix them. `just test` prints `53 passed`, and the coverage is 100%.
 `just setup` prints `Resolved 14 packages`. The tests check what the code does, and nothing checks how it looks.
 `api.py` has a style of its own. Some lines hold an `if` and its `return` together, and some lines run past 200
 characters. ruff comes in, then its settings and the recipe `fmt`, and the formatter rewrites `api.py`.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/910716f0cec79c3f31afb34cf3a2593f0cd51315). [The code after it](https://github.com/rahuldave/babykev/tree/84b3ac0ce858d907d8d59ffdc9c9096ab8cb2ac4).
 
 ## 7.1 Ruff, in the group lint {#tut-07.1}
 
@@ -72,14 +72,14 @@ git check 5085d2a6ae47
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 910716f0cec7 --staged -- :/ && git restore --source 5085d2a6ae47 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-06 --staged -- :/ && git restore --source 5085d2a6ae47 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-07.1-what-changed-182c57}
 
-- <a id="tut-07.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the group `lint`, with ruff. 3 lines added. It comes from `uv add --group lint ruff`. [The file](https://github.com/rahuldave/babykev/blob/5085d2a6ae47a58d6259dfa06679bb2a9be692e1/pyproject.toml).
+- <a id="tut-07.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the group `lint`, with ruff. 3 lines added. It comes from `uv add --group lint ruff`. [The file](https://github.com/rahuldave/babykev/blob/5085d2a6ae47a58d6259dfa06679bb2a9be692e1/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `"ruff>=0.17.1",`
-- <a id="tut-07.1-uv.lock-8356d8"></a>`uv.lock`: ruff, at its exact version. 29 lines added. It comes from `uv add --group lint ruff`. [The file](https://github.com/rahuldave/babykev/blob/5085d2a6ae47a58d6259dfa06679bb2a9be692e1/uv.lock).
+- <a id="tut-07.1-uv.lock-8356d8"></a>`uv.lock`: ruff, at its exact version. 29 lines added. It comes from `uv add --group lint ruff`. [The file](https://github.com/rahuldave/babykev/blob/5085d2a6ae47a58d6259dfa06679bb2a9be692e1/uv.lock){.btn .btn-sm .btn-secondary}
 
 <details><summary>The diff that <code>uv add --group lint ruff</code> makes in <code>pyproject.toml</code></summary>
 
@@ -98,7 +98,7 @@ git restore --source 910716f0cec7 --staged -- :/ && git restore --source 5085d2a
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/5085d2a6ae47a58d6259dfa06679bb2a9be692e1). [The code after it](https://github.com/rahuldave/babykev/tree/5085d2a6ae47a58d6259dfa06679bb2a9be692e1).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/5085d2a6ae47a58d6259dfa06679bb2a9be692e1){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/5085d2a6ae47a58d6259dfa06679bb2a9be692e1){.btn .btn-sm .btn-primary}
 
 ## 7.2 Lines of up to 100 characters {#tut-07.2}
 
@@ -106,31 +106,48 @@ At 88 characters, the formatter would split lines of `cli.py` and of the tests t
 setting `line-length` in the table `[tool.ruff]` lets a line run to 100 characters. The formatter and the linter
 both read the table.
 
-Set the values that this change sets in [`pyproject.toml`](#tut-07.2-pyproject.toml-5d07e7). Run this command from the top of the project. It reads your file with tomlkit, a library for TOML files. It sets each of these values as the project has it, and keeps the rest of your file:
+Set the values that this change sets in [`pyproject.toml`](#tut-07.2-pyproject.toml-5d07e7). Run this command from the top of the project. It reads your file with tomlkit, a library for TOML files. It copies each of these tables and values from the project's file after this change, with their comments, and keeps the rest of your file:
 
 ```bash
 uv run --quiet --no-config --no-project --with tomlkit python - <<'PY'
-import pathlib, tomlkit
+import copy, pathlib, subprocess, tomlkit
+from tomlkit.items import Comment, Table, Whitespace
 path = pathlib.Path('pyproject.toml')
 doc = tomlkit.parse(path.read_text(encoding='utf-8')) if path.exists() else tomlkit.document()
-# Each value that the change sets, by its keys
-SET = [
-    (('tool', 'ruff'), {'line-length': 100}),
+# The project's file after this change, from your clone
+project = tomlkit.parse(subprocess.run(['git', 'show', '58d9bddfeea6:pyproject.toml'], capture_output=True, text=True,
+                                        check=True).stdout)
+# Each table and value that the change sets, by its keys: each comes from the project's file with its comments
+COPY = [
+    ('tool', 'ruff'),
 ]
 
-def put(table, keys, value):   # make each table on the way; a table goes into the one there, key by key
-    for key in keys[:-1]:
-        if key not in table:
-            table[key] = tomlkit.table(True)
-        table = table[key]
-    if isinstance(value, dict) and isinstance(table.get(keys[-1]), dict):
-        for key, item in value.items():
-            put(table[keys[-1]], [key], item)
-    else:
-        table[keys[-1]] = value
+def body(table):   # the items of a table in their order, with its comment lines
+    inner = table if isinstance(table, tomlkit.TOMLDocument) else getattr(table, 'value', None)
+    return getattr(inner, 'body', [])
 
-for keys, value in SET:
-    put(doc, keys, value)
+def above(table, key):   # the comment lines just above a key
+    found = []
+    for name, item in body(table):
+        if name is not None and name.key == key:
+            return found
+        found = found + [item] if isinstance(item, Comment) else found if isinstance(item, Whitespace) else []
+    return []
+
+for keys in COPY:
+    source, target = project, doc
+    for key in keys[:-1]:   # make each table on the way
+        source = source[key]
+        if key not in target:
+            target[key] = tomlkit.table(True)
+        target = target[key]
+    item = copy.deepcopy(source[keys[-1]])
+    if isinstance(item, Table) and not item.as_string().endswith('\n\n'):
+        item.add(tomlkit.nl())   # a blank line before the table after it
+    if keys[-1] not in target:
+        for comment in above(source, keys[-1]):
+            target.add(copy.deepcopy(comment))
+    target[keys[-1]] = item
 path.write_text(tomlkit.dumps(doc), encoding='utf-8')
 PY
 ```
@@ -161,7 +178,7 @@ git restore --source 5085d2a6ae47 --staged -- :/ && git restore --source 58d9bdd
 
 ### What changed {#tut-07.2-what-changed-182c57}
 
-- <a id="tut-07.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the table `[tool.ruff]`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/58d9bddfeea6344a159569664ac9f9ff489173a6/pyproject.toml).
+- <a id="tut-07.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the table `[tool.ruff]`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/58d9bddfeea6344a159569664ac9f9ff489173a6/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `line-length = 100`
 
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
@@ -179,7 +196,7 @@ git restore --source 5085d2a6ae47 --staged -- :/ && git restore --source 58d9bdd
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/58d9bddfeea6344a159569664ac9f9ff489173a6). [The code after it](https://github.com/rahuldave/babykev/tree/58d9bddfeea6344a159569664ac9f9ff489173a6).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/58d9bddfeea6344a159569664ac9f9ff489173a6){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/58d9bddfeea6344a159569664ac9f9ff489173a6){.btn .btn-sm .btn-primary}
 
 ## 7.3 The settings of the formatter, written out {#tut-07.3}
 
@@ -187,36 +204,48 @@ The formatter has almost no options, and its defaults are its style. A reader of
 The table `[tool.ruff.format]` writes out five of them, each with a comment. They are the defaults, so the output of
 the formatter does not change.
 
-Set the values that this change sets in [`pyproject.toml`](#tut-07.3-pyproject.toml-5d07e7). Run this command from the top of the project. It reads your file with tomlkit, a library for TOML files. It sets each of these values as the project has it, and keeps the rest of your file:
+Set the values that this change sets in [`pyproject.toml`](#tut-07.3-pyproject.toml-5d07e7). Run this command from the top of the project. It reads your file with tomlkit, a library for TOML files. It copies each of these tables and values from the project's file after this change, with their comments, and keeps the rest of your file:
 
 ```bash
 uv run --quiet --no-config --no-project --with tomlkit python - <<'PY'
-import pathlib, tomlkit
+import copy, pathlib, subprocess, tomlkit
+from tomlkit.items import Comment, Table, Whitespace
 path = pathlib.Path('pyproject.toml')
 doc = tomlkit.parse(path.read_text(encoding='utf-8')) if path.exists() else tomlkit.document()
-# Each value that the change sets, by its keys
-SET = [
-    (('tool', 'ruff', 'format'),
-     {'quote-style': 'double',
-      'indent-style': 'space',
-      'skip-magic-trailing-comma': False,
-      'line-ending': 'auto',
-      'docstring-code-format': False}),
+# The project's file after this change, from your clone
+project = tomlkit.parse(subprocess.run(['git', 'show', 'ff4c6545868d:pyproject.toml'], capture_output=True, text=True,
+                                        check=True).stdout)
+# Each table and value that the change sets, by its keys: each comes from the project's file with its comments
+COPY = [
+    ('tool', 'ruff', 'format'),
 ]
 
-def put(table, keys, value):   # make each table on the way; a table goes into the one there, key by key
-    for key in keys[:-1]:
-        if key not in table:
-            table[key] = tomlkit.table(True)
-        table = table[key]
-    if isinstance(value, dict) and isinstance(table.get(keys[-1]), dict):
-        for key, item in value.items():
-            put(table[keys[-1]], [key], item)
-    else:
-        table[keys[-1]] = value
+def body(table):   # the items of a table in their order, with its comment lines
+    inner = table if isinstance(table, tomlkit.TOMLDocument) else getattr(table, 'value', None)
+    return getattr(inner, 'body', [])
 
-for keys, value in SET:
-    put(doc, keys, value)
+def above(table, key):   # the comment lines just above a key
+    found = []
+    for name, item in body(table):
+        if name is not None and name.key == key:
+            return found
+        found = found + [item] if isinstance(item, Comment) else found if isinstance(item, Whitespace) else []
+    return []
+
+for keys in COPY:
+    source, target = project, doc
+    for key in keys[:-1]:   # make each table on the way
+        source = source[key]
+        if key not in target:
+            target[key] = tomlkit.table(True)
+        target = target[key]
+    item = copy.deepcopy(source[keys[-1]])
+    if isinstance(item, Table) and not item.as_string().endswith('\n\n'):
+        item.add(tomlkit.nl())   # a blank line before the table after it
+    if keys[-1] not in target:
+        for comment in above(source, keys[-1]):
+            target.add(copy.deepcopy(comment))
+    target[keys[-1]] = item
 path.write_text(tomlkit.dumps(doc), encoding='utf-8')
 PY
 ```
@@ -247,7 +276,7 @@ git restore --source 58d9bddfeea6 --staged -- :/ && git restore --source ff4c654
 
 ### What changed {#tut-07.3-what-changed-182c57}
 
-- <a id="tut-07.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: the five settings of the formatter. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/ff4c6545868df1f51d5aa04277cd16b868550f14/pyproject.toml).
+- <a id="tut-07.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: the five settings of the formatter. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/ff4c6545868df1f51d5aa04277cd16b868550f14/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `quote-style = "double"            # "text", not 'text'`
 
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
@@ -269,7 +298,7 @@ git restore --source 58d9bddfeea6 --staged -- :/ && git restore --source ff4c654
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/ff4c6545868df1f51d5aa04277cd16b868550f14). [The code after it](https://github.com/rahuldave/babykev/tree/ff4c6545868df1f51d5aa04277cd16b868550f14).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ff4c6545868df1f51d5aa04277cd16b868550f14){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/ff4c6545868df1f51d5aa04277cd16b868550f14){.btn .btn-sm .btn-primary}
 
 ## 7.4 The recipe fmt, and the check fails {#tut-07.4}
 
@@ -311,7 +340,7 @@ git restore --source ff4c6545868d --staged -- :/ && git restore --source 03e6443
 
 ### What changed {#tut-07.4-what-changed-182c57}
 
-- <a id="tut-07.4-justfile-424f0b"></a>`justfile`: the recipe `fmt`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/03e6443db4c837a51df4786117a33b1d20040c88/justfile).
+- <a id="tut-07.4-justfile-424f0b"></a>`justfile`: the recipe `fmt`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/03e6443db4c837a51df4786117a33b1d20040c88/justfile){.btn .btn-sm .btn-secondary}
   - look at `fmt *args:`
 
 <details open><summary>The patch to <code>justfile</code></summary>
@@ -334,7 +363,7 @@ git restore --source ff4c6545868d --staged -- :/ && git restore --source 03e6443
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/03e6443db4c837a51df4786117a33b1d20040c88). [The code after it](https://github.com/rahuldave/babykev/tree/03e6443db4c837a51df4786117a33b1d20040c88).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/03e6443db4c837a51df4786117a33b1d20040c88){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/03e6443db4c837a51df4786117a33b1d20040c88){.btn .btn-sm .btn-primary}
 
 ## 7.5 The code, formatted {#tut-07.5}
 
@@ -364,12 +393,12 @@ git check 84b3ac0ce858
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 03e6443db4c8 --staged -- :/ && git restore --source 84b3ac0ce858 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source 03e6443db4c8 --staged -- :/ && git restore --source tut-07 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-07.5-what-changed-182c57}
 
-- <a id="tut-07.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the same code, in the style of the formatter. 35 lines added, 8 removed. It comes from `just fmt`. [The file](https://github.com/rahuldave/babykev/blob/84b3ac0ce858d907d8d59ffdc9c9096ab8cb2ac4/src/babykev/api.py).
+- <a id="tut-07.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the same code, in the style of the formatter. 35 lines added, 8 removed. It comes from `just fmt`. [The file](https://github.com/rahuldave/babykev/blob/84b3ac0ce858d907d8d59ffdc9c9096ab8cb2ac4/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `        if not 1 <= len(self.criteria) <= MAX_OPTIONS:`
 
 <details><summary>The diff that <code>just fmt</code> makes in <code>src/babykev/api.py</code></summary>
@@ -457,4 +486,6 @@ git restore --source 03e6443db4c8 --staged -- :/ && git restore --source 84b3ac0
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/84b3ac0ce858d907d8d59ffdc9c9096ab8cb2ac4). [The code after it](https://github.com/rahuldave/babykev/tree/84b3ac0ce858d907d8d59ffdc9c9096ab8cb2ac4).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/84b3ac0ce858d907d8d59ffdc9c9096ab8cb2ac4){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-07`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-07){.btn .btn-sm .btn-primary}

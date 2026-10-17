@@ -27,6 +27,8 @@ what it did and where to look.
 Each move first says what problem it solves. Then it gives the change, piece by piece. Last, a command checks the
 result, and a list names each file that changed, with what to look for in it.
 
+Each page is one part. A part is one or more changes to the project, each a section of its page. The code where a part starts and where it ends has a tag on GitHub, such as `tut-00`, or is a commit between two tags. The top of each page says where its part starts, and the bottom says where it ends, each with a link to that code.
+
 There are two ways to read this tutorial. Both have the same parts, in the same order.
 
 Each part ends with a section called **What changed**. It lists every file that the part changes, with a link to the file, and then the whole diff of each file, folded. A lockfile and a binary file have a link alone. The text above it explains the change. In Build it yourself, What changed is what you check your files against.
@@ -222,3 +224,4 @@ Each other walk through the project has a website of its own:
 - [The model of babykev, explained](model/index.html). A transformer decoder made into a model that decides: packing, a block-causal mask, positions that start again, and a pointer head, each with its tests on a tiny model.
 - [The tests of babykev](testing/index.html). pytest and the first tests, coverage, the tests of the contract, fixtures and a tiny model, unit and integration tests, a floor, property tests of the mask with hypothesis, the system test, and the tests on GitHub.
 - [The contract of babykev](contract/index.html). What a request and an answer hold, written with pydantic: the three types of question, the sample data, tests of what the contract refuses, and the code that turns a request into text for the model and probabilities into answers.
+- [babykev, the lecture](lecture/index.html). The first lecture, on the branch tutorial of babykev, in nine stops from tut-01 to tut-26. Each stop takes in all the work since the stop before, and ends with every check passing.

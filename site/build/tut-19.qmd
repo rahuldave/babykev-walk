@@ -6,10 +6,12 @@ title: "19 Fixtures and the tiny model"
 
 **Build it yourself.** [Read the tutorial](../read/tut-19.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-18`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-18){.btn .btn-sm .btn-primary}
+
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
 
 ```bash
-git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 3edcb80f6814 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch -- :/ && git restore --source tut-18 --staged --worktree -- :/
 ```
 
 ```bash
@@ -22,8 +24,6 @@ The tests of the model need a model. The real one is a download of about 1 GB, a
 GPU. A test of the model checks something exact, such as which token is where, how many probabilities there are, or
 which weights get a gradient. That holds for any weights, trained or random. So the tests get a tiny model, built in memory with random
 weights. A fixture of pytest gives it to each test that asks for it.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/3edcb80f6814f9e0afe70942db6fce959799d9c5). [The code after it](https://github.com/rahuldave/babykev/tree/88b3a9e08db851ce891ecfcfcf26d18892beea90).
 
 ## 19.1 tests/tiny.py, with the tiny tokenizer {#tut-19.1}
 
@@ -71,12 +71,12 @@ git check b57593b2f1c3
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 3edcb80f6814 --staged -- :/ && git restore --source b57593b2f1c3 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-18 --staged -- :/ && git restore --source b57593b2f1c3 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-19.1-what-changed-182c57}
 
-- <a id="tut-19.1-tests-tiny.py-70c1c9"></a>`tests/tiny.py`: the tiny tokenizer. New, 23 lines. [The file](https://github.com/rahuldave/babykev/blob/b57593b2f1c324a6349f0f5b58a75754f7f261dc/tests/tiny.py).
+- <a id="tut-19.1-tests-tiny.py-70c1c9"></a>`tests/tiny.py`: the tiny tokenizer. New, 23 lines. [The file](https://github.com/rahuldave/babykev/blob/b57593b2f1c324a6349f0f5b58a75754f7f261dc/tests/tiny.py){.btn .btn-sm .btn-secondary}
   - look at `def tiny_tokenizer() -> PreTrainedTokenizerFast:  # A tokenizer with one token per character`
 
 <details open><summary>The patch to <code>tests/tiny.py</code></summary>
@@ -110,38 +110,55 @@ git restore --source 3edcb80f6814 --staged -- :/ && git restore --source b57593b
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/b57593b2f1c324a6349f0f5b58a75754f7f261dc). [The code after it](https://github.com/rahuldave/babykev/tree/b57593b2f1c324a6349f0f5b58a75754f7f261dc).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b57593b2f1c324a6349f0f5b58a75754f7f261dc){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/b57593b2f1c324a6349f0f5b58a75754f7f261dc){.btn .btn-sm .btn-primary}
 
 ## 19.2 The tests may pass a literal to unk_token {#tut-19.2}
 
 `S106` reads the name of a parameter, and not what the value is. The tests already may use `assert`, by a line of
 `[tool.ruff.lint.per-file-ignores]`. The same line lets them break `S106`. The package still may not.
 
-Set the values that this change sets in [`pyproject.toml`](#tut-19.2-pyproject.toml-5d07e7). Run this command from the top of the project. It reads your file with tomlkit, a library for TOML files. It sets each of these values as the project has it, and keeps the rest of your file:
+Set the values that this change sets in [`pyproject.toml`](#tut-19.2-pyproject.toml-5d07e7). Run this command from the top of the project. It reads your file with tomlkit, a library for TOML files. It copies each of these tables and values from the project's file after this change, with their comments, and keeps the rest of your file:
 
 ```bash
 uv run --quiet --no-config --no-project --with tomlkit python - <<'PY'
-import pathlib, tomlkit
+import copy, pathlib, subprocess, tomlkit
+from tomlkit.items import Comment, Table, Whitespace
 path = pathlib.Path('pyproject.toml')
 doc = tomlkit.parse(path.read_text(encoding='utf-8')) if path.exists() else tomlkit.document()
-# Each value that the change sets, by its keys
-SET = [
-    (('tool', 'ruff', 'lint', 'per-file-ignores', 'tests/**'), ['S101', 'S106']),
+# The project's file after this change, from your clone
+project = tomlkit.parse(subprocess.run(['git', 'show', '2daaf5f25751:pyproject.toml'], capture_output=True, text=True,
+                                        check=True).stdout)
+# Each table and value that the change sets, by its keys: each comes from the project's file with its comments
+COPY = [
+    ('tool', 'ruff', 'lint', 'per-file-ignores', 'tests/**'),
 ]
 
-def put(table, keys, value):   # make each table on the way; a table goes into the one there, key by key
-    for key in keys[:-1]:
-        if key not in table:
-            table[key] = tomlkit.table(True)
-        table = table[key]
-    if isinstance(value, dict) and isinstance(table.get(keys[-1]), dict):
-        for key, item in value.items():
-            put(table[keys[-1]], [key], item)
-    else:
-        table[keys[-1]] = value
+def body(table):   # the items of a table in their order, with its comment lines
+    inner = table if isinstance(table, tomlkit.TOMLDocument) else getattr(table, 'value', None)
+    return getattr(inner, 'body', [])
 
-for keys, value in SET:
-    put(doc, keys, value)
+def above(table, key):   # the comment lines just above a key
+    found = []
+    for name, item in body(table):
+        if name is not None and name.key == key:
+            return found
+        found = found + [item] if isinstance(item, Comment) else found if isinstance(item, Whitespace) else []
+    return []
+
+for keys in COPY:
+    source, target = project, doc
+    for key in keys[:-1]:   # make each table on the way
+        source = source[key]
+        if key not in target:
+            target[key] = tomlkit.table(True)
+        target = target[key]
+    item = copy.deepcopy(source[keys[-1]])
+    if isinstance(item, Table) and not item.as_string().endswith('\n\n'):
+        item.add(tomlkit.nl())   # a blank line before the table after it
+    if keys[-1] not in target:
+        for comment in above(source, keys[-1]):
+            target.add(copy.deepcopy(comment))
+    target[keys[-1]] = item
 path.write_text(tomlkit.dumps(doc), encoding='utf-8')
 PY
 ```
@@ -169,7 +186,7 @@ git restore --source b57593b2f1c3 --staged -- :/ && git restore --source 2daaf5f
 
 ### What changed {#tut-19.2-what-changed-182c57}
 
-- <a id="tut-19.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the tests may break `S106`. 3 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/2daaf5f257514e391edb5ad5183c2d2288965de3/pyproject.toml).
+- <a id="tut-19.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the tests may break `S106`. 3 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/2daaf5f257514e391edb5ad5183c2d2288965de3/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `"tests/**" = ["S101", "S106"]`
 
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
@@ -188,7 +205,7 @@ git restore --source b57593b2f1c3 --staged -- :/ && git restore --source 2daaf5f
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/2daaf5f257514e391edb5ad5183c2d2288965de3). [The code after it](https://github.com/rahuldave/babykev/tree/2daaf5f257514e391edb5ad5183c2d2288965de3).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/2daaf5f257514e391edb5ad5183c2d2288965de3){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/2daaf5f257514e391edb5ad5183c2d2288965de3){.btn .btn-sm .btn-primary}
 
 ## 19.3 The tiny backbone {#tut-19.3}
 
@@ -224,7 +241,7 @@ git restore --source 2daaf5f25751 --staged -- :/ && git restore --source a6e3905
 
 ### What changed {#tut-19.3-what-changed-182c57}
 
-- <a id="tut-19.3-tests-tiny.py-70c1c9"></a>`tests/tiny.py`: the tiny backbone. 20 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a6e3905ee0316fdd0b2e0d3baab9f4a65d0588b5/tests/tiny.py).
+- <a id="tut-19.3-tests-tiny.py-70c1c9"></a>`tests/tiny.py`: the tiny backbone. 20 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a6e3905ee0316fdd0b2e0d3baab9f4a65d0588b5/tests/tiny.py){.btn .btn-sm .btn-secondary}
   - look at `def tiny_backbone(`
 
 <details open><summary>The patch to <code>tests/tiny.py</code></summary>
@@ -267,7 +284,7 @@ git restore --source 2daaf5f25751 --staged -- :/ && git restore --source a6e3905
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/a6e3905ee0316fdd0b2e0d3baab9f4a65d0588b5). [The code after it](https://github.com/rahuldave/babykev/tree/a6e3905ee0316fdd0b2e0d3baab9f4a65d0588b5).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a6e3905ee0316fdd0b2e0d3baab9f4a65d0588b5){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/a6e3905ee0316fdd0b2e0d3baab9f4a65d0588b5){.btn .btn-sm .btn-primary}
 
 ## 19.4 conftest.py, with the fixture tok {#tut-19.4}
 
@@ -306,7 +323,7 @@ git restore --source a6e3905ee031 --staged -- :/ && git restore --source 14585bb
 
 ### What changed {#tut-19.4-what-changed-182c57}
 
-- <a id="tut-19.4-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `tok`. New, 16 lines. [The file](https://github.com/rahuldave/babykev/blob/14585bbd144a55ac28ff0473f3d3f2c23c03d314/tests/conftest.py).
+- <a id="tut-19.4-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `tok`. New, 16 lines. [The file](https://github.com/rahuldave/babykev/blob/14585bbd144a55ac28ff0473f3d3f2c23c03d314/tests/conftest.py){.btn .btn-sm .btn-secondary}
   - look at `@pytest.fixture(scope="session")`
 
 <details open><summary>The patch to <code>tests/conftest.py</code></summary>
@@ -333,38 +350,55 @@ git restore --source a6e3905ee031 --staged -- :/ && git restore --source 14585bb
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/14585bbd144a55ac28ff0473f3d3f2c23c03d314). [The code after it](https://github.com/rahuldave/babykev/tree/14585bbd144a55ac28ff0473f3d3f2c23c03d314).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/14585bbd144a55ac28ff0473f3d3f2c23c03d314){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/14585bbd144a55ac28ff0473f3d3f2c23c03d314){.btn .btn-sm .btn-primary}
 
 ## 19.5 pytest can import tests.tiny {#tut-19.5}
 
 The setting `pythonpath` of pytest puts folders on the path of Python. `"."` is the root of the project, where the
 folder `tests` is.
 
-Set the values that this change sets in [`pyproject.toml`](#tut-19.5-pyproject.toml-5d07e7). Run this command from the top of the project. It reads your file with tomlkit, a library for TOML files. It sets each of these values as the project has it, and keeps the rest of your file:
+Set the values that this change sets in [`pyproject.toml`](#tut-19.5-pyproject.toml-5d07e7). Run this command from the top of the project. It reads your file with tomlkit, a library for TOML files. It copies each of these tables and values from the project's file after this change, with their comments, and keeps the rest of your file:
 
 ```bash
 uv run --quiet --no-config --no-project --with tomlkit python - <<'PY'
-import pathlib, tomlkit
+import copy, pathlib, subprocess, tomlkit
+from tomlkit.items import Comment, Table, Whitespace
 path = pathlib.Path('pyproject.toml')
 doc = tomlkit.parse(path.read_text(encoding='utf-8')) if path.exists() else tomlkit.document()
-# Each value that the change sets, by its keys
-SET = [
-    (('tool', 'pytest', 'ini_options', 'pythonpath'), ['.']),
+# The project's file after this change, from your clone
+project = tomlkit.parse(subprocess.run(['git', 'show', 'b458ae1df223:pyproject.toml'], capture_output=True, text=True,
+                                        check=True).stdout)
+# Each table and value that the change sets, by its keys: each comes from the project's file with its comments
+COPY = [
+    ('tool', 'pytest', 'ini_options', 'pythonpath'),
 ]
 
-def put(table, keys, value):   # make each table on the way; a table goes into the one there, key by key
-    for key in keys[:-1]:
-        if key not in table:
-            table[key] = tomlkit.table(True)
-        table = table[key]
-    if isinstance(value, dict) and isinstance(table.get(keys[-1]), dict):
-        for key, item in value.items():
-            put(table[keys[-1]], [key], item)
-    else:
-        table[keys[-1]] = value
+def body(table):   # the items of a table in their order, with its comment lines
+    inner = table if isinstance(table, tomlkit.TOMLDocument) else getattr(table, 'value', None)
+    return getattr(inner, 'body', [])
 
-for keys, value in SET:
-    put(doc, keys, value)
+def above(table, key):   # the comment lines just above a key
+    found = []
+    for name, item in body(table):
+        if name is not None and name.key == key:
+            return found
+        found = found + [item] if isinstance(item, Comment) else found if isinstance(item, Whitespace) else []
+    return []
+
+for keys in COPY:
+    source, target = project, doc
+    for key in keys[:-1]:   # make each table on the way
+        source = source[key]
+        if key not in target:
+            target[key] = tomlkit.table(True)
+        target = target[key]
+    item = copy.deepcopy(source[keys[-1]])
+    if isinstance(item, Table) and not item.as_string().endswith('\n\n'):
+        item.add(tomlkit.nl())   # a blank line before the table after it
+    if keys[-1] not in target:
+        for comment in above(source, keys[-1]):
+            target.add(copy.deepcopy(comment))
+    target[keys[-1]] = item
 path.write_text(tomlkit.dumps(doc), encoding='utf-8')
 PY
 ```
@@ -400,7 +434,7 @@ git restore --source 14585bbd144a --staged -- :/ && git restore --source b458ae1
 
 ### What changed {#tut-19.5-what-changed-182c57}
 
-- <a id="tut-19.5-pyproject.toml-5d07e7"></a>`pyproject.toml`: the root of the project, on the path of pytest. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/b458ae1df2239c8645f7a4eb35832fd2dddc1114/pyproject.toml).
+- <a id="tut-19.5-pyproject.toml-5d07e7"></a>`pyproject.toml`: the root of the project, on the path of pytest. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/b458ae1df2239c8645f7a4eb35832fd2dddc1114/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `pythonpath = ["."]`
 
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
@@ -419,7 +453,7 @@ git restore --source 14585bbd144a --staged -- :/ && git restore --source b458ae1
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/b458ae1df2239c8645f7a4eb35832fd2dddc1114). [The code after it](https://github.com/rahuldave/babykev/tree/b458ae1df2239c8645f7a4eb35832fd2dddc1114).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b458ae1df2239c8645f7a4eb35832fd2dddc1114){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/b458ae1df2239c8645f7a4eb35832fd2dddc1114){.btn .btn-sm .btn-primary}
 
 ## 19.6 The fixture model {#tut-19.6}
 
@@ -456,7 +490,7 @@ git restore --source b458ae1df223 --staged -- :/ && git restore --source 0806a21
 
 ### What changed {#tut-19.6-what-changed-182c57}
 
-- <a id="tut-19.6-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `model`. 10 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/0806a218722ba7438f265928d3cfbc0b5f0e723e/tests/conftest.py).
+- <a id="tut-19.6-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `model`. 10 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/0806a218722ba7438f265928d3cfbc0b5f0e723e/tests/conftest.py){.btn .btn-sm .btn-secondary}
   - look at `    return DecisionModel("tiny", "cpu", backbone=tiny_backbone(len(tok))).eval()`
 
 <details open><summary>The patch to <code>tests/conftest.py</code></summary>
@@ -487,7 +521,7 @@ git restore --source b458ae1df223 --staged -- :/ && git restore --source 0806a21
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/0806a218722ba7438f265928d3cfbc0b5f0e723e). [The code after it](https://github.com/rahuldave/babykev/tree/0806a218722ba7438f265928d3cfbc0b5f0e723e).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0806a218722ba7438f265928d3cfbc0b5f0e723e){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/0806a218722ba7438f265928d3cfbc0b5f0e723e){.btn .btn-sm .btn-primary}
 
 ## 19.7 The fixture record {#tut-19.7}
 
@@ -523,7 +557,7 @@ git restore --source 0806a218722b --staged -- :/ && git restore --source b4bf249
 
 ### What changed {#tut-19.7-what-changed-182c57}
 
-- <a id="tut-19.7-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `record`. 15 lines added. [The file](https://github.com/rahuldave/babykev/blob/b4bf2491e8505697eaa015738f93178c6bd7f3fc/tests/conftest.py).
+- <a id="tut-19.7-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `record`. 15 lines added. [The file](https://github.com/rahuldave/babykev/blob/b4bf2491e8505697eaa015738f93178c6bd7f3fc/tests/conftest.py){.btn .btn-sm .btn-secondary}
   - look at `        "state": "Roquefort. A blue cheese from France, made from sheep's milk.",`
 
 <details open><summary>The patch to <code>tests/conftest.py</code></summary>
@@ -559,7 +593,7 @@ git restore --source 0806a218722b --staged -- :/ && git restore --source b4bf249
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/b4bf2491e8505697eaa015738f93178c6bd7f3fc). [The code after it](https://github.com/rahuldave/babykev/tree/b4bf2491e8505697eaa015738f93178c6bd7f3fc).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b4bf2491e8505697eaa015738f93178c6bd7f3fc){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/b4bf2491e8505697eaa015738f93178c6bd7f3fc){.btn .btn-sm .btn-primary}
 
 ## 19.8 The first test of the model {#tut-19.8}
 
@@ -613,7 +647,7 @@ git restore --source b4bf2491e850 --staged -- :/ && git restore --source 321a8df
 
 ### What changed {#tut-19.8-what-changed-182c57}
 
-- <a id="tut-19.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the first test of the model, on the tiny model. New, 20 lines. [The file](https://github.com/rahuldave/babykev/blob/321a8df2c597e0c46d06c9b36c711f0fe270900a/tests/unit/test_model.py).
+- <a id="tut-19.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the first test of the model, on the tiny model. New, 20 lines. [The file](https://github.com/rahuldave/babykev/blob/321a8df2c597e0c46d06c9b36c711f0fe270900a/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_probabilities_sum_to_one_for_every_question(`
 
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
@@ -644,7 +678,7 @@ git restore --source b4bf2491e850 --staged -- :/ && git restore --source 321a8df
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/321a8df2c597e0c46d06c9b36c711f0fe270900a). [The code after it](https://github.com/rahuldave/babykev/tree/321a8df2c597e0c46d06c9b36c711f0fe270900a).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/321a8df2c597e0c46d06c9b36c711f0fe270900a){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/321a8df2c597e0c46d06c9b36c711f0fe270900a){.btn .btn-sm .btn-primary}
 
 ## 19.9 The README names the fixtures and the tiny model {#tut-19.9}
 
@@ -675,12 +709,12 @@ git check 88b3a9e08db8
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 321a8df2c597 --staged -- :/ && git restore --source 88b3a9e08db8 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source 321a8df2c597 --staged -- :/ && git restore --source tut-19 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-19.9-what-changed-182c57}
 
-- <a id="tut-19.9-README.md-8ec9a0"></a>`README.md`: the rows of the fixtures and of the tiny model. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/88b3a9e08db851ce891ecfcfcf26d18892beea90/README.md).
+- <a id="tut-19.9-README.md-8ec9a0"></a>`README.md`: the rows of the fixtures and of the tiny model. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/88b3a9e08db851ce891ecfcfcf26d18892beea90/README.md){.btn .btn-sm .btn-secondary}
   - look at ``| `tests/tiny.py` | A small tokenizer and backbone, built in memory, in place of the real ones |``
 
 <details open><summary>The patch to <code>README.md</code></summary>
@@ -701,4 +735,6 @@ git restore --source 321a8df2c597 --staged -- :/ && git restore --source 88b3a9e
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/88b3a9e08db851ce891ecfcfcf26d18892beea90). [The code after it](https://github.com/rahuldave/babykev/tree/88b3a9e08db851ce891ecfcfcf26d18892beea90).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/88b3a9e08db851ce891ecfcfcf26d18892beea90){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-19`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-19){.btn .btn-sm .btn-primary}

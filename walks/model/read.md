@@ -40,14 +40,14 @@ options `n` and `y`. It packs the question twice, so that the two copies can be 
 
 ## 16.1 The model, and the decoder under it
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-15`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-15)
+
 ```bash
 just setup
 ```
 
 `just setup` prints `Resolved 66 packages`. The model is one file, `src/babykev/model.py`. It comes in whole, and we
 read its docstring first.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/c7037ec460963acd41edf1f63a6a03d2e52e5bae). [The code after it](https://github.com/rahuldave/babykev/tree/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93).
 
 ### 16.1 model.py, the model
 
@@ -426,11 +426,15 @@ the decoder, and the layers stay as they are. The fourth idea reads `last_hidden
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93). [The code after it](https://github.com/rahuldave/babykev/tree/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93).
+
+This part ends at the code at `c4c288ccc7e4`, partway through `tut-16`. [The code after this part](https://github.com/rahuldave/babykev/tree/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93)
 
 <a id="tut-19.8"></a>
 
 ## 19.8 A tiny model for the tests
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `b4bf2491e850`, partway through `tut-19`. [The code before this part](https://github.com/rahuldave/babykev/tree/b4bf2491e8505697eaa015738f93178c6bd7f3fc)
 
 ```bash
 just setup
@@ -467,8 +471,6 @@ sed -n '22,27p' tests/conftest.py
 
 The fixture `model` is a `DecisionModel` on the tiny backbone, on the CPU. The code that runs is the real
 `DecisionModel`. Only the backbone and the tokenizer under it are small.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/b4bf2491e8505697eaa015738f93178c6bd7f3fc). [The code after it](https://github.com/rahuldave/babykev/tree/321a8df2c597e0c46d06c9b36c711f0fe270900a).
 
 ### 19.8 The first test of the model
 
@@ -541,11 +543,15 @@ Every test in the rest of this walk asks for these fixtures, and runs on the tin
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/321a8df2c597e0c46d06c9b36c711f0fe270900a). [The code after it](https://github.com/rahuldave/babykev/tree/321a8df2c597e0c46d06c9b36c711f0fe270900a).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/321a8df2c597e0c46d06c9b36c711f0fe270900a).
+
+This part ends at the code at `321a8df2c597`, partway through `tut-19`. [The code after this part](https://github.com/rahuldave/babykev/tree/321a8df2c597e0c46d06c9b36c711f0fe270900a)
 
 <a id="tut-20.1"></a>
 
 ## 20.1 Packing a request into one sequence
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-19`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-19)
 
 ```bash
 just setup
@@ -595,8 +601,6 @@ sed -n '114,134p' src/babykev/model.py
 its delimiters. Line 124 puts each option between its two delimiters, and line 125 notes the place of its closing
 token. Line 126 adds the decide token. Line 131 gives the branch its segment, and line 132 its positions. The tests
 check the whole sequence, token by token.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/88b3a9e08db851ce891ecfcfcf26d18892beea90). [The code after it](https://github.com/rahuldave/babykev/tree/6d2401817f1bc2d56de4f3021cfceaa80d5b80f9).
 
 ### 20.1 Packing marks every part with its delimiter
 
@@ -666,11 +670,15 @@ run, and not what a test checks.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/6d2401817f1bc2d56de4f3021cfceaa80d5b80f9). [The code after it](https://github.com/rahuldave/babykev/tree/6d2401817f1bc2d56de4f3021cfceaa80d5b80f9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/6d2401817f1bc2d56de4f3021cfceaa80d5b80f9).
+
+This part ends at the code at `6d2401817f1b`, partway through `tut-20`. [The code after this part](https://github.com/rahuldave/babykev/tree/6d2401817f1bc2d56de4f3021cfceaa80d5b80f9)
 
 <a id="tut-20.2"></a>
 
 ## 20.2 Positions that start again after the state
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `6d2401817f1b`, partway through `tut-20`. [The code before this part](https://github.com/rahuldave/babykev/tree/6d2401817f1bc2d56de4f3021cfceaa80d5b80f9)
 
 ```bash
 just setup
@@ -690,8 +698,6 @@ So question 2 has the same tokens and the same positions as question 1. If it al
 and itself, the decoder computes the same numbers for it. A question then gets the same answer wherever it sits in
 the request, and the same answer as in a request of its own. The positions do half of that work, and the mask does
 the other half, in the last part of this walk.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/6d2401817f1bc2d56de4f3021cfceaa80d5b80f9). [The code after it](https://github.com/rahuldave/babykev/tree/e947449de17438d3aa5ee006bfc98db3944d4457).
 
 ### 20.2 Positions restart after the state
 
@@ -742,11 +748,15 @@ to 47 check that the positions of each question run from that count upward.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e947449de17438d3aa5ee006bfc98db3944d4457). [The code after it](https://github.com/rahuldave/babykev/tree/e947449de17438d3aa5ee006bfc98db3944d4457).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e947449de17438d3aa5ee006bfc98db3944d4457).
+
+This part ends at the code at `e947449de174`, partway through `tut-20`. [The code after this part](https://github.com/rahuldave/babykev/tree/e947449de17438d3aa5ee006bfc98db3944d4457)
 
 <a id="tut-20.5-to-tut-20.6"></a>
 
 ## 20.5 to 20.6 A caller's text cannot forge a delimiter
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `e3b3ab01357c`, partway through `tut-20`. [The code before this part](https://github.com/rahuldave/babykev/tree/e3b3ab01357c19f3325d481c80e67ad1f13c1522)
 
 ```bash
 just setup
@@ -773,8 +783,6 @@ uv run python -c "from tests.tiny import tiny_tokenizer; from babykev.model impo
 
 The tokenizer alone gives three tokens, `n`, `o` and the decide delimiter. `user_tokens` gives 16 ordinary tokens. The
 tiny tokenizer has no token for `¦`, so it gives `[UNK]` there. The tokenizer of the base model has tokens for it.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/e3b3ab01357c19f3325d481c80e67ad1f13c1522). [The code after it](https://github.com/rahuldave/babykev/tree/e30ea2eb52ae23815152f60b09d07d9d0dd1fd3a).
 
 <a id="tut-20.5"></a>
 
@@ -900,11 +908,15 @@ token of the text is a delimiter.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e30ea2eb52ae23815152f60b09d07d9d0dd1fd3a). [The code after it](https://github.com/rahuldave/babykev/tree/e30ea2eb52ae23815152f60b09d07d9d0dd1fd3a).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e30ea2eb52ae23815152f60b09d07d9d0dd1fd3a).
+
+This part ends at the code at `e30ea2eb52ae`, partway through `tut-20`. [The code after this part](https://github.com/rahuldave/babykev/tree/e30ea2eb52ae23815152f60b09d07d9d0dd1fd3a)
 
 <a id="tut-20.7"></a>
 
 ## 20.7 A pointer head in place of the vocabulary head
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `e30ea2eb52ae`, partway through `tut-20`. [The code before this part](https://github.com/rahuldave/babykev/tree/e30ea2eb52ae23815152f60b09d07d9d0dd1fd3a)
 
 ```bash
 just setup
@@ -927,8 +939,6 @@ vector of the decide token, and `k` maps the vector of each option. Line 186 tak
 the decide token, and scales it by one over the square root of 256. The head computes one row of attention. The
 query comes from the decide token, a key comes from each option, and the scores are the logits. `probs` turns them
 into probabilities with a softmax.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/e30ea2eb52ae23815152f60b09d07d9d0dd1fd3a). [The code after it](https://github.com/rahuldave/babykev/tree/455b6a8ae64dae7e79fea6dd6b8434d11eb8f542).
 
 ### 20.7 The pointer head gives one logit per option
 
@@ -986,11 +996,15 @@ The test builds a head alone, of width 32 and `dp` 8, and gives it the vector of
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/455b6a8ae64dae7e79fea6dd6b8434d11eb8f542). [The code after it](https://github.com/rahuldave/babykev/tree/455b6a8ae64dae7e79fea6dd6b8434d11eb8f542).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/455b6a8ae64dae7e79fea6dd6b8434d11eb8f542).
+
+This part ends at the code at `455b6a8ae64d`, partway through `tut-20`. [The code after this part](https://github.com/rahuldave/babykev/tree/455b6a8ae64dae7e79fea6dd6b8434d11eb8f542)
 
 <a id="tut-21.1-to-tut-21.2"></a>
 
 ## 21.1 to 21.2 DecisionModel, with an adapter, over several records
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-20`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-20)
 
 ```bash
 just setup
@@ -1010,8 +1024,6 @@ LoRA, low-rank adaptation, leaves each weight of the backbone as it is. Beside a
 two small matrices, `A` of r by in and `B` of out by r. Their product goes into the output. Lines 210 to
 218 do it with peft, on the seven projections of `LORA_TARGETS`, line 39. r is the rank, the argument `lora`. peft freezes the
 backbone, so training changes the adapter and the head, and nothing else.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/ebfa2a8cee251782b3709a379c35af77c80c6170). [The code after it](https://github.com/rahuldave/babykev/tree/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac).
 
 <a id="tut-21.1"></a>
 
@@ -1168,11 +1180,15 @@ numbers in another order. So the last bits of a float can differ.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac). [The code after it](https://github.com/rahuldave/babykev/tree/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac).
+
+This part ends at the code at `e6248c7e2cf3`, partway through `tut-21`. [The code after this part](https://github.com/rahuldave/babykev/tree/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac)
 
 <a id="tut-22.1-to-tut-22.10"></a>
 
 ## 22.1 to 22.10 The mask, found and fixed
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-21`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-21)
 
 ```bash
 just setup
@@ -1200,8 +1216,6 @@ The command runs the tiny model on the small request, and prints the probabiliti
 `[0.5089, 0.4911]`, and question 2 gets `[0.5031, 0.4969]`. `torch.equal` prints `False`. Question 2 sees something
 that question 1 does not. Every check has passed since `model.py` came in, and no test has looked at what the mask
 lets through. The tests that follow look.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/922d6ba2495756622ad215301da7c48f2ec33fa9). [The code after it](https://github.com/rahuldave/babykev/tree/5f63fb463f94ae6c82a647db8a4b86d4a3d6caa1).
 
 <a id="tut-22.1"></a>
 
@@ -1809,4 +1823,6 @@ the guide on the model and one on the mask. Then it builds the images and the wo
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/5f63fb463f94ae6c82a647db8a4b86d4a3d6caa1). [The code after it](https://github.com/rahuldave/babykev/tree/5f63fb463f94ae6c82a647db8a4b86d4a3d6caa1).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/5f63fb463f94ae6c82a647db8a4b86d4a3d6caa1).
+
+This part ends at the code at `5f63fb463f94`, partway through `tut-22`. [The code after this part](https://github.com/rahuldave/babykev/tree/5f63fb463f94ae6c82a647db8a4b86d4a3d6caa1)

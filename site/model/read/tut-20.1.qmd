@@ -6,6 +6,17 @@ title: "20.1 Packing a request into one sequence"
 
 **Read the tutorial.** [Build it yourself](../build/tut-20.1.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-19`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-19){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach tut-19
+```
+
 ```bash
 just setup
 ```
@@ -55,8 +66,6 @@ its delimiters. Line 124 puts each option between its two delimiters, and line 1
 token. Line 126 adds the decide token. Line 131 gives the branch its segment, and line 132 its positions. The tests
 check the whole sequence, token by token.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/88b3a9e08db851ce891ecfcfcf26d18892beea90). [The code after it](https://github.com/rahuldave/babykev/tree/6d2401817f1bc2d56de4f3021cfceaa80d5b80f9).
-
 ## 20.1 Packing marks every part with its delimiter {#tut-20.1}
 
 The test packs a small record, the state `ab` and one question `x?` with the options `n` and `y`. With one token per
@@ -87,7 +96,7 @@ run, and not what a test checks.
 
 ### What changed {#tut-20.1-what-changed-182c57}
 
-- <a id="tut-20.1-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the tokens of a packed record. 16 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/6d2401817f1bc2d56de4f3021cfceaa80d5b80f9/tests/unit/test_model.py).
+- <a id="tut-20.1-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the tokens of a packed record. 16 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/6d2401817f1bc2d56de4f3021cfceaa80d5b80f9/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_packing_marks_every_part_with_its_delimiter(`
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
@@ -125,4 +134,6 @@ run, and not what a test checks.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/6d2401817f1bc2d56de4f3021cfceaa80d5b80f9). [The code after it](https://github.com/rahuldave/babykev/tree/6d2401817f1bc2d56de4f3021cfceaa80d5b80f9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/6d2401817f1bc2d56de4f3021cfceaa80d5b80f9){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `6d2401817f1b`, partway through `tut-20`. [The code after this part](https://github.com/rahuldave/babykev/tree/6d2401817f1bc2d56de4f3021cfceaa80d5b80f9){.btn .btn-sm .btn-primary}

@@ -50,6 +50,8 @@ The table gives each kind of documentation, and the sections where it appears.
 
 ## 0 The README, before any code
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part is where the project starts, at `tut-00`. [The code of this part](https://github.com/rahuldave/babykev/tree/tut-00)
+
 The first documentation of a project is its README. Here babykev is only words. There is the README, the licence, the
 notice and `.gitignore`.
 
@@ -617,11 +619,11 @@ git ignores each of them before it exists.
 
 </details>
 
-[The code](https://github.com/rahuldave/babykev/tree/70ac5b0a0a1d927dfc4da6f8b7b92344917e4a33).
-
 <a id="tut-01.13-to-tut-01.14"></a>
 
 ## 1.13 to 1.14 The README says how to begin
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `9218f21a7842`, partway through `tut-01`. [The code before this part](https://github.com/rahuldave/babykev/tree/9218f21a784277593cf6930e10389b04e41bf9d0)
 
 ```bash
 just setup
@@ -638,8 +640,6 @@ and `just help VERB` explains a recipe.
 
 The description and the help are documentation too, for a person who installs babykev or runs it. The README now says
 how to begin, and what each file is.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/9218f21a784277593cf6930e10389b04e41bf9d0). [The code after it](https://github.com/rahuldave/babykev/tree/7ad3a06605fadc9f34b5e2d8180145a3e53389a9).
 
 <a id="tut-01.13"></a>
 
@@ -736,11 +736,15 @@ Both commands of "Start" work. `just setup` prints `Resolved 1 package` and `Che
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/7ad3a06605fadc9f34b5e2d8180145a3e53389a9). [The code after it](https://github.com/rahuldave/babykev/tree/7ad3a06605fadc9f34b5e2d8180145a3e53389a9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7ad3a06605fadc9f34b5e2d8180145a3e53389a9).
+
+This part ends at the code at `tut-01`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-01)
 
 <a id="tut-10"></a>
 
 ## 10 Docstrings
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-09`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-09)
 
 The whole tutorial then gives babykev its code and its checks. `src/babykev/api.py` is the contract, the rules for
 what a request and an answer hold. Its class `SystemOneRequest` is a request, which holds a state and its questions.
@@ -765,8 +769,6 @@ A docstring says what a module, a class or a function is for. Python keeps it in
 editor show it. kev gave a docstring to some functions of `api.py`, and to none of its classes. The rules `D1` of
 ruff ask for a docstring on every public module, class and function. ruff cannot write one, so each comes by hand,
 one kind at a time.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/b0e8dd74539e4d3b210defc5e0169f53b1670393). [The code after it](https://github.com/rahuldave/babykev/tree/ebd0888f135c00e29b583f6fad0575c290fd4876).
 
 <a id="tut-10.1"></a>
 
@@ -976,11 +978,15 @@ test` prints `53 passed`, and the total is 100%, 83 of 83 statements.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/ebd0888f135c00e29b583f6fad0575c290fd4876). [The code after it](https://github.com/rahuldave/babykev/tree/ebd0888f135c00e29b583f6fad0575c290fd4876).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ebd0888f135c00e29b583f6fad0575c290fd4876).
+
+This part ends at the code at `tut-10`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-10)
 
 <a id="tut-13"></a>
 
 ## 13 Documentation in the code
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-12`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-12)
 
 The whole tutorial then adds a gate. `just check` runs every check, one after another, and stops at the first that
 fails. `just hook` installs a git hook, a script that git runs before each `git commit`, and the hook runs
@@ -1000,8 +1006,6 @@ parameter, a return type or a field, on the same line.
 smalldocs reads the signature, the docstring and the docments, and writes the reference of the code from them. It
 also lists what has no documentation, as coverage lists the lines that no test runs. The gaps close one part at a
 time. A long docment then shows what the formatter can do to one, and the gate runs the check.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac). [The code after it](https://github.com/rahuldave/babykev/tree/005b87bdfa2e70c6ceca52dc07197c69702f00be).
 
 <a id="tut-13.1"></a>
 
@@ -1775,11 +1779,15 @@ after the tests, and ends with exit code 0. A function, a parameter or a field w
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/005b87bdfa2e70c6ceca52dc07197c69702f00be). [The code after it](https://github.com/rahuldave/babykev/tree/005b87bdfa2e70c6ceca52dc07197c69702f00be).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/005b87bdfa2e70c6ceca52dc07197c69702f00be).
+
+This part ends at the code at `tut-13`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-13)
 
 <a id="tut-14"></a>
 
 ## 14 The docs site
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-13`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-13)
 
 So far, `just docs module api` prints the reference of `api.py` as text in the terminal. This section builds a
 website from it, with a front page written by hand.
@@ -1794,8 +1802,6 @@ The reference exists only as Markdown that `just docs module` prints in a termin
 front page that says what babykev is, and a page of reference for each module. smalldocs builds that site from the
 same docstrings and docments. Git first learns to ignore the files that a build writes into `docs/`. Then the recipe
 `docs` builds the site, the site gets its settings and its front page, and the README names it.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/005b87bdfa2e70c6ceca52dc07197c69702f00be). [The code after it](https://github.com/rahuldave/babykev/tree/e1efb48492d7223fd0442906d2e55a83e0db481e).
 
 <a id="tut-14.1"></a>
 
@@ -2059,11 +2065,15 @@ grep -n 'docs/' README.md
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e1efb48492d7223fd0442906d2e55a83e0db481e). [The code after it](https://github.com/rahuldave/babykev/tree/e1efb48492d7223fd0442906d2e55a83e0db481e).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e1efb48492d7223fd0442906d2e55a83e0db481e).
+
+This part ends at the code at `tut-14`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-14)
 
 <a id="tut-24"></a>
 
 ## 24 The guide to the model
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-23`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-23)
 
 The whole tutorial then builds the model, and tests it. The project adds four packages for the model, torch,
 transformers, peft and safetensors. `src/babykev/model.py` holds the model. ty checks the types, through
@@ -2091,8 +2101,6 @@ just setup
 The reference pages of the site give the signature and the docstring of each function of `model.py`. They do not say
 why the model is built as it is. Two pages of a guide say it, in prose. The first gives the four ideas of the model,
 and the second draws the mask as a grid. smalldocs runs no code, so a page holds its grids as text.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/d9df8f2a02ed7a7780325aebf281d6107317f9d9). [The code after it](https://github.com/rahuldave/babykev/tree/41d24729682119b9bbb828187c5e9684a2921308).
 
 <a id="tut-24.1"></a>
 
@@ -2400,11 +2408,15 @@ just check
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/41d24729682119b9bbb828187c5e9684a2921308). [The code after it](https://github.com/rahuldave/babykev/tree/41d24729682119b9bbb828187c5e9684a2921308).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/41d24729682119b9bbb828187c5e9684a2921308).
+
+This part ends at the code at `tut-24`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-24)
 
 <a id="tut-26.5-to-tut-26.6"></a>
 
 ## 26.5 to 26.6 The docs on GitHub Pages
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `eb0acd148867`, partway through `tut-26`. [The code before this part](https://github.com/rahuldave/babykev/tree/eb0acd148867bdbc6292660b7268b656074fb727)
 
 ```bash
 just setup
@@ -2421,8 +2433,6 @@ as the value true. Its settings now let a key be such a word.
 
 The project adds actionlint, a linter of the workflows of GitHub, to its other linters, and `just lint-config` runs
 it. The second workflow builds the site and publishes it.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/eb0acd148867bdbc6292660b7268b656074fb727). [The code after it](https://github.com/rahuldave/babykev/tree/88854e32ebcb4647672742cc4ef709eefc5fde0c).
 
 <a id="tut-26.5"></a>
 
@@ -2565,4 +2575,6 @@ This tutorial ends here. The [whole tutorial](https://rahuldave.com/babykev-walk
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/88854e32ebcb4647672742cc4ef709eefc5fde0c). [The code after it](https://github.com/rahuldave/babykev/tree/88854e32ebcb4647672742cc4ef709eefc5fde0c).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/88854e32ebcb4647672742cc4ef709eefc5fde0c).
+
+This part ends at the code at `tut-26`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-26)

@@ -6,14 +6,23 @@ title: "14.1 to 14.2 `just docs` alone builds the site"
 
 **Read the tutorial.** [Build it yourself](../build/tut-14.1-to-tut-14.2.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-13`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-13){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach tut-13
+```
+
 ```bash
 just setup
 ```
 
 The reference is text in a terminal. The recipe `docs` changes. With no words, it builds a site. With words, it works
 as before, so `just docs check` is the same command.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/005b87bdfa2e70c6ceca52dc07197c69702f00be). [The code after it](https://github.com/rahuldave/babykev/tree/64de40516df5aa215bfac1c0198e898ac0960061).
 
 ## 14.1 Git ignores what a build of the docs makes {#tut-14.1}
 
@@ -36,7 +45,7 @@ tail -n 4 .gitignore
 
 ### What changed {#tut-14.1-what-changed-182c57}
 
-- <a id="tut-14.1-.gitignore-a5cc29"></a>`.gitignore`: the files that a build of the docs makes. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/3593f61e4e221b04f00f360fe96e6dc4243b02dd/.gitignore).
+- <a id="tut-14.1-.gitignore-a5cc29"></a>`.gitignore`: the files that a build of the docs makes. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/3593f61e4e221b04f00f360fe96e6dc4243b02dd/.gitignore){.btn .btn-sm .btn-secondary}
   - look at `/docs/_site/`
 
 <details><summary>The diff of <code>.gitignore</code></summary>
@@ -55,7 +64,7 @@ tail -n 4 .gitignore
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/3593f61e4e221b04f00f360fe96e6dc4243b02dd). [The code after it](https://github.com/rahuldave/babykev/tree/3593f61e4e221b04f00f360fe96e6dc4243b02dd).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3593f61e4e221b04f00f360fe96e6dc4243b02dd){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/3593f61e4e221b04f00f360fe96e6dc4243b02dd){.btn .btn-sm .btn-primary}
 
 ## 14.2 Just docs, alone, builds the site {#tut-14.2}
 
@@ -84,7 +93,7 @@ of `.gitignore` from the move before keep them out of git.
 
 ### What changed {#tut-14.2-what-changed-182c57}
 
-- <a id="tut-14.2-justfile-424f0b"></a>`justfile`: with no words, `docs` builds the site. 5 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/64de40516df5aa215bfac1c0198e898ac0960061/justfile).
+- <a id="tut-14.2-justfile-424f0b"></a>`justfile`: with no words, `docs` builds the site. 5 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/64de40516df5aa215bfac1c0198e898ac0960061/justfile){.btn .btn-sm .btn-secondary}
   - look at `    if [ "$#" -eq 0 ]; then exec uv run smalldocs render docs; fi`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -108,4 +117,6 @@ of `.gitignore` from the move before keep them out of git.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/64de40516df5aa215bfac1c0198e898ac0960061). [The code after it](https://github.com/rahuldave/babykev/tree/64de40516df5aa215bfac1c0198e898ac0960061).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/64de40516df5aa215bfac1c0198e898ac0960061){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `64de40516df5`, partway through `tut-14`. [The code after this part](https://github.com/rahuldave/babykev/tree/64de40516df5aa215bfac1c0198e898ac0960061){.btn .btn-sm .btn-primary}

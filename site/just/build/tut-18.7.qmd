@@ -6,10 +6,12 @@ title: "18.7 `just smoke`"
 
 **Build it yourself.** [Read the tutorial](../read/tut-18.7.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `117a59e9838e`, partway through `tut-18`. [The code before this part](https://github.com/rahuldave/babykev/tree/117a59e9838e0fa2e28ad29d02d5aeba3a8622f9){.btn .btn-sm .btn-primary}
+
 This part does not start where the part before it ends, because the walk skips some changes. This command puts the files that this part starts from in place of yours. Run it, and then go on:
 
 ```bash
-git restore --source d4dd1c8d3d3c --staged -- :/ && git restore --source 117a59e9838e --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-17 --staged -- :/ && git restore --source 117a59e9838e --staged --worktree -- :/
 ```
 
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
@@ -27,8 +29,6 @@ of the sample data, and prints each answer beside its label. The command `babyke
 downloads the model from the Hugging Face Hub.
 
 The smoke gets a recipe of its own, in a group `model`. `just check` does not run it.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/117a59e9838e0fa2e28ad29d02d5aeba3a8622f9). [The code after it](https://github.com/rahuldave/babykev/tree/55844b2320b632b40dd3f34f0a6b5bb962551005).
 
 ## 18.7 The recipe smoke {#tut-18.7}
 
@@ -75,7 +75,7 @@ git restore --source 117a59e9838e --staged -- :/ && git restore --source 55844b2
 
 ### What changed {#tut-18.7-what-changed-182c57}
 
-- <a id="tut-18.7-justfile-424f0b"></a>`justfile`: the recipe `smoke`. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/55844b2320b632b40dd3f34f0a6b5bb962551005/justfile).
+- <a id="tut-18.7-justfile-424f0b"></a>`justfile`: the recipe `smoke`. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/55844b2320b632b40dd3f34f0a6b5bb962551005/justfile){.btn .btn-sm .btn-secondary}
   - look at `smoke *args:`
 
 <details open><summary>The patch to <code>justfile</code></summary>
@@ -97,4 +97,6 @@ git restore --source 117a59e9838e --staged -- :/ && git restore --source 55844b2
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/55844b2320b632b40dd3f34f0a6b5bb962551005). [The code after it](https://github.com/rahuldave/babykev/tree/55844b2320b632b40dd3f34f0a6b5bb962551005).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/55844b2320b632b40dd3f34f0a6b5bb962551005){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `55844b2320b6`, partway through `tut-18`. [The code after this part](https://github.com/rahuldave/babykev/tree/55844b2320b632b40dd3f34f0a6b5bb962551005){.btn .btn-sm .btn-primary}

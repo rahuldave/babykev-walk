@@ -6,6 +6,17 @@ title: "2 pytest, the first tests and coverage"
 
 **Read the tutorial.** [Build it yourself](../build/tut-02.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-01`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-01){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach tut-01
+```
+
 babykev has one piece of code, the command `babykev`, in `src/babykev/cli.py`. The first tests are of the command.
 Then coverage counts the lines of babykev that the tests run.
 
@@ -19,8 +30,6 @@ clone, it first makes `.venv`, and installs babykev.
 We cannot tell whether `babykev` still works after a change, unless we run it by hand and read what it prints. Tests
 run it for us. pytest finds the tests and runs them, and a recipe `just test` runs pytest. The first tests are of the
 command, the only code that babykev has. Last, coverage shows which lines the tests run.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/7ad3a06605fadc9f34b5e2d8180145a3e53389a9). [The code after it](https://github.com/rahuldave/babykev/tree/4640589d80e4f224a4b2c1fd9567e952f564f102).
 
 ## 2.1 uv installs every dependency group {#tut-02.1}
 
@@ -49,7 +58,7 @@ later move adds one.
 
 ### What changed {#tut-02.1-what-changed-182c57}
 
-- <a id="tut-02.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the table `[tool.uv]`, so uv installs every dependency group. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/ad616a5cc1fcdf5b7c1672b79d0d2b267b72bd59/pyproject.toml).
+- <a id="tut-02.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the table `[tool.uv]`, so uv installs every dependency group. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/ad616a5cc1fcdf5b7c1672b79d0d2b267b72bd59/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `default-groups = "all"`
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
@@ -67,7 +76,7 @@ later move adds one.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/ad616a5cc1fcdf5b7c1672b79d0d2b267b72bd59). [The code after it](https://github.com/rahuldave/babykev/tree/ad616a5cc1fcdf5b7c1672b79d0d2b267b72bd59).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ad616a5cc1fcdf5b7c1672b79d0d2b267b72bd59){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/ad616a5cc1fcdf5b7c1672b79d0d2b267b72bd59){.btn .btn-sm .btn-primary}
 
 ## 2.2 Pytest, in the group test {#tut-02.2}
 
@@ -91,9 +100,9 @@ code 5. pytest uses exit code 5 to say that it found no test.
 
 ### What changed {#tut-02.2-what-changed-182c57}
 
-- <a id="tut-02.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the group `test`, with pytest. 5 lines added. It comes from `uv add --group test pytest`. [The file](https://github.com/rahuldave/babykev/blob/966956d738b58505e23586af60f05cd5daceb12f/pyproject.toml).
+- <a id="tut-02.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the group `test`, with pytest. 5 lines added. It comes from `uv add --group test pytest`. [The file](https://github.com/rahuldave/babykev/blob/966956d738b58505e23586af60f05cd5daceb12f/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `"pytest>=9.1.1",`
-- <a id="tut-02.2-uv.lock-8356d8"></a>`uv.lock`: pytest and the five packages it needs. 71 lines added. It comes from `uv add --group test pytest`. [The file](https://github.com/rahuldave/babykev/blob/966956d738b58505e23586af60f05cd5daceb12f/uv.lock).
+- <a id="tut-02.2-uv.lock-8356d8"></a>`uv.lock`: pytest and the five packages it needs. 71 lines added. It comes from `uv add --group test pytest`. [The file](https://github.com/rahuldave/babykev/blob/966956d738b58505e23586af60f05cd5daceb12f/uv.lock){.btn .btn-sm .btn-secondary}
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -111,7 +120,7 @@ code 5. pytest uses exit code 5 to say that it found no test.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/966956d738b58505e23586af60f05cd5daceb12f). [The code after it](https://github.com/rahuldave/babykev/tree/966956d738b58505e23586af60f05cd5daceb12f).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/966956d738b58505e23586af60f05cd5daceb12f){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/966956d738b58505e23586af60f05cd5daceb12f){.btn .btn-sm .btn-primary}
 
 ## 2.3 The recipe test {#tut-02.3}
 
@@ -137,7 +146,7 @@ exit code 5. `just` prints no line of its own about the error. `just help test` 
 
 ### What changed {#tut-02.3-what-changed-182c57}
 
-- <a id="tut-02.3-justfile-424f0b"></a>`justfile`: the recipe `test`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/b0840709e371a548d4b922c57c679ba040dd2c1a/justfile).
+- <a id="tut-02.3-justfile-424f0b"></a>`justfile`: the recipe `test`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/b0840709e371a548d4b922c57c679ba040dd2c1a/justfile){.btn .btn-sm .btn-secondary}
   - look at `test *args:`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -157,7 +166,7 @@ exit code 5. `just` prints no line of its own about the error. `just help test` 
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/b0840709e371a548d4b922c57c679ba040dd2c1a). [The code after it](https://github.com/rahuldave/babykev/tree/b0840709e371a548d4b922c57c679ba040dd2c1a).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b0840709e371a548d4b922c57c679ba040dd2c1a){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/b0840709e371a548d4b922c57c679ba040dd2c1a){.btn .btn-sm .btn-primary}
 
 ## 2.4 A test of the help {#tut-02.4}
 
@@ -184,7 +193,7 @@ just test
 
 ### What changed {#tut-02.4-what-changed-182c57}
 
-- <a id="tut-02.4-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: one test, for four ways of asking for help. New, 18 lines. [The file](https://github.com/rahuldave/babykev/blob/72678bd1d656f5bc6e44f2d65b44a1e18b024661/tests/unit/test_cli.py).
+- <a id="tut-02.4-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: one test, for four ways of asking for help. New, 18 lines. [The file](https://github.com/rahuldave/babykev/blob/72678bd1d656f5bc6e44f2d65b44a1e18b024661/tests/unit/test_cli.py){.btn .btn-sm .btn-secondary}
   - look at `@pytest.mark.parametrize("words", [(), ("help",), ("--help",), ("-h",)])`
 
 <details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
@@ -213,7 +222,7 @@ just test
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/72678bd1d656f5bc6e44f2d65b44a1e18b024661). [The code after it](https://github.com/rahuldave/babykev/tree/72678bd1d656f5bc6e44f2d65b44a1e18b024661).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/72678bd1d656f5bc6e44f2d65b44a1e18b024661){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/72678bd1d656f5bc6e44f2d65b44a1e18b024661){.btn .btn-sm .btn-primary}
 
 ## 2.5 A test of an unknown command {#tut-02.5}
 
@@ -237,7 +246,7 @@ just test -k unknown_command
 
 ### What changed {#tut-02.5-what-changed-182c57}
 
-- <a id="tut-02.5-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: the test of a word that is not a command. 10 lines added. [The file](https://github.com/rahuldave/babykev/blob/9a4100fd1962921bc11cf9f4b22c5326c7a51807/tests/unit/test_cli.py).
+- <a id="tut-02.5-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: the test of a word that is not a command. 10 lines added. [The file](https://github.com/rahuldave/babykev/blob/9a4100fd1962921bc11cf9f4b22c5326c7a51807/tests/unit/test_cli.py){.btn .btn-sm .btn-secondary}
   - look at `assert exit_info.value.code == 2`
 
 <details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
@@ -261,7 +270,7 @@ just test -k unknown_command
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/9a4100fd1962921bc11cf9f4b22c5326c7a51807). [The code after it](https://github.com/rahuldave/babykev/tree/9a4100fd1962921bc11cf9f4b22c5326c7a51807).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9a4100fd1962921bc11cf9f4b22c5326c7a51807){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/9a4100fd1962921bc11cf9f4b22c5326c7a51807){.btn .btn-sm .btn-primary}
 
 ## 2.6 pytest looks for tests in tests/ {#tut-02.6}
 
@@ -280,7 +289,7 @@ just test
 
 ### What changed {#tut-02.6-what-changed-182c57}
 
-- <a id="tut-02.6-pyproject.toml-5d07e7"></a>`pyproject.toml`: the settings of pytest. pytest looks for tests in `tests/` alone. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/348290a934c2bd1da0a38f4c3336f66758f8523c/pyproject.toml).
+- <a id="tut-02.6-pyproject.toml-5d07e7"></a>`pyproject.toml`: the settings of pytest. pytest looks for tests in `tests/` alone. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/348290a934c2bd1da0a38f4c3336f66758f8523c/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `testpaths = ["tests"]`
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
@@ -297,7 +306,7 @@ just test
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/348290a934c2bd1da0a38f4c3336f66758f8523c). [The code after it](https://github.com/rahuldave/babykev/tree/348290a934c2bd1da0a38f4c3336f66758f8523c).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/348290a934c2bd1da0a38f4c3336f66758f8523c){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/348290a934c2bd1da0a38f4c3336f66758f8523c){.btn .btn-sm .btn-primary}
 
 ## 2.7 Pytest-cov, in the group test {#tut-02.7}
 
@@ -321,9 +330,9 @@ just test --cov=babykev
 
 ### What changed {#tut-02.7-what-changed-182c57}
 
-- <a id="tut-02.7-pyproject.toml-5d07e7"></a>`pyproject.toml`: pytest-cov in the group `test`. 1 line added. It comes from `uv add --group test pytest-cov`. [The file](https://github.com/rahuldave/babykev/blob/326e444b726a914d5f9d0138ca658ed89a979dcd/pyproject.toml).
+- <a id="tut-02.7-pyproject.toml-5d07e7"></a>`pyproject.toml`: pytest-cov in the group `test`. 1 line added. It comes from `uv add --group test pytest-cov`. [The file](https://github.com/rahuldave/babykev/blob/326e444b726a914d5f9d0138ca658ed89a979dcd/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `"pytest-cov>=7.1.0",`
-- <a id="tut-02.7-uv.lock-8356d8"></a>`uv.lock`: coverage and pytest-cov. 103 lines added, 1 removed. It comes from `uv add --group test pytest-cov`. [The file](https://github.com/rahuldave/babykev/blob/326e444b726a914d5f9d0138ca658ed89a979dcd/uv.lock).
+- <a id="tut-02.7-uv.lock-8356d8"></a>`uv.lock`: coverage and pytest-cov. 103 lines added, 1 removed. It comes from `uv add --group test pytest-cov`. [The file](https://github.com/rahuldave/babykev/blob/326e444b726a914d5f9d0138ca658ed89a979dcd/uv.lock){.btn .btn-sm .btn-secondary}
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -340,7 +349,7 @@ just test --cov=babykev
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/326e444b726a914d5f9d0138ca658ed89a979dcd). [The code after it](https://github.com/rahuldave/babykev/tree/326e444b726a914d5f9d0138ca658ed89a979dcd).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/326e444b726a914d5f9d0138ca658ed89a979dcd){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/326e444b726a914d5f9d0138ca658ed89a979dcd){.btn .btn-sm .btn-primary}
 
 ## 2.8 Coverage on every run of the tests {#tut-02.8}
 
@@ -359,7 +368,7 @@ just test
 
 ### What changed {#tut-02.8-what-changed-182c57}
 
-- <a id="tut-02.8-pyproject.toml-5d07e7"></a>`pyproject.toml`: the options of every run. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/f44cc53a91bc7db84283d6a9ded16d9a7bbedf90/pyproject.toml).
+- <a id="tut-02.8-pyproject.toml-5d07e7"></a>`pyproject.toml`: the options of every run. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/f44cc53a91bc7db84283d6a9ded16d9a7bbedf90/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `addopts = "--cov=babykev --cov-report=term-missing"`
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
@@ -375,7 +384,7 @@ just test
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/f44cc53a91bc7db84283d6a9ded16d9a7bbedf90). [The code after it](https://github.com/rahuldave/babykev/tree/f44cc53a91bc7db84283d6a9ded16d9a7bbedf90).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/f44cc53a91bc7db84283d6a9ded16d9a7bbedf90){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/f44cc53a91bc7db84283d6a9ded16d9a7bbedf90){.btn .btn-sm .btn-primary}
 
 ## 2.9 The README says to run just test {#tut-02.9}
 
@@ -394,7 +403,7 @@ pytest runs the 4 tests with `help` in their name, and prints `4 passed, 1 desel
 
 ### What changed {#tut-02.9-what-changed-182c57}
 
-- <a id="tut-02.9-README.md-8ec9a0"></a>`README.md`: `just test` in "Start". 3 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/ab192e5bd8ff3e3b8ad6c0ae5e17be31b7790557/README.md).
+- <a id="tut-02.9-README.md-8ec9a0"></a>`README.md`: `just test` in "Start". 3 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/ab192e5bd8ff3e3b8ad6c0ae5e17be31b7790557/README.md){.btn .btn-sm .btn-secondary}
   - look at `help of the program itself. A recipe gives its extra words to the tool behind it. For example,`
 
 <details><summary>The diff of <code>README.md</code></summary>
@@ -416,7 +425,7 @@ pytest runs the 4 tests with `help` in their name, and prints `4 passed, 1 desel
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/ab192e5bd8ff3e3b8ad6c0ae5e17be31b7790557). [The code after it](https://github.com/rahuldave/babykev/tree/ab192e5bd8ff3e3b8ad6c0ae5e17be31b7790557).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ab192e5bd8ff3e3b8ad6c0ae5e17be31b7790557){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/ab192e5bd8ff3e3b8ad6c0ae5e17be31b7790557){.btn .btn-sm .btn-primary}
 
 ## 2.10 The README names the tests {#tut-02.10}
 
@@ -437,7 +446,7 @@ uv installs 8 here. `just test` prints `5 passed`.
 
 ### What changed {#tut-02.10-what-changed-182c57}
 
-- <a id="tut-02.10-README.md-8ec9a0"></a>`README.md`: the row of the tests. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/4640589d80e4f224a4b2c1fd9567e952f564f102/README.md).
+- <a id="tut-02.10-README.md-8ec9a0"></a>`README.md`: the row of the tests. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/4640589d80e4f224a4b2c1fd9567e952f564f102/README.md){.btn .btn-sm .btn-secondary}
   - look at ``| `tests/unit/` | The unit tests. `test_cli.py` tests the command `babykev` |``
 
 <details><summary>The diff of <code>README.md</code></summary>
@@ -458,4 +467,6 @@ uv installs 8 here. `just test` prints `5 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/4640589d80e4f224a4b2c1fd9567e952f564f102). [The code after it](https://github.com/rahuldave/babykev/tree/4640589d80e4f224a4b2c1fd9567e952f564f102).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/4640589d80e4f224a4b2c1fd9567e952f564f102){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-02`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-02){.btn .btn-sm .btn-primary}

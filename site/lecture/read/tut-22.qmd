@@ -1,0 +1,297 @@
+---
+title: "22 The tests that could tell"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-21`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-21){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach tut-21
+```
+
+**Init.** `just setup` installs 2 packages, hypothesis 6.170.0, in the group `test`, and sortedcontainers, which hypothesis needs.
+
+```bash
+just setup
+```
+
+**What is new.** `tests/unit/test_mask.py` holds four tests of the mask, a picture of one small request and three rules for a request of any shape. `tests/unit/test_model.py` has three more tests, of questions kept apart on the tiny model. Line 159 of `model.py`, the mask, is fixed. Every check passes again.
+
+**Test properties, not examples.** The new tests state what must hold for any request. A question must keep its answer when another question changes, and three questions in one pass must give the numbers of three passes. The order of the questions must not matter, and no token may see a later token or another question. These rules hold for any weights, so the tiny model is enough. `just test` runs 82 tests, the 75 of the last stop and 7 new, and all pass.
+
+```bash
+just test
+```
+
+**The mask of the last stop, under the new tests.** The `git restore` line takes `model.py` from `tut-21`, with line 159 as it came in. `just test` then fails 6 tests and passes 76. Three are tests of the mask, the picture and two rules. Three are the tests on the tiny model that keep questions apart.
+
+The rule that no token sees a later token still passes, because the old mask was causal. The hook runs `just check`, and `just check` runs these tests, so git would refuse this code now.
+
+```bash
+git restore --source tut-21 src/babykev/model.py
+just test
+git restore src/babykev/model.py
+```
+
+**A picture checks one size.** At the last stop, a few lines of Python drew the right mask of a request of six tokens beside the mask that `branch_mask` built. The same comparison is the test `test_mask_of_a_small_request`, lines 28 to 39 of `test_mask.py`.
+
+```bash
+sed -n '28,39p' tests/unit/test_mask.py
+```
+
+Suppose someone fixed the mask in another way, so that a question cannot see the question just before it, and sees the others. The `git restore` line takes such a fix from the history, two changes before `tut-22`, and `git diff` shows its line 159. The here document of the last stop then prints `ok` six times. Its picture has only two questions, so it cannot tell the fix from the right one.
+
+```bash
+git restore --source tut-22~2 src/babykev/model.py
+git diff src/babykev/model.py
+uv run python - <<'EOF'
+from babykev.model import branch_mask
+picture = ["#.....", "##....", "###...", "####..", "##..#.", "##..##"]
+mask = branch_mask([0, 0, 1, 1, 2, 2], "cpu")[0, 0] == 0
+rows = ["".join("#" if ok else "." for ok in row) for row in mask]
+for want, got in zip(picture, rows, strict=True): print(want, got, "ok" if want == got else "WRONG")
+EOF
+```
+
+**hypothesis: state the rule, and let the computer try the shapes.** hypothesis is a Python library for tests. Line 10 of `test_mask.py`, `shapes`, says what a request may look like. It has a state of 1 to 6 tokens, and up to 4 questions of 1 to 5 tokens each. `@given(shapes)` on line 42 runs the test below it on up to 100 shapes, drawn at random. When a shape breaks the rule, hypothesis reports the smallest shape that still breaks it.
+
+The test on lines 42 to 49 says that no question sees another.
+
+```bash
+sed -n '10p;42,49p' tests/unit/test_mask.py
+```
+
+**hypothesis finds the size for us.** `just test -k "small_request or no_question_sees"` runs the picture and the rule on the fix that is still in the file. The picture passes, and the rule fails. hypothesis shrinks the failure to a shape of `1` and `[1, 1, 1]`, one state token and three questions of one token each. Its output prints the two grids as tensors of `True` and `False`. In row 4, column 2 is `True` in both, so token 4, in question 3, sees token 2, in question 1.
+
+```bash
+just test -k "small_request or no_question_sees"
+```
+
+A picture of that size, drawn by hand, sees it too. The second here document compares four tokens, `[0, 1, 2, 3]`, and row 4 prints `#..# ##.# WRONG`. Every size of request needs its own picture, and the rule needs none. `just test` on the fix fails 4 tests, two rules of the mask and two tests on the tiny model. The `git restore` line puts the right line back.
+
+```bash
+uv run python - <<'EOF'
+from babykev.model import branch_mask
+picture = ["#...", "##..", "#.#.", "#..#"]
+mask = branch_mask([0, 1, 2, 3], "cpu")[0, 0] == 0
+rows = ["".join("#" if ok else "." for ok in row) for row in mask]
+for want, got in zip(picture, rows, strict=True): print(want, got, "ok" if want == got else "WRONG")
+EOF
+just test
+git restore src/babykev/model.py
+```
+
+**How we tested isolation.** `test_a_question_cannot_see_its_sibling`, lines 149 to 160 of `test_model.py`, is an integration test on the tiny model. It takes the fixtures `model`, `tok` and `record`. It answers the request, rewrites question 2, and answers again. Questions 1 and 3 must get exactly the same probabilities, by `torch.equal`. With the mask of `tut-21`, the line for question 3 fails, `tensor([0.3341, 0.3331, 0.3328])` before and `tensor([0.3343, 0.3330, 0.3327])` after.
+
+```bash
+sed -n '149,160p' tests/unit/test_model.py
+git restore --source tut-21 src/babykev/model.py
+just test -k a_question_cannot_see_its_sibling
+git restore src/babykev/model.py
+```
+
+**The fix, one line.** Line 159 says that a token may look at the state, or at its own question. `tut-21` had `torch.ones_like(causal)` in place of the first part.
+
+```bash
+sed -n '159p' src/babykev/model.py
+```
+
+**The smoke on Qwen, again.** `just smoke` on the right mask says `4 of 15 right`, where it said 6 at the last stop. The first question of each request keeps its answer, because it saw only the state with either mask. With the old mask, questions 2 and 3 read the questions before them, and some answers were right for the wrong reason. A pure guess on these fifteen questions expects 4.75 right, as the `python` line prints. Five are yes or no, five are choices of 5 options, and five are scores of 4 levels.
+
+```bash
+just smoke
+uv run python -c "import json; print(sum(1 / (2 if q['type'] == 'noul' else len(q['criteria'])) for line in open('data/cheese/sample.jsonl') for q in json.loads(line)['questions'].values()))"
+```
+
+## What changed {#tut-22-what-changed-182c57}
+
+- <a id="tut-22-README.md-8ec9a0"></a>`README.md`: 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/9bfadf5448a5951580b313a781b277f343aa6e30/README.md){.btn .btn-sm .btn-secondary}
+- <a id="tut-22-pyproject.toml-5d07e7"></a>`pyproject.toml`: 1 line added. [The file](https://github.com/rahuldave/babykev/blob/9bfadf5448a5951580b313a781b277f343aa6e30/pyproject.toml){.btn .btn-sm .btn-secondary}
+- <a id="tut-22-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: changes `branch_mask`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/9bfadf5448a5951580b313a781b277f343aa6e30/src/babykev/model.py){.btn .btn-sm .btn-secondary}
+- <a id="tut-22-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: adds `allowed`, `segments`, `test_mask_of_a_small_request`, `test_no_question_sees_another_question`, `test_no_token_sees_a_later_token`, `test_what_is_allowed_is_exactly_the_rule`. New, 70 lines. [The file](https://github.com/rahuldave/babykev/blob/9bfadf5448a5951580b313a781b277f343aa6e30/tests/unit/test_mask.py){.btn .btn-sm .btn-secondary}
+- <a id="tut-22-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: adds `test_a_question_cannot_see_its_sibling`, `test_packed_questions_answer_as_they_would_alone`, `test_the_order_of_questions_does_not_matter`. 38 lines added. [The file](https://github.com/rahuldave/babykev/blob/9bfadf5448a5951580b313a781b277f343aa6e30/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
+- <a id="tut-22-uv.lock-8356d8"></a>`uv.lock`: 80 lines added. [The file](https://github.com/rahuldave/babykev/blob/9bfadf5448a5951580b313a781b277f343aa6e30/uv.lock){.btn .btn-sm .btn-secondary}
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+```diff
+@@ -80,7 +80,7 @@ The tests must run at least 90% of the code. You can run `just check` yourself a
+ | `src/babykev/model.py` | The model, a language model with a head that points at the options |
+ | `src/babykev/smoke.py` | The smoke run, which asks the real model the sample requests on this machine |
+ | `data/cheese/sample.jsonl` | Five requests about cheese, one on each line. Every question has a `label`, the right answer |
+-| `tests/unit/` | The tests of the contract, of the command, of the model and of the smoke. One test checks every line of the sample data against the contract |
++| `tests/unit/` | The tests of the contract, of the command, of the model, of its mask and of the smoke. One test checks every line of the sample data against the contract. hypothesis tries the rules of the mask on many shapes of request |
+ | `tests/conftest.py` | The fixtures that every test can ask for: the tiny tokenizer, a tiny model and a record |
+ | `tests/tiny.py` | A small tokenizer and backbone, built in memory, in place of the real ones |
+ | `docs/` | The docs site. `just docs` builds it into `docs/_site`, with the reference made from the code |
+```
+
+</details>
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -48,6 +48,7 @@ lint = [
+     "yamllint>=1.38.0",
+ ]
+ test = [
++    "hypothesis>=6.170.0",
+     "pytest>=9.1.1",
+     "pytest-cov>=7.1.0",
+ ]
+```
+
+</details>
+
+<details><summary>The diff of <code>src/babykev/model.py</code></summary>
+
+```diff
+@@ -156,7 +156,7 @@ def branch_mask(
+     s = torch.tensor(seg, device=device)
+     n = len(seg)
+     causal = torch.tril(torch.ones(n, n, dtype=torch.bool, device=device))
+-    same = torch.ones_like(causal) | (s[None, :] == 0)
++    same = (s[None, :] == s[:, None]) | (s[None, :] == 0)
+     allow = causal & same
+     blocked = torch.finfo(dtype).min
+     return torch.zeros(n, n, dtype=dtype, device=device).masked_fill(~allow, blocked)[None, None]
+```
+
+</details>
+
+<details><summary>The diff of <code>tests/unit/test_mask.py</code></summary>
+
+```diff
+@@ -0,0 +1,70 @@
++"""Tests of the mask: which token of a packed record may attend to which."""
++
++import torch
++from hypothesis import given
++from hypothesis import strategies as st
++
++from babykev.model import branch_mask
++
++# A request of any shape: a state of 1 to 6 tokens, then up to 4 questions of 1 to 5 tokens each
++shapes = st.tuples(st.integers(1, 6), st.lists(st.integers(1, 5), max_size=4))
++
++
++def segments(
++    state: int,  # How many tokens the state has
++    questions: list[int],  # How many tokens each question has
++) -> list[int]:  # The segment of each token: 0 for the state, k for question k
++    """Lay out a request as `encode` does: the state, then each question in turn."""
++    return [0] * state + [k for k, n in enumerate(questions, start=1) for _ in range(n)]
++
++
++def allowed(
++    seg: list[int],  # The segment of each token: 0 for the state, k for question k
++) -> torch.Tensor:  # Shape [n, n]: True where token i may attend to token j
++    """Read the mask back as yes or no."""
++    return branch_mask(seg, "cpu")[0, 0] == 0
++
++
++def test_mask_of_a_small_request() -> None:
++    """A state of two tokens, and two questions of two tokens: the picture, drawn by hand."""
++    picture = [
++        "#.....",
++        "##....",
++        "###...",
++        "####..",
++        "##..#.",
++        "##..##",
++    ]
++    rows = ["".join("#" if ok else "." for ok in row) for row in allowed([0, 0, 1, 1, 2, 2])]
++    assert rows == picture
++
++
++@given(shapes)
++def test_no_question_sees_another_question(
++    shape: tuple[int, list[int]],  # The lengths of a state and of its questions
++) -> None:
++    """A token of one question never attends to a token of another question."""
++    seg = torch.tensor(segments(*shape))
++    siblings = (seg[:, None] != seg[None, :]) & (seg[:, None] > 0) & (seg[None, :] > 0)
++    assert not (allowed(seg.tolist()) & siblings).any()
++
++
++@given(shapes)
++def test_no_token_sees_a_later_token(
++    shape: tuple[int, list[int]],  # The lengths of a state and of its questions
++) -> None:
++    """Nothing above the diagonal is allowed: a token never attends to a token after it."""
++    assert not torch.triu(allowed(segments(*shape)), diagonal=1).any()
++
++
++@given(shapes)
++def test_what_is_allowed_is_exactly_the_rule(
++    shape: tuple[int, list[int]],  # The lengths of a state and of its questions
++) -> None:
++    """Token i sees token j when j is not after i, and j is in the state or in i's question."""
++    seg = segments(*shape)
++    rule = [
++        [j <= i and (seg[j] == 0 or seg[j] == seg[i]) for j in range(len(seg))]
++        for i in range(len(seg))
++    ]
++    assert allowed(seg).tolist() == rule
+```
+
+</details>
+
+<details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
+
+```diff
+@@ -144,3 +144,41 @@ def test_records_of_different_lengths_answer_in_one_pass_as_alone(
+     for batch, single in zip(together, alone, strict=True):
+         for a, b in zip(batch, single, strict=True):
+             assert torch.allclose(a, b, atol=1e-5)
++
++
++def test_a_question_cannot_see_its_sibling(
++    model: DecisionModel,  # The tiny model
++    tok: PreTrainedTokenizerFast,  # Its tokenizer
++    record: dict[str, Any],  # A record with three questions
++) -> None:
++    """Rewriting question 2 leaves the answers to questions 1 and 3 exactly as they were."""
++    before = model.probs(encode(tok, record))
++    changed = {**record, "questions": list(record["questions"])}
++    changed["questions"][1] = {"instr": "Where from?", "options": ["Spain", "Italy"], "label": 0}
++    after = model.probs(encode(tok, changed))
++    assert torch.equal(before[0], after[0])
++    assert torch.equal(before[2], after[2])
++
++
++def test_packed_questions_answer_as_they_would_alone(
++    model: DecisionModel,  # The tiny model
++    tok: PreTrainedTokenizerFast,  # Its tokenizer
++    record: dict[str, Any],  # A record with three questions
++) -> None:
++    """One pass over three questions gives what three passes, of one question each, give."""
++    packed = model.probs(encode(tok, record))
++    for together, question in zip(packed, record["questions"], strict=True):
++        alone = model.probs(encode(tok, {"state": record["state"], "questions": [question]}))[0]
++        assert torch.allclose(together, alone, atol=1e-6)
++
++
++def test_the_order_of_questions_does_not_matter(
++    model: DecisionModel,  # The tiny model
++    tok: PreTrainedTokenizerFast,  # Its tokenizer
++    record: dict[str, Any],  # A record with three questions
++) -> None:
++    """Positions restart after the state, so a question gets the same answer first or last."""
++    forward = model.probs(encode(tok, record))
++    backward = model.probs(encode(tok, {**record, "questions": record["questions"][::-1]}))
++    for a, b in zip(forward, backward[::-1], strict=True):
++        assert torch.allclose(a, b, atol=1e-6)
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/compare/922d6ba2495756622ad215301da7c48f2ec33fa9...9bfadf5448a5951580b313a781b277f343aa6e30){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-22`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-22){.btn .btn-sm .btn-primary}

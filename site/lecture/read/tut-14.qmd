@@ -1,0 +1,190 @@
+---
+title: "14 The docs site"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-13`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-13){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach tut-13
+```
+
+**Init.** `just setup` prints `Checked 33 packages`. No package came in, because smalldocs also builds the site.
+
+```bash
+just setup
+```
+
+**What is new.** The settings of the site in `docs/_smalldocs.yml`, a front page, `docs/index.qmd`, and three lines of `.gitignore` for what a build makes. The recipe `docs` builds the site when it gets no words.
+
+**The site, in one command.** `uv run smalldocs render docs` writes the reference pages from the code first, then builds the site into `docs/_site`. It prints `wrote 3 page(s) to docs/_site`, the front page and one page for each module. `git status --short --ignored docs` lists what the build made, `docs/_site/`, `docs/api/` and `docs/_symbols.json`. Each is marked `!!`, because lines 222 to 225 of `.gitignore` name them. The build makes them again each time, so git does not track them.
+
+```bash
+uv run smalldocs render docs
+git status --short --ignored docs
+sed -n '222,225p' .gitignore
+```
+
+**How the links are made.** `docs/_symbols.json` maps each name, short and full, to its page and its place on the page, 24 names in all. A name in backticks on any page of the site, such as `to_answers`, becomes a link to its entry. The `sed` line shows the start of `docs/api/api.qmd`, the page that smalldocs wrote for `babykev.api`. Each heading has an id, such as `{#Noul}`, and each entry has a link to its line of source on GitHub.
+
+```bash
+head -n 6 docs/_symbols.json
+sed -n '1,14p' docs/api/api.qmd
+```
+
+**The recipe.** `just --show docs` prints a script with three branches. The word `help` explains the recipe, no words at all run `uv run smalldocs render docs`, and any other words go to `smalldocs api`. So `just docs` builds the site, and `just docs check` still checks. The `open` line shows the site in the browser.
+
+```bash
+just --show docs
+just docs
+open docs/_site/index.html
+```
+
+**The settings and the front page.** Lines 1 to 15 of `docs/_smalldocs.yml` set up the site. They give a title, a sidebar with the front page and a section `Reference`, and a theme. Lines 17 to 21 are the settings of the reference, as before. `docs/index.qmd` is the front page, written by hand, and its last line says that a name in backticks links to its entry. `grep` finds the link that the build made for `to_answers` on the built front page.
+
+```bash
+cat docs/_smalldocs.yml
+grep -o 'href="api/api.html#to_answers"' docs/_site/index.html
+```
+
+**Still clean.** `just check` passes as at the last stop. The site is for people, and the docs check keeps what it shows complete.
+
+```bash
+just check
+```
+
+## What changed {#tut-14-what-changed-182c57}
+
+- <a id="tut-14-.gitignore-a5cc29"></a>`.gitignore`: 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/e1efb48492d7223fd0442906d2e55a83e0db481e/.gitignore){.btn .btn-sm .btn-secondary}
+- <a id="tut-14-README.md-8ec9a0"></a>`README.md`: 1 line added. [The file](https://github.com/rahuldave/babykev/blob/e1efb48492d7223fd0442906d2e55a83e0db481e/README.md){.btn .btn-sm .btn-secondary}
+- <a id="tut-14-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: 17 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/e1efb48492d7223fd0442906d2e55a83e0db481e/docs/_smalldocs.yml){.btn .btn-sm .btn-secondary}
+- <a id="tut-14-docs-index.qmd-d6d880"></a>`docs/index.qmd`: New, 29 lines. [The file](https://github.com/rahuldave/babykev/blob/e1efb48492d7223fd0442906d2e55a83e0db481e/docs/index.qmd){.btn .btn-sm .btn-secondary}
+- <a id="tut-14-justfile-424f0b"></a>`justfile`: 5 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/e1efb48492d7223fd0442906d2e55a83e0db481e/justfile){.btn .btn-sm .btn-secondary}
+
+<details><summary>The diff of <code>.gitignore</code></summary>
+
+```diff
+@@ -218,3 +218,8 @@ __marimo__/
+ 
+ # Streamlit
+ .streamlit/secrets.toml
++
++# smalldocs: the docs site, and the reference pages that each build makes from the code
++/docs/_site/
++/docs/api/
++/docs/_symbols.json
+```
+
+</details>
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+```diff
+@@ -71,6 +71,7 @@ yourself at any time.
+ | `src/babykev/cli.py` | The command `babykev` |
+ | `data/cheese/sample.jsonl` | Five requests about cheese, one on each line. Every question has a `label`, the right answer |
+ | `tests/unit/` | The unit tests of the contract and of the command. One test checks every line of the sample data against the contract |
++| `docs/` | The docs site. `just docs` builds it into `docs/_site`, with the reference made from the code |
+ | `justfile` | Every task of the project, one recipe each. `just help` explains them |
+ | `README.md` | This file |
+ | `LICENSE`, `NOTICE` | The licence, and the credit to kev |
+```
+
+</details>
+
+<details><summary>The diff of <code>docs/_smalldocs.yml</code></summary>
+
+```diff
+@@ -1,4 +1,20 @@
+-# The settings of smalldocs. `api` is the reference, made from the code of the package
++# The settings of smalldocs. `just docs` builds the site into docs/_site
++project:
++  type: website
++  output-dir: _site
++
++website:
++  title: "babykev"
++  sidebar:
++    contents:
++      - index.qmd
++      - section: Reference
++        contents: api/*  # the reference pages, which each build makes from the code
++
++theme: cosmo
++toc: true
++
++# `api` is the reference, made from the code of the package. A name in backticks links to its entry
+ api:
+   packages: [babykev]
+   source: https://github.com/rahuldave/babykev/blob/tutorial  # each entry links to its line here
+```
+
+</details>
+
+<details><summary>The diff of <code>docs/index.qmd</code></summary>
+
+```diff
+@@ -0,0 +1,29 @@
++---
++title: babykev
++---
++
++babykev is a small decision model. You send it one document, the context, and a set of typed questions
++about it. It returns a probability for every possible answer to every question.
++
++A request is a `SystemOneRequest`. It has a `state`, the context, and its questions, each under a name. A
++question has one of three types:
++
++- a `Noul` asks for yes or no
++- a `Choice` asks for one of several named options
++- a `Score` asks for a level on an ordered scale
++
++The code is in two modules:
++
++- `babykev.api` is the contract. `to_record` turns a request into the text and the options that the model
++  reads. `to_answers` turns the probabilities of the model into an answer of the type of each question.
++- `babykev.cli` is the command `babykev`.
++
++Each build of the site makes the pages under Reference from the code. A page takes these parts from each
++function and each class:
++
++- the signature and the types
++- the description, from the docstring
++- the description of each parameter, each return value and each field, from its docment or its
++  `Field(description=...)`
++
++A name in backticks, such as `to_answers`, links to its entry.
+```
+
+</details>
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -76,8 +76,11 @@ check *args:
+     just docs check
+     just lint-config
+ 
+-# The reference of the code, by smalldocs. Words go to smalldocs api: just docs check, just docs module api
++# The docs, by smalldocs. Alone, the site in docs/_site. Words go to smalldocs api: just docs check
+ [group('docs')]
+ [no-exit-message]
+ docs *args:
+-    @{{ if args == "help" { "just help docs" } else { 'uv run smalldocs api "$@" --dir docs' } }}
++    #!/usr/bin/env sh
++    if [ "$*" = help ]; then just help docs; exit 0; fi
++    if [ "$#" -eq 0 ]; then exec uv run smalldocs render docs; fi
++    exec uv run smalldocs api "$@" --dir docs
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/compare/005b87bdfa2e70c6ceca52dc07197c69702f00be...e1efb48492d7223fd0442906d2e55a83e0db481e){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-14`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-14){.btn .btn-sm .btn-primary}

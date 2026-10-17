@@ -1,0 +1,270 @@
+---
+title: "8 Fix the two bugs, format and lint"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-07`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-07){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach tut-07
+```
+
+**Init.** `just setup` installs one package, ruff 0.17.1, from a second dependency group, `lint`, on lines 26 to 28 of `pyproject.toml`.
+
+```bash
+just setup
+```
+
+**What is new.** Nine tests of the confidences and of rounding, on lines 250 to 298 of `tests/unit/test_api.py`. Two of them failed on the code of kev, and the code is fixed so that they pass. ruff came in as the formatter and the linter, with its settings in `pyproject.toml` and two recipes, `fmt` and `lint`. `api.py` is formatted and linted. Every check passes here, and the commands below show the work in between on the files as they were.
+
+**Two tests, and the code of kev.** The first `sed` line prints the test of rounding, lines 250 to 256. Its 77 options have the same probability, and they must still sum to 1, within 0.02. The second prints the test of a guess, lines 291 to 293. Three levels with the same probability are a guess, and a guess must have confidence 0. The third prints the two functions of kev that these tests call, from `api.py` as it was at `tut-05`.
+
+```bash
+sed -n '250,256p' tests/unit/test_api.py
+sed -n '291,293p' tests/unit/test_api.py
+git show tut-05:src/babykev/api.py | sed -n '82,90p'
+```
+
+**The tests find the bugs.** The `git restore` line puts the file of kev back, from `tut-05`, under the tests of today. `just test -k` then runs the seven tests of the confidences and of rounding, and 3 fail. pytest prints `assert 0.77 == 1 ± 0.02` for the sum of the 77 probabilities, and prints `assert 0.5 == 0 ± 1.0e-12` for the confidence of a guess. A scale of one level stops with `ZeroDivisionError` at line 86, and the last line puts today's file back.
+
+```bash
+git restore --source tut-05 src/babykev/api.py
+just test -k "rounded_probabilities or score_confidence"
+git restore src/babykev/api.py
+```
+
+**The fix of rounding.** kev rounded each probability to two decimals, in a function `r2`. With 77 options, each 0.013 became 0.01, and the total came to 0.77. `round_prob`, on lines 114 to 117 of `api.py`, rounds to four decimals, and the total stays close to 1.
+
+```bash
+sed -n '114,117p' src/babykev/api.py
+```
+
+**The fix of confidence.** The confidence of a score is 1 minus a fraction, `spread` divided by a measure. In a guess over three levels, each level has the probability 1/3, so `max` takes level 0 as the most likely. The levels are 0, 1 and 2 away from it, so `spread` is 1/3 × 0 + 1/3 × 1 + 1/3 × 2 = 1. kev divided by the length of the scale, 2, so the confidence was 1 − 1/2 = 0.5.
+
+The fix measures against `guess`, the spread of a guess around the middle level, 1/3 × 1 + 1/3 × 0 + 1/3 × 1 = 2/3. So the confidence is 1 − 1 ÷ (2/3) = −0.5, and line 111 counts a value below 0 as 0.
+
+```bash
+sed -n '99,111p' src/babykev/api.py
+just test -k "rounded_probabilities or score_confidence"
+```
+
+The seven tests pass now. The tests did not change, and the code did.
+
+**One line that only a test can reach.** The fix added lines 106 and 107, the answer for a scale of one level. A request cannot have such a scale, because a `Score` needs two levels at least. So no test of a request runs line 107. The first command leaves out the one test that calls `score_confidence([1.0])` itself, and the table names line 107 under `Missing`, with `api.py` at 99%.
+
+```bash
+just test --deselect tests/unit/test_api.py::test_score_confidence_is_one_for_a_single_level
+sed -n '105,107p' src/babykev/api.py
+```
+
+The function is public, and a list of one probability is a legal input. Without lines 106 and 107 it divides by zero. So the test on lines 296 to 298 states the answer, "one level leaves nothing to doubt". The coverage is 100% again, because the test asks the question that the table raised. A test written only to move the number would hide the question.
+
+```bash
+sed -n '296,298p' tests/unit/test_api.py
+just test -k single_level
+```
+
+**The formatter, on the file before it.** The `git restore` line takes `api.py` as it was at the end of the fixes, before the formatter and the linter, from `tut-06`. `uv run ruff check --statistics` runs the linter on it first, so that we can count again after the formatter. It prints one line for each code with its count, and then `Found 17 errors.`, which is the total. The codes are `E501`, a line over 100 characters, 6 of them, and `E701`, two statements on one line, 4 of them. The others are `N806`, `UP007` and `B905`, 2 each, and `I001`, 1.
+
+```bash
+git restore --source tut-06 src/babykev/api.py
+uv run ruff check --statistics
+```
+
+`uv run ruff format --check` asks the formatter what it would change, and changes nothing. It prints `1 file would be reformatted, 5 files already formatted`, and above it the changes to `api.py`. The formatter puts a blank line after the docstring of the module, before line 7. It splits the four lines with two statements, at lines 27, 48, 49 and 50. It spreads the long lines 51, 72, 110 and 113 over several lines, one item to a line. Its settings are on lines 43 to 49 of `pyproject.toml`, each with a comment.
+
+```bash
+uv run ruff format --check
+sed -n '43,49p' pyproject.toml
+```
+
+`just --show fmt` prints the recipe, `uv run ruff format "$@"`. So `just fmt --check` is the command above, and `just fmt` alone rewrites the files. `just fmt` prints `1 file reformatted, 5 files left unchanged`, and `wc -l` then counts 141 lines in place of 114. `just fmt --check` prints `6 files already formatted`, and `just test` says 53 passed, so the formatter changed how the code looks, and never what it does.
+
+```bash
+just --show fmt
+wc -l src/babykev/api.py
+just fmt
+wc -l src/babykev/api.py
+just fmt --check
+just test -q
+```
+
+**The linter.** The linter reads the code against the families of rules on lines 51 to 63 of `pyproject.toml`, each with a comment. `just --show lint` prints the recipe, `uv run ruff check "$@"`. `just lint --statistics` now finds 8 problems, where it found 17. The four `E701` went with the formatter, and so did five of the six `E501`. The `E501` that is left is line 5, in the docstring, because the formatter never rewraps text.
+
+```bash
+sed -n '51,63p' pyproject.toml
+just --show lint
+just lint --statistics
+```
+
+`just lint` without `--statistics` prints each finding, with its line, a mark under the place and a help text. `B905` is a `zip` without `strict=`, which stops silently at the end of the shorter list. `uv run ruff rule B905` explains any code. Line 67 of `pyproject.toml` lets the tests use `assert`, which rule `S101` refuses in the package.
+
+```bash
+just lint
+uv run ruff rule B905
+sed -n '65,67p' pyproject.toml
+```
+
+**Fixes by ruff, and fixes by a person.** `just lint --fix` makes the one safe fix, `I001`, a blank line between the import of the standard library and the import of pydantic. It prints `Found 8 errors (1 fixed, 7 remaining).` The 7 that are left need a person. The `git diff` line shows what the person wrote, against the file that the tools left, in 14 lines.
+
+- **`E501`:** the line of the docstring, written shorter.
+- **`UP007`:** `Union[...]` written with `|`, for `JSONContent` and `Question`.
+- **`N806`:** `K` and `L` written `k` and `n`.
+- **`B905`:** `strict=True` on both calls of `zip`, because the two lists must be of the same length. ruff's own fix would write `strict=False`, and it calls that fix unsafe.
+
+```bash
+just lint --fix
+git diff -R src/babykev/api.py
+```
+
+The `git restore` line puts the file of `tut-08` back. `just lint` then prints `All checks passed!`, and `just fmt --check` prints `6 files already formatted`.
+
+```bash
+git restore src/babykev/api.py
+just lint
+just fmt --check
+```
+
+## What changed {#tut-08-what-changed-182c57}
+
+- <a id="tut-08-justfile-424f0b"></a>`justfile`: adds `recipe lint`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/7cdb1ba696a32050cba1c335892fccb68bb4fd24/justfile){.btn .btn-sm .btn-secondary}
+- <a id="tut-08-pyproject.toml-5d07e7"></a>`pyproject.toml`: 18 lines added. [The file](https://github.com/rahuldave/babykev/blob/7cdb1ba696a32050cba1c335892fccb68bb4fd24/pyproject.toml){.btn .btn-sm .btn-secondary}
+- <a id="tut-08-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: changes `Score`, `choice_confidence`, `score_confidence`, `to_answers`. 15 lines added, 14 removed. [The file](https://github.com/rahuldave/babykev/blob/7cdb1ba696a32050cba1c335892fccb68bb4fd24/src/babykev/api.py){.btn .btn-sm .btn-secondary}
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -31,6 +31,12 @@ setup *args:
+ fmt *args:
+     @{{ if args == "help" { "just help fmt" } else { 'uv run ruff format "$@"' } }}
+ 
++# Check the code against the rules in pyproject.toml. Extra words go to ruff: just lint --statistics
++[group('quality')]
++[no-exit-message]
++lint *args:
++    @{{ if args == "help" { "just help lint" } else { 'uv run ruff check "$@"' } }}
++
+ # Run the tests. Extra words go to pytest: just test -k render
+ [group('quality')]
+ [no-exit-message]
+```
+
+</details>
+
+<details><summary>The diff of <code>pyproject.toml</code></summary>
+
+```diff
+@@ -47,3 +47,21 @@ indent-style = "space"            # four spaces, never tabs
+ skip-magic-trailing-comma = false # a trailing comma keeps one item on each line
+ line-ending = "auto"              # the line endings that the file already has
+ docstring-code-format = false     # code in a docstring stays as it was written
++
++[tool.ruff.lint]
++# What the linter checks: a family of rules on each line, and why it is on
++select = [
++    "E",   # pycodestyle errors: the basics, from indentation to the length of a line
++    "W",   # pycodestyle warnings: stray whitespace and the like
++    "F",   # pyflakes: names that are unused, undefined or defined twice
++    "I",   # isort: imports in one order, the standard library first
++    "B",   # bugbear: code that is likely a bug, such as a zip that drops items silently
++    "UP",  # pyupgrade: older syntax that this Python has a newer form for
++    "SIM", # simplify: code that can be said in fewer words
++    "S",   # bandit: security, from `assert` in the package to `eval`
++    "N",   # pep8-naming: classes in CamelCase, functions and variables in lower_case
++]
++
++[tool.ruff.lint.per-file-ignores]
++# A test is written with assert
++"tests/**" = ["S101"]
+```
+
+</details>
+
+<details><summary>The diff of <code>src/babykev/api.py</code></summary>
+
+```diff
+@@ -1,14 +1,15 @@
+ """The contract: request and answer shapes, mapped onto the single pointer primitive.
+ 
+-Noul   -> 2 options [false, true];            answer = p(true)
+-Choice -> options 'name' or 'name: desc';      answer = argmax, probabilities by name, confidence
+-Score  -> options = ordered level descriptions; answer = expected level, legend, probabilities by index
++Noul   -> 2 options [false, true];        answer = p(true)
++Choice -> options 'name' or 'name: desc'; answer = argmax, probabilities by name, confidence
++Score  -> options = the levels, in order; answer = expected level, legend, probabilities by index
+ """
+ 
+-from typing import Any, Literal, Union
++from typing import Any, Literal
++
+ from pydantic import BaseModel, Field, model_validator
+ 
+-JSONContent = Union[str, dict, list, int, float, bool, None]
++JSONContent = str | dict | list | int | float | bool | None
+ MAX_OPTIONS = 255
+ 
+ 
+@@ -36,7 +37,7 @@ class Score(BaseModel):
+     criteria: list[JSONContent] = Field(min_length=2, max_length=MAX_OPTIONS)
+ 
+ 
+-Question = Union[Noul, Choice, Score]
++Question = Noul | Choice | Score
+ 
+ 
+ class SystemOneRequest(BaseModel):
+@@ -91,8 +92,8 @@ def to_record(req: SystemOneRequest):
+ 
+ 
+ def choice_confidence(p: list[float]) -> float:
+-    K = len(p)
+-    return 1.0 if K == 1 else (max(p) - 1 / K) / (1 - 1 / K)
++    k = len(p)
++    return 1.0 if k == 1 else (max(p) - 1 / k) / (1 - 1 / k)
+ 
+ 
+ def score_confidence(p: list[float]) -> float:
+@@ -101,12 +102,12 @@ def score_confidence(p: list[float]) -> float:
+     `spread` is the expected distance from the most likely level. `guess` is the spread of a guess,
+     equal probability on every level, around the middle. Anything as spread out as a guess gets 0.
+     """
+-    L = len(p)
+-    if L == 1:
++    n = len(p)
++    if n == 1:
+         return 1.0
+-    mode = max(range(L), key=lambda i: p[i])
++    mode = max(range(n), key=lambda i: p[i])
+     spread = sum(pi * abs(i - mode) for i, pi in enumerate(p))
+-    guess = sum(abs(i - (L - 1) / 2) for i in range(L)) / L
++    guess = sum(abs(i - (n - 1) / 2) for i in range(n)) / n
+     return max(0.0, 1.0 - spread / guess)
+ 
+ 
+@@ -118,11 +119,11 @@ def round_prob(x: float) -> float:
+ 
+ def to_answers(probs: list[list[float]], meta: list[dict]) -> dict[str, Any]:
+     out = {}
+-    for p, m in zip(probs, meta):
++    for p, m in zip(probs, meta, strict=True):
+         if m["type"] == "noul":
+             out[m["id"]] = {"type": "noul", "noul": round_prob(p[1])}
+         elif m["type"] == "choice":
+-            dist = {k: round_prob(v) for k, v in zip(m["keys"], p)}
++            dist = {k: round_prob(v) for k, v in zip(m["keys"], p, strict=True)}
+             out[m["id"]] = {
+                 "type": "choice",
+                 "choice": m["keys"][max(range(len(p)), key=lambda i: p[i])],
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/compare/84b3ac0ce858d907d8d59ffdc9c9096ab8cb2ac4...7cdb1ba696a32050cba1c335892fccb68bb4fd24){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-08`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-08){.btn .btn-sm .btn-primary}

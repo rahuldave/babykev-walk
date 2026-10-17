@@ -4,6 +4,17 @@ title: "5a The tests that could tell"
 
 <!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `step-05`. [The code before this part](https://github.com/rahuldave/babykev/tree/step-05){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach step-05
+```
+
 **Init.** `just setup` changes nothing in `.venv`: no new package. 0.5 s.
 
 ```bash
@@ -125,17 +136,17 @@ just test -k notebook
 
 ## What changed {#step-05a-what-changed-182c57}
 
-- <a id="step-05a-README.md-8ec9a0"></a>`README.md`: 6 lines added, 4 removed. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/README.md).
-- <a id="step-05a-docs-_quarto.yml-ee884f"></a>`docs/_quarto.yml`: 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/docs/_quarto.yml).
-- <a id="step-05a-docs-guide-00_model.qmd-42835e"></a>`docs/guide/00_model.qmd`: New, 55 lines. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/docs/guide/00_model.qmd).
-- <a id="step-05a-docs-guide-01_mask.ipynb-f6e9ba"></a>`docs/guide/01_mask.ipynb`: New, 265 lines. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/docs/guide/01_mask.ipynb).
-- <a id="step-05a-justfile-424f0b"></a>`justfile`: 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/justfile).
-- <a id="step-05a-pyproject.toml-5d07e7"></a>`pyproject.toml`: 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/pyproject.toml).
-- <a id="step-05a-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: adds `delimiter_ids`; changes `branch_mask`, `encode`. 14 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/src/babykev/model.py).
-- <a id="step-05a-tests-conftest.py-626af3"></a>`tests/conftest.py`: changes `record`. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/tests/conftest.py).
-- <a id="step-05a-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: adds `allowed`, `segments`, `test_every_token_sees_the_state_before_it_and_its_own_question`, `test_mask_has_a_shape_the_model_can_add_to_its_attention`, `test_mask_of_a_small_request`, `test_no_question_sees_another_question`, `test_no_token_sees_a_later_token`. New, 78 lines. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/tests/unit/test_mask.py).
-- <a id="step-05a-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: adds `test_a_question_cannot_see_its_sibling`, `test_packed_equals_separate_for_any_record`, `test_packed_questions_answer_as_they_would_alone`, `test_the_order_of_questions_does_not_matter`; changes `test_a_packed_record_has_exactly_the_delimiters_its_shape_needs`, `test_a_tokenizer_alone_would_let_text_forge_a_delimiter`, `test_packing_marks_every_part_with_its_delimiter`, `test_user_text_cannot_forge_a_delimiter`. 69 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/tests/unit/test_model.py).
-- <a id="step-05a-tests-unit-test_notebooks.py-057539"></a>`tests/unit/test_notebooks.py`: adds `printed`, `test_notebook_prints_what_its_stored_outputs_show`, `test_there_is_a_notebook_to_check`. New, 42 lines. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/tests/unit/test_notebooks.py).
+- <a id="step-05a-README.md-8ec9a0"></a>`README.md`: 6 lines added, 4 removed. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/README.md){.btn .btn-sm .btn-secondary}
+- <a id="step-05a-docs-_quarto.yml-ee884f"></a>`docs/_quarto.yml`: 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/docs/_quarto.yml){.btn .btn-sm .btn-secondary}
+- <a id="step-05a-docs-guide-00_model.qmd-42835e"></a>`docs/guide/00_model.qmd`: New, 55 lines. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/docs/guide/00_model.qmd){.btn .btn-sm .btn-secondary}
+- <a id="step-05a-docs-guide-01_mask.ipynb-f6e9ba"></a>`docs/guide/01_mask.ipynb`: New, 265 lines. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/docs/guide/01_mask.ipynb){.btn .btn-sm .btn-secondary}
+- <a id="step-05a-justfile-424f0b"></a>`justfile`: 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/justfile){.btn .btn-sm .btn-secondary}
+- <a id="step-05a-pyproject.toml-5d07e7"></a>`pyproject.toml`: 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/pyproject.toml){.btn .btn-sm .btn-secondary}
+- <a id="step-05a-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: adds `delimiter_ids`; changes `branch_mask`, `encode`. 14 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/src/babykev/model.py){.btn .btn-sm .btn-secondary}
+- <a id="step-05a-tests-conftest.py-626af3"></a>`tests/conftest.py`: changes `record`. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/tests/conftest.py){.btn .btn-sm .btn-secondary}
+- <a id="step-05a-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: adds `allowed`, `segments`, `test_every_token_sees_the_state_before_it_and_its_own_question`, `test_mask_has_a_shape_the_model_can_add_to_its_attention`, `test_mask_of_a_small_request`, `test_no_question_sees_another_question`, `test_no_token_sees_a_later_token`. New, 78 lines. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/tests/unit/test_mask.py){.btn .btn-sm .btn-secondary}
+- <a id="step-05a-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: adds `test_a_question_cannot_see_its_sibling`, `test_packed_equals_separate_for_any_record`, `test_packed_questions_answer_as_they_would_alone`, `test_the_order_of_questions_does_not_matter`; changes `test_a_packed_record_has_exactly_the_delimiters_its_shape_needs`, `test_a_tokenizer_alone_would_let_text_forge_a_delimiter`, `test_packing_marks_every_part_with_its_delimiter`, `test_user_text_cannot_forge_a_delimiter`. 69 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
+- <a id="step-05a-tests-unit-test_notebooks.py-057539"></a>`tests/unit/test_notebooks.py`: adds `printed`, `test_notebook_prints_what_its_stored_outputs_show`, `test_there_is_a_notebook_to_check`. New, 42 lines. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/tests/unit/test_notebooks.py){.btn .btn-sm .btn-secondary}
 
 <details><summary>The diff of <code>README.md</code></summary>
 
@@ -898,4 +909,6 @@ just test -k notebook
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/compare/46cf8625a031e10049355df4c37abcb7af58d847...c954af4beae61eaab89bcb2d4724eea4f2706703). [The code after it](https://github.com/rahuldave/babykev/tree/c954af4beae61eaab89bcb2d4724eea4f2706703).
+[This change on GitHub](https://github.com/rahuldave/babykev/compare/46cf8625a031e10049355df4c37abcb7af58d847...c954af4beae61eaab89bcb2d4724eea4f2706703){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `step-05a`. [The code after this part](https://github.com/rahuldave/babykev/tree/step-05a){.btn .btn-sm .btn-primary}

@@ -150,6 +150,8 @@ git config alias.check '!f() { i="$(git rev-parse --git-path check-index)" && { 
 
 ## 0 Where we start
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part is where the project starts, at `tut-00`. [The code of this part](https://github.com/rahuldave/babykev/tree/tut-00)
+
 The first section shows the folder of babykev before it holds any code.
 
 babykev starts as words, before any code. The README says what babykev is, and what request it reads. The licence is
@@ -180,7 +182,7 @@ git check 70ac5b0a0a1d
 If you are stuck, this command puts the files of this part in place of yours. A file that you made yourself stays:
 
 ```bash
-git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 70ac5b0a0a1d --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch -- :/ && git restore --source tut-00 --staged --worktree -- :/
 ```
 
 ### What changed
@@ -728,16 +730,16 @@ git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 70ac5b0a0a1d 
 
 </details>
 
-[The code](https://github.com/rahuldave/babykev/tree/70ac5b0a0a1d927dfc4da6f8b7b92344917e4a33).
-
 <a id="tut-07.1-to-tut-07.5"></a>
 
 ## 7.1 to 7.5 Format
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-06`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-06)
+
 This part does not start where the part before it ends, because the walk skips some changes. This command puts the files that this part starts from in place of yours. Run it, and then go on:
 
 ```bash
-git restore --source 70ac5b0a0a1d --staged -- :/ && git restore --source 910716f0cec7 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-00 --staged -- :/ && git restore --source tut-06 --staged --worktree -- :/
 ```
 
 ```bash
@@ -755,8 +757,6 @@ two changes fix them. `just test` prints `53 passed`, and the coverage is 100%.
 `just setup` prints `Resolved 14 packages`. The tests check what the code does, and nothing checks how it looks.
 `api.py` has a style of its own. Some lines hold an `if` and its `return` together, and some lines run past 200
 characters. ruff comes in, then its settings and the recipe `fmt`, and the formatter rewrites `api.py`.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/910716f0cec79c3f31afb34cf3a2593f0cd51315). [The code after it](https://github.com/rahuldave/babykev/tree/84b3ac0ce858d907d8d59ffdc9c9096ab8cb2ac4).
 
 <a id="tut-07.1"></a>
 
@@ -796,7 +796,7 @@ git check 5085d2a6ae47
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 910716f0cec7 --staged -- :/ && git restore --source 5085d2a6ae47 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-06 --staged -- :/ && git restore --source 5085d2a6ae47 --staged --worktree -- :/
 ```
 
 #### What changed
@@ -832,31 +832,48 @@ At 88 characters, the formatter would split lines of `cli.py` and of the tests t
 setting `line-length` in the table `[tool.ruff]` lets a line run to 100 characters. The formatter and the linter
 both read the table.
 
-Set the values that this change sets in [`pyproject.toml`](#tut-07.2-pyproject.toml-5d07e7). Run this command from the top of the project. It reads your file with tomlkit, a library for TOML files. It sets each of these values as the project has it, and keeps the rest of your file:
+Set the values that this change sets in [`pyproject.toml`](#tut-07.2-pyproject.toml-5d07e7). Run this command from the top of the project. It reads your file with tomlkit, a library for TOML files. It copies each of these tables and values from the project's file after this change, with their comments, and keeps the rest of your file:
 
 ```bash
 uv run --quiet --no-config --no-project --with tomlkit python - <<'PY'
-import pathlib, tomlkit
+import copy, pathlib, subprocess, tomlkit
+from tomlkit.items import Comment, Table, Whitespace
 path = pathlib.Path('pyproject.toml')
 doc = tomlkit.parse(path.read_text(encoding='utf-8')) if path.exists() else tomlkit.document()
-# Each value that the change sets, by its keys
-SET = [
-    (('tool', 'ruff'), {'line-length': 100}),
+# The project's file after this change, from your clone
+project = tomlkit.parse(subprocess.run(['git', 'show', '58d9bddfeea6:pyproject.toml'], capture_output=True, text=True,
+                                        check=True).stdout)
+# Each table and value that the change sets, by its keys: each comes from the project's file with its comments
+COPY = [
+    ('tool', 'ruff'),
 ]
 
-def put(table, keys, value):   # make each table on the way; a table goes into the one there, key by key
-    for key in keys[:-1]:
-        if key not in table:
-            table[key] = tomlkit.table(True)
-        table = table[key]
-    if isinstance(value, dict) and isinstance(table.get(keys[-1]), dict):
-        for key, item in value.items():
-            put(table[keys[-1]], [key], item)
-    else:
-        table[keys[-1]] = value
+def body(table):   # the items of a table in their order, with its comment lines
+    inner = table if isinstance(table, tomlkit.TOMLDocument) else getattr(table, 'value', None)
+    return getattr(inner, 'body', [])
 
-for keys, value in SET:
-    put(doc, keys, value)
+def above(table, key):   # the comment lines just above a key
+    found = []
+    for name, item in body(table):
+        if name is not None and name.key == key:
+            return found
+        found = found + [item] if isinstance(item, Comment) else found if isinstance(item, Whitespace) else []
+    return []
+
+for keys in COPY:
+    source, target = project, doc
+    for key in keys[:-1]:   # make each table on the way
+        source = source[key]
+        if key not in target:
+            target[key] = tomlkit.table(True)
+        target = target[key]
+    item = copy.deepcopy(source[keys[-1]])
+    if isinstance(item, Table) and not item.as_string().endswith('\n\n'):
+        item.add(tomlkit.nl())   # a blank line before the table after it
+    if keys[-1] not in target:
+        for comment in above(source, keys[-1]):
+            target.add(copy.deepcopy(comment))
+    target[keys[-1]] = item
 path.write_text(tomlkit.dumps(doc), encoding='utf-8')
 PY
 ```
@@ -915,36 +932,48 @@ The formatter has almost no options, and its defaults are its style. A reader of
 The table `[tool.ruff.format]` writes out five of them, each with a comment. They are the defaults, so the output of
 the formatter does not change.
 
-Set the values that this change sets in [`pyproject.toml`](#tut-07.3-pyproject.toml-5d07e7). Run this command from the top of the project. It reads your file with tomlkit, a library for TOML files. It sets each of these values as the project has it, and keeps the rest of your file:
+Set the values that this change sets in [`pyproject.toml`](#tut-07.3-pyproject.toml-5d07e7). Run this command from the top of the project. It reads your file with tomlkit, a library for TOML files. It copies each of these tables and values from the project's file after this change, with their comments, and keeps the rest of your file:
 
 ```bash
 uv run --quiet --no-config --no-project --with tomlkit python - <<'PY'
-import pathlib, tomlkit
+import copy, pathlib, subprocess, tomlkit
+from tomlkit.items import Comment, Table, Whitespace
 path = pathlib.Path('pyproject.toml')
 doc = tomlkit.parse(path.read_text(encoding='utf-8')) if path.exists() else tomlkit.document()
-# Each value that the change sets, by its keys
-SET = [
-    (('tool', 'ruff', 'format'),
-     {'quote-style': 'double',
-      'indent-style': 'space',
-      'skip-magic-trailing-comma': False,
-      'line-ending': 'auto',
-      'docstring-code-format': False}),
+# The project's file after this change, from your clone
+project = tomlkit.parse(subprocess.run(['git', 'show', 'ff4c6545868d:pyproject.toml'], capture_output=True, text=True,
+                                        check=True).stdout)
+# Each table and value that the change sets, by its keys: each comes from the project's file with its comments
+COPY = [
+    ('tool', 'ruff', 'format'),
 ]
 
-def put(table, keys, value):   # make each table on the way; a table goes into the one there, key by key
-    for key in keys[:-1]:
-        if key not in table:
-            table[key] = tomlkit.table(True)
-        table = table[key]
-    if isinstance(value, dict) and isinstance(table.get(keys[-1]), dict):
-        for key, item in value.items():
-            put(table[keys[-1]], [key], item)
-    else:
-        table[keys[-1]] = value
+def body(table):   # the items of a table in their order, with its comment lines
+    inner = table if isinstance(table, tomlkit.TOMLDocument) else getattr(table, 'value', None)
+    return getattr(inner, 'body', [])
 
-for keys, value in SET:
-    put(doc, keys, value)
+def above(table, key):   # the comment lines just above a key
+    found = []
+    for name, item in body(table):
+        if name is not None and name.key == key:
+            return found
+        found = found + [item] if isinstance(item, Comment) else found if isinstance(item, Whitespace) else []
+    return []
+
+for keys in COPY:
+    source, target = project, doc
+    for key in keys[:-1]:   # make each table on the way
+        source = source[key]
+        if key not in target:
+            target[key] = tomlkit.table(True)
+        target = target[key]
+    item = copy.deepcopy(source[keys[-1]])
+    if isinstance(item, Table) and not item.as_string().endswith('\n\n'):
+        item.add(tomlkit.nl())   # a blank line before the table after it
+    if keys[-1] not in target:
+        for comment in above(source, keys[-1]):
+            target.add(copy.deepcopy(comment))
+    target[keys[-1]] = item
 path.write_text(tomlkit.dumps(doc), encoding='utf-8')
 PY
 ```
@@ -1096,7 +1125,7 @@ git check 84b3ac0ce858
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 03e6443db4c8 --staged -- :/ && git restore --source 84b3ac0ce858 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source 03e6443db4c8 --staged -- :/ && git restore --source tut-07 --staged --worktree -- :/
 ```
 
 #### What changed
@@ -1189,11 +1218,15 @@ git restore --source 03e6443db4c8 --staged -- :/ && git restore --source 84b3ac0
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/84b3ac0ce858d907d8d59ffdc9c9096ab8cb2ac4). [The code after it](https://github.com/rahuldave/babykev/tree/84b3ac0ce858d907d8d59ffdc9c9096ab8cb2ac4).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/84b3ac0ce858d907d8d59ffdc9c9096ab8cb2ac4).
+
+This part ends at the code at `tut-07`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-07)
 
 <a id="tut-08"></a>
 
 ## 8 Lint
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-07`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-07)
 
 ```bash
 just setup
@@ -1206,8 +1239,6 @@ and reports what breaks them, from an import that nobody uses to a `zip` that dr
 linter too, and the families of rules come first. The linter finds 8 problems in `api.py`, and each rule then gets
 a fix of its own. ruff makes the last fix itself.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/84b3ac0ce858d907d8d59ffdc9c9096ab8cb2ac4). [The code after it](https://github.com/rahuldave/babykev/tree/7cdb1ba696a32050cba1c335892fccb68bb4fd24).
-
 <a id="tut-08.1"></a>
 
 ### 8.1 The rules of the linter
@@ -1216,31 +1247,48 @@ ruff has more than 900 rules. The table `[tool.ruff.lint]` chooses which to chec
 rules has a prefix, such as `E` or `B`. The list has one family on each line, with a comment that says what it
 finds.
 
-Set the values that this change sets in [`pyproject.toml`](#tut-08.1-pyproject.toml-5d07e7). Run this command from the top of the project. It reads your file with tomlkit, a library for TOML files. It sets each of these values as the project has it, and keeps the rest of your file:
+Set the values that this change sets in [`pyproject.toml`](#tut-08.1-pyproject.toml-5d07e7). Run this command from the top of the project. It reads your file with tomlkit, a library for TOML files. It copies each of these tables and values from the project's file after this change, with their comments, and keeps the rest of your file:
 
 ```bash
 uv run --quiet --no-config --no-project --with tomlkit python - <<'PY'
-import pathlib, tomlkit
+import copy, pathlib, subprocess, tomlkit
+from tomlkit.items import Comment, Table, Whitespace
 path = pathlib.Path('pyproject.toml')
 doc = tomlkit.parse(path.read_text(encoding='utf-8')) if path.exists() else tomlkit.document()
-# Each value that the change sets, by its keys
-SET = [
-    (('tool', 'ruff', 'lint'), {'select': ['E', 'W', 'F', 'I', 'B', 'UP', 'SIM', 'S', 'N']}),
+# The project's file after this change, from your clone
+project = tomlkit.parse(subprocess.run(['git', 'show', '1a067ec6d902:pyproject.toml'], capture_output=True, text=True,
+                                        check=True).stdout)
+# Each table and value that the change sets, by its keys: each comes from the project's file with its comments
+COPY = [
+    ('tool', 'ruff', 'lint'),
 ]
 
-def put(table, keys, value):   # make each table on the way; a table goes into the one there, key by key
-    for key in keys[:-1]:
-        if key not in table:
-            table[key] = tomlkit.table(True)
-        table = table[key]
-    if isinstance(value, dict) and isinstance(table.get(keys[-1]), dict):
-        for key, item in value.items():
-            put(table[keys[-1]], [key], item)
-    else:
-        table[keys[-1]] = value
+def body(table):   # the items of a table in their order, with its comment lines
+    inner = table if isinstance(table, tomlkit.TOMLDocument) else getattr(table, 'value', None)
+    return getattr(inner, 'body', [])
 
-for keys, value in SET:
-    put(doc, keys, value)
+def above(table, key):   # the comment lines just above a key
+    found = []
+    for name, item in body(table):
+        if name is not None and name.key == key:
+            return found
+        found = found + [item] if isinstance(item, Comment) else found if isinstance(item, Whitespace) else []
+    return []
+
+for keys in COPY:
+    source, target = project, doc
+    for key in keys[:-1]:   # make each table on the way
+        source = source[key]
+        if key not in target:
+            target[key] = tomlkit.table(True)
+        target = target[key]
+    item = copy.deepcopy(source[keys[-1]])
+    if isinstance(item, Table) and not item.as_string().endswith('\n\n'):
+        item.add(tomlkit.nl())   # a blank line before the table after it
+    if keys[-1] not in target:
+        for comment in above(source, keys[-1]):
+            target.add(copy.deepcopy(comment))
+    target[keys[-1]] = item
 path.write_text(tomlkit.dumps(doc), encoding='utf-8')
 PY
 ```
@@ -1265,7 +1313,7 @@ git check 1a067ec6d902
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 84b3ac0ce858 --staged -- :/ && git restore --source 1a067ec6d902 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-07 --staged -- :/ && git restore --source 1a067ec6d902 --staged --worktree -- :/
 ```
 
 #### What changed
@@ -1308,31 +1356,48 @@ The 44 `S101` hide the 8 problems of `api.py`. A test is written with `assert`, 
 `python -O`. The table `[tool.ruff.lint.per-file-ignores]` lets the files under `tests/` break `S101`. The package
 still may not use `assert`.
 
-Set the values that this change sets in [`pyproject.toml`](#tut-08.2-pyproject.toml-5d07e7). Run this command from the top of the project. It reads your file with tomlkit, a library for TOML files. It sets each of these values as the project has it, and keeps the rest of your file:
+Set the values that this change sets in [`pyproject.toml`](#tut-08.2-pyproject.toml-5d07e7). Run this command from the top of the project. It reads your file with tomlkit, a library for TOML files. It copies each of these tables and values from the project's file after this change, with their comments, and keeps the rest of your file:
 
 ```bash
 uv run --quiet --no-config --no-project --with tomlkit python - <<'PY'
-import pathlib, tomlkit
+import copy, pathlib, subprocess, tomlkit
+from tomlkit.items import Comment, Table, Whitespace
 path = pathlib.Path('pyproject.toml')
 doc = tomlkit.parse(path.read_text(encoding='utf-8')) if path.exists() else tomlkit.document()
-# Each value that the change sets, by its keys
-SET = [
-    (('tool', 'ruff', 'lint', 'per-file-ignores'), {'tests/**': ['S101']}),
+# The project's file after this change, from your clone
+project = tomlkit.parse(subprocess.run(['git', 'show', 'a6325da466f1:pyproject.toml'], capture_output=True, text=True,
+                                        check=True).stdout)
+# Each table and value that the change sets, by its keys: each comes from the project's file with its comments
+COPY = [
+    ('tool', 'ruff', 'lint', 'per-file-ignores'),
 ]
 
-def put(table, keys, value):   # make each table on the way; a table goes into the one there, key by key
-    for key in keys[:-1]:
-        if key not in table:
-            table[key] = tomlkit.table(True)
-        table = table[key]
-    if isinstance(value, dict) and isinstance(table.get(keys[-1]), dict):
-        for key, item in value.items():
-            put(table[keys[-1]], [key], item)
-    else:
-        table[keys[-1]] = value
+def body(table):   # the items of a table in their order, with its comment lines
+    inner = table if isinstance(table, tomlkit.TOMLDocument) else getattr(table, 'value', None)
+    return getattr(inner, 'body', [])
 
-for keys, value in SET:
-    put(doc, keys, value)
+def above(table, key):   # the comment lines just above a key
+    found = []
+    for name, item in body(table):
+        if name is not None and name.key == key:
+            return found
+        found = found + [item] if isinstance(item, Comment) else found if isinstance(item, Whitespace) else []
+    return []
+
+for keys in COPY:
+    source, target = project, doc
+    for key in keys[:-1]:   # make each table on the way
+        source = source[key]
+        if key not in target:
+            target[key] = tomlkit.table(True)
+        target = target[key]
+    item = copy.deepcopy(source[keys[-1]])
+    if isinstance(item, Table) and not item.as_string().endswith('\n\n'):
+        item.add(tomlkit.nl())   # a blank line before the table after it
+    if keys[-1] not in target:
+        for comment in above(source, keys[-1]):
+            target.add(copy.deepcopy(comment))
+    target[keys[-1]] = item
 path.write_text(tomlkit.dumps(doc), encoding='utf-8')
 PY
 ```
@@ -1772,7 +1837,7 @@ git check 7cdb1ba696a3
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source ca9cfc3b70b7 --staged -- :/ && git restore --source 7cdb1ba696a3 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source ca9cfc3b70b7 --staged -- :/ && git restore --source tut-08 --staged --worktree -- :/
 ```
 
 #### What changed
@@ -1797,11 +1862,15 @@ git restore --source ca9cfc3b70b7 --staged -- :/ && git restore --source 7cdb1ba
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/7cdb1ba696a32050cba1c335892fccb68bb4fd24). [The code after it](https://github.com/rahuldave/babykev/tree/7cdb1ba696a32050cba1c335892fccb68bb4fd24).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7cdb1ba696a32050cba1c335892fccb68bb4fd24).
+
+This part ends at the code at `tut-08`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-08)
 
 <a id="tut-09"></a>
 
 ## 9 Types in every signature
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-08`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-08)
 
 ```bash
 just setup
@@ -1814,39 +1883,54 @@ annotation says it, in the signature. Python does not check annotations when it 
 checker can, later. The family `ANN` of ruff asks for the type of every parameter and of every return value. A
 person writes each type that ruff cannot guess, and ruff writes the rest.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/7cdb1ba696a32050cba1c335892fccb68bb4fd24). [The code after it](https://github.com/rahuldave/babykev/tree/b0e8dd74539e4d3b210defc5e0169f53b1670393).
-
 <a id="tut-09.1"></a>
 
 ### 9.1 The rule that every function has types
 
 Nothing asks for types yet. The family `ANN` joins the list `select`, on a line of its own, with its comment.
 
-Set the values that this change sets in [`pyproject.toml`](#tut-09.1-pyproject.toml-5d07e7). Run this command from the top of the project. It reads your file with tomlkit, a library for TOML files. It sets each of these values as the project has it, and keeps the rest of your file:
+Set the values that this change sets in [`pyproject.toml`](#tut-09.1-pyproject.toml-5d07e7). Run this command from the top of the project. It reads your file with tomlkit, a library for TOML files. It copies each of these tables and values from the project's file after this change, with their comments, and keeps the rest of your file:
 
 ```bash
 uv run --quiet --no-config --no-project --with tomlkit python - <<'PY'
-import pathlib, tomlkit
+import copy, pathlib, subprocess, tomlkit
+from tomlkit.items import Comment, Table, Whitespace
 path = pathlib.Path('pyproject.toml')
 doc = tomlkit.parse(path.read_text(encoding='utf-8')) if path.exists() else tomlkit.document()
-# Each value that the change sets, by its keys
-SET = [
-    (('tool', 'ruff', 'lint', 'select'), ['E', 'W', 'F', 'I', 'B', 'UP', 'SIM', 'S', 'N', 'ANN']),
+# The project's file after this change, from your clone
+project = tomlkit.parse(subprocess.run(['git', 'show', '902428993991:pyproject.toml'], capture_output=True, text=True,
+                                        check=True).stdout)
+# Each table and value that the change sets, by its keys: each comes from the project's file with its comments
+COPY = [
+    ('tool', 'ruff', 'lint', 'select'),
 ]
 
-def put(table, keys, value):   # make each table on the way; a table goes into the one there, key by key
-    for key in keys[:-1]:
-        if key not in table:
-            table[key] = tomlkit.table(True)
-        table = table[key]
-    if isinstance(value, dict) and isinstance(table.get(keys[-1]), dict):
-        for key, item in value.items():
-            put(table[keys[-1]], [key], item)
-    else:
-        table[keys[-1]] = value
+def body(table):   # the items of a table in their order, with its comment lines
+    inner = table if isinstance(table, tomlkit.TOMLDocument) else getattr(table, 'value', None)
+    return getattr(inner, 'body', [])
 
-for keys, value in SET:
-    put(doc, keys, value)
+def above(table, key):   # the comment lines just above a key
+    found = []
+    for name, item in body(table):
+        if name is not None and name.key == key:
+            return found
+        found = found + [item] if isinstance(item, Comment) else found if isinstance(item, Whitespace) else []
+    return []
+
+for keys in COPY:
+    source, target = project, doc
+    for key in keys[:-1]:   # make each table on the way
+        source = source[key]
+        if key not in target:
+            target[key] = tomlkit.table(True)
+        target = target[key]
+    item = copy.deepcopy(source[keys[-1]])
+    if isinstance(item, Table) and not item.as_string().endswith('\n\n'):
+        item.add(tomlkit.nl())   # a blank line before the table after it
+    if keys[-1] not in target:
+        for comment in above(source, keys[-1]):
+            target.add(copy.deepcopy(comment))
+    target[keys[-1]] = item
 path.write_text(tomlkit.dumps(doc), encoding='utf-8')
 PY
 ```
@@ -1877,7 +1961,7 @@ git check 902428993991
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 7cdb1ba696a3 --staged -- :/ && git restore --source 902428993991 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-08 --staged -- :/ && git restore --source 902428993991 --staged --worktree -- :/
 ```
 
 #### What changed
@@ -2369,7 +2453,7 @@ git check b0e8dd74539e
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source e0ff9f81ef10 --staged -- :/ && git restore --source b0e8dd74539e --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source e0ff9f81ef10 --staged -- :/ && git restore --source tut-09 --staged --worktree -- :/
 ```
 
 #### What changed
@@ -2646,11 +2730,15 @@ git restore --source e0ff9f81ef10 --staged -- :/ && git restore --source b0e8dd7
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/b0e8dd74539e4d3b210defc5e0169f53b1670393). [The code after it](https://github.com/rahuldave/babykev/tree/b0e8dd74539e4d3b210defc5e0169f53b1670393).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b0e8dd74539e4d3b210defc5e0169f53b1670393).
+
+This part ends at the code at `tut-09`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-09)
 
 <a id="tut-10"></a>
 
 ## 10 Docstrings
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-09`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-09)
 
 ```bash
 just setup
@@ -2663,8 +2751,6 @@ editor show it. kev gave a docstring to some functions of `api.py`, and to none 
 ruff ask for a docstring on every public module, class and function. ruff cannot write one, so each comes by hand,
 one kind at a time.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/b0e8dd74539e4d3b210defc5e0169f53b1670393). [The code after it](https://github.com/rahuldave/babykev/tree/ebd0888f135c00e29b583f6fad0575c290fd4876).
-
 <a id="tut-10.1"></a>
 
 ### 10.1 The rule that every public name has a docstring
@@ -2673,31 +2759,48 @@ Nothing asks for docstrings yet. The rules `D1` of the family `D`, pydocstyle, j
 part of the family that asks whether a docstring is there. The rest of the family checks how a docstring is written,
 and stays off.
 
-Set the values that this change sets in [`pyproject.toml`](#tut-10.1-pyproject.toml-5d07e7). Run this command from the top of the project. It reads your file with tomlkit, a library for TOML files. It sets each of these values as the project has it, and keeps the rest of your file:
+Set the values that this change sets in [`pyproject.toml`](#tut-10.1-pyproject.toml-5d07e7). Run this command from the top of the project. It reads your file with tomlkit, a library for TOML files. It copies each of these tables and values from the project's file after this change, with their comments, and keeps the rest of your file:
 
 ```bash
 uv run --quiet --no-config --no-project --with tomlkit python - <<'PY'
-import pathlib, tomlkit
+import copy, pathlib, subprocess, tomlkit
+from tomlkit.items import Comment, Table, Whitespace
 path = pathlib.Path('pyproject.toml')
 doc = tomlkit.parse(path.read_text(encoding='utf-8')) if path.exists() else tomlkit.document()
-# Each value that the change sets, by its keys
-SET = [
-    (('tool', 'ruff', 'lint', 'select'), ['E', 'W', 'F', 'I', 'B', 'UP', 'SIM', 'S', 'N', 'ANN', 'D1']),
+# The project's file after this change, from your clone
+project = tomlkit.parse(subprocess.run(['git', 'show', '09ad56d2e465:pyproject.toml'], capture_output=True, text=True,
+                                        check=True).stdout)
+# Each table and value that the change sets, by its keys: each comes from the project's file with its comments
+COPY = [
+    ('tool', 'ruff', 'lint', 'select'),
 ]
 
-def put(table, keys, value):   # make each table on the way; a table goes into the one there, key by key
-    for key in keys[:-1]:
-        if key not in table:
-            table[key] = tomlkit.table(True)
-        table = table[key]
-    if isinstance(value, dict) and isinstance(table.get(keys[-1]), dict):
-        for key, item in value.items():
-            put(table[keys[-1]], [key], item)
-    else:
-        table[keys[-1]] = value
+def body(table):   # the items of a table in their order, with its comment lines
+    inner = table if isinstance(table, tomlkit.TOMLDocument) else getattr(table, 'value', None)
+    return getattr(inner, 'body', [])
 
-for keys, value in SET:
-    put(doc, keys, value)
+def above(table, key):   # the comment lines just above a key
+    found = []
+    for name, item in body(table):
+        if name is not None and name.key == key:
+            return found
+        found = found + [item] if isinstance(item, Comment) else found if isinstance(item, Whitespace) else []
+    return []
+
+for keys in COPY:
+    source, target = project, doc
+    for key in keys[:-1]:   # make each table on the way
+        source = source[key]
+        if key not in target:
+            target[key] = tomlkit.table(True)
+        target = target[key]
+    item = copy.deepcopy(source[keys[-1]])
+    if isinstance(item, Table) and not item.as_string().endswith('\n\n'):
+        item.add(tomlkit.nl())   # a blank line before the table after it
+    if keys[-1] not in target:
+        for comment in above(source, keys[-1]):
+            target.add(copy.deepcopy(comment))
+    target[keys[-1]] = item
 path.write_text(tomlkit.dumps(doc), encoding='utf-8')
 PY
 ```
@@ -2722,7 +2825,7 @@ git check 09ad56d2e465
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source b0e8dd74539e --staged -- :/ && git restore --source 09ad56d2e465 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-09 --staged -- :/ && git restore --source 09ad56d2e465 --staged --worktree -- :/
 ```
 
 #### What changed
@@ -2919,7 +3022,7 @@ git check ebd0888f135c
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 9a769c7d9551 --staged -- :/ && git restore --source ebd0888f135c --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source 9a769c7d9551 --staged -- :/ && git restore --source tut-10 --staged --worktree -- :/
 ```
 
 #### What changed
@@ -2958,11 +3061,15 @@ git restore --source 9a769c7d9551 --staged -- :/ && git restore --source ebd0888
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/ebd0888f135c00e29b583f6fad0575c290fd4876). [The code after it](https://github.com/rahuldave/babykev/tree/ebd0888f135c00e29b583f6fad0575c290fd4876).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ebd0888f135c00e29b583f6fad0575c290fd4876).
+
+This part ends at the code at `tut-10`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-10)
 
 <a id="tut-11"></a>
 
 ## 11 The gate and the hook
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-10`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-10)
 
 ```bash
 just setup
@@ -2977,8 +3084,6 @@ is a gate, and a change that fails it does not go in.
 
 Three more hooks keep out a large file, the markers of a merge conflict and a `.env` file. Last, a mistake on purpose
 shows the gate at work.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/ebd0888f135c00e29b583f6fad0575c290fd4876). [The code after it](https://github.com/rahuldave/babykev/tree/cab87c139ebd3b72771ed6db08b02dd7646c7d02).
 
 <a id="tut-11.1"></a>
 
@@ -3027,7 +3132,7 @@ git check dbfc285a2ade
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source ebd0888f135c --staged -- :/ && git restore --source dbfc285a2ade --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-10 --staged -- :/ && git restore --source dbfc285a2ade --staged --worktree -- :/
 ```
 
 #### What changed
@@ -3572,7 +3677,7 @@ git check cab87c139ebd
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 054c40b6cc18 --staged -- :/ && git restore --source cab87c139ebd --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source 054c40b6cc18 --staged -- :/ && git restore --source tut-11 --staged --worktree -- :/
 ```
 
 #### What changed
@@ -3606,11 +3711,15 @@ git restore --source 054c40b6cc18 --staged -- :/ && git restore --source cab87c1
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/cab87c139ebd3b72771ed6db08b02dd7646c7d02). [The code after it](https://github.com/rahuldave/babykev/tree/cab87c139ebd3b72771ed6db08b02dd7646c7d02).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/cab87c139ebd3b72771ed6db08b02dd7646c7d02).
+
+This part ends at the code at `tut-11`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-11)
 
 <a id="tut-12"></a>
 
 ## 12 The config files, checked
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-11`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-11)
 
 ```bash
 just setup
@@ -3622,8 +3731,6 @@ The gate checks the Python of the project. The files that are not Python, the co
 misspelt key in `pyproject.toml`, a lockfile that no longer matches it, or a YAML file that pre-commit cannot read
 passes the gate. A recipe `lint-config` checks each kind of config file, with one checker per move. One checker
 fails on its defaults, for real, and its settings fix it. Then the gate runs `lint-config` too.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/cab87c139ebd3b72771ed6db08b02dd7646c7d02). [The code after it](https://github.com/rahuldave/babykev/tree/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac).
 
 <a id="tut-12.1"></a>
 
@@ -3653,7 +3760,7 @@ git check 7506fb7a39f8
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source cab87c139ebd --staged -- :/ && git restore --source 7506fb7a39f8 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-11 --staged -- :/ && git restore --source 7506fb7a39f8 --staged --worktree -- :/
 ```
 
 #### What changed
@@ -4327,7 +4434,7 @@ git check cbbf9bedfc2b
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source a7699bdb248a --staged -- :/ && git restore --source cbbf9bedfc2b --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source a7699bdb248a --staged -- :/ && git restore --source tut-12 --staged --worktree -- :/
 ```
 
 #### What changed
@@ -4350,16 +4457,20 @@ git restore --source a7699bdb248a --staged -- :/ && git restore --source cbbf9be
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac). [The code after it](https://github.com/rahuldave/babykev/tree/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac).
+
+This part ends at the code at `tut-12`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-12)
 
 <a id="tut-17.1-to-tut-17.5"></a>
 
 ## 17.1 to 17.5 The type checker
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-16`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-16)
+
 This part does not start where the part before it ends, because the walk skips some changes. This command puts the files that this part starts from in place of yours. Run it, and then go on:
 
 ```bash
-git restore --source cbbf9bedfc2b --staged -- :/ && git restore --source 056fe2ced73f --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-12 --staged -- :/ && git restore --source tut-16 --staged --worktree -- :/
 ```
 
 ```bash
@@ -4377,8 +4488,6 @@ linter and the docs check. No test runs it yet, so the coverage falls to 43%.
 `just setup` prints `Resolved 66 packages`. `model.py` has a type on every parameter and every return, because the
 linter asks for them. Nothing checks that the types are right. ty reads the code, and compares each call and each
 value with the types that the code and its libraries declare.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/056fe2ced73ff8568dfc329555795524c2465eb1). [The code after it](https://github.com/rahuldave/babykev/tree/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9).
 
 <a id="tut-17.1"></a>
 
@@ -4407,7 +4516,7 @@ git check aaa8fe6d7d1d
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 056fe2ced73f --staged -- :/ && git restore --source aaa8fe6d7d1d --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-16 --staged -- :/ && git restore --source aaa8fe6d7d1d --staged --worktree -- :/
 ```
 
 #### What changed
@@ -4686,7 +4795,7 @@ git check d4dd1c8d3d3c
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source f14349138824 --staged -- :/ && git restore --source d4dd1c8d3d3c --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source f14349138824 --staged -- :/ && git restore --source tut-17 --staged --worktree -- :/
 ```
 
 #### What changed
@@ -4718,4 +4827,6 @@ git restore --source f14349138824 --staged -- :/ && git restore --source d4dd1c8
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9). [The code after it](https://github.com/rahuldave/babykev/tree/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9).
+
+This part ends at the code at `tut-17`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-17)

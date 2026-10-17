@@ -6,10 +6,12 @@ title: "3 The contract"
 
 **Build it yourself.** [Read the tutorial](../read/tut-03.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-02`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-02){.btn .btn-sm .btn-primary}
+
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
 
 ```bash
-git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 4640589d80e4 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch -- :/ && git restore --source tut-02 --staged --worktree -- :/
 ```
 
 ```bash
@@ -21,8 +23,6 @@ an answer is. The agreement is a file from kev, `api.py`, and we call it the con
 
 Then three parts that belong to kev's server go, one at a time. Five sample requests come last. No test reaches the
 contract yet, so coverage falls.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/4640589d80e4f224a4b2c1fd9567e952f564f102). [The code after it](https://github.com/rahuldave/babykev/tree/56606771fb23f7a0a01825f477050d2980a47736).
 
 ## 3.1 Pydantic, the first dependency {#tut-03.1}
 
@@ -55,14 +55,14 @@ git check 96502df0a92f
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 4640589d80e4 --staged -- :/ && git restore --source 96502df0a92f --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-02 --staged -- :/ && git restore --source 96502df0a92f --staged --worktree -- :/
 ```
 
 ### What changed {#tut-03.1-what-changed-182c57}
 
-- <a id="tut-03.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the first dependency. `>=2.14.1` is the version that `uv add` found, as the lowest version to accept. 3 lines added, 1 removed. It comes from `uv add pydantic`. [The file](https://github.com/rahuldave/babykev/blob/96502df0a92f6f7090d6f624cda901a271dac9a7/pyproject.toml).
+- <a id="tut-03.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the first dependency. `>=2.14.1` is the version that `uv add` found, as the lowest version to accept. 3 lines added, 1 removed. It comes from `uv add pydantic`. [The file](https://github.com/rahuldave/babykev/blob/96502df0a92f6f7090d6f624cda901a271dac9a7/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `"pydantic>=2.14.1",`
-- <a id="tut-03.1-uv.lock-8356d8"></a>`uv.lock`: pydantic and the four packages it needs, each with its exact version. 136 lines added. It comes from `uv add pydantic`. [The file](https://github.com/rahuldave/babykev/blob/96502df0a92f6f7090d6f624cda901a271dac9a7/uv.lock).
+- <a id="tut-03.1-uv.lock-8356d8"></a>`uv.lock`: pydantic and the four packages it needs, each with its exact version. 136 lines added. It comes from `uv add pydantic`. [The file](https://github.com/rahuldave/babykev/blob/96502df0a92f6f7090d6f624cda901a271dac9a7/uv.lock){.btn .btn-sm .btn-secondary}
 
 <details><summary>The diff that <code>uv add pydantic</code> makes in <code>pyproject.toml</code></summary>
 
@@ -82,7 +82,7 @@ git restore --source 4640589d80e4 --staged -- :/ && git restore --source 96502df
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/96502df0a92f6f7090d6f624cda901a271dac9a7). [The code after it](https://github.com/rahuldave/babykev/tree/96502df0a92f6f7090d6f624cda901a271dac9a7).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/96502df0a92f6f7090d6f624cda901a271dac9a7){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/96502df0a92f6f7090d6f624cda901a271dac9a7){.btn .btn-sm .btn-primary}
 
 ## 3.2 api.py, the contract {#tut-03.2}
 
@@ -126,7 +126,7 @@ git restore --source 96502df0a92f --staged -- :/ && git restore --source e8e2e72
 
 ### What changed {#tut-03.2-what-changed-182c57}
 
-- <a id="tut-03.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a request has a state and its questions by name. Each question is a `Noul`, a `Choice` or a `Score`, and its field `type` says which. New, 111 lines. [The file](https://github.com/rahuldave/babykev/blob/e8e2e72adad9364a58be21dadf6d757e84436b97/src/babykev/api.py).
+- <a id="tut-03.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a request has a state and its questions by name. Each question is a `Noul`, a `Choice` or a `Score`, and its field `type` says which. New, 111 lines. [The file](https://github.com/rahuldave/babykev/blob/e8e2e72adad9364a58be21dadf6d757e84436b97/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `class SystemOneRequest(BaseModel):`
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
@@ -248,7 +248,7 @@ git restore --source 96502df0a92f --staged -- :/ && git restore --source e8e2e72
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e8e2e72adad9364a58be21dadf6d757e84436b97). [The code after it](https://github.com/rahuldave/babykev/tree/e8e2e72adad9364a58be21dadf6d757e84436b97).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e8e2e72adad9364a58be21dadf6d757e84436b97){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/e8e2e72adad9364a58be21dadf6d757e84436b97){.btn .btn-sm .btn-primary}
 
 ## 3.3 The docstring of api.py names no server {#tut-03.3}
 
@@ -283,7 +283,7 @@ git restore --source e8e2e72adad9 --staged -- :/ && git restore --source 9361895
 
 ### What changed {#tut-03.3-what-changed-182c57}
 
-- <a id="tut-03.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the docstring. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/93618951b784e928af3d3547f077bb49bff4d5da/src/babykev/api.py).
+- <a id="tut-03.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the docstring. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/93618951b784e928af3d3547f077bb49bff4d5da/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `"""The contract: request and answer shapes, mapped onto the single pointer primitive.`
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
@@ -299,7 +299,7 @@ git restore --source e8e2e72adad9 --staged -- :/ && git restore --source 9361895
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/93618951b784e928af3d3547f077bb49bff4d5da). [The code after it](https://github.com/rahuldave/babykev/tree/93618951b784e928af3d3547f077bb49bff4d5da).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/93618951b784e928af3d3547f077bb49bff4d5da){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/93618951b784e928af3d3547f077bb49bff4d5da){.btn .btn-sm .btn-primary}
 
 ## 3.4 A request names no model {#tut-03.4}
 
@@ -333,7 +333,7 @@ git restore --source 93618951b784 --staged -- :/ && git restore --source 5cce9c9
 
 ### What changed {#tut-03.4-what-changed-182c57}
 
-- <a id="tut-03.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a request has two fields, `state` and `questions`. 0 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/5cce9c9e5025336d501298d244389b64c696737c/src/babykev/api.py).
+- <a id="tut-03.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a request has two fields, `state` and `questions`. 0 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/5cce9c9e5025336d501298d244389b64c696737c/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `    questions: dict[str, Question] = Field(min_length=1)`
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
@@ -351,7 +351,7 @@ git restore --source 93618951b784 --staged -- :/ && git restore --source 5cce9c9
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/5cce9c9e5025336d501298d244389b64c696737c). [The code after it](https://github.com/rahuldave/babykev/tree/5cce9c9e5025336d501298d244389b64c696737c).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/5cce9c9e5025336d501298d244389b64c696737c){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/5cce9c9e5025336d501298d244389b64c696737c){.btn .btn-sm .btn-primary}
 
 ## 3.5 output_tokens goes {#tut-03.5}
 
@@ -386,7 +386,7 @@ git restore --source 5cce9c9e5025 --staged -- :/ && git restore --source 43b7ea4
 
 ### What changed {#tut-03.5-what-changed-182c57}
 
-- <a id="tut-03.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the function goes. 0 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/43b7ea4eda990f90abd605920e2fb1d9b376378d/src/babykev/api.py).
+- <a id="tut-03.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the function goes. 0 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/43b7ea4eda990f90abd605920e2fb1d9b376378d/src/babykev/api.py){.btn .btn-sm .btn-secondary}
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
@@ -405,7 +405,7 @@ git restore --source 5cce9c9e5025 --staged -- :/ && git restore --source 43b7ea4
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/43b7ea4eda990f90abd605920e2fb1d9b376378d). [The code after it](https://github.com/rahuldave/babykev/tree/43b7ea4eda990f90abd605920e2fb1d9b376378d).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/43b7ea4eda990f90abd605920e2fb1d9b376378d){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/43b7ea4eda990f90abd605920e2fb1d9b376378d){.btn .btn-sm .btn-primary}
 
 ## 3.6 Five requests about cheese, as sample data {#tut-03.6}
 
@@ -442,7 +442,7 @@ git restore --source 43b7ea4eda99 --staged -- :/ && git restore --source abb4ece
 
 ### What changed {#tut-03.6-what-changed-182c57}
 
-- <a id="tut-03.6-data-cheese-sample.jsonl-79f982"></a>`data/cheese/sample.jsonl`: each line is a request with a `state` and its `questions`. New, 5 lines. [The file](https://github.com/rahuldave/babykev/blob/abb4ece53e114b331e9e32d67309e1f54f9f964e/data/cheese/sample.jsonl).
+- <a id="tut-03.6-data-cheese-sample.jsonl-79f982"></a>`data/cheese/sample.jsonl`: each line is a request with a `state` and its `questions`. New, 5 lines. [The file](https://github.com/rahuldave/babykev/blob/abb4ece53e114b331e9e32d67309e1f54f9f964e/data/cheese/sample.jsonl){.btn .btn-sm .btn-secondary}
 
 <details open><summary>The patch to <code>data/cheese/sample.jsonl</code></summary>
 
@@ -457,7 +457,7 @@ git restore --source 43b7ea4eda99 --staged -- :/ && git restore --source abb4ece
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/abb4ece53e114b331e9e32d67309e1f54f9f964e). [The code after it](https://github.com/rahuldave/babykev/tree/abb4ece53e114b331e9e32d67309e1f54f9f964e).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/abb4ece53e114b331e9e32d67309e1f54f9f964e){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/abb4ece53e114b331e9e32d67309e1f54f9f964e){.btn .btn-sm .btn-primary}
 
 ## 3.7 The README names the contract and the data {#tut-03.7}
 
@@ -487,12 +487,12 @@ git check 56606771fb23
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source abb4ece53e11 --staged -- :/ && git restore --source 56606771fb23 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source abb4ece53e11 --staged -- :/ && git restore --source tut-03 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-03.7-what-changed-182c57}
 
-- <a id="tut-03.7-README.md-8ec9a0"></a>`README.md`: the rows of the contract and the data. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/56606771fb23f7a0a01825f477050d2980a47736/README.md).
+- <a id="tut-03.7-README.md-8ec9a0"></a>`README.md`: the rows of the contract and the data. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/56606771fb23f7a0a01825f477050d2980a47736/README.md){.btn .btn-sm .btn-secondary}
   - look at ``| `data/cheese/sample.jsonl` | Five requests about cheese, one on each line. Every question has a `label`, the right answer |``
 
 <details open><summary>The patch to <code>README.md</code></summary>
@@ -513,4 +513,6 @@ git restore --source abb4ece53e11 --staged -- :/ && git restore --source 5660677
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/56606771fb23f7a0a01825f477050d2980a47736). [The code after it](https://github.com/rahuldave/babykev/tree/56606771fb23f7a0a01825f477050d2980a47736).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/56606771fb23f7a0a01825f477050d2980a47736){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-03`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-03){.btn .btn-sm .btn-primary}

@@ -6,16 +6,18 @@ title: "15.1 to 15.7 The packages of the model"
 
 **Build it yourself.** [Read the tutorial](../read/tut-15.1-to-tut-15.7.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-14`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-14){.btn .btn-sm .btn-primary}
+
 This part does not start where the part before it ends, because the walk skips some changes. This command puts the files that this part starts from in place of yours. Run it, and then go on:
 
 ```bash
-git restore --source 5085d2a6ae47 --staged -- :/ && git restore --source e1efb48492d7 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source 5085d2a6ae47 --staged -- :/ && git restore --source tut-14 --staged --worktree -- :/
 ```
 
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
 
 ```bash
-git rm -rq --cached --ignore-unmatch -- :/ && git restore --source e1efb48492d7 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch -- :/ && git restore --source tut-14 --staged --worktree -- :/
 ```
 
 ```bash
@@ -30,40 +32,54 @@ other change.
 The model needs four packages, and they are dependencies of the project. torch comes first, from an index of its
 own.
 
-[The code before this part](https://github.com/rahuldave/babykev/tree/e1efb48492d7223fd0442906d2e55a83e0db481e). [The code after it](https://github.com/rahuldave/babykev/tree/c7037ec460963acd41edf1f63a6a03d2e52e5bae).
-
 ## 15.1 The index of PyTorch's builds for the CPU {#tut-15.1}
 
 torch has several builds of each version. On Linux, the build on PyPI brings the libraries of CUDA, for the GPUs of
 NVIDIA. PyTorch keeps a build for the CPU alone on an index of its own, `https://download.pytorch.org/whl/cpu`. An
 index is a server of packages, as PyPI is. The patch names the index in `pyproject.toml`.
 
-Set the values that this change sets in [`pyproject.toml`](#tut-15.1-pyproject.toml-5d07e7). Run this command from the top of the project. It reads your file with tomlkit, a library for TOML files. It sets each of these values as the project has it, and keeps the rest of your file:
+Set the values that this change sets in [`pyproject.toml`](#tut-15.1-pyproject.toml-5d07e7). Run this command from the top of the project. It reads your file with tomlkit, a library for TOML files. It copies each of these tables and values from the project's file after this change, with their comments, and keeps the rest of your file:
 
 ```bash
 uv run --quiet --no-config --no-project --with tomlkit python - <<'PY'
-import pathlib, tomlkit
+import copy, pathlib, subprocess, tomlkit
+from tomlkit.items import Comment, Table, Whitespace
 path = pathlib.Path('pyproject.toml')
 doc = tomlkit.parse(path.read_text(encoding='utf-8')) if path.exists() else tomlkit.document()
-# Each value that the change sets, by its keys
-SET = [
-    (('tool', 'uv', 'index'),
-     [{'name': 'pytorch-cpu', 'url': 'https://download.pytorch.org/whl/cpu', 'explicit': True}]),
+# The project's file after this change, from your clone
+project = tomlkit.parse(subprocess.run(['git', 'show', 'b44da7cc2f35:pyproject.toml'], capture_output=True, text=True,
+                                        check=True).stdout)
+# Each table and value that the change sets, by its keys: each comes from the project's file with its comments
+COPY = [
+    ('tool', 'uv', 'index'),
 ]
 
-def put(table, keys, value):   # make each table on the way; a table goes into the one there, key by key
-    for key in keys[:-1]:
-        if key not in table:
-            table[key] = tomlkit.table(True)
-        table = table[key]
-    if isinstance(value, dict) and isinstance(table.get(keys[-1]), dict):
-        for key, item in value.items():
-            put(table[keys[-1]], [key], item)
-    else:
-        table[keys[-1]] = value
+def body(table):   # the items of a table in their order, with its comment lines
+    inner = table if isinstance(table, tomlkit.TOMLDocument) else getattr(table, 'value', None)
+    return getattr(inner, 'body', [])
 
-for keys, value in SET:
-    put(doc, keys, value)
+def above(table, key):   # the comment lines just above a key
+    found = []
+    for name, item in body(table):
+        if name is not None and name.key == key:
+            return found
+        found = found + [item] if isinstance(item, Comment) else found if isinstance(item, Whitespace) else []
+    return []
+
+for keys in COPY:
+    source, target = project, doc
+    for key in keys[:-1]:   # make each table on the way
+        source = source[key]
+        if key not in target:
+            target[key] = tomlkit.table(True)
+        target = target[key]
+    item = copy.deepcopy(source[keys[-1]])
+    if isinstance(item, Table) and not item.as_string().endswith('\n\n'):
+        item.add(tomlkit.nl())   # a blank line before the table after it
+    if keys[-1] not in target:
+        for comment in above(source, keys[-1]):
+            target.add(copy.deepcopy(comment))
+    target[keys[-1]] = item
 path.write_text(tomlkit.dumps(doc), encoding='utf-8')
 PY
 ```
@@ -89,12 +105,12 @@ git check b44da7cc2f35
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source e1efb48492d7 --staged -- :/ && git restore --source b44da7cc2f35 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-14 --staged -- :/ && git restore --source b44da7cc2f35 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-15.1-what-changed-182c57}
 
-- <a id="tut-15.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the index of PyTorch. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/b44da7cc2f35c24f23c9f056eb9ec6681a3111e0/pyproject.toml).
+- <a id="tut-15.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the index of PyTorch. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/b44da7cc2f35c24f23c9f056eb9ec6681a3111e0/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `url = "https://download.pytorch.org/whl/cpu"`
 
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
@@ -118,7 +134,7 @@ git restore --source e1efb48492d7 --staged -- :/ && git restore --source b44da7c
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/b44da7cc2f35c24f23c9f056eb9ec6681a3111e0). [The code after it](https://github.com/rahuldave/babykev/tree/b44da7cc2f35c24f23c9f056eb9ec6681a3111e0).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b44da7cc2f35c24f23c9f056eb9ec6681a3111e0){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/b44da7cc2f35c24f23c9f056eb9ec6681a3111e0){.btn .btn-sm .btn-primary}
 
 ## 15.2 torch, from the index of PyTorch {#tut-15.2}
 
@@ -156,7 +172,7 @@ git restore --source b44da7cc2f35 --staged -- :/ && git restore --source a263314
 
 ### What changed {#tut-15.2-what-changed-182c57}
 
-- <a id="tut-15.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: torch, in the dependencies, and its source. 4 lines added. It comes from `uv add torch --index pytorch-cpu --frozen`. [The file](https://github.com/rahuldave/babykev/blob/a263314ef270d756122972876e80270ed4cde130/pyproject.toml).
+- <a id="tut-15.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: torch, in the dependencies, and its source. 4 lines added. It comes from `uv add torch --index pytorch-cpu --frozen`. [The file](https://github.com/rahuldave/babykev/blob/a263314ef270d756122972876e80270ed4cde130/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `torch = { index = "pytorch-cpu" }`
 
 <details><summary>The diff that <code>uv add torch --index pytorch-cpu --frozen</code> makes in <code>pyproject.toml</code></summary>
@@ -184,7 +200,7 @@ git restore --source b44da7cc2f35 --staged -- :/ && git restore --source a263314
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/a263314ef270d756122972876e80270ed4cde130). [The code after it](https://github.com/rahuldave/babykev/tree/a263314ef270d756122972876e80270ed4cde130).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a263314ef270d756122972876e80270ed4cde130){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/a263314ef270d756122972876e80270ed4cde130){.btn .btn-sm .btn-primary}
 
 ## 15.3 uv lock takes torch from its index {#tut-15.3}
 
@@ -235,9 +251,9 @@ git restore --source a263314ef270 --staged -- :/ && git restore --source 92e8147
 
 ### What changed {#tut-15.3-what-changed-182c57}
 
-- <a id="tut-15.3-uv.lock-8356d8"></a>`uv.lock`: torch, from the index of PyTorch, and the seven packages that it needs, from PyPI. 230 lines added, 1 removed. It comes from `uv lock`. [The file](https://github.com/rahuldave/babykev/blob/92e81476ed9ccd19ab2da210dfacb5886dac1712/uv.lock).
+- <a id="tut-15.3-uv.lock-8356d8"></a>`uv.lock`: torch, from the index of PyTorch, and the seven packages that it needs, from PyPI. 230 lines added, 1 removed. It comes from `uv lock`. [The file](https://github.com/rahuldave/babykev/blob/92e81476ed9ccd19ab2da210dfacb5886dac1712/uv.lock){.btn .btn-sm .btn-secondary}
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/92e81476ed9ccd19ab2da210dfacb5886dac1712). [The code after it](https://github.com/rahuldave/babykev/tree/92e81476ed9ccd19ab2da210dfacb5886dac1712).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/92e81476ed9ccd19ab2da210dfacb5886dac1712){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/92e81476ed9ccd19ab2da210dfacb5886dac1712){.btn .btn-sm .btn-primary}
 
 ## 15.4 transformers {#tut-15.4}
 
@@ -270,9 +286,9 @@ git restore --source 92e81476ed9c --staged -- :/ && git restore --source 92f659c
 
 ### What changed {#tut-15.4-what-changed-182c57}
 
-- <a id="tut-15.4-pyproject.toml-5d07e7"></a>`pyproject.toml`: transformers, in the dependencies. 1 line added. It comes from `uv add transformers`. [The file](https://github.com/rahuldave/babykev/blob/92f659c4e74206cfb776c114d474c2be2501be81/pyproject.toml).
+- <a id="tut-15.4-pyproject.toml-5d07e7"></a>`pyproject.toml`: transformers, in the dependencies. 1 line added. It comes from `uv add transformers`. [The file](https://github.com/rahuldave/babykev/blob/92f659c4e74206cfb776c114d474c2be2501be81/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `"transformers>=5.20.0",`
-- <a id="tut-15.4-uv.lock-8356d8"></a>`uv.lock`: the exact version of transformers, and of the packages that it needs. 419 lines added. It comes from `uv add transformers`. [The file](https://github.com/rahuldave/babykev/blob/92f659c4e74206cfb776c114d474c2be2501be81/uv.lock).
+- <a id="tut-15.4-uv.lock-8356d8"></a>`uv.lock`: the exact version of transformers, and of the packages that it needs. 419 lines added. It comes from `uv add transformers`. [The file](https://github.com/rahuldave/babykev/blob/92f659c4e74206cfb776c114d474c2be2501be81/uv.lock){.btn .btn-sm .btn-secondary}
 
 <details><summary>The diff that <code>uv add transformers</code> makes in <code>pyproject.toml</code></summary>
 
@@ -289,7 +305,7 @@ git restore --source 92e81476ed9c --staged -- :/ && git restore --source 92f659c
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/92f659c4e74206cfb776c114d474c2be2501be81). [The code after it](https://github.com/rahuldave/babykev/tree/92f659c4e74206cfb776c114d474c2be2501be81).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/92f659c4e74206cfb776c114d474c2be2501be81){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/92f659c4e74206cfb776c114d474c2be2501be81){.btn .btn-sm .btn-primary}
 
 ## 15.5 peft {#tut-15.5}
 
@@ -326,9 +342,9 @@ git restore --source 92f659c4e742 --staged -- :/ && git restore --source 4b43f5a
 
 ### What changed {#tut-15.5-what-changed-182c57}
 
-- <a id="tut-15.5-pyproject.toml-5d07e7"></a>`pyproject.toml`: peft, in the dependencies. 1 line added. It comes from `uv add peft`. [The file](https://github.com/rahuldave/babykev/blob/4b43f5a9f99a891891ac42cb03e3927957e9116c/pyproject.toml).
+- <a id="tut-15.5-pyproject.toml-5d07e7"></a>`pyproject.toml`: peft, in the dependencies. 1 line added. It comes from `uv add peft`. [The file](https://github.com/rahuldave/babykev/blob/4b43f5a9f99a891891ac42cb03e3927957e9116c/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `"peft>=0.21.2",`
-- <a id="tut-15.5-uv.lock-8356d8"></a>`uv.lock`: the exact version of peft, and of the packages that it needs. 71 lines added. It comes from `uv add peft`. [The file](https://github.com/rahuldave/babykev/blob/4b43f5a9f99a891891ac42cb03e3927957e9116c/uv.lock).
+- <a id="tut-15.5-uv.lock-8356d8"></a>`uv.lock`: the exact version of peft, and of the packages that it needs. 71 lines added. It comes from `uv add peft`. [The file](https://github.com/rahuldave/babykev/blob/4b43f5a9f99a891891ac42cb03e3927957e9116c/uv.lock){.btn .btn-sm .btn-secondary}
 
 <details><summary>The diff that <code>uv add peft</code> makes in <code>pyproject.toml</code></summary>
 
@@ -345,7 +361,7 @@ git restore --source 92f659c4e742 --staged -- :/ && git restore --source 4b43f5a
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/4b43f5a9f99a891891ac42cb03e3927957e9116c). [The code after it](https://github.com/rahuldave/babykev/tree/4b43f5a9f99a891891ac42cb03e3927957e9116c).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/4b43f5a9f99a891891ac42cb03e3927957e9116c){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/4b43f5a9f99a891891ac42cb03e3927957e9116c){.btn .btn-sm .btn-primary}
 
 ## 15.6 safetensors {#tut-15.6}
 
@@ -381,9 +397,9 @@ git restore --source 4b43f5a9f99a --staged -- :/ && git restore --source 8176ced
 
 ### What changed {#tut-15.6-what-changed-182c57}
 
-- <a id="tut-15.6-pyproject.toml-5d07e7"></a>`pyproject.toml`: safetensors, in the dependencies. 1 line added. It comes from `uv add safetensors`. [The file](https://github.com/rahuldave/babykev/blob/8176ced7157929f551e3722149016dbc31d42601/pyproject.toml).
+- <a id="tut-15.6-pyproject.toml-5d07e7"></a>`pyproject.toml`: safetensors, in the dependencies. 1 line added. It comes from `uv add safetensors`. [The file](https://github.com/rahuldave/babykev/blob/8176ced7157929f551e3722149016dbc31d42601/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `"safetensors>=0.8.0",`
-- <a id="tut-15.6-uv.lock-8356d8"></a>`uv.lock`: safetensors, as a dependency of babykev. 2 lines added. It comes from `uv add safetensors`. [The file](https://github.com/rahuldave/babykev/blob/8176ced7157929f551e3722149016dbc31d42601/uv.lock).
+- <a id="tut-15.6-uv.lock-8356d8"></a>`uv.lock`: safetensors, as a dependency of babykev. 2 lines added. It comes from `uv add safetensors`. [The file](https://github.com/rahuldave/babykev/blob/8176ced7157929f551e3722149016dbc31d42601/uv.lock){.btn .btn-sm .btn-secondary}
 
 <details><summary>The diff that <code>uv add safetensors</code> makes in <code>pyproject.toml</code></summary>
 
@@ -400,7 +416,7 @@ git restore --source 4b43f5a9f99a --staged -- :/ && git restore --source 8176ced
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/8176ced7157929f551e3722149016dbc31d42601). [The code after it](https://github.com/rahuldave/babykev/tree/8176ced7157929f551e3722149016dbc31d42601).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/8176ced7157929f551e3722149016dbc31d42601){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/8176ced7157929f551e3722149016dbc31d42601){.btn .btn-sm .btn-primary}
 
 ## 15.7 The README names the packages of the model {#tut-15.7}
 
@@ -432,12 +448,12 @@ git check c7037ec46096
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 8176ced71579 --staged -- :/ && git restore --source c7037ec46096 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source 8176ced71579 --staged -- :/ && git restore --source tut-15 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-15.7-what-changed-182c57}
 
-- <a id="tut-15.7-README.md-8ec9a0"></a>`README.md`: a paragraph on the packages of the model. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/c7037ec460963acd41edf1f63a6a03d2e52e5bae/README.md).
+- <a id="tut-15.7-README.md-8ec9a0"></a>`README.md`: a paragraph on the packages of the model. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/c7037ec460963acd41edf1f63a6a03d2e52e5bae/README.md){.btn .btn-sm .btn-secondary}
   - look at `The model needs four packages, torch, transformers, peft and safetensors. torch is the build for the CPU,`
 
 <details open><summary>The patch to <code>README.md</code></summary>
@@ -458,4 +474,6 @@ git restore --source 8176ced71579 --staged -- :/ && git restore --source c7037ec
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/c7037ec460963acd41edf1f63a6a03d2e52e5bae). [The code after it](https://github.com/rahuldave/babykev/tree/c7037ec460963acd41edf1f63a6a03d2e52e5bae).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/c7037ec460963acd41edf1f63a6a03d2e52e5bae){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-15`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-15){.btn .btn-sm .btn-primary}

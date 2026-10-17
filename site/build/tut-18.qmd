@@ -6,10 +6,12 @@ title: "18 The smoke run"
 
 **Build it yourself.** [Read the tutorial](../read/tut-18.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-17`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-17){.btn .btn-sm .btn-primary}
+
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
 
 ```bash
-git rm -rq --cached --ignore-unmatch -- :/ && git restore --source d4dd1c8d3d3c --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch -- :/ && git restore --source tut-17 --staged --worktree -- :/
 ```
 
 ```bash
@@ -24,8 +26,6 @@ so the answers are guesses. The run shows that the contract, the packing, the mo
 
 `smoke.py` is ours, and it comes one function at a time. The command `babykev smoke` and the recipe `just smoke` run
 it, on this machine only.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9). [The code after it](https://github.com/rahuldave/babykev/tree/3edcb80f6814f9e0afe70942db6fce959799d9c5).
 
 ## 18.1 smoke.py, which reads the sample {#tut-18.1}
 
@@ -62,12 +62,12 @@ git check 5ec6d4a73df9
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source d4dd1c8d3d3c --staged -- :/ && git restore --source 5ec6d4a73df9 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-17 --staged -- :/ && git restore --source 5ec6d4a73df9 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-18.1-what-changed-182c57}
 
-- <a id="tut-18.1-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: the docstring, and the function that reads the sample. New, 22 lines. [The file](https://github.com/rahuldave/babykev/blob/5ec6d4a73df947af8d705956fffa07c9787017de/src/babykev/smoke.py).
+- <a id="tut-18.1-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: the docstring, and the function that reads the sample. New, 22 lines. [The file](https://github.com/rahuldave/babykev/blob/5ec6d4a73df947af8d705956fffa07c9787017de/src/babykev/smoke.py){.btn .btn-sm .btn-secondary}
   - look at `def read_lines(`
 
 <details open><summary>The patch to <code>src/babykev/smoke.py</code></summary>
@@ -100,7 +100,7 @@ git restore --source d4dd1c8d3d3c --staged -- :/ && git restore --source 5ec6d4a
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/5ec6d4a73df947af8d705956fffa07c9787017de). [The code after it](https://github.com/rahuldave/babykev/tree/5ec6d4a73df947af8d705956fffa07c9787017de).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/5ec6d4a73df947af8d705956fffa07c9787017de){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/5ec6d4a73df947af8d705956fffa07c9787017de){.btn .btn-sm .btn-primary}
 
 ## 18.2 answer {#tut-18.2}
 
@@ -139,7 +139,7 @@ git restore --source 5ec6d4a73df9 --staged -- :/ && git restore --source 0de1e2d
 
 ### What changed {#tut-18.2-what-changed-182c57}
 
-- <a id="tut-18.2-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: one request, from the contract to the answers. 19 lines added. [The file](https://github.com/rahuldave/babykev/blob/0de1e2d0a2362ebd41d21b9146eae2961fb2366e/src/babykev/smoke.py).
+- <a id="tut-18.2-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: one request, from the contract to the answers. 19 lines added. [The file](https://github.com/rahuldave/babykev/blob/0de1e2d0a2362ebd41d21b9146eae2961fb2366e/src/babykev/smoke.py){.btn .btn-sm .btn-secondary}
   - look at `def answer(`
 
 <details open><summary>The patch to <code>src/babykev/smoke.py</code></summary>
@@ -182,7 +182,7 @@ git restore --source 5ec6d4a73df9 --staged -- :/ && git restore --source 0de1e2d
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/0de1e2d0a2362ebd41d21b9146eae2961fb2366e). [The code after it](https://github.com/rahuldave/babykev/tree/0de1e2d0a2362ebd41d21b9146eae2961fb2366e).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0de1e2d0a2362ebd41d21b9146eae2961fb2366e){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/0de1e2d0a2362ebd41d21b9146eae2961fb2366e){.btn .btn-sm .btn-primary}
 
 ## 18.3 verdict {#tut-18.3}
 
@@ -219,7 +219,7 @@ git restore --source 0de1e2d0a236 --staged -- :/ && git restore --source bd333d9
 
 ### What changed {#tut-18.3-what-changed-182c57}
 
-- <a id="tut-18.3-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: one answer beside its label. 20 lines added. [The file](https://github.com/rahuldave/babykev/blob/bd333d90c32a516a97a443fa986f40932f691bad/src/babykev/smoke.py).
+- <a id="tut-18.3-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: one answer beside its label. 20 lines added. [The file](https://github.com/rahuldave/babykev/blob/bd333d90c32a516a97a443fa986f40932f691bad/src/babykev/smoke.py){.btn .btn-sm .btn-secondary}
   - look at `def verdict(`
 
 <details open><summary>The patch to <code>src/babykev/smoke.py</code></summary>
@@ -253,7 +253,7 @@ git restore --source 0de1e2d0a236 --staged -- :/ && git restore --source bd333d9
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/bd333d90c32a516a97a443fa986f40932f691bad). [The code after it](https://github.com/rahuldave/babykev/tree/bd333d90c32a516a97a443fa986f40932f691bad).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/bd333d90c32a516a97a443fa986f40932f691bad){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/bd333d90c32a516a97a443fa986f40932f691bad){.btn .btn-sm .btn-primary}
 
 ## 18.4 smoke {#tut-18.4}
 
@@ -290,7 +290,7 @@ git restore --source bd333d90c32a --staged -- :/ && git restore --source 8490a58
 
 ### What changed {#tut-18.4-what-changed-182c57}
 
-- <a id="tut-18.4-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: the report, a line at a time. 25 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/8490a58a1510d717ce32b48fa0def8498ceb51f9/src/babykev/smoke.py).
+- <a id="tut-18.4-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: the report, a line at a time. 25 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/8490a58a1510d717ce32b48fa0def8498ceb51f9/src/babykev/smoke.py){.btn .btn-sm .btn-secondary}
   - look at `def smoke(`
 
 <details open><summary>The patch to <code>src/babykev/smoke.py</code></summary>
@@ -342,7 +342,7 @@ git restore --source bd333d90c32a --staged -- :/ && git restore --source 8490a58
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/8490a58a1510d717ce32b48fa0def8498ceb51f9). [The code after it](https://github.com/rahuldave/babykev/tree/8490a58a1510d717ce32b48fa0def8498ceb51f9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/8490a58a1510d717ce32b48fa0def8498ceb51f9){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/8490a58a1510d717ce32b48fa0def8498ceb51f9){.btn .btn-sm .btn-primary}
 
 ## 18.5 main loads the real model and runs the smoke {#tut-18.5}
 
@@ -397,7 +397,7 @@ git restore --source 8490a58a1510 --staged -- :/ && git restore --source f1bfe99
 
 ### What changed {#tut-18.5-what-changed-182c57}
 
-- <a id="tut-18.5-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: the real model, loaded, and the report printed. 35 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/f1bfe993389643bda7f40c6f3b511827a3c9a9a0/src/babykev/smoke.py).
+- <a id="tut-18.5-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: the real model, loaded, and the report printed. 35 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/f1bfe993389643bda7f40c6f3b511827a3c9a9a0/src/babykev/smoke.py){.btn .btn-sm .btn-secondary}
   - look at `def main(`
 
 <details open><summary>The patch to <code>src/babykev/smoke.py</code></summary>
@@ -464,7 +464,7 @@ git restore --source 8490a58a1510 --staged -- :/ && git restore --source f1bfe99
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/f1bfe993389643bda7f40c6f3b511827a3c9a9a0). [The code after it](https://github.com/rahuldave/babykev/tree/f1bfe993389643bda7f40c6f3b511827a3c9a9a0).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/f1bfe993389643bda7f40c6f3b511827a3c9a9a0){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/f1bfe993389643bda7f40c6f3b511827a3c9a9a0){.btn .btn-sm .btn-primary}
 
 ## 18.6 The command babykev smoke {#tut-18.6}
 
@@ -514,7 +514,7 @@ git restore --source f1bfe9933896 --staged -- :/ && git restore --source 117a59e
 
 ### What changed {#tut-18.6-what-changed-182c57}
 
-- <a id="tut-18.6-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: the command `smoke`, in the help and in `main`. 12 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/117a59e9838e0fa2e28ad29d02d5aeba3a8622f9/src/babykev/cli.py).
+- <a id="tut-18.6-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: the command `smoke`, in the help and in `main`. 12 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/117a59e9838e0fa2e28ad29d02d5aeba3a8622f9/src/babykev/cli.py){.btn .btn-sm .btn-secondary}
   - look at `        raise SystemExit(smoke.main(words[1:]))`
 
 <details open><summary>The patch to <code>src/babykev/cli.py</code></summary>
@@ -551,7 +551,7 @@ git restore --source f1bfe9933896 --staged -- :/ && git restore --source 117a59e
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/117a59e9838e0fa2e28ad29d02d5aeba3a8622f9). [The code after it](https://github.com/rahuldave/babykev/tree/117a59e9838e0fa2e28ad29d02d5aeba3a8622f9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/117a59e9838e0fa2e28ad29d02d5aeba3a8622f9){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/117a59e9838e0fa2e28ad29d02d5aeba3a8622f9){.btn .btn-sm .btn-primary}
 
 ## 18.7 The recipe smoke {#tut-18.7}
 
@@ -598,7 +598,7 @@ git restore --source 117a59e9838e --staged -- :/ && git restore --source 55844b2
 
 ### What changed {#tut-18.7-what-changed-182c57}
 
-- <a id="tut-18.7-justfile-424f0b"></a>`justfile`: the recipe `smoke`. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/55844b2320b632b40dd3f34f0a6b5bb962551005/justfile).
+- <a id="tut-18.7-justfile-424f0b"></a>`justfile`: the recipe `smoke`. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/55844b2320b632b40dd3f34f0a6b5bb962551005/justfile){.btn .btn-sm .btn-secondary}
   - look at `smoke *args:`
 
 <details open><summary>The patch to <code>justfile</code></summary>
@@ -620,7 +620,7 @@ git restore --source 117a59e9838e --staged -- :/ && git restore --source 55844b2
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/55844b2320b632b40dd3f34f0a6b5bb962551005). [The code after it](https://github.com/rahuldave/babykev/tree/55844b2320b632b40dd3f34f0a6b5bb962551005).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/55844b2320b632b40dd3f34f0a6b5bb962551005){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/55844b2320b632b40dd3f34f0a6b5bb962551005){.btn .btn-sm .btn-primary}
 
 ## 18.8 The front page names the smoke {#tut-18.8}
 
@@ -656,7 +656,7 @@ git restore --source 55844b2320b6 --staged -- :/ && git restore --source aedd5e6
 
 ### What changed {#tut-18.8-what-changed-182c57}
 
-- <a id="tut-18.8-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the module `babykev.smoke`, in the list. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/aedd5e6659581b7aa6f424e06ccfa12f6a07fff1/docs/index.qmd).
+- <a id="tut-18.8-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the module `babykev.smoke`, in the list. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/aedd5e6659581b7aa6f424e06ccfa12f6a07fff1/docs/index.qmd){.btn .btn-sm .btn-secondary}
   - look at ``- `babykev.smoke` is the smoke run. `smoke()` asks the model every question of the sample data, and``
 
 <details open><summary>The patch to <code>docs/index.qmd</code></summary>
@@ -683,7 +683,7 @@ git restore --source 55844b2320b6 --staged -- :/ && git restore --source aedd5e6
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/aedd5e6659581b7aa6f424e06ccfa12f6a07fff1). [The code after it](https://github.com/rahuldave/babykev/tree/aedd5e6659581b7aa6f424e06ccfa12f6a07fff1).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/aedd5e6659581b7aa6f424e06ccfa12f6a07fff1){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/aedd5e6659581b7aa6f424e06ccfa12f6a07fff1){.btn .btn-sm .btn-primary}
 
 ## 18.9 The README names the smoke {#tut-18.9}
 
@@ -715,12 +715,12 @@ git check 3edcb80f6814
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source aedd5e665958 --staged -- :/ && git restore --source 3edcb80f6814 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source aedd5e665958 --staged -- :/ && git restore --source tut-18 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-18.9-what-changed-182c57}
 
-- <a id="tut-18.9-README.md-8ec9a0"></a>`README.md`: `just smoke`, and the row of `smoke.py`. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/3edcb80f6814f9e0afe70942db6fce959799d9c5/README.md).
+- <a id="tut-18.9-README.md-8ec9a0"></a>`README.md`: `just smoke`, and the row of `smoke.py`. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/3edcb80f6814f9e0afe70942db6fce959799d9c5/README.md){.btn .btn-sm .btn-secondary}
   - look at ``| `src/babykev/smoke.py` | The smoke run, which asks the real model the sample requests on this machine |``
 
 <details open><summary>The patch to <code>README.md</code></summary>
@@ -749,4 +749,6 @@ git restore --source aedd5e665958 --staged -- :/ && git restore --source 3edcb80
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/3edcb80f6814f9e0afe70942db6fce959799d9c5). [The code after it](https://github.com/rahuldave/babykev/tree/3edcb80f6814f9e0afe70942db6fce959799d9c5).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3edcb80f6814f9e0afe70942db6fce959799d9c5){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-18`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-18){.btn .btn-sm .btn-primary}

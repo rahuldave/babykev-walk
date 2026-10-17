@@ -6,6 +6,8 @@ title: "3.6 to 3.7 Sample data"
 
 **Build it yourself.** [Read the tutorial](../read/tut-03.6-to-tut-03.7.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `43b7ea4eda99`, partway through `tut-03`. [The code before this part](https://github.com/rahuldave/babykev/tree/43b7ea4eda990f90abd605920e2fb1d9b376378d){.btn .btn-sm .btn-primary}
+
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
 
 ```bash
@@ -17,8 +19,6 @@ just setup
 ```
 
 A file holds five requests about cheese, one on each line. Each line must fit the contract.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/43b7ea4eda990f90abd605920e2fb1d9b376378d). [The code after it](https://github.com/rahuldave/babykev/tree/56606771fb23f7a0a01825f477050d2980a47736).
 
 ## 3.6 Five requests about cheese, as sample data {#tut-03.6}
 
@@ -55,7 +55,7 @@ git restore --source 43b7ea4eda99 --staged -- :/ && git restore --source abb4ece
 
 ### What changed {#tut-03.6-what-changed-182c57}
 
-- <a id="tut-03.6-data-cheese-sample.jsonl-79f982"></a>`data/cheese/sample.jsonl`: each line is a request with a `state` and its `questions`. New, 5 lines. [The file](https://github.com/rahuldave/babykev/blob/abb4ece53e114b331e9e32d67309e1f54f9f964e/data/cheese/sample.jsonl).
+- <a id="tut-03.6-data-cheese-sample.jsonl-79f982"></a>`data/cheese/sample.jsonl`: each line is a request with a `state` and its `questions`. New, 5 lines. [The file](https://github.com/rahuldave/babykev/blob/abb4ece53e114b331e9e32d67309e1f54f9f964e/data/cheese/sample.jsonl){.btn .btn-sm .btn-secondary}
 
 <details open><summary>The patch to <code>data/cheese/sample.jsonl</code></summary>
 
@@ -70,7 +70,7 @@ git restore --source 43b7ea4eda99 --staged -- :/ && git restore --source abb4ece
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/abb4ece53e114b331e9e32d67309e1f54f9f964e). [The code after it](https://github.com/rahuldave/babykev/tree/abb4ece53e114b331e9e32d67309e1f54f9f964e).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/abb4ece53e114b331e9e32d67309e1f54f9f964e){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/abb4ece53e114b331e9e32d67309e1f54f9f964e){.btn .btn-sm .btn-primary}
 
 ## 3.7 The README names the contract and the data {#tut-03.7}
 
@@ -100,12 +100,12 @@ git check 56606771fb23
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source abb4ece53e11 --staged -- :/ && git restore --source 56606771fb23 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source abb4ece53e11 --staged -- :/ && git restore --source tut-03 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-03.7-what-changed-182c57}
 
-- <a id="tut-03.7-README.md-8ec9a0"></a>`README.md`: the rows of the contract and the data. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/56606771fb23f7a0a01825f477050d2980a47736/README.md).
+- <a id="tut-03.7-README.md-8ec9a0"></a>`README.md`: the rows of the contract and the data. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/56606771fb23f7a0a01825f477050d2980a47736/README.md){.btn .btn-sm .btn-secondary}
   - look at ``| `data/cheese/sample.jsonl` | Five requests about cheese, one on each line. Every question has a `label`, the right answer |``
 
 <details open><summary>The patch to <code>README.md</code></summary>
@@ -126,4 +126,6 @@ git restore --source abb4ece53e11 --staged -- :/ && git restore --source 5660677
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/56606771fb23f7a0a01825f477050d2980a47736). [The code after it](https://github.com/rahuldave/babykev/tree/56606771fb23f7a0a01825f477050d2980a47736).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/56606771fb23f7a0a01825f477050d2980a47736){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-03`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-03){.btn .btn-sm .btn-primary}

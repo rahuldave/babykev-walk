@@ -6,6 +6,17 @@ title: "25 Two images"
 
 **Read the tutorial.** [Build it yourself](../build/tut-25.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-24`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-24){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach tut-24
+```
+
 ```bash
 just setup
 ```
@@ -19,8 +30,6 @@ of these systems.
 The `Dockerfile` of babykev builds two images from `uv.lock`. The run image holds the program and what it needs, and
 starts `babykev`. The dev image holds the whole project and the tools to work on it, and starts a shell. The images
 are built and run on this machine only, and pushed nowhere.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/41d24729682119b9bbb828187c5e9684a2921308). [The code after it](https://github.com/rahuldave/babykev/tree/6c85dd08f3cd441259b3749ac38cceaf7f2392e0).
 
 ## 25.1 The Dockerfile, with the run image {#tut-25.1}
 
@@ -67,7 +76,7 @@ container than on `mps`, and the milliseconds change from run to run.
 
 ### What changed {#tut-25.1-what-changed-182c57}
 
-- <a id="tut-25.1-Dockerfile-6651dd"></a>`Dockerfile`: the stages `uv`, `build` and `run`. New, 36 lines. [The file](https://github.com/rahuldave/babykev/blob/570bb2134f032a64a34d14852c82fa1a199f69f6/Dockerfile).
+- <a id="tut-25.1-Dockerfile-6651dd"></a>`Dockerfile`: the stages `uv`, `build` and `run`. New, 36 lines. [The file](https://github.com/rahuldave/babykev/blob/570bb2134f032a64a34d14852c82fa1a199f69f6/Dockerfile){.btn .btn-sm .btn-secondary}
   - look at `FROM python:3.13-slim-trixie AS run`
 
 <details><summary>The diff of <code>Dockerfile</code></summary>
@@ -114,7 +123,7 @@ container than on `mps`, and the milliseconds change from run to run.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/570bb2134f032a64a34d14852c82fa1a199f69f6). [The code after it](https://github.com/rahuldave/babykev/tree/570bb2134f032a64a34d14852c82fa1a199f69f6).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/570bb2134f032a64a34d14852c82fa1a199f69f6){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/570bb2134f032a64a34d14852c82fa1a199f69f6){.btn .btn-sm .btn-primary}
 
 ## 25.2 The dev image {#tut-25.2}
 
@@ -144,7 +153,7 @@ docker image ls babykev-dev:latest
 
 ### What changed {#tut-25.2-what-changed-182c57}
 
-- <a id="tut-25.2-Dockerfile-6651dd"></a>`Dockerfile`: the stage `dev`. 31 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/40012bdfeb76ad96615227e9772d387ee5e48495/Dockerfile).
+- <a id="tut-25.2-Dockerfile-6651dd"></a>`Dockerfile`: the stage `dev`. 31 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/40012bdfeb76ad96615227e9772d387ee5e48495/Dockerfile){.btn .btn-sm .btn-secondary}
   - look at `FROM python:3.13-slim-trixie AS dev`
 
 <details><summary>The diff of <code>Dockerfile</code></summary>
@@ -198,7 +207,7 @@ docker image ls babykev-dev:latest
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/40012bdfeb76ad96615227e9772d387ee5e48495). [The code after it](https://github.com/rahuldave/babykev/tree/40012bdfeb76ad96615227e9772d387ee5e48495).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/40012bdfeb76ad96615227e9772d387ee5e48495){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/40012bdfeb76ad96615227e9772d387ee5e48495){.btn .btn-sm .btn-primary}
 
 ## 25.3 What a build never copies into an image {#tut-25.3}
 
@@ -228,7 +237,7 @@ docker run --rm -v "$PWD":/work babykev-dev just check
 
 ### What changed {#tut-25.3-what-changed-182c57}
 
-- <a id="tut-25.3-.dockerignore-05a721"></a>`.dockerignore`: what a build never copies. New, 16 lines. [The file](https://github.com/rahuldave/babykev/blob/f0862402733db839738f0b350a049b2ee5e2a2aa/.dockerignore).
+- <a id="tut-25.3-.dockerignore-05a721"></a>`.dockerignore`: what a build never copies. New, 16 lines. [The file](https://github.com/rahuldave/babykev/blob/f0862402733db839738f0b350a049b2ee5e2a2aa/.dockerignore){.btn .btn-sm .btn-secondary}
   - look at `.venv`
 
 <details><summary>The diff of <code>.dockerignore</code></summary>
@@ -255,7 +264,7 @@ docker run --rm -v "$PWD":/work babykev-dev just check
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/f0862402733db839738f0b350a049b2ee5e2a2aa). [The code after it](https://github.com/rahuldave/babykev/tree/f0862402733db839738f0b350a049b2ee5e2a2aa).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/f0862402733db839738f0b350a049b2ee5e2a2aa){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/f0862402733db839738f0b350a049b2ee5e2a2aa){.btn .btn-sm .btn-primary}
 
 ## 25.4 No example of hypothesis has a deadline {#tut-25.4}
 
@@ -278,7 +287,7 @@ this Mac, so the change needs no new build. The tests print `82 passed, 1 desele
 
 ### What changed {#tut-25.4-what-changed-182c57}
 
-- <a id="tut-25.4-tests-conftest.py-626af3"></a>`tests/conftest.py`: no deadline, for every test that hypothesis feeds. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/3043d160e0d6e424e7178bd6c86dfeb1aa17abb4/tests/conftest.py).
+- <a id="tut-25.4-tests-conftest.py-626af3"></a>`tests/conftest.py`: no deadline, for every test that hypothesis feeds. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/3043d160e0d6e424e7178bd6c86dfeb1aa17abb4/tests/conftest.py){.btn .btn-sm .btn-secondary}
   - look at `settings.register_profile("babykev", deadline=None)`
 
 <details><summary>The diff of <code>tests/conftest.py</code></summary>
@@ -307,7 +316,7 @@ this Mac, so the change needs no new build. The tests print `82 passed, 1 desele
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/3043d160e0d6e424e7178bd6c86dfeb1aa17abb4). [The code after it](https://github.com/rahuldave/babykev/tree/3043d160e0d6e424e7178bd6c86dfeb1aa17abb4).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3043d160e0d6e424e7178bd6c86dfeb1aa17abb4){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/3043d160e0d6e424e7178bd6c86dfeb1aa17abb4){.btn .btn-sm .btn-primary}
 
 ## 25.5 The recipe image {#tut-25.5}
 
@@ -341,7 +350,7 @@ shell` starts a shell in the image, where `exit` ends it.
 
 ### What changed {#tut-25.5-what-changed-182c57}
 
-- <a id="tut-25.5-justfile-424f0b"></a>`justfile`: the recipe `image`. 33 lines added. [The file](https://github.com/rahuldave/babykev/blob/a2cd7c083154e3f1161449592635e04b8f84cebe/justfile).
+- <a id="tut-25.5-justfile-424f0b"></a>`justfile`: the recipe `image`. 33 lines added. [The file](https://github.com/rahuldave/babykev/blob/a2cd7c083154e3f1161449592635e04b8f84cebe/justfile){.btn .btn-sm .btn-secondary}
   - look at `image *args:`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -391,7 +400,7 @@ shell` starts a shell in the image, where `exit` ends it.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/a2cd7c083154e3f1161449592635e04b8f84cebe). [The code after it](https://github.com/rahuldave/babykev/tree/a2cd7c083154e3f1161449592635e04b8f84cebe).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a2cd7c083154e3f1161449592635e04b8f84cebe){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/a2cd7c083154e3f1161449592635e04b8f84cebe){.btn .btn-sm .btn-primary}
 
 ## 25.6 hadolint, in the group lint {#tut-25.6}
 
@@ -411,9 +420,9 @@ It prints `Haskell Dockerfile Linter` and its version.
 
 ### What changed {#tut-25.6-what-changed-182c57}
 
-- <a id="tut-25.6-pyproject.toml-5d07e7"></a>`pyproject.toml`: hadolint, in the group `lint`. 1 line added. It comes from `uv add --group lint hadolint-bin`. [The file](https://github.com/rahuldave/babykev/blob/ce3646d2f0cdacf2177d9ba36355dd4ffc1b2f4a/pyproject.toml).
+- <a id="tut-25.6-pyproject.toml-5d07e7"></a>`pyproject.toml`: hadolint, in the group `lint`. 1 line added. It comes from `uv add --group lint hadolint-bin`. [The file](https://github.com/rahuldave/babykev/blob/ce3646d2f0cdacf2177d9ba36355dd4ffc1b2f4a/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `"hadolint-bin>=2.15.1",`
-- <a id="tut-25.6-uv.lock-8356d8"></a>`uv.lock`: the exact version of hadolint. 13 lines added. It comes from `uv add --group lint hadolint-bin`. [The file](https://github.com/rahuldave/babykev/blob/ce3646d2f0cdacf2177d9ba36355dd4ffc1b2f4a/uv.lock).
+- <a id="tut-25.6-uv.lock-8356d8"></a>`uv.lock`: the exact version of hadolint. 13 lines added. It comes from `uv add --group lint hadolint-bin`. [The file](https://github.com/rahuldave/babykev/blob/ce3646d2f0cdacf2177d9ba36355dd4ffc1b2f4a/uv.lock){.btn .btn-sm .btn-secondary}
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -430,7 +439,7 @@ It prints `Haskell Dockerfile Linter` and its version.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/ce3646d2f0cdacf2177d9ba36355dd4ffc1b2f4a). [The code after it](https://github.com/rahuldave/babykev/tree/ce3646d2f0cdacf2177d9ba36355dd4ffc1b2f4a).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ce3646d2f0cdacf2177d9ba36355dd4ffc1b2f4a){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/ce3646d2f0cdacf2177d9ba36355dd4ffc1b2f4a){.btn .btn-sm .btn-primary}
 
 ## 25.7 lint-config runs hadolint {#tut-25.7}
 
@@ -452,7 +461,7 @@ of git. This finding is real, and nothing was broken to make it.
 
 ### What changed {#tut-25.7-what-changed-182c57}
 
-- <a id="tut-25.7-justfile-424f0b"></a>`justfile`: hadolint, in `lint-config`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/fe092b54847ade1223f40297937fe59259096f68/justfile).
+- <a id="tut-25.7-justfile-424f0b"></a>`justfile`: hadolint, in `lint-config`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/fe092b54847ade1223f40297937fe59259096f68/justfile){.btn .btn-sm .btn-secondary}
   - look at `    uv run hadolint Dockerfile`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -479,7 +488,7 @@ of git. This finding is real, and nothing was broken to make it.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/fe092b54847ade1223f40297937fe59259096f68). [The code after it](https://github.com/rahuldave/babykev/tree/fe092b54847ade1223f40297937fe59259096f68).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/fe092b54847ade1223f40297937fe59259096f68){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/fe092b54847ade1223f40297937fe59259096f68){.btn .btn-sm .btn-primary}
 
 ## 25.8 DL3008, declined with its reason {#tut-25.8}
 
@@ -501,7 +510,7 @@ just lint-config
 
 ### What changed {#tut-25.8-what-changed-182c57}
 
-- <a id="tut-25.8-Dockerfile-6651dd"></a>`Dockerfile`: the reason, and the line for hadolint. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/fd4dc51723462cdeaf072a4f2a18472a0cf6a645/Dockerfile).
+- <a id="tut-25.8-Dockerfile-6651dd"></a>`Dockerfile`: the reason, and the line for hadolint. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/fd4dc51723462cdeaf072a4f2a18472a0cf6a645/Dockerfile){.btn .btn-sm .btn-secondary}
   - look at `# hadolint ignore=DL3008`
 
 <details><summary>The diff of <code>Dockerfile</code></summary>
@@ -522,7 +531,7 @@ just lint-config
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/fd4dc51723462cdeaf072a4f2a18472a0cf6a645). [The code after it](https://github.com/rahuldave/babykev/tree/fd4dc51723462cdeaf072a4f2a18472a0cf6a645).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/fd4dc51723462cdeaf072a4f2a18472a0cf6a645){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/fd4dc51723462cdeaf072a4f2a18472a0cf6a645){.btn .btn-sm .btn-primary}
 
 ## 25.9 The README names the two images {#tut-25.9}
 
@@ -553,7 +562,7 @@ just image shell --network none -- just check
 
 ### What changed {#tut-25.9-what-changed-182c57}
 
-- <a id="tut-25.9-README.md-8ec9a0"></a>`README.md`: the section on the images, and the row of the `Dockerfile`. 24 lines added. [The file](https://github.com/rahuldave/babykev/blob/6c85dd08f3cd441259b3749ac38cceaf7f2392e0/README.md).
+- <a id="tut-25.9-README.md-8ec9a0"></a>`README.md`: the section on the images, and the row of the `Dockerfile`. 24 lines added. [The file](https://github.com/rahuldave/babykev/blob/6c85dd08f3cd441259b3749ac38cceaf7f2392e0/README.md){.btn .btn-sm .btn-secondary}
   - look at `## The images`
 
 <details><summary>The diff of <code>README.md</code></summary>
@@ -601,4 +610,6 @@ just image shell --network none -- just check
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/6c85dd08f3cd441259b3749ac38cceaf7f2392e0). [The code after it](https://github.com/rahuldave/babykev/tree/6c85dd08f3cd441259b3749ac38cceaf7f2392e0).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/6c85dd08f3cd441259b3749ac38cceaf7f2392e0){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-25`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-25){.btn .btn-sm .btn-primary}

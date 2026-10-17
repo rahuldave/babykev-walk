@@ -6,16 +6,18 @@ title: "25 `just image`"
 
 **Build it yourself.** [Read the tutorial](../read/tut-25.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-24`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-24){.btn .btn-sm .btn-primary}
+
 This part does not start where the part before it ends, because the walk skips some changes. This command puts the files that this part starts from in place of yours. Run it, and then go on:
 
 ```bash
-git restore --source 57604134d959 --staged -- :/ && git restore --source 41d247296821 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source 57604134d959 --staged -- :/ && git restore --source tut-24 --staged --worktree -- :/
 ```
 
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
 
 ```bash
-git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 41d247296821 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch -- :/ && git restore --source tut-24 --staged --worktree -- :/
 ```
 
 The whole tutorial then finds a bug in the mask of the model with tests of hypothesis, and fixes it. It adds a test of
@@ -41,8 +43,6 @@ of these systems.
 The `Dockerfile` of babykev builds two images from `uv.lock`. The run image holds the program and what it needs, and
 starts `babykev`. The dev image holds the whole project and the tools to work on it, and starts a shell. The images
 are built and run on this machine only, and pushed nowhere.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/41d24729682119b9bbb828187c5e9684a2921308). [The code after it](https://github.com/rahuldave/babykev/tree/6c85dd08f3cd441259b3749ac38cceaf7f2392e0).
 
 ## 25.1 The Dockerfile, with the run image {#tut-25.1}
 
@@ -99,12 +99,12 @@ git check 570bb2134f03
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 41d247296821 --staged -- :/ && git restore --source 570bb2134f03 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-24 --staged -- :/ && git restore --source 570bb2134f03 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-25.1-what-changed-182c57}
 
-- <a id="tut-25.1-Dockerfile-6651dd"></a>`Dockerfile`: the stages `uv`, `build` and `run`. New, 36 lines. [The file](https://github.com/rahuldave/babykev/blob/570bb2134f032a64a34d14852c82fa1a199f69f6/Dockerfile).
+- <a id="tut-25.1-Dockerfile-6651dd"></a>`Dockerfile`: the stages `uv`, `build` and `run`. New, 36 lines. [The file](https://github.com/rahuldave/babykev/blob/570bb2134f032a64a34d14852c82fa1a199f69f6/Dockerfile){.btn .btn-sm .btn-secondary}
   - look at `FROM python:3.13-slim-trixie AS run`
 
 <details open><summary>The patch to <code>Dockerfile</code></summary>
@@ -151,7 +151,7 @@ git restore --source 41d247296821 --staged -- :/ && git restore --source 570bb21
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/570bb2134f032a64a34d14852c82fa1a199f69f6). [The code after it](https://github.com/rahuldave/babykev/tree/570bb2134f032a64a34d14852c82fa1a199f69f6).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/570bb2134f032a64a34d14852c82fa1a199f69f6){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/570bb2134f032a64a34d14852c82fa1a199f69f6){.btn .btn-sm .btn-primary}
 
 ## 25.2 The dev image {#tut-25.2}
 
@@ -196,7 +196,7 @@ git restore --source 570bb2134f03 --staged -- :/ && git restore --source 40012bd
 
 ### What changed {#tut-25.2-what-changed-182c57}
 
-- <a id="tut-25.2-Dockerfile-6651dd"></a>`Dockerfile`: the stage `dev`. 31 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/40012bdfeb76ad96615227e9772d387ee5e48495/Dockerfile).
+- <a id="tut-25.2-Dockerfile-6651dd"></a>`Dockerfile`: the stage `dev`. 31 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/40012bdfeb76ad96615227e9772d387ee5e48495/Dockerfile){.btn .btn-sm .btn-secondary}
   - look at `FROM python:3.13-slim-trixie AS dev`
 
 <details open><summary>The patch to <code>Dockerfile</code></summary>
@@ -250,7 +250,7 @@ git restore --source 570bb2134f03 --staged -- :/ && git restore --source 40012bd
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/40012bdfeb76ad96615227e9772d387ee5e48495). [The code after it](https://github.com/rahuldave/babykev/tree/40012bdfeb76ad96615227e9772d387ee5e48495).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/40012bdfeb76ad96615227e9772d387ee5e48495){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/40012bdfeb76ad96615227e9772d387ee5e48495){.btn .btn-sm .btn-primary}
 
 ## 25.3 What a build never copies into an image {#tut-25.3}
 
@@ -296,7 +296,7 @@ git restore --source 40012bdfeb76 --staged -- :/ && git restore --source f086240
 
 ### What changed {#tut-25.3-what-changed-182c57}
 
-- <a id="tut-25.3-.dockerignore-05a721"></a>`.dockerignore`: what a build never copies. New, 16 lines. [The file](https://github.com/rahuldave/babykev/blob/f0862402733db839738f0b350a049b2ee5e2a2aa/.dockerignore).
+- <a id="tut-25.3-.dockerignore-05a721"></a>`.dockerignore`: what a build never copies. New, 16 lines. [The file](https://github.com/rahuldave/babykev/blob/f0862402733db839738f0b350a049b2ee5e2a2aa/.dockerignore){.btn .btn-sm .btn-secondary}
   - look at `.venv`
 
 <details open><summary>The patch to <code>.dockerignore</code></summary>
@@ -323,7 +323,7 @@ git restore --source 40012bdfeb76 --staged -- :/ && git restore --source f086240
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/f0862402733db839738f0b350a049b2ee5e2a2aa). [The code after it](https://github.com/rahuldave/babykev/tree/f0862402733db839738f0b350a049b2ee5e2a2aa).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/f0862402733db839738f0b350a049b2ee5e2a2aa){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/f0862402733db839738f0b350a049b2ee5e2a2aa){.btn .btn-sm .btn-primary}
 
 ## 25.4 No example of hypothesis has a deadline {#tut-25.4}
 
@@ -363,7 +363,7 @@ git restore --source f0862402733d --staged -- :/ && git restore --source 3043d16
 
 ### What changed {#tut-25.4-what-changed-182c57}
 
-- <a id="tut-25.4-tests-conftest.py-626af3"></a>`tests/conftest.py`: no deadline, for every test that hypothesis feeds. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/3043d160e0d6e424e7178bd6c86dfeb1aa17abb4/tests/conftest.py).
+- <a id="tut-25.4-tests-conftest.py-626af3"></a>`tests/conftest.py`: no deadline, for every test that hypothesis feeds. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/3043d160e0d6e424e7178bd6c86dfeb1aa17abb4/tests/conftest.py){.btn .btn-sm .btn-secondary}
   - look at `settings.register_profile("babykev", deadline=None)`
 
 <details open><summary>The patch to <code>tests/conftest.py</code></summary>
@@ -392,7 +392,7 @@ git restore --source f0862402733d --staged -- :/ && git restore --source 3043d16
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/3043d160e0d6e424e7178bd6c86dfeb1aa17abb4). [The code after it](https://github.com/rahuldave/babykev/tree/3043d160e0d6e424e7178bd6c86dfeb1aa17abb4).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3043d160e0d6e424e7178bd6c86dfeb1aa17abb4){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/3043d160e0d6e424e7178bd6c86dfeb1aa17abb4){.btn .btn-sm .btn-primary}
 
 ## 25.5 The recipe image {#tut-25.5}
 
@@ -441,7 +441,7 @@ git restore --source 3043d160e0d6 --staged -- :/ && git restore --source a2cd7c0
 
 ### What changed {#tut-25.5-what-changed-182c57}
 
-- <a id="tut-25.5-justfile-424f0b"></a>`justfile`: the recipe `image`. 33 lines added. [The file](https://github.com/rahuldave/babykev/blob/a2cd7c083154e3f1161449592635e04b8f84cebe/justfile).
+- <a id="tut-25.5-justfile-424f0b"></a>`justfile`: the recipe `image`. 33 lines added. [The file](https://github.com/rahuldave/babykev/blob/a2cd7c083154e3f1161449592635e04b8f84cebe/justfile){.btn .btn-sm .btn-secondary}
   - look at `image *args:`
 
 <details open><summary>The patch to <code>justfile</code></summary>
@@ -491,7 +491,7 @@ git restore --source 3043d160e0d6 --staged -- :/ && git restore --source a2cd7c0
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/a2cd7c083154e3f1161449592635e04b8f84cebe). [The code after it](https://github.com/rahuldave/babykev/tree/a2cd7c083154e3f1161449592635e04b8f84cebe).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a2cd7c083154e3f1161449592635e04b8f84cebe){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/a2cd7c083154e3f1161449592635e04b8f84cebe){.btn .btn-sm .btn-primary}
 
 ## 25.6 hadolint, in the group lint {#tut-25.6}
 
@@ -523,9 +523,9 @@ git restore --source a2cd7c083154 --staged -- :/ && git restore --source ce3646d
 
 ### What changed {#tut-25.6-what-changed-182c57}
 
-- <a id="tut-25.6-pyproject.toml-5d07e7"></a>`pyproject.toml`: hadolint, in the group `lint`. 1 line added. It comes from `uv add --group lint hadolint-bin`. [The file](https://github.com/rahuldave/babykev/blob/ce3646d2f0cdacf2177d9ba36355dd4ffc1b2f4a/pyproject.toml).
+- <a id="tut-25.6-pyproject.toml-5d07e7"></a>`pyproject.toml`: hadolint, in the group `lint`. 1 line added. It comes from `uv add --group lint hadolint-bin`. [The file](https://github.com/rahuldave/babykev/blob/ce3646d2f0cdacf2177d9ba36355dd4ffc1b2f4a/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `"hadolint-bin>=2.15.1",`
-- <a id="tut-25.6-uv.lock-8356d8"></a>`uv.lock`: the exact version of hadolint. 13 lines added. It comes from `uv add --group lint hadolint-bin`. [The file](https://github.com/rahuldave/babykev/blob/ce3646d2f0cdacf2177d9ba36355dd4ffc1b2f4a/uv.lock).
+- <a id="tut-25.6-uv.lock-8356d8"></a>`uv.lock`: the exact version of hadolint. 13 lines added. It comes from `uv add --group lint hadolint-bin`. [The file](https://github.com/rahuldave/babykev/blob/ce3646d2f0cdacf2177d9ba36355dd4ffc1b2f4a/uv.lock){.btn .btn-sm .btn-secondary}
 
 <details><summary>The diff that <code>uv add --group lint hadolint-bin</code> makes in <code>pyproject.toml</code></summary>
 
@@ -542,7 +542,7 @@ git restore --source a2cd7c083154 --staged -- :/ && git restore --source ce3646d
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/ce3646d2f0cdacf2177d9ba36355dd4ffc1b2f4a). [The code after it](https://github.com/rahuldave/babykev/tree/ce3646d2f0cdacf2177d9ba36355dd4ffc1b2f4a).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ce3646d2f0cdacf2177d9ba36355dd4ffc1b2f4a){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/ce3646d2f0cdacf2177d9ba36355dd4ffc1b2f4a){.btn .btn-sm .btn-primary}
 
 ## 25.7 lint-config runs hadolint {#tut-25.7}
 
@@ -581,7 +581,7 @@ git restore --source ce3646d2f0cd --staged -- :/ && git restore --source fe092b5
 
 ### What changed {#tut-25.7-what-changed-182c57}
 
-- <a id="tut-25.7-justfile-424f0b"></a>`justfile`: hadolint, in `lint-config`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/fe092b54847ade1223f40297937fe59259096f68/justfile).
+- <a id="tut-25.7-justfile-424f0b"></a>`justfile`: hadolint, in `lint-config`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/fe092b54847ade1223f40297937fe59259096f68/justfile){.btn .btn-sm .btn-secondary}
   - look at `    uv run hadolint Dockerfile`
 
 <details open><summary>The patch to <code>justfile</code></summary>
@@ -608,7 +608,7 @@ git restore --source ce3646d2f0cd --staged -- :/ && git restore --source fe092b5
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/fe092b54847ade1223f40297937fe59259096f68). [The code after it](https://github.com/rahuldave/babykev/tree/fe092b54847ade1223f40297937fe59259096f68).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/fe092b54847ade1223f40297937fe59259096f68){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/fe092b54847ade1223f40297937fe59259096f68){.btn .btn-sm .btn-primary}
 
 ## 25.8 DL3008, declined with its reason {#tut-25.8}
 
@@ -646,7 +646,7 @@ git restore --source fe092b54847a --staged -- :/ && git restore --source fd4dc51
 
 ### What changed {#tut-25.8-what-changed-182c57}
 
-- <a id="tut-25.8-Dockerfile-6651dd"></a>`Dockerfile`: the reason, and the line for hadolint. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/fd4dc51723462cdeaf072a4f2a18472a0cf6a645/Dockerfile).
+- <a id="tut-25.8-Dockerfile-6651dd"></a>`Dockerfile`: the reason, and the line for hadolint. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/fd4dc51723462cdeaf072a4f2a18472a0cf6a645/Dockerfile){.btn .btn-sm .btn-secondary}
   - look at `# hadolint ignore=DL3008`
 
 <details open><summary>The patch to <code>Dockerfile</code></summary>
@@ -667,7 +667,7 @@ git restore --source fe092b54847a --staged -- :/ && git restore --source fd4dc51
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/fd4dc51723462cdeaf072a4f2a18472a0cf6a645). [The code after it](https://github.com/rahuldave/babykev/tree/fd4dc51723462cdeaf072a4f2a18472a0cf6a645).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/fd4dc51723462cdeaf072a4f2a18472a0cf6a645){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/fd4dc51723462cdeaf072a4f2a18472a0cf6a645){.btn .btn-sm .btn-primary}
 
 ## 25.9 The README names the two images {#tut-25.9}
 
@@ -710,12 +710,12 @@ git check 6c85dd08f3cd
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source fd4dc5172346 --staged -- :/ && git restore --source 6c85dd08f3cd --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source fd4dc5172346 --staged -- :/ && git restore --source tut-25 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-25.9-what-changed-182c57}
 
-- <a id="tut-25.9-README.md-8ec9a0"></a>`README.md`: the section on the images, and the row of the `Dockerfile`. 24 lines added. [The file](https://github.com/rahuldave/babykev/blob/6c85dd08f3cd441259b3749ac38cceaf7f2392e0/README.md).
+- <a id="tut-25.9-README.md-8ec9a0"></a>`README.md`: the section on the images, and the row of the `Dockerfile`. 24 lines added. [The file](https://github.com/rahuldave/babykev/blob/6c85dd08f3cd441259b3749ac38cceaf7f2392e0/README.md){.btn .btn-sm .btn-secondary}
   - look at `## The images`
 
 <details open><summary>The patch to <code>README.md</code></summary>
@@ -763,4 +763,6 @@ git restore --source fd4dc5172346 --staged -- :/ && git restore --source 6c85dd0
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/6c85dd08f3cd441259b3749ac38cceaf7f2392e0). [The code after it](https://github.com/rahuldave/babykev/tree/6c85dd08f3cd441259b3749ac38cceaf7f2392e0).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/6c85dd08f3cd441259b3749ac38cceaf7f2392e0){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-25`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-25){.btn .btn-sm .btn-primary}

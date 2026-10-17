@@ -6,6 +6,17 @@ title: "21.4 The floor on the coverage"
 
 **Read the tutorial.** [Build it yourself](../build/tut-21.4.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `08acf0a3770d`, partway through `tut-21`. [The code before this part](https://github.com/rahuldave/babykev/tree/08acf0a3770d58ab7fc3ac85eebf5cf9ed0bad0e){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach 08acf0a3770d
+```
+
 ```bash
 just setup
 ```
@@ -14,8 +25,6 @@ The code now has a tiny model, built in memory, and fixtures of pytest that make
 of the model and the smoke run on it. The total coverage is 91.76%.
 
 `just check` gets a floor. `just test` alone keeps none.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/08acf0a3770d58ab7fc3ac85eebf5cf9ed0bad0e). [The code after it](https://github.com/rahuldave/babykev/tree/57604134d9590c16b1c4db0b1d1a11509a65345b).
 
 ## 21.4 The gate has a floor of 90% {#tut-21.4}
 
@@ -36,7 +45,7 @@ exit code 0.
 
 ### What changed {#tut-21.4-what-changed-182c57}
 
-- <a id="tut-21.4-justfile-424f0b"></a>`justfile`: the floor, in the gate. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/57604134d9590c16b1c4db0b1d1a11509a65345b/justfile).
+- <a id="tut-21.4-justfile-424f0b"></a>`justfile`: the floor, in the gate. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/57604134d9590c16b1c4db0b1d1a11509a65345b/justfile){.btn .btn-sm .btn-secondary}
   - look at `    just test -q --cov-fail-under=90`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -64,4 +73,6 @@ exit code 0.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/57604134d9590c16b1c4db0b1d1a11509a65345b). [The code after it](https://github.com/rahuldave/babykev/tree/57604134d9590c16b1c4db0b1d1a11509a65345b).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/57604134d9590c16b1c4db0b1d1a11509a65345b){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `57604134d959`, partway through `tut-21`. [The code after this part](https://github.com/rahuldave/babykev/tree/57604134d9590c16b1c4db0b1d1a11509a65345b){.btn .btn-sm .btn-primary}

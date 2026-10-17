@@ -6,6 +6,8 @@ title: "3.3 to 3.5 What babykev leaves out of the contract"
 
 **Build it yourself.** [Read the tutorial](../read/tut-03.3-to-tut-03.5.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `e8e2e72adad9`, partway through `tut-03`. [The code before this part](https://github.com/rahuldave/babykev/tree/e8e2e72adad9364a58be21dadf6d757e84436b97){.btn .btn-sm .btn-primary}
+
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
 
 ```bash
@@ -23,8 +25,6 @@ model reads.
 babykev has no server and no bill. A docstring is the text at the top of a file, or under a class or a function, that
 says what it is for. The moves take the server out of the docstring of `api.py`. They also take the name of the model
 out of a request, and remove the count of tokens.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/e8e2e72adad9364a58be21dadf6d757e84436b97). [The code after it](https://github.com/rahuldave/babykev/tree/43b7ea4eda990f90abd605920e2fb1d9b376378d).
 
 ## 3.3 The docstring of api.py names no server {#tut-03.3}
 
@@ -59,7 +59,7 @@ git restore --source e8e2e72adad9 --staged -- :/ && git restore --source 9361895
 
 ### What changed {#tut-03.3-what-changed-182c57}
 
-- <a id="tut-03.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the docstring. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/93618951b784e928af3d3547f077bb49bff4d5da/src/babykev/api.py).
+- <a id="tut-03.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the docstring. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/93618951b784e928af3d3547f077bb49bff4d5da/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `"""The contract: request and answer shapes, mapped onto the single pointer primitive.`
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
@@ -75,7 +75,7 @@ git restore --source e8e2e72adad9 --staged -- :/ && git restore --source 9361895
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/93618951b784e928af3d3547f077bb49bff4d5da). [The code after it](https://github.com/rahuldave/babykev/tree/93618951b784e928af3d3547f077bb49bff4d5da).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/93618951b784e928af3d3547f077bb49bff4d5da){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/93618951b784e928af3d3547f077bb49bff4d5da){.btn .btn-sm .btn-primary}
 
 ## 3.4 A request names no model {#tut-03.4}
 
@@ -109,7 +109,7 @@ git restore --source 93618951b784 --staged -- :/ && git restore --source 5cce9c9
 
 ### What changed {#tut-03.4-what-changed-182c57}
 
-- <a id="tut-03.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a request has two fields, `state` and `questions`. 0 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/5cce9c9e5025336d501298d244389b64c696737c/src/babykev/api.py).
+- <a id="tut-03.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a request has two fields, `state` and `questions`. 0 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/5cce9c9e5025336d501298d244389b64c696737c/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `    questions: dict[str, Question] = Field(min_length=1)`
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
@@ -127,7 +127,7 @@ git restore --source 93618951b784 --staged -- :/ && git restore --source 5cce9c9
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/5cce9c9e5025336d501298d244389b64c696737c). [The code after it](https://github.com/rahuldave/babykev/tree/5cce9c9e5025336d501298d244389b64c696737c).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/5cce9c9e5025336d501298d244389b64c696737c){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/5cce9c9e5025336d501298d244389b64c696737c){.btn .btn-sm .btn-primary}
 
 ## 3.5 output_tokens goes {#tut-03.5}
 
@@ -162,7 +162,7 @@ git restore --source 5cce9c9e5025 --staged -- :/ && git restore --source 43b7ea4
 
 ### What changed {#tut-03.5-what-changed-182c57}
 
-- <a id="tut-03.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the function goes. 0 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/43b7ea4eda990f90abd605920e2fb1d9b376378d/src/babykev/api.py).
+- <a id="tut-03.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the function goes. 0 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/43b7ea4eda990f90abd605920e2fb1d9b376378d/src/babykev/api.py){.btn .btn-sm .btn-secondary}
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
@@ -181,4 +181,6 @@ git restore --source 5cce9c9e5025 --staged -- :/ && git restore --source 43b7ea4
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/43b7ea4eda990f90abd605920e2fb1d9b376378d). [The code after it](https://github.com/rahuldave/babykev/tree/43b7ea4eda990f90abd605920e2fb1d9b376378d).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/43b7ea4eda990f90abd605920e2fb1d9b376378d){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `43b7ea4eda99`, partway through `tut-03`. [The code after this part](https://github.com/rahuldave/babykev/tree/43b7ea4eda990f90abd605920e2fb1d9b376378d){.btn .btn-sm .btn-primary}

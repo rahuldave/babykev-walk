@@ -37,6 +37,8 @@ This tutorial has eight sections:
 
 ## 0 Where we start
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part is where the project starts, at `tut-00`. [The code of this part](https://github.com/rahuldave/babykev/tree/tut-00)
+
 The first section shows the folder of babykev before it holds any code.
 
 babykev starts as words, before any code. The README says what babykev is, and what request it reads. The licence is
@@ -603,11 +605,11 @@ git ignores each of them before it exists.
 
 </details>
 
-[The code](https://github.com/rahuldave/babykev/tree/70ac5b0a0a1d927dfc4da6f8b7b92344917e4a33).
-
 <a id="tut-07.1-to-tut-07.5"></a>
 
 ## 7.1 to 7.5 Format
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-06`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-06)
 
 ```bash
 just setup
@@ -624,8 +626,6 @@ two changes fix them. `just test` prints `53 passed`, and the coverage is 100%.
 `just setup` prints `Resolved 14 packages`. The tests check what the code does, and nothing checks how it looks.
 `api.py` has a style of its own. Some lines hold an `if` and its `return` together, and some lines run past 200
 characters. ruff comes in, then its settings and the recipe `fmt`, and the formatter rewrites `api.py`.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/910716f0cec79c3f31afb34cf3a2593f0cd51315). [The code after it](https://github.com/rahuldave/babykev/tree/84b3ac0ce858d907d8d59ffdc9c9096ab8cb2ac4).
 
 <a id="tut-07.1"></a>
 
@@ -941,11 +941,15 @@ new statements.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/84b3ac0ce858d907d8d59ffdc9c9096ab8cb2ac4). [The code after it](https://github.com/rahuldave/babykev/tree/84b3ac0ce858d907d8d59ffdc9c9096ab8cb2ac4).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/84b3ac0ce858d907d8d59ffdc9c9096ab8cb2ac4).
+
+This part ends at the code at `tut-07`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-07)
 
 <a id="tut-08"></a>
 
 ## 8 Lint
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-07`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-07)
 
 ```bash
 just setup
@@ -957,8 +961,6 @@ The formatter changes how the code looks, and leaves a wrong line wrong. A linte
 and reports what breaks them, from an import that nobody uses to a `zip` that drops items silently. ruff is the
 linter too, and the families of rules come first. The linter finds 8 problems in `api.py`, and each rule then gets
 a fix of its own. ruff makes the last fix itself.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/84b3ac0ce858d907d8d59ffdc9c9096ab8cb2ac4). [The code after it](https://github.com/rahuldave/babykev/tree/7cdb1ba696a32050cba1c335892fccb68bb4fd24).
 
 <a id="tut-08.1"></a>
 
@@ -1382,11 +1384,15 @@ prints `53 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/7cdb1ba696a32050cba1c335892fccb68bb4fd24). [The code after it](https://github.com/rahuldave/babykev/tree/7cdb1ba696a32050cba1c335892fccb68bb4fd24).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7cdb1ba696a32050cba1c335892fccb68bb4fd24).
+
+This part ends at the code at `tut-08`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-08)
 
 <a id="tut-09"></a>
 
 ## 9 Types in every signature
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-08`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-08)
 
 ```bash
 just setup
@@ -1398,8 +1404,6 @@ A reader of `def to_record(req: SystemOneRequest):` knows what the function take
 annotation says it, in the signature. Python does not check annotations when it runs, but a reader does, and a type
 checker can, later. The family `ANN` of ruff asks for the type of every parameter and of every return value. A
 person writes each type that ruff cannot guess, and ruff writes the rest.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/7cdb1ba696a32050cba1c335892fccb68bb4fd24). [The code after it](https://github.com/rahuldave/babykev/tree/b0e8dd74539e4d3b210defc5e0169f53b1670393).
 
 <a id="tut-09.1"></a>
 
@@ -2095,11 +2099,15 @@ characters with `-> None`. `just test` prints `53 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/b0e8dd74539e4d3b210defc5e0169f53b1670393). [The code after it](https://github.com/rahuldave/babykev/tree/b0e8dd74539e4d3b210defc5e0169f53b1670393).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b0e8dd74539e4d3b210defc5e0169f53b1670393).
+
+This part ends at the code at `tut-09`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-09)
 
 <a id="tut-10"></a>
 
 ## 10 Docstrings
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-09`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-09)
 
 ```bash
 just setup
@@ -2111,8 +2119,6 @@ A docstring says what a module, a class or a function is for. Python keeps it in
 editor show it. kev gave a docstring to some functions of `api.py`, and to none of its classes. The rules `D1` of
 ruff ask for a docstring on every public module, class and function. ruff cannot write one, so each comes by hand,
 one kind at a time.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/b0e8dd74539e4d3b210defc5e0169f53b1670393). [The code after it](https://github.com/rahuldave/babykev/tree/ebd0888f135c00e29b583f6fad0575c290fd4876).
 
 <a id="tut-10.1"></a>
 
@@ -2322,11 +2328,15 @@ test` prints `53 passed`, and the total is 100%, 83 of 83 statements.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/ebd0888f135c00e29b583f6fad0575c290fd4876). [The code after it](https://github.com/rahuldave/babykev/tree/ebd0888f135c00e29b583f6fad0575c290fd4876).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ebd0888f135c00e29b583f6fad0575c290fd4876).
+
+This part ends at the code at `tut-10`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-10)
 
 <a id="tut-11"></a>
 
 ## 11 The gate and the hook
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-10`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-10)
 
 ```bash
 just setup
@@ -2341,8 +2351,6 @@ is a gate, and a change that fails it does not go in.
 
 Three more hooks keep out a large file, the markers of a merge conflict and a `.env` file. Last, a mistake on purpose
 shows the gate at work.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/ebd0888f135c00e29b583f6fad0575c290fd4876). [The code after it](https://github.com/rahuldave/babykev/tree/cab87c139ebd3b72771ed6db08b02dd7646c7d02).
 
 <a id="tut-11.1"></a>
 
@@ -2818,11 +2826,15 @@ grep -n 'just hook' README.md
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/cab87c139ebd3b72771ed6db08b02dd7646c7d02). [The code after it](https://github.com/rahuldave/babykev/tree/cab87c139ebd3b72771ed6db08b02dd7646c7d02).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/cab87c139ebd3b72771ed6db08b02dd7646c7d02).
+
+This part ends at the code at `tut-11`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-11)
 
 <a id="tut-12"></a>
 
 ## 12 The config files, checked
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-11`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-11)
 
 ```bash
 just setup
@@ -2834,8 +2846,6 @@ The gate checks the Python of the project. The files that are not Python, the co
 misspelt key in `pyproject.toml`, a lockfile that no longer matches it, or a YAML file that pre-commit cannot read
 passes the gate. A recipe `lint-config` checks each kind of config file, with one checker per move. One checker
 fails on its defaults, for real, and its settings fix it. Then the gate runs `lint-config` too.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/cab87c139ebd3b72771ed6db08b02dd7646c7d02). [The code after it](https://github.com/rahuldave/babykev/tree/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac).
 
 <a id="tut-12.1"></a>
 
@@ -3380,11 +3390,15 @@ grep -n yamllint README.md
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac). [The code after it](https://github.com/rahuldave/babykev/tree/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac).
+
+This part ends at the code at `tut-12`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-12)
 
 <a id="tut-17.1-to-tut-17.5"></a>
 
 ## 17.1 to 17.5 The type checker
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-16`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-16)
 
 ```bash
 just setup
@@ -3401,8 +3415,6 @@ linter and the docs check. No test runs it yet, so the coverage falls to 43%.
 `just setup` prints `Resolved 66 packages`. `model.py` has a type on every parameter and every return, because the
 linter asks for them. Nothing checks that the types are right. ty reads the code, and compares each call and each
 value with the types that the code and its libraries declare.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/056fe2ced73ff8568dfc329555795524c2465eb1). [The code after it](https://github.com/rahuldave/babykev/tree/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9).
 
 <a id="tut-17.1"></a>
 
@@ -3666,4 +3678,6 @@ on the coverage. The [whole tutorial](https://github.com/rahuldave/babykev/tree/
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9). [The code after it](https://github.com/rahuldave/babykev/tree/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9).
+
+This part ends at the code at `tut-17`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-17)

@@ -6,6 +6,17 @@ title: "13.12 The docs check joins `just check`"
 
 **Read the tutorial.** [Build it yourself](../build/tut-13.12.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `861142a50356`, partway through `tut-13`. [The code before this part](https://github.com/rahuldave/babykev/tree/861142a50356963bb5e371fe8226ba73b87eef93){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach 861142a50356
+```
+
 ```bash
 just setup
 ```
@@ -15,8 +26,6 @@ The code now has its documentation. A docment is a comment beside a parameter or
 `just fmt` wrapped its line, and a shorter docment took its place.
 
 `just check` does not run the docs check yet. One line in `check` runs it.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/861142a50356963bb5e371fe8226ba73b87eef93). [The code after it](https://github.com/rahuldave/babykev/tree/005b87bdfa2e70c6ceca52dc07197c69702f00be).
 
 ## 13.12 The gate checks the docs {#tut-13.12}
 
@@ -39,7 +48,7 @@ after the tests, and ends with exit code 0. A function, a parameter or a field w
 
 ### What changed {#tut-13.12-what-changed-182c57}
 
-- <a id="tut-13.12-justfile-424f0b"></a>`justfile`: the docs check, in the gate. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/005b87bdfa2e70c6ceca52dc07197c69702f00be/justfile).
+- <a id="tut-13.12-justfile-424f0b"></a>`justfile`: the docs check, in the gate. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/005b87bdfa2e70c6ceca52dc07197c69702f00be/justfile){.btn .btn-sm .btn-secondary}
   - look at `    just docs check`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -66,4 +75,6 @@ after the tests, and ends with exit code 0. A function, a parameter or a field w
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/005b87bdfa2e70c6ceca52dc07197c69702f00be). [The code after it](https://github.com/rahuldave/babykev/tree/005b87bdfa2e70c6ceca52dc07197c69702f00be).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/005b87bdfa2e70c6ceca52dc07197c69702f00be){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-13`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-13){.btn .btn-sm .btn-primary}

@@ -6,10 +6,12 @@ title: "16 The model"
 
 **Build it yourself.** [Read the tutorial](../read/tut-16.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-15`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-15){.btn .btn-sm .btn-primary}
+
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
 
 ```bash
-git rm -rq --cached --ignore-unmatch -- :/ && git restore --source c7037ec46096 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch -- :/ && git restore --source tut-15 --staged --worktree -- :/
 ```
 
 ```bash
@@ -21,8 +23,6 @@ just setup
 babykev has a contract and no model. `model.py` is the model. It comes in whole, from kev's first version, and we
 read it before anything else. It meets the gate as it is. No test calls it yet, and the coverage shows it. Then the
 front page of the docs and the README name it.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/c7037ec460963acd41edf1f63a6a03d2e52e5bae). [The code after it](https://github.com/rahuldave/babykev/tree/056fe2ced73ff8568dfc329555795524c2465eb1).
 
 ## 16.1 model.py, the model {#tut-16.1}
 
@@ -102,12 +102,12 @@ git check c4c288ccc7e4
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source c7037ec46096 --staged -- :/ && git restore --source c4c288ccc7e4 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-15 --staged -- :/ && git restore --source c4c288ccc7e4 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-16.1-what-changed-182c57}
 
-- <a id="tut-16.1-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the model. It packs a request into tokens, masks it, and points at the options. New, 274 lines. [The file](https://github.com/rahuldave/babykev/blob/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93/src/babykev/model.py).
+- <a id="tut-16.1-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the model. It packs a request into tokens, masks it, and points at the options. New, 274 lines. [The file](https://github.com/rahuldave/babykev/blob/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93/src/babykev/model.py){.btn .btn-sm .btn-secondary}
   - look at `class DecisionModel(nn.Module):`
 
 <details open><summary>The patch to <code>src/babykev/model.py</code></summary>
@@ -392,7 +392,7 @@ git restore --source c7037ec46096 --staged -- :/ && git restore --source c4c288c
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93). [The code after it](https://github.com/rahuldave/babykev/tree/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93){.btn .btn-sm .btn-primary}
 
 ## 16.2 The front page names the model {#tut-16.2}
 
@@ -431,7 +431,7 @@ git restore --source c4c288ccc7e4 --staged -- :/ && git restore --source bc2df6d
 
 ### What changed {#tut-16.2-what-changed-182c57}
 
-- <a id="tut-16.2-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the module `babykev.model`, in the list. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/bc2df6d99386f11f4e193e0b530fa87128a3acd7/docs/index.qmd).
+- <a id="tut-16.2-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the module `babykev.model`, in the list. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/bc2df6d99386f11f4e193e0b530fa87128a3acd7/docs/index.qmd){.btn .btn-sm .btn-secondary}
   - look at ``- `babykev.model` is the model. `encode()` packs a record into one sequence of tokens, and a``
 
 <details open><summary>The patch to <code>docs/index.qmd</code></summary>
@@ -456,7 +456,7 @@ git restore --source c4c288ccc7e4 --staged -- :/ && git restore --source bc2df6d
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/bc2df6d99386f11f4e193e0b530fa87128a3acd7). [The code after it](https://github.com/rahuldave/babykev/tree/bc2df6d99386f11f4e193e0b530fa87128a3acd7).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/bc2df6d99386f11f4e193e0b530fa87128a3acd7){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/bc2df6d99386f11f4e193e0b530fa87128a3acd7){.btn .btn-sm .btn-primary}
 
 ## 16.3 The README names model.py {#tut-16.3}
 
@@ -485,12 +485,12 @@ git check 056fe2ced73f
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source bc2df6d99386 --staged -- :/ && git restore --source 056fe2ced73f --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source bc2df6d99386 --staged -- :/ && git restore --source tut-16 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-16.3-what-changed-182c57}
 
-- <a id="tut-16.3-README.md-8ec9a0"></a>`README.md`: a row for `src/babykev/model.py`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/056fe2ced73ff8568dfc329555795524c2465eb1/README.md).
+- <a id="tut-16.3-README.md-8ec9a0"></a>`README.md`: a row for `src/babykev/model.py`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/056fe2ced73ff8568dfc329555795524c2465eb1/README.md){.btn .btn-sm .btn-secondary}
   - look at ``| `src/babykev/model.py` | The model, a language model with a head that points at the options |``
 
 <details open><summary>The patch to <code>README.md</code></summary>
@@ -508,4 +508,6 @@ git restore --source bc2df6d99386 --staged -- :/ && git restore --source 056fe2c
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/056fe2ced73ff8568dfc329555795524c2465eb1). [The code after it](https://github.com/rahuldave/babykev/tree/056fe2ced73ff8568dfc329555795524c2465eb1).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/056fe2ced73ff8568dfc329555795524c2465eb1){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-16`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-16){.btn .btn-sm .btn-primary}

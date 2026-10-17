@@ -6,6 +6,17 @@ title: "21.1 to 21.2 DecisionModel, with an adapter, over several records"
 
 **Read the tutorial.** [Build it yourself](../build/tut-21.1-to-tut-21.2.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-20`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-20){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach tut-20
+```
+
 ```bash
 just setup
 ```
@@ -24,8 +35,6 @@ LoRA, low-rank adaptation, leaves each weight of the backbone as it is. Beside a
 two small matrices, `A` of r by in and `B` of out by r. Their product goes into the output. Lines 210 to
 218 do it with peft, on the seven projections of `LORA_TARGETS`, line 39. r is the rank, the argument `lora`. peft freezes the
 backbone, so training changes the adapter and the head, and nothing else.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/ebfa2a8cee251782b3709a379c35af77c80c6170). [The code after it](https://github.com/rahuldave/babykev/tree/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac).
 
 ## 21.1 With an adapter, only the adapter and the head train {#tut-21.1}
 
@@ -75,7 +84,7 @@ reads only the places of `decide_idx` and `opt_idx`.
 
 ### What changed {#tut-21.1-what-changed-182c57}
 
-- <a id="tut-21.1-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: one backward pass with an adapter. 22 lines added. [The file](https://github.com/rahuldave/babykev/blob/0be44c1de17b8acb4e18a964a782584eb26fee97/tests/unit/test_model.py).
+- <a id="tut-21.1-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: one backward pass with an adapter. 22 lines added. [The file](https://github.com/rahuldave/babykev/blob/0be44c1de17b8acb4e18a964a782584eb26fee97/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_with_an_adapter_only_the_adapter_and_the_head_train(`
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
@@ -118,7 +127,7 @@ reads only the places of `decide_idx` and `opt_idx`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/0be44c1de17b8acb4e18a964a782584eb26fee97). [The code after it](https://github.com/rahuldave/babykev/tree/0be44c1de17b8acb4e18a964a782584eb26fee97).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0be44c1de17b8acb4e18a964a782584eb26fee97){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/0be44c1de17b8acb4e18a964a782584eb26fee97){.btn .btn-sm .btn-primary}
 
 ## 21.2 Records of different lengths answer in one pass as alone {#tut-21.2}
 
@@ -148,7 +157,7 @@ numbers in another order. So the last bits of a float can differ.
 
 ### What changed {#tut-21.2-what-changed-182c57}
 
-- <a id="tut-21.2-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a padded pass. 16 lines added. [The file](https://github.com/rahuldave/babykev/blob/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac/tests/unit/test_model.py).
+- <a id="tut-21.2-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a padded pass. 16 lines added. [The file](https://github.com/rahuldave/babykev/blob/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_records_of_different_lengths_answer_in_one_pass_as_alone(`
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
@@ -178,4 +187,6 @@ numbers in another order. So the last bits of a float can differ.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac). [The code after it](https://github.com/rahuldave/babykev/tree/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `e6248c7e2cf3`, partway through `tut-21`. [The code after this part](https://github.com/rahuldave/babykev/tree/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac){.btn .btn-sm .btn-primary}

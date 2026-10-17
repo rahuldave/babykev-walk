@@ -33,6 +33,8 @@ result, and a list names each file that changed, with what to look for in it.
 
 ## 0 Where we start
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part is where the project starts, at `tut-00`. [The code of this part](https://github.com/rahuldave/babykev/tree/tut-00)
+
 babykev starts as words, before any code. The README says what babykev is, and what request it reads. The licence is
 kev's, the Apache License 2.0, and the notice gives kev the credit. `.gitignore` is GitHub's template for Python. It
 names the files that Python, its tools and its environments write, and that git must not track.
@@ -597,11 +599,11 @@ git ignores each of them before it exists.
 
 </details>
 
-[The code](https://github.com/rahuldave/babykev/tree/70ac5b0a0a1d927dfc4da6f8b7b92344917e4a33).
-
 <a id="tut-01"></a>
 
 ## 1 The project
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-00`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-00)
 
 babykev must be a Python project before it can hold code. uv makes the project. Then babykev gets its words, its
 command, and a justfile that names the tasks of the project.
@@ -609,8 +611,6 @@ command, and a justfile that names the tasks of the project.
 There is no justfile until the ninth move, so do not run `just` in the project before then. `just` looks for a
 justfile in the folder, and then in the folders above it. In the walk repository, the folder above the project has a
 justfile of its own. So an early `just setup` runs that recipe, and not one of babykev.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/70ac5b0a0a1d927dfc4da6f8b7b92344917e4a33). [The code after it](https://github.com/rahuldave/babykev/tree/7ad3a06605fadc9f34b5e2d8180145a3e53389a9).
 
 <a id="tut-01.1"></a>
 
@@ -1303,11 +1303,15 @@ Both commands of "Start" work. `just setup` prints `Resolved 1 package` and `Che
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/7ad3a06605fadc9f34b5e2d8180145a3e53389a9). [The code after it](https://github.com/rahuldave/babykev/tree/7ad3a06605fadc9f34b5e2d8180145a3e53389a9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7ad3a06605fadc9f34b5e2d8180145a3e53389a9).
+
+This part ends at the code at `tut-01`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-01)
 
 <a id="tut-02"></a>
 
 ## 2 Tests of the command
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-01`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-01)
 
 ```bash
 just setup
@@ -1319,8 +1323,6 @@ clone, it first makes `.venv`, and installs babykev.
 We cannot tell whether `babykev` still works after a change, unless we run it by hand and read what it prints. Tests
 run it for us. pytest finds the tests and runs them, and a recipe `just test` runs pytest. The first tests are of the
 command, the only code that babykev has. Last, coverage shows which lines the tests run.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/7ad3a06605fadc9f34b5e2d8180145a3e53389a9). [The code after it](https://github.com/rahuldave/babykev/tree/4640589d80e4f224a4b2c1fd9567e952f564f102).
 
 <a id="tut-02.1"></a>
 
@@ -1778,11 +1780,15 @@ uv installs 8 here. `just test` prints `5 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/4640589d80e4f224a4b2c1fd9567e952f564f102). [The code after it](https://github.com/rahuldave/babykev/tree/4640589d80e4f224a4b2c1fd9567e952f564f102).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/4640589d80e4f224a4b2c1fd9567e952f564f102).
+
+This part ends at the code at `tut-02`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-02)
 
 <a id="tut-03"></a>
 
 ## 3 The contract
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-02`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-02)
 
 ```bash
 just setup
@@ -1793,8 +1799,6 @@ an answer is. The agreement is a file from kev, `api.py`, and we call it the con
 
 Then three parts that belong to kev's server go, one at a time. Five sample requests come last. No test reaches the
 contract yet, so coverage falls.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/4640589d80e4f224a4b2c1fd9567e952f564f102). [The code after it](https://github.com/rahuldave/babykev/tree/56606771fb23f7a0a01825f477050d2980a47736).
 
 <a id="tut-03.1"></a>
 
@@ -2191,11 +2195,15 @@ grep -n -E 'api.py|sample.jsonl' README.md
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/56606771fb23f7a0a01825f477050d2980a47736). [The code after it](https://github.com/rahuldave/babykev/tree/56606771fb23f7a0a01825f477050d2980a47736).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/56606771fb23f7a0a01825f477050d2980a47736).
+
+This part ends at the code at `tut-03`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-03)
 
 <a id="tut-04"></a>
 
 ## 4 What a request is
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-03`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-03)
 
 ```bash
 just setup
@@ -2204,8 +2212,6 @@ just setup
 The contract says what a request is, and no test checks it. The tests of this part check the five sample requests
 against the contract. Then they check what the contract accepts and refuses, one rule at a time. They go in
 `tests/unit/test_api.py`, one test in each move.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/56606771fb23f7a0a01825f477050d2980a47736). [The code after it](https://github.com/rahuldave/babykev/tree/1fef13ae49e24d280d05c250289c41d5636feff7).
 
 <a id="tut-04.1"></a>
 
@@ -2702,11 +2708,15 @@ grep -n 'tests/unit' README.md
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/1fef13ae49e24d280d05c250289c41d5636feff7). [The code after it](https://github.com/rahuldave/babykev/tree/1fef13ae49e24d280d05c250289c41d5636feff7).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/1fef13ae49e24d280d05c250289c41d5636feff7).
+
+This part ends at the code at `tut-04`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-04)
 
 <a id="tut-05"></a>
 
 ## 5 From a request to the model, and back
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-04`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-04)
 
 ```bash
 just setup
@@ -2715,8 +2725,6 @@ just setup
 The contract also maps a request to what the model reads, and the model's probabilities back to answers. `render`
 turns JSON into text, `option_text` writes an option, `to_record` turns a request into a record, and `to_answers`
 turns probabilities into answers. Each test checks one of their rules.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/1fef13ae49e24d280d05c250289c41d5636feff7). [The code after it](https://github.com/rahuldave/babykev/tree/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f).
 
 <a id="tut-05.1"></a>
 
@@ -3252,11 +3260,15 @@ shows them. Coverage says which lines ran. It does not say that a test checked w
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f). [The code after it](https://github.com/rahuldave/babykev/tree/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f).
+
+This part ends at the code at `tut-05`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-05)
 
 <a id="tut-06"></a>
 
 ## 6 Kev's two bugs
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-05`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-05)
 
 ```bash
 just setup
@@ -3264,8 +3276,6 @@ just setup
 
 Every line of the contract runs in a test, and two of them are wrong. A test of rounding finds the first. The tests of
 confidence find the second. Each test fails, and the move after it fixes the code.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f). [The code after it](https://github.com/rahuldave/babykev/tree/910716f0cec79c3f31afb34cf3a2593f0cd51315).
 
 <a id="tut-06.1"></a>
 
@@ -3760,11 +3770,15 @@ just test
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/910716f0cec79c3f31afb34cf3a2593f0cd51315). [The code after it](https://github.com/rahuldave/babykev/tree/910716f0cec79c3f31afb34cf3a2593f0cd51315).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/910716f0cec79c3f31afb34cf3a2593f0cd51315).
+
+This part ends at the code at `tut-06`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-06)
 
 <a id="tut-07"></a>
 
 ## 7 Format
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-06`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-06)
 
 ```bash
 just setup
@@ -3777,8 +3791,6 @@ kev wrote `api.py` in a style of his own. Some lines hold an `if` and its `retur
 in one style, so that a later change shows only what changed, and no fight over spaces and line breaks. ruff comes
 first into the project, then its settings and a recipe. Then the check fails on `api.py`, and the formatter
 rewrites the file.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/910716f0cec79c3f31afb34cf3a2593f0cd51315). [The code after it](https://github.com/rahuldave/babykev/tree/84b3ac0ce858d907d8d59ffdc9c9096ab8cb2ac4).
 
 <a id="tut-07.1"></a>
 
@@ -4094,11 +4106,15 @@ new statements.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/84b3ac0ce858d907d8d59ffdc9c9096ab8cb2ac4). [The code after it](https://github.com/rahuldave/babykev/tree/84b3ac0ce858d907d8d59ffdc9c9096ab8cb2ac4).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/84b3ac0ce858d907d8d59ffdc9c9096ab8cb2ac4).
+
+This part ends at the code at `tut-07`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-07)
 
 <a id="tut-08"></a>
 
 ## 8 Lint
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-07`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-07)
 
 ```bash
 just setup
@@ -4110,8 +4126,6 @@ The formatter changes how the code looks, and leaves a wrong line wrong. A linte
 and reports what breaks them, from an import that nobody uses to a `zip` that drops items silently. ruff is the
 linter too, and the families of rules come first. The linter finds 8 problems in `api.py`, and each rule then gets
 a fix of its own. ruff makes the last fix itself.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/84b3ac0ce858d907d8d59ffdc9c9096ab8cb2ac4). [The code after it](https://github.com/rahuldave/babykev/tree/7cdb1ba696a32050cba1c335892fccb68bb4fd24).
 
 <a id="tut-08.1"></a>
 
@@ -4535,11 +4549,15 @@ prints `53 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/7cdb1ba696a32050cba1c335892fccb68bb4fd24). [The code after it](https://github.com/rahuldave/babykev/tree/7cdb1ba696a32050cba1c335892fccb68bb4fd24).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7cdb1ba696a32050cba1c335892fccb68bb4fd24).
+
+This part ends at the code at `tut-08`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-08)
 
 <a id="tut-09"></a>
 
 ## 9 Types in every signature
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-08`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-08)
 
 ```bash
 just setup
@@ -4551,8 +4569,6 @@ A reader of `def to_record(req: SystemOneRequest):` knows what the function take
 annotation says it, in the signature. Python does not check annotations when it runs, but a reader does, and a type
 checker can, later. The family `ANN` of ruff asks for the type of every parameter and of every return value. A
 person writes each type that ruff cannot guess, and ruff writes the rest.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/7cdb1ba696a32050cba1c335892fccb68bb4fd24). [The code after it](https://github.com/rahuldave/babykev/tree/b0e8dd74539e4d3b210defc5e0169f53b1670393).
 
 <a id="tut-09.1"></a>
 
@@ -5248,11 +5264,15 @@ characters with `-> None`. `just test` prints `53 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/b0e8dd74539e4d3b210defc5e0169f53b1670393). [The code after it](https://github.com/rahuldave/babykev/tree/b0e8dd74539e4d3b210defc5e0169f53b1670393).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b0e8dd74539e4d3b210defc5e0169f53b1670393).
+
+This part ends at the code at `tut-09`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-09)
 
 <a id="tut-10"></a>
 
 ## 10 Docstrings
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-09`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-09)
 
 ```bash
 just setup
@@ -5264,8 +5284,6 @@ A docstring says what a module, a class or a function is for. Python keeps it in
 editor show it. kev gave a docstring to some functions of `api.py`, and to none of its classes. The rules `D1` of
 ruff ask for a docstring on every public module, class and function. ruff cannot write one, so each comes by hand,
 one kind at a time.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/b0e8dd74539e4d3b210defc5e0169f53b1670393). [The code after it](https://github.com/rahuldave/babykev/tree/ebd0888f135c00e29b583f6fad0575c290fd4876).
 
 <a id="tut-10.1"></a>
 
@@ -5475,11 +5493,15 @@ test` prints `53 passed`, and the total is 100%, 83 of 83 statements.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/ebd0888f135c00e29b583f6fad0575c290fd4876). [The code after it](https://github.com/rahuldave/babykev/tree/ebd0888f135c00e29b583f6fad0575c290fd4876).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ebd0888f135c00e29b583f6fad0575c290fd4876).
+
+This part ends at the code at `tut-10`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-10)
 
 <a id="tut-11"></a>
 
 ## 11 The gate and the hook
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-10`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-10)
 
 ```bash
 just setup
@@ -5494,8 +5516,6 @@ is a gate, and a change that fails it does not go in.
 
 Three more hooks keep out a large file, the markers of a merge conflict and a `.env` file. Last, a mistake on purpose
 shows the gate at work.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/ebd0888f135c00e29b583f6fad0575c290fd4876). [The code after it](https://github.com/rahuldave/babykev/tree/cab87c139ebd3b72771ed6db08b02dd7646c7d02).
 
 <a id="tut-11.1"></a>
 
@@ -5971,11 +5991,15 @@ grep -n 'just hook' README.md
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/cab87c139ebd3b72771ed6db08b02dd7646c7d02). [The code after it](https://github.com/rahuldave/babykev/tree/cab87c139ebd3b72771ed6db08b02dd7646c7d02).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/cab87c139ebd3b72771ed6db08b02dd7646c7d02).
+
+This part ends at the code at `tut-11`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-11)
 
 <a id="tut-12"></a>
 
 ## 12 The config files are checked
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-11`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-11)
 
 ```bash
 just setup
@@ -5987,8 +6011,6 @@ The gate checks the Python of the project. The files that are not Python, the co
 misspelt key in `pyproject.toml`, a lockfile that no longer matches it, or a YAML file that pre-commit cannot read
 passes the gate. A recipe `lint-config` checks each kind of config file, with one checker per move. One checker
 fails on its defaults, for real, and its settings fix it. Then the gate runs `lint-config` too.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/cab87c139ebd3b72771ed6db08b02dd7646c7d02). [The code after it](https://github.com/rahuldave/babykev/tree/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac).
 
 <a id="tut-12.1"></a>
 
@@ -6533,11 +6555,15 @@ grep -n yamllint README.md
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac). [The code after it](https://github.com/rahuldave/babykev/tree/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac).
+
+This part ends at the code at `tut-12`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-12)
 
 <a id="tut-13"></a>
 
 ## 13 Documentation in the code
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-12`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-12)
 
 ```bash
 just setup
@@ -6552,8 +6578,6 @@ parameter, a return type or a field, on the same line.
 smalldocs reads the signature, the docstring and the docments, and writes the reference of the code from them. It
 also lists what has no documentation, as coverage lists the lines that no test runs. The gaps close one part at a
 time. A long docment then shows what the formatter can do to one, and the gate runs the check.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac). [The code after it](https://github.com/rahuldave/babykev/tree/005b87bdfa2e70c6ceca52dc07197c69702f00be).
 
 <a id="tut-13.1"></a>
 
@@ -7327,11 +7351,15 @@ after the tests, and ends with exit code 0. A function, a parameter or a field w
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/005b87bdfa2e70c6ceca52dc07197c69702f00be). [The code after it](https://github.com/rahuldave/babykev/tree/005b87bdfa2e70c6ceca52dc07197c69702f00be).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/005b87bdfa2e70c6ceca52dc07197c69702f00be).
+
+This part ends at the code at `tut-13`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-13)
 
 <a id="tut-14"></a>
 
 ## 14 The docs site
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-13`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-13)
 
 ```bash
 just setup
@@ -7343,8 +7371,6 @@ The reference exists only as Markdown that `just docs module` prints in a termin
 front page that says what babykev is, and a page of reference for each module. smalldocs builds that site from the
 same docstrings and docments. Git first learns to ignore the files that a build writes into `docs/`. Then the recipe
 `docs` builds the site, the site gets its settings and its front page, and the README names it.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/005b87bdfa2e70c6ceca52dc07197c69702f00be). [The code after it](https://github.com/rahuldave/babykev/tree/e1efb48492d7223fd0442906d2e55a83e0db481e).
 
 <a id="tut-14.1"></a>
 
@@ -7608,11 +7634,15 @@ grep -n 'docs/' README.md
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e1efb48492d7223fd0442906d2e55a83e0db481e). [The code after it](https://github.com/rahuldave/babykev/tree/e1efb48492d7223fd0442906d2e55a83e0db481e).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e1efb48492d7223fd0442906d2e55a83e0db481e).
+
+This part ends at the code at `tut-14`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-14)
 
 <a id="tut-15"></a>
 
 ## 15 The packages of the model
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-14`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-14)
 
 ```bash
 just setup
@@ -7625,8 +7655,6 @@ The model of kev is a language model with an adapter and a head of its own, and 
 torch computes with tensors, on the CPU or on a GPU. transformers loads a base model and its tokenizer
 from the Hugging Face Hub. peft adds a LoRA adapter to the base model. safetensors is the format of the weights on the
 Hub. Each package comes in by its own `uv add`, and torch comes first, from an index of its own.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/e1efb48492d7223fd0442906d2e55a83e0db481e). [The code after it](https://github.com/rahuldave/babykev/tree/c7037ec460963acd41edf1f63a6a03d2e52e5bae).
 
 <a id="tut-15.1"></a>
 
@@ -7958,11 +7986,15 @@ du -sh .venv .venv/lib/python3.13/site-packages/torch
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/c7037ec460963acd41edf1f63a6a03d2e52e5bae). [The code after it](https://github.com/rahuldave/babykev/tree/c7037ec460963acd41edf1f63a6a03d2e52e5bae).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/c7037ec460963acd41edf1f63a6a03d2e52e5bae).
+
+This part ends at the code at `tut-15`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-15)
 
 <a id="tut-16"></a>
 
 ## 16 The model
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-15`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-15)
 
 ```bash
 just setup
@@ -7973,8 +8005,6 @@ just setup
 babykev has a contract and no model. `model.py` is the model. It comes in whole, from kev's first version, and we
 read it before anything else. It meets the gate as it is. No test calls it yet, and the coverage shows it. Then the
 front page of the docs and the README name it.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/c7037ec460963acd41edf1f63a6a03d2e52e5bae). [The code after it](https://github.com/rahuldave/babykev/tree/056fe2ced73ff8568dfc329555795524c2465eb1).
 
 <a id="tut-16.1"></a>
 
@@ -8420,11 +8450,15 @@ grep -n 'model.py' README.md
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/056fe2ced73ff8568dfc329555795524c2465eb1). [The code after it](https://github.com/rahuldave/babykev/tree/056fe2ced73ff8568dfc329555795524c2465eb1).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/056fe2ced73ff8568dfc329555795524c2465eb1).
+
+This part ends at the code at `tut-16`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-16)
 
 <a id="tut-17"></a>
 
 ## 17 Types
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-16`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-16)
 
 ```bash
 just setup
@@ -8436,8 +8470,6 @@ just setup
 reading the types, and the linter asks only that they be there. A type checker reads the code, and compares each
 call and each value with the types that the code and its libraries declare. ty is a type checker. It finds two
 places in `model.py`, and both have one cause, in torch.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/056fe2ced73ff8568dfc329555795524c2465eb1). [The code after it](https://github.com/rahuldave/babykev/tree/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9).
 
 <a id="tut-17.1"></a>
 
@@ -8698,11 +8730,15 @@ exit code 0. A call that does not match the types now stops `git commit`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9). [The code after it](https://github.com/rahuldave/babykev/tree/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9).
+
+This part ends at the code at `tut-17`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-17)
 
 <a id="tut-18"></a>
 
 ## 18 The smoke run
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-17`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-17)
 
 ```bash
 just setup
@@ -8716,8 +8752,6 @@ so the answers are guesses. The run shows that the contract, the packing, the mo
 
 `smoke.py` is ours, and it comes one function at a time. The command `babykev smoke` and the recipe `just smoke` run
 it, on this machine only.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9). [The code after it](https://github.com/rahuldave/babykev/tree/3edcb80f6814f9e0afe70942db6fce959799d9c5).
 
 <a id="tut-18.1"></a>
 
@@ -9314,11 +9348,15 @@ tests of the model come next.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/3edcb80f6814f9e0afe70942db6fce959799d9c5). [The code after it](https://github.com/rahuldave/babykev/tree/3edcb80f6814f9e0afe70942db6fce959799d9c5).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3edcb80f6814f9e0afe70942db6fce959799d9c5).
+
+This part ends at the code at `tut-18`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-18)
 
 <a id="tut-19"></a>
 
 ## 19 Fixtures and the tiny model
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-18`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-18)
 
 ```bash
 just setup
@@ -9330,8 +9368,6 @@ The tests of the model need a model. The real one is a download of about 1 GB, a
 GPU. A test of the model checks something exact, such as which token is where, how many probabilities there are, or
 which weights get a gradient. That holds for any weights, trained or random. So the tests get a tiny model, built in memory with random
 weights. A fixture of pytest gives it to each test that asks for it.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/3edcb80f6814f9e0afe70942db6fce959799d9c5). [The code after it](https://github.com/rahuldave/babykev/tree/88b3a9e08db851ce891ecfcfcf26d18892beea90).
 
 <a id="tut-19.1"></a>
 
@@ -9839,11 +9875,15 @@ helpers and the fixtures in it.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/88b3a9e08db851ce891ecfcfcf26d18892beea90). [The code after it](https://github.com/rahuldave/babykev/tree/88b3a9e08db851ce891ecfcfcf26d18892beea90).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/88b3a9e08db851ce891ecfcfcf26d18892beea90).
+
+This part ends at the code at `tut-19`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-19)
 
 <a id="tut-20"></a>
 
 ## 20 Unit tests of the model and the smoke
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-19`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-19)
 
 ```bash
 just setup
@@ -9854,8 +9894,6 @@ just setup
 A unit test runs one function alone. The tests here check the packing, the defence against a forged
 delimiter, the head and the device. Then they check the verdicts of the smoke, and the command `smoke`. Each move adds one test. The
 coverage does not rise with every test. It counts the lines that a test runs, and not what a test checks.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/88b3a9e08db851ce891ecfcfcf26d18892beea90). [The code after it](https://github.com/rahuldave/babykev/tree/ebfa2a8cee251782b3709a379c35af77c80c6170).
 
 <a id="tut-20.1"></a>
 
@@ -10630,11 +10668,15 @@ just check
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/ebfa2a8cee251782b3709a379c35af77c80c6170). [The code after it](https://github.com/rahuldave/babykev/tree/ebfa2a8cee251782b3709a379c35af77c80c6170).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ebfa2a8cee251782b3709a379c35af77c80c6170).
+
+This part ends at the code at `tut-20`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-20)
 
 <a id="tut-21"></a>
 
 ## 21 Integration tests, and the floor
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-20`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-20)
 
 ```bash
 just setup
@@ -10645,8 +10687,6 @@ just setup
 An integration test runs several of our parts together. On the tiny model, it needs no download, and only our code can
 make it fail, so it is hermetic. The tests here check what trains, a pass over records of different lengths,
 and the whole smoke. Then the coverage is over 90%, and `just check` gets a floor.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/ebfa2a8cee251782b3709a379c35af77c80c6170). [The code after it](https://github.com/rahuldave/babykev/tree/922d6ba2495756622ad215301da7c48f2ec33fa9).
 
 <a id="tut-21.1"></a>
 
@@ -10941,11 +10981,15 @@ grep -n '90%' README.md
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/922d6ba2495756622ad215301da7c48f2ec33fa9). [The code after it](https://github.com/rahuldave/babykev/tree/922d6ba2495756622ad215301da7c48f2ec33fa9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/922d6ba2495756622ad215301da7c48f2ec33fa9).
+
+This part ends at the code at `tut-21`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-21)
 
 <a id="tut-22"></a>
 
 ## 22 The mask, found and fixed
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-21`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-21)
 
 ```bash
 just setup
@@ -10959,8 +11003,6 @@ came in, and the coverage of `branch_mask` is 100%. But no test has looked at wh
 
 The tests here look, and they find that a question sees the questions before it. The code runs, its types are
 right, and its lines are covered. It does the wrong thing for its task.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/922d6ba2495756622ad215301da7c48f2ec33fa9). [The code after it](https://github.com/rahuldave/babykev/tree/9bfadf5448a5951580b313a781b277f343aa6e30).
 
 <a id="tut-22.1"></a>
 
@@ -11538,11 +11580,15 @@ with the six functions of `test_mask.py`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/9bfadf5448a5951580b313a781b277f343aa6e30). [The code after it](https://github.com/rahuldave/babykev/tree/9bfadf5448a5951580b313a781b277f343aa6e30).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9bfadf5448a5951580b313a781b277f343aa6e30).
+
+This part ends at the code at `tut-22`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-22)
 
 <a id="tut-23"></a>
 
 ## 23 The system test
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-22`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-22)
 
 ```bash
 just setup
@@ -11555,8 +11601,6 @@ device can make a test fail. Such a test is hermetic, and the hook can run it be
 real model is a test too, of the whole program with its real parts. It needs the Hub or its cache, and it is the
 system test of the table of the kinds of tests. Here it becomes a test, an experiment shows that it is not
 hermetic, and keeps it out of `just test` and the gate.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/9bfadf5448a5951580b313a781b277f343aa6e30). [The code after it](https://github.com/rahuldave/babykev/tree/d9df8f2a02ed7a7780325aebf281d6107317f9d9).
 
 <a id="tut-23.1"></a>
 
@@ -11815,11 +11859,15 @@ just check
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/d9df8f2a02ed7a7780325aebf281d6107317f9d9). [The code after it](https://github.com/rahuldave/babykev/tree/d9df8f2a02ed7a7780325aebf281d6107317f9d9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d9df8f2a02ed7a7780325aebf281d6107317f9d9).
+
+This part ends at the code at `tut-23`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-23)
 
 <a id="tut-24"></a>
 
 ## 24 The model, explained
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-23`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-23)
 
 ```bash
 just setup
@@ -11830,8 +11878,6 @@ just setup
 The reference pages of the site give the signature and the docstring of each function of `model.py`. They do not say
 why the model is built as it is. Two pages of a guide say it, in prose. The first gives the four ideas of the model,
 and the second draws the mask as a grid. smalldocs runs no code, so a page holds its grids as text.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/d9df8f2a02ed7a7780325aebf281d6107317f9d9). [The code after it](https://github.com/rahuldave/babykev/tree/41d24729682119b9bbb828187c5e9684a2921308).
 
 <a id="tut-24.1"></a>
 
@@ -12139,11 +12185,15 @@ just check
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/41d24729682119b9bbb828187c5e9684a2921308). [The code after it](https://github.com/rahuldave/babykev/tree/41d24729682119b9bbb828187c5e9684a2921308).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/41d24729682119b9bbb828187c5e9684a2921308).
+
+This part ends at the code at `tut-24`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-24)
 
 <a id="tut-25"></a>
 
 ## 25 Two images
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-24`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-24)
 
 ```bash
 just setup
@@ -12158,8 +12208,6 @@ of these systems.
 The `Dockerfile` of babykev builds two images from `uv.lock`. The run image holds the program and what it needs, and
 starts `babykev`. The dev image holds the whole project and the tools to work on it, and starts a shell. The images
 are built and run on this machine only, and pushed nowhere.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/41d24729682119b9bbb828187c5e9684a2921308). [The code after it](https://github.com/rahuldave/babykev/tree/6c85dd08f3cd441259b3749ac38cceaf7f2392e0).
 
 <a id="tut-25.1"></a>
 
@@ -12758,11 +12806,15 @@ just image shell --network none -- just check
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/6c85dd08f3cd441259b3749ac38cceaf7f2392e0). [The code after it](https://github.com/rahuldave/babykev/tree/6c85dd08f3cd441259b3749ac38cceaf7f2392e0).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/6c85dd08f3cd441259b3749ac38cceaf7f2392e0).
+
+This part ends at the code at `tut-25`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-25)
 
 <a id="tut-26"></a>
 
 ## 26 GitHub
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-25`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-25)
 
 ```bash
 just setup
@@ -12776,8 +12828,6 @@ changes that never met the gate. Also, the docs site exists only on the machine 
 GitHub runs workflows on its own machines. A workflow is a file of YAML in `.github/workflows/`, and its key `on` names
 the events that start it. The first workflow runs the gate after every push, and the second builds the docs site and
 publishes it on GitHub Pages. Nothing is pushed here. GitHub runs the workflows when the branch reaches it.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/6c85dd08f3cd441259b3749ac38cceaf7f2392e0). [The code after it](https://github.com/rahuldave/babykev/tree/88854e32ebcb4647672742cc4ef709eefc5fde0c).
 
 <a id="tut-26.1"></a>
 
@@ -13103,4 +13153,6 @@ just check
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/88854e32ebcb4647672742cc4ef709eefc5fde0c). [The code after it](https://github.com/rahuldave/babykev/tree/88854e32ebcb4647672742cc4ef709eefc5fde0c).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/88854e32ebcb4647672742cc4ef709eefc5fde0c).
+
+This part ends at the code at `tut-26`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-26)

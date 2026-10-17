@@ -4,6 +4,17 @@ title: "0 Where we start"
 
 <!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part is where the project starts, at `step-00`. [The code of this part](https://github.com/rahuldave/babykev/tree/step-00){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach step-00
+```
+
 **The first three slides.** No commands. The title, SOFTWARE DEVELOPMENT FOR MACHINE LEARNING, with Rahul Dave's name under it. Then the worried Pavlos, the cartoon, with a hand raised: he is worried about this lecture. Then a picture of Rahul, in a T-shirt that says "You're Absolutely Right!". After them the first slide of the talk, "What goes into a machine-learning project?". The pictures are `walks/narrative/slides/pictures/pavlos-worried.png` and `walks/narrative/slides/pictures/rahul.jpg`.
 
 **Init.** The environment is made by uv, before any recipe. `uv sync --locked` reads `pyproject.toml` and `uv.lock` and makes `.venv` with exactly what the lockfile says: Python 3.13 from `.python-version`, and babykev alone, editable. It prints `Resolved 1 package` and what it installed (or `Checked 1 package` when the venv already matches). `--locked` means: refuse if the lockfile is out of date with `pyproject.toml`, never re-lock on the quiet.
@@ -46,16 +57,16 @@ cat pyproject.toml
 
 ## What changed {#step-00-what-changed-182c57}
 
-- <a id="step-00-.gitignore-a5cc29"></a>`.gitignore`: New, 57 lines. [The file](https://github.com/rahuldave/babykev/blob/ee96429002cd04cb95e86e9a77e9c3d02a0e9497/.gitignore).
-- <a id="step-00-.python-version-7696e9"></a>`.python-version`: New, 1 line. [The file](https://github.com/rahuldave/babykev/blob/ee96429002cd04cb95e86e9a77e9c3d02a0e9497/.python-version).
-- <a id="step-00-LICENSE-0398cc"></a>`LICENSE`: New, 202 lines. [The file](https://github.com/rahuldave/babykev/blob/ee96429002cd04cb95e86e9a77e9c3d02a0e9497/LICENSE).
-- <a id="step-00-NOTICE-fe7187"></a>`NOTICE`: New, 8 lines. [The file](https://github.com/rahuldave/babykev/blob/ee96429002cd04cb95e86e9a77e9c3d02a0e9497/NOTICE).
-- <a id="step-00-README.md-8ec9a0"></a>`README.md`: New, 80 lines. [The file](https://github.com/rahuldave/babykev/blob/ee96429002cd04cb95e86e9a77e9c3d02a0e9497/README.md).
-- <a id="step-00-justfile-424f0b"></a>`justfile`: adds `recipe default`, `recipe help`, `recipe setup`. New, 26 lines. [The file](https://github.com/rahuldave/babykev/blob/ee96429002cd04cb95e86e9a77e9c3d02a0e9497/justfile).
-- <a id="step-00-pyproject.toml-5d07e7"></a>`pyproject.toml`: New, 17 lines. [The file](https://github.com/rahuldave/babykev/blob/ee96429002cd04cb95e86e9a77e9c3d02a0e9497/pyproject.toml).
-- <a id="step-00-src-babykev-__init__.py-a40393"></a>`src/babykev/__init__.py`: New, 0 lines. [The file](https://github.com/rahuldave/babykev/blob/ee96429002cd04cb95e86e9a77e9c3d02a0e9497/src/babykev/__init__.py).
-- <a id="step-00-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: adds `main`. New, 21 lines. [The file](https://github.com/rahuldave/babykev/blob/ee96429002cd04cb95e86e9a77e9c3d02a0e9497/src/babykev/cli.py).
-- <a id="step-00-uv.lock-8356d8"></a>`uv.lock`: New, 8 lines. [The file](https://github.com/rahuldave/babykev/blob/ee96429002cd04cb95e86e9a77e9c3d02a0e9497/uv.lock).
+- <a id="step-00-.gitignore-a5cc29"></a>`.gitignore`: New, 57 lines. [The file](https://github.com/rahuldave/babykev/blob/ee96429002cd04cb95e86e9a77e9c3d02a0e9497/.gitignore){.btn .btn-sm .btn-secondary}
+- <a id="step-00-.python-version-7696e9"></a>`.python-version`: New, 1 line. [The file](https://github.com/rahuldave/babykev/blob/ee96429002cd04cb95e86e9a77e9c3d02a0e9497/.python-version){.btn .btn-sm .btn-secondary}
+- <a id="step-00-LICENSE-0398cc"></a>`LICENSE`: New, 202 lines. [The file](https://github.com/rahuldave/babykev/blob/ee96429002cd04cb95e86e9a77e9c3d02a0e9497/LICENSE){.btn .btn-sm .btn-secondary}
+- <a id="step-00-NOTICE-fe7187"></a>`NOTICE`: New, 8 lines. [The file](https://github.com/rahuldave/babykev/blob/ee96429002cd04cb95e86e9a77e9c3d02a0e9497/NOTICE){.btn .btn-sm .btn-secondary}
+- <a id="step-00-README.md-8ec9a0"></a>`README.md`: New, 80 lines. [The file](https://github.com/rahuldave/babykev/blob/ee96429002cd04cb95e86e9a77e9c3d02a0e9497/README.md){.btn .btn-sm .btn-secondary}
+- <a id="step-00-justfile-424f0b"></a>`justfile`: adds `recipe default`, `recipe help`, `recipe setup`. New, 26 lines. [The file](https://github.com/rahuldave/babykev/blob/ee96429002cd04cb95e86e9a77e9c3d02a0e9497/justfile){.btn .btn-sm .btn-secondary}
+- <a id="step-00-pyproject.toml-5d07e7"></a>`pyproject.toml`: New, 17 lines. [The file](https://github.com/rahuldave/babykev/blob/ee96429002cd04cb95e86e9a77e9c3d02a0e9497/pyproject.toml){.btn .btn-sm .btn-secondary}
+- <a id="step-00-src-babykev-__init__.py-a40393"></a>`src/babykev/__init__.py`: New, 0 lines. [The file](https://github.com/rahuldave/babykev/blob/ee96429002cd04cb95e86e9a77e9c3d02a0e9497/src/babykev/__init__.py){.btn .btn-sm .btn-secondary}
+- <a id="step-00-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: adds `main`. New, 21 lines. [The file](https://github.com/rahuldave/babykev/blob/ee96429002cd04cb95e86e9a77e9c3d02a0e9497/src/babykev/cli.py){.btn .btn-sm .btn-secondary}
+- <a id="step-00-uv.lock-8356d8"></a>`uv.lock`: New, 8 lines. [The file](https://github.com/rahuldave/babykev/blob/ee96429002cd04cb95e86e9a77e9c3d02a0e9497/uv.lock){.btn .btn-sm .btn-secondary}
 
 <details><summary>The diff of <code>.gitignore</code></summary>
 
@@ -532,5 +543,3 @@ cat pyproject.toml
 ```
 
 </details>
-
-[The code](https://github.com/rahuldave/babykev/tree/ee96429002cd04cb95e86e9a77e9c3d02a0e9497).

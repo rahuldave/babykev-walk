@@ -1,0 +1,15 @@
+# Which slides are shown at which stop of the lecture. Each line is
+#   tag = [ slides, in the order they are shown ]
+# "uv.md" is every slide of slides/uv.md, "uv.md#2" its second slide, "uv.md#1-2" its first and second.
+# The files come from walks/narrative/slides and walks/tutorial/slides, changed where the code of each stop differs.
+
+[slides]
+tut-01 = ["00-start.md", "uv.md#1-2", "just.md"]
+tut-05 = ["contract.md"]
+tut-08 = ["bugs.md", "format-lint.md", "uv.md#3"]
+tut-12 = ["check.md"]
+tut-13 = ["docs.md"]
+tut-14 = ["site.md"]
+tut-21 = ["model.md"]
+tut-22 = ["mask.md"]
+tut-26 = ["images.md"]

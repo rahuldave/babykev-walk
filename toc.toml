@@ -121,3 +121,13 @@ notes = "walks/contract/notes.md"
 shared = "walks/tutorial/notes.md"
 slides = "walks/tutorial/slides/slides.toml"
 moves = "watch"
+
+[[walk]]
+id = "lecture"
+title = "babykev, the lecture"
+description = "The first lecture, on the branch tutorial of babykev, in nine stops from tut-01 to tut-26. Each stop takes in all the work since the stop before, and ends with every check passing."
+kind = "narrative"
+tags = "tut-*"
+select = ["tut-01", "tut-05", "tut-08", "tut-12", "tut-13", "tut-14", "tut-21", "tut-22", "tut-26"]
+folder = "walks/lecture"
+intro = "walks/lecture/intro.md"

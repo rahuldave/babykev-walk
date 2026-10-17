@@ -1,0 +1,251 @@
+---
+title: "5 The contract, and its tests"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-04`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-04){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach tut-04
+```
+
+**Init.** `just setup` installs 12 packages and builds babykev again. They are pydantic and pydantic-core, pytest, pytest-cov and coverage, and the packages that they need. Coming back to `tut-01` and running `just setup` there removes them again.
+
+```bash
+just setup
+```
+
+**What is new.** `src/babykev/api.py` is the contract of kev, from his first version, without the parts of his server. `data/cheese/sample.jsonl` holds five requests about cheese, each with a `label` on every question. `tests/unit/test_cli.py` tests the command, and `tests/unit/test_api.py` tests the contract. pytest and pytest-cov are in a dependency group, `test`, on lines 25 to 29 of `pyproject.toml`. The justfile has a third recipe, `test`.
+
+**Start from the data.** One line is a request about one cheese, Coquetdale. Its `state` is the context, the text that the questions are about. It asks three questions, a `noul`, a `score` and a `choice`, and each question has its `label`. The five lines are data for the tests, kept in the repository so that the tests can read them.
+
+```bash
+head -n 1 data/cheese/sample.jsonl | uv run python -m json.tool
+```
+
+**The tests.** `uv run pytest` runs them inside `.venv`. pytest reads `[tool.pytest.ini_options]` in `pyproject.toml`, looks under `tests/`, and runs every function whose name starts with `test_`. The first lines say so, with `configfile: pyproject.toml`, `testpaths: tests` and `plugins: cov-7.1.0`. All 43 tests pass, and the table under them says that the tests run every statement of `api.py` and `cli.py`. Line 34 of `pyproject.toml`, which the `grep` line prints, adds `--cov=babykev --cov-report=term-missing` to every run.
+
+```bash
+uv run pytest
+grep -n -B1 addopts pyproject.toml
+```
+
+**The recipe.** `just --show test` prints the recipe. Its body is one line, `uv run pytest "$@"`, inside an `if` that answers `help`. `"$@"` is every word after `just test`, each one whole. So `just test -k "sample_line or without_questions"` gives pytest two words, `-k` and the whole pattern. It selects 11 tests, all of them pass, and the table says 73%, because it counts only the lines that these tests ran.
+
+```bash
+just --show test
+just test -k "sample_line or without_questions"
+```
+
+**The tests of the command.** `tests/unit/test_cli.py`, lines 8 to 18, holds a helper and a test. `run` sets `sys.argv`, the words that a program starts with, and calls `main()`, as if a person had typed `babykev` in a terminal. `monkeypatch` and `capsys` are two fixtures of pytest, and pytest passes them in because the test names them as arguments. `monkeypatch.setattr` changes `sys.argv` for this test only, and `capsys` catches what the program printed. `@pytest.mark.parametrize` on line 14 runs the function once for each value in its list, so one function makes four tests, `[words0]` to `[words3]`.
+
+```bash
+sed -n '8,18p' tests/unit/test_cli.py
+just test -k help_is_printed -v
+```
+
+**Four tests of the contract.** Every test here is a unit test, which runs one function alone. Each test in `test_api.py` has a name that reads as a sentence, and a docstring that states the rule. The file is in sections, from `# The sample data` to `# From probabilities to answers`. For each test below, the `sed` line prints it and the `just test -k` line runs it alone.
+
+**Test 1, small: a request must ask at least one question.** Lines 79 to 82 hold it. `pytest.raises` says that the code must refuse the input. The contract refuses bad input, and the test pins the rule, so that nobody loosens it by mistake. One test passes.
+
+```bash
+sed -n '79,82p' tests/unit/test_api.py
+just test -k without_questions
+```
+
+**Test 2, small: the limit on options is exact.** Lines 103 to 110 hold it. A choice of 255 options passes, and a choice of 256 is refused. A bug of one too many or one too few lives at a limit, so the test stands at the limit. One test passes.
+
+```bash
+sed -n '103,110p' tests/unit/test_api.py
+just test -k largest_number
+```
+
+**Test 3, weighty: every line of the sample data fits the contract.** Lines 45 to 52 hold it. `@pytest.mark.parametrize` runs it over the data, one test for each line, so five tests pass. Every line passes the contract, every question becomes one question of the record, and every question has two options at least.
+
+```bash
+sed -n '45,52p' tests/unit/test_api.py
+just test -k sample_line_fits
+```
+
+**Test 4, weighty: a choice names the most likely option.** Lines 216 to 222 hold it. `to_answers` turns three probabilities into an answer. The answer names `goat`, keeps a probability for each option, and has a confidence of 0.55. `pytest.approx` is how a test compares two floats. One test passes.
+
+```bash
+sed -n '216,222p' tests/unit/test_api.py
+just test -k choice_answer
+```
+
+**A subset.** `just test -k render` runs 9 tests, and the table says 50%. The table counts the lines that the selected tests ran, so the number to watch is the one for the whole run.
+
+```bash
+just test -k render
+```
+
+**A break.** The `sed` line writes `"NO"` in place of `"no"` on line 65 of `api.py`, where a `noul` becomes two options. `just test` then fails 2 tests, `test_noul_becomes_no_then_yes` and `test_noul_criteria_describe_no_and_yes`, and 41 pass. The tests name the rule that broke.
+
+```bash
+sed -i '' 's/option_text("no", c.get("false"))/option_text("NO", c.get("false"))/' src/babykev/api.py && just test
+```
+
+## What changed {#tut-05-what-changed-182c57}
+
+- <a id="tut-05-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: adds `test_choice_answer_names_the_most_likely_option`, `test_choice_becomes_one_option_per_criterion_in_order`, `test_every_question_gets_an_answer_of_its_own_type`, `test_noul_answer_is_the_probability_of_yes`, `test_noul_becomes_no_then_yes`, `test_noul_criteria_describe_no_and_yes`, `test_option_text_adds_a_description_only_when_there_is_one`, `test_record_keeps_the_state_and_the_order_of_questions`, `test_render_flattens_json_into_text`, `test_score_answer_is_the_expected_level`, `test_score_becomes_one_option_per_level_with_a_legend`. 132 lines added. [The file](https://github.com/rahuldave/babykev/blob/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
+
+<details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
+
+```diff
+@@ -12,6 +12,9 @@ from babykev.api import (
+     Noul,
+     Score,
+     SystemOneRequest,
++    option_text,
++    render,
++    to_answers,
+     to_record,
+ )
+ 
+@@ -111,3 +114,132 @@ def test_score_with_one_level_is_rejected():
+     """A scale needs at least two levels."""
+     with pytest.raises(ValidationError):
+         Score(type="score", instructions="How firm?", criteria=["Soft"])
++
++
++# Rendering
++
++
++@pytest.mark.parametrize(
++    ("value", "text"),
++    [
++        (None, ""),
++        ("Brie", "Brie"),
++        (3, "3"),
++        (2.5, "2.5"),
++        (True, "True"),
++        (["creamy", "soft"], "- creamy\n- soft"),
++        ({"cheese": "Brie", "age": 4}, "cheese: Brie\nage: 4"),
++        (
++            {"cheese": "Brie", "notes": {"texture": ["creamy", "soft"]}},
++            "cheese: Brie\nnotes:\n  texture:\n    - creamy\n    - soft",
++        ),
++        ([{"role": "customer", "content": "hello"}], "- role: customer\n  content: hello"),
++    ],
++)
++def test_render_flattens_json_into_text(value, text):
++    """Strings, numbers, lists and objects all become the text the model reads."""
++    assert render(value) == text
++
++
++@pytest.mark.parametrize(
++    ("name", "description", "text"),
++    [
++        ("cow", None, "cow"),
++        ("cow", "", "cow"),
++        ("mixed", "More than one kind of milk", "mixed: More than one kind of milk"),
++    ],
++)
++def test_option_text_adds_a_description_only_when_there_is_one(name, description, text):
++    """An option is its name, followed by its description when it has one."""
++    assert option_text(name, description) == text
++
++
++# From a request to a record
++
++
++def test_record_keeps_the_state_and_the_order_of_questions():
++    """The state is rendered once and the questions stay in request order."""
++    record, meta = to_record(cheese_request())
++    assert record["state"] == "cheese: Roquefort\norigin: France"
++    assert [m["id"] for m in meta] == ["blue", "milk", "firmness"]
++    assert [q["instr"] for q in record["questions"]] == [
++        "Is this a blue cheese?",
++        "Which milk?",
++        "How firm?",
++    ]
++
++
++def test_noul_becomes_no_then_yes():
++    """Option 0 is no and option 1 is yes, so the answer is the probability of option 1."""
++    record, meta = to_record(cheese_request())
++    assert record["questions"][0]["options"] == ["no", "yes"]
++    assert meta[0] == {"id": "blue", "type": "noul"}
++
++
++def test_noul_criteria_describe_no_and_yes():
++    """The criteria under `false` and `true` become the descriptions of no and yes."""
++    criteria = {"true": "It has blue veins", "false": "It has none"}
++    question = {"type": "noul", "instructions": "Is it blue?", "criteria": criteria}
++    request = SystemOneRequest.model_validate({"state": "Brie", "questions": {"blue": question}})
++    record, _ = to_record(request)
++    assert record["questions"][0]["options"] == ["no: It has none", "yes: It has blue veins"]
++
++
++def test_choice_becomes_one_option_per_criterion_in_order():
++    """Options keep the order of the criteria, and the metadata remembers their names."""
++    record, meta = to_record(cheese_request())
++    assert record["questions"][1]["options"] == [
++        "cow",
++        "goat",
++        "sheep",
++        "mixed: More than one kind of milk",
++    ]
++    assert meta[1] == {"id": "milk", "type": "choice", "keys": ["cow", "goat", "sheep", "mixed"]}
++
++
++def test_score_becomes_one_option_per_level_with_a_legend():
++    """Options are the levels in order, and the legend maps each index to its level."""
++    record, meta = to_record(cheese_request())
++    assert record["questions"][2]["options"] == FIRMNESS
++    assert meta[2]["legend"] == {"0": "Soft", "1": "Semi-soft", "2": "Semi-hard", "3": "Hard"}
++
++
++# From probabilities to answers
++
++
++def test_noul_answer_is_the_probability_of_yes():
++    """The answer to a yes-or-no question is one number."""
++    answers = to_answers([[0.25, 0.75]], [{"id": "blue", "type": "noul"}])
++    assert answers == {"blue": {"type": "noul", "noul": 0.75}}
++
++
++def test_choice_answer_names_the_most_likely_option():
++    """A choice answer has the winner, a probability for each option, and a confidence."""
++    meta = [{"id": "milk", "type": "choice", "keys": ["cow", "goat", "sheep"]}]
++    answer = to_answers([[0.1, 0.7, 0.2]], meta)["milk"]
++    assert answer["choice"] == "goat"
++    assert answer["probabilities"] == {"cow": 0.1, "goat": 0.7, "sheep": 0.2}
++    assert answer["confidence"] == pytest.approx(0.55)
++
++
++def test_score_answer_is_the_expected_level():
++    """A score answer is the mean level under the probabilities, with the legend to read it by."""
++    legend = {"0": "Soft", "1": "Semi-soft", "2": "Hard"}
++    answer = to_answers([[0.1, 0.2, 0.7]], [{"id": "firmness", "type": "score", "legend": legend}])[
++        "firmness"
++    ]
++    assert answer["score"] == pytest.approx(1.6)
++    assert answer["legend"] == legend
++    assert answer["probabilities"] == {"0": 0.1, "1": 0.2, "2": 0.7}
++
++
++def test_every_question_gets_an_answer_of_its_own_type():
++    """Records and answers line up: one answer per question, under the question's id."""
++    record, meta = to_record(cheese_request())
++    uniform = [[1 / len(q["options"])] * len(q["options"]) for q in record["questions"]]
++    answers = to_answers(uniform, meta)
++    assert {qid: a["type"] for qid, a in answers.items()} == {
++        "blue": "noul",
++        "milk": "choice",
++        "firmness": "score",
++    }
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/compare/1fef13ae49e24d280d05c250289c41d5636feff7...c2f89d37a513382eb2209c2c393e6a4c5a6eb50f){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-05`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-05){.btn .btn-sm .btn-primary}

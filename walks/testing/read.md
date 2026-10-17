@@ -32,6 +32,8 @@ did, and starts from the code that they left. It first runs `just setup`, which 
 
 ## 2 pytest, the first tests and coverage
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-01`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-01)
+
 babykev has one piece of code, the command `babykev`, in `src/babykev/cli.py`. The first tests are of the command.
 Then coverage counts the lines of babykev that the tests run.
 
@@ -45,8 +47,6 @@ clone, it first makes `.venv`, and installs babykev.
 We cannot tell whether `babykev` still works after a change, unless we run it by hand and read what it prints. Tests
 run it for us. pytest finds the tests and runs them, and a recipe `just test` runs pytest. The first tests are of the
 command, the only code that babykev has. Last, coverage shows which lines the tests run.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/7ad3a06605fadc9f34b5e2d8180145a3e53389a9). [The code after it](https://github.com/rahuldave/babykev/tree/4640589d80e4f224a4b2c1fd9567e952f564f102).
 
 <a id="tut-02.1"></a>
 
@@ -504,11 +504,15 @@ uv installs 8 here. `just test` prints `5 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/4640589d80e4f224a4b2c1fd9567e952f564f102). [The code after it](https://github.com/rahuldave/babykev/tree/4640589d80e4f224a4b2c1fd9567e952f564f102).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/4640589d80e4f224a4b2c1fd9567e952f564f102).
+
+This part ends at the code at `tut-02`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-02)
 
 <a id="tut-04"></a>
 
 ## 4 Tests of the contract
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-03`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-03)
 
 The whole tutorial then adds the contract, `src/babykev/api.py`. It says what a request is and what an answer is,
 with pydantic, a library that checks the shape of data. Five sample requests about cheese go in
@@ -523,8 +527,6 @@ just setup
 The contract says what a request is, and no test checks it. The tests of this part check the five sample requests
 against the contract. Then they check what the contract accepts and refuses, one rule at a time. They go in
 `tests/unit/test_api.py`, one test in each move.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/56606771fb23f7a0a01825f477050d2980a47736). [The code after it](https://github.com/rahuldave/babykev/tree/1fef13ae49e24d280d05c250289c41d5636feff7).
 
 <a id="tut-04.1"></a>
 
@@ -1021,11 +1023,15 @@ grep -n 'tests/unit' README.md
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/1fef13ae49e24d280d05c250289c41d5636feff7). [The code after it](https://github.com/rahuldave/babykev/tree/1fef13ae49e24d280d05c250289c41d5636feff7).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/1fef13ae49e24d280d05c250289c41d5636feff7).
+
+This part ends at the code at `tut-04`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-04)
 
 <a id="tut-06"></a>
 
 ## 6 Tests of rounding and confidence
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-05`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-05)
 
 The whole tutorial then adds eleven more tests of `api.py`. They check how a request becomes the text that the model
 reads, and how the probabilities of the model become answers. After them, `just test` prints `43 passed`, and every
@@ -1039,8 +1045,6 @@ just setup
 
 Every line of the contract runs in a test, and two of them are wrong. A test of rounding finds the first. The tests of
 confidence find the second. Each test fails, and the move after it fixes the code.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f). [The code after it](https://github.com/rahuldave/babykev/tree/910716f0cec79c3f31afb34cf3a2593f0cd51315).
 
 <a id="tut-06.1"></a>
 
@@ -1535,11 +1539,15 @@ just test
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/910716f0cec79c3f31afb34cf3a2593f0cd51315). [The code after it](https://github.com/rahuldave/babykev/tree/910716f0cec79c3f31afb34cf3a2593f0cd51315).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/910716f0cec79c3f31afb34cf3a2593f0cd51315).
+
+This part ends at the code at `tut-06`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-06)
 
 <a id="tut-19"></a>
 
 ## 19 The tiny model and fixtures
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-18`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-18)
 
 The whole tutorial then makes a long detour. ruff formats the code and checks it against rules. Every function gets
 types and a docstring, the tests too. `just check` runs every check, and a git hook runs `just check` before git
@@ -1562,8 +1570,6 @@ The tests of the model need a model. The real one is a download of about 1 GB, a
 GPU. A test of the model checks something exact, such as which token is where, how many probabilities there are, or
 which weights get a gradient. That holds for any weights, trained or random. So the tests get a tiny model, built in memory with random
 weights. A fixture of pytest gives it to each test that asks for it.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/3edcb80f6814f9e0afe70942db6fce959799d9c5). [The code after it](https://github.com/rahuldave/babykev/tree/88b3a9e08db851ce891ecfcfcf26d18892beea90).
 
 <a id="tut-19.1"></a>
 
@@ -2071,11 +2077,15 @@ helpers and the fixtures in it.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/88b3a9e08db851ce891ecfcfcf26d18892beea90). [The code after it](https://github.com/rahuldave/babykev/tree/88b3a9e08db851ce891ecfcfcf26d18892beea90).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/88b3a9e08db851ce891ecfcfcf26d18892beea90).
+
+This part ends at the code at `tut-19`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-19)
 
 <a id="tut-20"></a>
 
 ## 20 Unit tests of the model and the smoke
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-19`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-19)
 
 Each test here runs one function alone, with the tiny model or with no model at all.
 
@@ -2088,8 +2098,6 @@ just setup
 A unit test runs one function alone. The tests here check the packing, the defence against a forged
 delimiter, the head and the device. Then they check the verdicts of the smoke, and the command `smoke`. Each move adds one test. The
 coverage does not rise with every test. It counts the lines that a test runs, and not what a test checks.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/88b3a9e08db851ce891ecfcfcf26d18892beea90). [The code after it](https://github.com/rahuldave/babykev/tree/ebfa2a8cee251782b3709a379c35af77c80c6170).
 
 <a id="tut-20.1"></a>
 
@@ -2864,11 +2872,15 @@ just check
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/ebfa2a8cee251782b3709a379c35af77c80c6170). [The code after it](https://github.com/rahuldave/babykev/tree/ebfa2a8cee251782b3709a379c35af77c80c6170).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ebfa2a8cee251782b3709a379c35af77c80c6170).
+
+This part ends at the code at `tut-20`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-20)
 
 <a id="tut-21"></a>
 
 ## 21 Integration tests, and the floor
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-20`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-20)
 
 The tests here run several parts together. When the coverage passes 90%, `just check` gets a floor.
 
@@ -2881,8 +2893,6 @@ just setup
 An integration test runs several of our parts together. On the tiny model, it needs no download, and only our code can
 make it fail, so it is hermetic. The tests here check what trains, a pass over records of different lengths,
 and the whole smoke. Then the coverage is over 90%, and `just check` gets a floor.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/ebfa2a8cee251782b3709a379c35af77c80c6170). [The code after it](https://github.com/rahuldave/babykev/tree/922d6ba2495756622ad215301da7c48f2ec33fa9).
 
 <a id="tut-21.1"></a>
 
@@ -3177,11 +3187,15 @@ grep -n '90%' README.md
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/922d6ba2495756622ad215301da7c48f2ec33fa9). [The code after it](https://github.com/rahuldave/babykev/tree/922d6ba2495756622ad215301da7c48f2ec33fa9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/922d6ba2495756622ad215301da7c48f2ec33fa9).
+
+This part ends at the code at `tut-21`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-21)
 
 <a id="tut-22"></a>
 
 ## 22 The mask, with hypothesis
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-21`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-21)
 
 The mask decides which token of a request may see which other token. Its lines all run in a test, and no test looks
 at what it lets through. The tests here look, at first on one small request, and then with hypothesis, on many.
@@ -3198,8 +3212,6 @@ came in, and the coverage of `branch_mask` is 100%. But no test has looked at wh
 
 The tests here look, and they find that a question sees the questions before it. The code runs, its types are
 right, and its lines are covered. It does the wrong thing for its task.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/922d6ba2495756622ad215301da7c48f2ec33fa9). [The code after it](https://github.com/rahuldave/babykev/tree/9bfadf5448a5951580b313a781b277f343aa6e30).
 
 <a id="tut-22.1"></a>
 
@@ -3777,11 +3789,15 @@ with the six functions of `test_mask.py`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/9bfadf5448a5951580b313a781b277f343aa6e30). [The code after it](https://github.com/rahuldave/babykev/tree/9bfadf5448a5951580b313a781b277f343aa6e30).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9bfadf5448a5951580b313a781b277f343aa6e30).
+
+This part ends at the code at `tut-22`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-22)
 
 <a id="tut-23"></a>
 
 ## 23 The system test
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-22`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-22)
 
 Every test so far needs nothing but our code. The last test runs the smoke on the real model.
 
@@ -3796,8 +3812,6 @@ device can make a test fail. Such a test is hermetic, and the hook can run it be
 real model is a test too, of the whole program with its real parts. It needs the Hub or its cache, and it is the
 system test of the table of the kinds of tests. Here it becomes a test, an experiment shows that it is not
 hermetic, and keeps it out of `just test` and the gate.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/9bfadf5448a5951580b313a781b277f343aa6e30). [The code after it](https://github.com/rahuldave/babykev/tree/d9df8f2a02ed7a7780325aebf281d6107317f9d9).
 
 <a id="tut-23.1"></a>
 
@@ -4058,11 +4072,15 @@ The project now has all four kinds of tests in the table of the intro.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/d9df8f2a02ed7a7780325aebf281d6107317f9d9). [The code after it](https://github.com/rahuldave/babykev/tree/d9df8f2a02ed7a7780325aebf281d6107317f9d9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/d9df8f2a02ed7a7780325aebf281d6107317f9d9).
+
+This part ends at the code at `tut-23`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-23)
 
 <a id="tut-26.1-to-tut-26.2"></a>
 
 ## 26.1 to 26.2 The tests on GitHub
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-25`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-25)
 
 ```bash
 just setup
@@ -4074,8 +4092,6 @@ its deadline of 200 ms, and failed by chance. A setting in `tests/conftest.py` n
 
 The hook runs `just check` only on a machine that has it. A clone without the hook records changes that
 never met the checks. GitHub runs `just check` itself, on its own machines, after every push.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/6c85dd08f3cd441259b3749ac38cceaf7f2392e0). [The code after it](https://github.com/rahuldave/babykev/tree/7b7e22f04247cefdd2d01adbe6dff64d88a6116c).
 
 <a id="tut-26.1"></a>
 
@@ -4171,4 +4187,6 @@ on GitHub Pages. The [whole tutorial](https://rahuldave.com/babykev-walk/) has e
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/7b7e22f04247cefdd2d01adbe6dff64d88a6116c). [The code after it](https://github.com/rahuldave/babykev/tree/7b7e22f04247cefdd2d01adbe6dff64d88a6116c).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7b7e22f04247cefdd2d01adbe6dff64d88a6116c).
+
+This part ends at the code at `7b7e22f04247`, partway through `tut-26`. [The code after this part](https://github.com/rahuldave/babykev/tree/7b7e22f04247cefdd2d01adbe6dff64d88a6116c)

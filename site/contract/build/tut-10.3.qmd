@@ -6,10 +6,12 @@ title: "10.3 The classes of a request say what they are"
 
 **Build it yourself.** [Read the tutorial](../read/tut-10.3.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `7943e585faa8`, partway through `tut-10`. [The code before this part](https://github.com/rahuldave/babykev/tree/7943e585faa81e4c0400f5e2e9ca7b42ce4bf286){.btn .btn-sm .btn-primary}
+
 This part does not start where the part before it ends, because the walk skips some changes. This command puts the files that this part starts from in place of yours. Run it, and then go on:
 
 ```bash
-git restore --source c2f89d37a513 --staged -- :/ && git restore --source 7943e585faa8 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-05 --staged -- :/ && git restore --source 7943e585faa8 --staged --worktree -- :/
 ```
 
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
@@ -31,8 +33,6 @@ the kind of value that each input and the result hold. The tests grew to 53.
 Then the whole tutorial turned on the rules `D1` of ruff. They ask for a docstring on every public file, class and
 function. A name is public when it does not start with `_`. The package, the folder `src/babykev` that holds the code,
 got its docstring first.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/7943e585faa81e4c0400f5e2e9ca7b42ce4bf286). [The code after it](https://github.com/rahuldave/babykev/tree/9a769c7d9551fb181bf7c36d989f94f35f836c2d).
 
 ## 10.3 The docstrings of the four classes of a request {#tut-10.3}
 
@@ -74,7 +74,7 @@ git restore --source 7943e585faa8 --staged -- :/ && git restore --source 9a769c7
 
 ### What changed {#tut-10.3-what-changed-182c57}
 
-- <a id="tut-10.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring on each class of a request. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/9a769c7d9551fb181bf7c36d989f94f35f836c2d/src/babykev/api.py).
+- <a id="tut-10.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring on each class of a request. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/9a769c7d9551fb181bf7c36d989f94f35f836c2d/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `    """A question answered by a level of a scale, whose criteria are the levels in order."""`
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
@@ -119,4 +119,6 @@ git restore --source 7943e585faa8 --staged -- :/ && git restore --source 9a769c7
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/9a769c7d9551fb181bf7c36d989f94f35f836c2d). [The code after it](https://github.com/rahuldave/babykev/tree/9a769c7d9551fb181bf7c36d989f94f35f836c2d).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9a769c7d9551fb181bf7c36d989f94f35f836c2d){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `9a769c7d9551`, partway through `tut-10`. [The code after this part](https://github.com/rahuldave/babykev/tree/9a769c7d9551fb181bf7c36d989f94f35f836c2d){.btn .btn-sm .btn-primary}

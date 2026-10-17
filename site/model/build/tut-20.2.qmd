@@ -6,6 +6,8 @@ title: "20.2 Positions that start again after the state"
 
 **Build it yourself.** [Read the tutorial](../read/tut-20.2.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `6d2401817f1b`, partway through `tut-20`. [The code before this part](https://github.com/rahuldave/babykev/tree/6d2401817f1bc2d56de4f3021cfceaa80d5b80f9){.btn .btn-sm .btn-primary}
+
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
 
 ```bash
@@ -30,8 +32,6 @@ So question 2 has the same tokens and the same positions as question 1. If it al
 and itself, the decoder computes the same numbers for it. A question then gets the same answer wherever it sits in
 the request, and the same answer as in a request of its own. The positions do half of that work, and the mask does
 the other half, in the last part of this walk.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/6d2401817f1bc2d56de4f3021cfceaa80d5b80f9). [The code after it](https://github.com/rahuldave/babykev/tree/e947449de17438d3aa5ee006bfc98db3944d4457).
 
 ## 20.2 Positions restart after the state {#tut-20.2}
 
@@ -72,7 +72,7 @@ git restore --source 6d2401817f1b --staged -- :/ && git restore --source e947449
 
 ### What changed {#tut-20.2-what-changed-182c57}
 
-- <a id="tut-20.2-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the positions of each question. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/e947449de17438d3aa5ee006bfc98db3944d4457/tests/unit/test_model.py).
+- <a id="tut-20.2-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the positions of each question. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/e947449de17438d3aa5ee006bfc98db3944d4457/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_positions_restart_after_the_state(`
 
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
@@ -98,4 +98,6 @@ git restore --source 6d2401817f1b --staged -- :/ && git restore --source e947449
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e947449de17438d3aa5ee006bfc98db3944d4457). [The code after it](https://github.com/rahuldave/babykev/tree/e947449de17438d3aa5ee006bfc98db3944d4457).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e947449de17438d3aa5ee006bfc98db3944d4457){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `e947449de174`, partway through `tut-20`. [The code after this part](https://github.com/rahuldave/babykev/tree/e947449de17438d3aa5ee006bfc98db3944d4457){.btn .btn-sm .btn-primary}

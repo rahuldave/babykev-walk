@@ -4,6 +4,17 @@ title: "5b Two images from one lockfile"
 
 <!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `step-05a`. [The code before this part](https://github.com/rahuldave/babykev/tree/step-05a){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach step-05a
+```
+
 **Init.** `just setup` brings one package, hadolint 2.15.1, the Dockerfile's linter, as a wheel from PyPI: there are wheels for the Mac and for Linux on both architectures. 0.5 s.
 
 ```bash
@@ -198,13 +209,13 @@ just docs publish
 
 ## What changed {#step-05b-what-changed-182c57}
 
-- <a id="step-05b-.dockerignore-05a721"></a>`.dockerignore`: New, 26 lines. [The file](https://github.com/rahuldave/babykev/blob/47b43c0916ac186e3efdf42e15dbcf1f04edb1a0/.dockerignore).
-- <a id="step-05b-Dockerfile-6651dd"></a>`Dockerfile`: New, 77 lines. [The file](https://github.com/rahuldave/babykev/blob/47b43c0916ac186e3efdf42e15dbcf1f04edb1a0/Dockerfile).
-- <a id="step-05b-README.md-8ec9a0"></a>`README.md`: 41 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/47b43c0916ac186e3efdf42e15dbcf1f04edb1a0/README.md).
-- <a id="step-05b-justfile-424f0b"></a>`justfile`: adds `recipe image`. 88 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/47b43c0916ac186e3efdf42e15dbcf1f04edb1a0/justfile).
-- <a id="step-05b-pyproject.toml-5d07e7"></a>`pyproject.toml`: 6 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/47b43c0916ac186e3efdf42e15dbcf1f04edb1a0/pyproject.toml).
-- <a id="step-05b-tests-system-test_real_model.py-df0b9d"></a>`tests/system/test_real_model.py`: adds `test_the_real_model_answers_every_sample_question`. New, 27 lines. [The file](https://github.com/rahuldave/babykev/blob/47b43c0916ac186e3efdf42e15dbcf1f04edb1a0/tests/system/test_real_model.py).
-- <a id="step-05b-uv.lock-8356d8"></a>`uv.lock`: 158 lines added, 108 removed. [The file](https://github.com/rahuldave/babykev/blob/47b43c0916ac186e3efdf42e15dbcf1f04edb1a0/uv.lock).
+- <a id="step-05b-.dockerignore-05a721"></a>`.dockerignore`: New, 26 lines. [The file](https://github.com/rahuldave/babykev/blob/47b43c0916ac186e3efdf42e15dbcf1f04edb1a0/.dockerignore){.btn .btn-sm .btn-secondary}
+- <a id="step-05b-Dockerfile-6651dd"></a>`Dockerfile`: New, 77 lines. [The file](https://github.com/rahuldave/babykev/blob/47b43c0916ac186e3efdf42e15dbcf1f04edb1a0/Dockerfile){.btn .btn-sm .btn-secondary}
+- <a id="step-05b-README.md-8ec9a0"></a>`README.md`: 41 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/47b43c0916ac186e3efdf42e15dbcf1f04edb1a0/README.md){.btn .btn-sm .btn-secondary}
+- <a id="step-05b-justfile-424f0b"></a>`justfile`: adds `recipe image`. 88 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/47b43c0916ac186e3efdf42e15dbcf1f04edb1a0/justfile){.btn .btn-sm .btn-secondary}
+- <a id="step-05b-pyproject.toml-5d07e7"></a>`pyproject.toml`: 6 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/47b43c0916ac186e3efdf42e15dbcf1f04edb1a0/pyproject.toml){.btn .btn-sm .btn-secondary}
+- <a id="step-05b-tests-system-test_real_model.py-df0b9d"></a>`tests/system/test_real_model.py`: adds `test_the_real_model_answers_every_sample_question`. New, 27 lines. [The file](https://github.com/rahuldave/babykev/blob/47b43c0916ac186e3efdf42e15dbcf1f04edb1a0/tests/system/test_real_model.py){.btn .btn-sm .btn-secondary}
+- <a id="step-05b-uv.lock-8356d8"></a>`uv.lock`: 158 lines added, 108 removed. [The file](https://github.com/rahuldave/babykev/blob/47b43c0916ac186e3efdf42e15dbcf1f04edb1a0/uv.lock){.btn .btn-sm .btn-secondary}
 
 <details><summary>The diff of <code>.dockerignore</code></summary>
 
@@ -601,4 +612,6 @@ just docs publish
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/compare/c954af4beae61eaab89bcb2d4724eea4f2706703...47b43c0916ac186e3efdf42e15dbcf1f04edb1a0). [The code after it](https://github.com/rahuldave/babykev/tree/47b43c0916ac186e3efdf42e15dbcf1f04edb1a0).
+[This change on GitHub](https://github.com/rahuldave/babykev/compare/c954af4beae61eaab89bcb2d4724eea4f2706703...47b43c0916ac186e3efdf42e15dbcf1f04edb1a0){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `step-05b`. [The code after this part](https://github.com/rahuldave/babykev/tree/step-05b){.btn .btn-sm .btn-primary}

@@ -6,16 +6,18 @@ title: "4 Tests of the contract"
 
 **Build it yourself.** [Read the tutorial](../read/tut-04.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-03`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-03){.btn .btn-sm .btn-primary}
+
 This part does not start where the part before it ends, because the walk skips some changes. This command puts the files that this part starts from in place of yours. Run it, and then go on:
 
 ```bash
-git restore --source 4640589d80e4 --staged -- :/ && git restore --source 56606771fb23 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-02 --staged -- :/ && git restore --source tut-03 --staged --worktree -- :/
 ```
 
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
 
 ```bash
-git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 56606771fb23 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch -- :/ && git restore --source tut-03 --staged --worktree -- :/
 ```
 
 The whole tutorial then adds the contract, `src/babykev/api.py`. It says what a request is and what an answer is,
@@ -31,8 +33,6 @@ just setup
 The contract says what a request is, and no test checks it. The tests of this part check the five sample requests
 against the contract. Then they check what the contract accepts and refuses, one rule at a time. They go in
 `tests/unit/test_api.py`, one test in each move.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/56606771fb23f7a0a01825f477050d2980a47736). [The code after it](https://github.com/rahuldave/babykev/tree/1fef13ae49e24d280d05c250289c41d5636feff7).
 
 ## 4.1 Every line of the sample data fits the contract {#tut-04.1}
 
@@ -64,12 +64,12 @@ git check 5e134165b7e1
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 56606771fb23 --staged -- :/ && git restore --source 5e134165b7e1 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-03 --staged -- :/ && git restore --source 5e134165b7e1 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-04.1-what-changed-182c57}
 
-- <a id="tut-04.1-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the sample data, and the test that checks each line. New, 27 lines. [The file](https://github.com/rahuldave/babykev/blob/5e134165b7e1feeded775bcfb2269aec951ad39f/tests/unit/test_api.py).
+- <a id="tut-04.1-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the sample data, and the test that checks each line. New, 27 lines. [The file](https://github.com/rahuldave/babykev/blob/5e134165b7e1feeded775bcfb2269aec951ad39f/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_sample_line_fits_the_contract(line):`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -107,7 +107,7 @@ git restore --source 56606771fb23 --staged -- :/ && git restore --source 5e13416
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/5e134165b7e1feeded775bcfb2269aec951ad39f). [The code after it](https://github.com/rahuldave/babykev/tree/5e134165b7e1feeded775bcfb2269aec951ad39f).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/5e134165b7e1feeded775bcfb2269aec951ad39f){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/5e134165b7e1feeded775bcfb2269aec951ad39f){.btn .btn-sm .btn-primary}
 
 ## 4.2 Every question of the sample data has a label {#tut-04.2}
 
@@ -142,7 +142,7 @@ git restore --source 5e134165b7e1 --staged -- :/ && git restore --source 1ca3952
 
 ### What changed {#tut-04.2-what-changed-182c57}
 
-- <a id="tut-04.2-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the labels of the sample data. 13 lines added. [The file](https://github.com/rahuldave/babykev/blob/1ca39523b4fdf6c75c244b8c0e0f2371593cfbff/tests/unit/test_api.py).
+- <a id="tut-04.2-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the labels of the sample data. 13 lines added. [The file](https://github.com/rahuldave/babykev/blob/1ca39523b4fdf6c75c244b8c0e0f2371593cfbff/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_sample_line_has_a_usable_label_on_every_question(line):`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -169,7 +169,7 @@ git restore --source 5e134165b7e1 --staged -- :/ && git restore --source 1ca3952
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/1ca39523b4fdf6c75c244b8c0e0f2371593cfbff). [The code after it](https://github.com/rahuldave/babykev/tree/1ca39523b4fdf6c75c244b8c0e0f2371593cfbff).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/1ca39523b4fdf6c75c244b8c0e0f2371593cfbff){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/1ca39523b4fdf6c75c244b8c0e0f2371593cfbff){.btn .btn-sm .btn-primary}
 
 ## 4.3 A request holds one model for each type of question {#tut-04.3}
 
@@ -206,7 +206,7 @@ git restore --source 1ca39523b4fd --staged -- :/ && git restore --source 847d160
 
 ### What changed {#tut-04.3-what-changed-182c57}
 
-- <a id="tut-04.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the helper, and the test of the three types. 32 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/847d160f4a2f014bd58eb06030268ce762577cbc/tests/unit/test_api.py).
+- <a id="tut-04.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the helper, and the test of the three types. 32 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/847d160f4a2f014bd58eb06030268ce762577cbc/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_request_holds_one_model_per_question_type():`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -267,7 +267,7 @@ git restore --source 1ca39523b4fd --staged -- :/ && git restore --source 847d160
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/847d160f4a2f014bd58eb06030268ce762577cbc). [The code after it](https://github.com/rahuldave/babykev/tree/847d160f4a2f014bd58eb06030268ce762577cbc).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/847d160f4a2f014bd58eb06030268ce762577cbc){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/847d160f4a2f014bd58eb06030268ce762577cbc){.btn .btn-sm .btn-primary}
 
 ## 4.4 A request without questions is refused {#tut-04.4}
 
@@ -302,7 +302,7 @@ git restore --source 847d160f4a2f --staged -- :/ && git restore --source c2af99c
 
 ### What changed {#tut-04.4-what-changed-182c57}
 
-- <a id="tut-04.4-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a request with no questions. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/c2af99cdd8e0b6f40e33a1ebcf9aa602904a83ba/tests/unit/test_api.py).
+- <a id="tut-04.4-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a request with no questions. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/c2af99cdd8e0b6f40e33a1ebcf9aa602904a83ba/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_request_without_questions_is_rejected():`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -330,7 +330,7 @@ git restore --source 847d160f4a2f --staged -- :/ && git restore --source c2af99c
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/c2af99cdd8e0b6f40e33a1ebcf9aa602904a83ba). [The code after it](https://github.com/rahuldave/babykev/tree/c2af99cdd8e0b6f40e33a1ebcf9aa602904a83ba).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/c2af99cdd8e0b6f40e33a1ebcf9aa602904a83ba){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/c2af99cdd8e0b6f40e33a1ebcf9aa602904a83ba){.btn .btn-sm .btn-primary}
 
 ## 4.5 An unknown type of question is refused {#tut-04.5}
 
@@ -364,7 +364,7 @@ git restore --source c2af99cdd8e0 --staged -- :/ && git restore --source 6acc5e7
 
 ### What changed {#tut-04.5-what-changed-182c57}
 
-- <a id="tut-04.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a type that does not exist. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/6acc5e7d6f228ce76a9083d915f238c3d6696c85/tests/unit/test_api.py).
+- <a id="tut-04.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a type that does not exist. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/6acc5e7d6f228ce76a9083d915f238c3d6696c85/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `question = {"type": "essay", "instructions": "Describe this cheese."}`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -385,7 +385,7 @@ git restore --source c2af99cdd8e0 --staged -- :/ && git restore --source 6acc5e7
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/6acc5e7d6f228ce76a9083d915f238c3d6696c85). [The code after it](https://github.com/rahuldave/babykev/tree/6acc5e7d6f228ce76a9083d915f238c3d6696c85).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/6acc5e7d6f228ce76a9083d915f238c3d6696c85){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/6acc5e7d6f228ce76a9083d915f238c3d6696c85){.btn .btn-sm .btn-primary}
 
 ## 4.6 A noul needs no criteria {#tut-04.6}
 
@@ -420,7 +420,7 @@ git restore --source 6acc5e7d6f22 --staged -- :/ && git restore --source 3a99587
 
 ### What changed {#tut-04.6-what-changed-182c57}
 
-- <a id="tut-04.6-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a noul without criteria. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/3a99587d325837f9104661b3d06d9630679dc8eb/tests/unit/test_api.py).
+- <a id="tut-04.6-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a noul without criteria. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/3a99587d325837f9104661b3d06d9630679dc8eb/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert Noul(type="noul", instructions="Is it blue?").criteria is None`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -439,7 +439,7 @@ git restore --source 6acc5e7d6f22 --staged -- :/ && git restore --source 3a99587
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/3a99587d325837f9104661b3d06d9630679dc8eb). [The code after it](https://github.com/rahuldave/babykev/tree/3a99587d325837f9104661b3d06d9630679dc8eb).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3a99587d325837f9104661b3d06d9630679dc8eb){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/3a99587d325837f9104661b3d06d9630679dc8eb){.btn .btn-sm .btn-primary}
 
 ## 4.7 A choice without options is refused {#tut-04.7}
 
@@ -473,7 +473,7 @@ git restore --source 3a99587d3258 --staged -- :/ && git restore --source 4653d29
 
 ### What changed {#tut-04.7-what-changed-182c57}
 
-- <a id="tut-04.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a choice of nothing. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/4653d298261d887195e59a2cf00593036151657c/tests/unit/test_api.py).
+- <a id="tut-04.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a choice of nothing. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/4653d298261d887195e59a2cf00593036151657c/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_choice_without_options_is_rejected():`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -493,7 +493,7 @@ git restore --source 3a99587d3258 --staged -- :/ && git restore --source 4653d29
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/4653d298261d887195e59a2cf00593036151657c). [The code after it](https://github.com/rahuldave/babykev/tree/4653d298261d887195e59a2cf00593036151657c).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/4653d298261d887195e59a2cf00593036151657c){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/4653d298261d887195e59a2cf00593036151657c){.btn .btn-sm .btn-primary}
 
 ## 4.8 A choice has at most MAX_OPTIONS options {#tut-04.8}
 
@@ -528,7 +528,7 @@ git restore --source 4653d298261d --staged -- :/ && git restore --source 3addf0f
 
 ### What changed {#tut-04.8-what-changed-182c57}
 
-- <a id="tut-04.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the limit, from both sides. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/3addf0f2bd69e0910ba506a41a240fec5218c77a/tests/unit/test_api.py).
+- <a id="tut-04.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the limit, from both sides. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/3addf0f2bd69e0910ba506a41a240fec5218c77a/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `at_limit = {f"option{i}": None for i in range(MAX_OPTIONS)}`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -560,7 +560,7 @@ git restore --source 4653d298261d --staged -- :/ && git restore --source 3addf0f
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/3addf0f2bd69e0910ba506a41a240fec5218c77a). [The code after it](https://github.com/rahuldave/babykev/tree/3addf0f2bd69e0910ba506a41a240fec5218c77a).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3addf0f2bd69e0910ba506a41a240fec5218c77a){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/3addf0f2bd69e0910ba506a41a240fec5218c77a){.btn .btn-sm .btn-primary}
 
 ## 4.9 A score of one level is refused {#tut-04.9}
 
@@ -595,7 +595,7 @@ git restore --source 3addf0f2bd69 --staged -- :/ && git restore --source b9a4861
 
 ### What changed {#tut-04.9-what-changed-182c57}
 
-- <a id="tut-04.9-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a scale of one level. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/b9a4861a26a74623a6daf8c7c776cebe5f30a626/tests/unit/test_api.py).
+- <a id="tut-04.9-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a scale of one level. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/b9a4861a26a74623a6daf8c7c776cebe5f30a626/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `Score(type="score", instructions="How firm?", criteria=["Soft"])`
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
@@ -615,7 +615,7 @@ git restore --source 3addf0f2bd69 --staged -- :/ && git restore --source b9a4861
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/b9a4861a26a74623a6daf8c7c776cebe5f30a626). [The code after it](https://github.com/rahuldave/babykev/tree/b9a4861a26a74623a6daf8c7c776cebe5f30a626).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/b9a4861a26a74623a6daf8c7c776cebe5f30a626){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/b9a4861a26a74623a6daf8c7c776cebe5f30a626){.btn .btn-sm .btn-primary}
 
 ## 4.10 The README names the tests of the contract {#tut-04.10}
 
@@ -644,12 +644,12 @@ git check 1fef13ae49e2
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source b9a4861a26a7 --staged -- :/ && git restore --source 1fef13ae49e2 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source b9a4861a26a7 --staged -- :/ && git restore --source tut-04 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-04.10-what-changed-182c57}
 
-- <a id="tut-04.10-README.md-8ec9a0"></a>`README.md`: the row of the tests. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/1fef13ae49e24d280d05c250289c41d5636feff7/README.md).
+- <a id="tut-04.10-README.md-8ec9a0"></a>`README.md`: the row of the tests. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/1fef13ae49e24d280d05c250289c41d5636feff7/README.md){.btn .btn-sm .btn-secondary}
   - look at ``| `tests/unit/` | The unit tests of the contract and of the command. One test checks every line of the sample data against the contract |``
 
 <details open><summary>The patch to <code>README.md</code></summary>
@@ -668,4 +668,6 @@ git restore --source b9a4861a26a7 --staged -- :/ && git restore --source 1fef13a
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/1fef13ae49e24d280d05c250289c41d5636feff7). [The code after it](https://github.com/rahuldave/babykev/tree/1fef13ae49e24d280d05c250289c41d5636feff7).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/1fef13ae49e24d280d05c250289c41d5636feff7){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-04`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-04){.btn .btn-sm .btn-primary}

@@ -6,10 +6,19 @@ title: "1.3 to 1.5 The settings of the project"
 
 **Read the tutorial.** [Build it yourself](../build/tut-01.3-to-tut-01.5.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `489f27fad816`, partway through `tut-01`. [The code before this part](https://github.com/rahuldave/babykev/tree/489f27fad816149652a8d608b162fa98c37563f5){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach 489f27fad816
+```
+
 `pyproject.toml` still has the words of uv. Three settings say what babykev is, under which licence others may use
 it, and who wrote it. None of them is a dependency, so the lockfile stays as it was.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/489f27fad816149652a8d608b162fa98c37563f5). [The code after it](https://github.com/rahuldave/babykev/tree/7f38877e597f5404208fdca2eabb176077d95a8e).
 
 ## 1.3 The description of babykev {#tut-01.3}
 
@@ -28,7 +37,7 @@ grep -n description pyproject.toml
 
 ### What changed {#tut-01.3-what-changed-182c57}
 
-- <a id="tut-01.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: the description. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/0497c0dc9d3772df47e79361aa4165e5de8e227d/pyproject.toml).
+- <a id="tut-01.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: the description. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/0497c0dc9d3772df47e79361aa4165e5de8e227d/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `description = "A small decision model: one state, typed questions, a probability for every answer"`
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
@@ -47,7 +56,7 @@ grep -n description pyproject.toml
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/0497c0dc9d3772df47e79361aa4165e5de8e227d). [The code after it](https://github.com/rahuldave/babykev/tree/0497c0dc9d3772df47e79361aa4165e5de8e227d).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0497c0dc9d3772df47e79361aa4165e5de8e227d){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/0497c0dc9d3772df47e79361aa4165e5de8e227d){.btn .btn-sm .btn-primary}
 
 ## 1.4 The licence of babykev {#tut-01.4}
 
@@ -67,7 +76,7 @@ them at the end of `[project]`, so the numbers can differ.
 
 ### What changed {#tut-01.4-what-changed-182c57}
 
-- <a id="tut-01.4-pyproject.toml-5d07e7"></a>`pyproject.toml`: the licence, and the files a package carries. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/414874463b887dedf65c5c74caeac8a064b0e876/pyproject.toml).
+- <a id="tut-01.4-pyproject.toml-5d07e7"></a>`pyproject.toml`: the licence, and the files a package carries. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/414874463b887dedf65c5c74caeac8a064b0e876/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `license-files = ["LICENSE", "NOTICE"]`
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
@@ -86,7 +95,7 @@ them at the end of `[project]`, so the numbers can differ.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/414874463b887dedf65c5c74caeac8a064b0e876). [The code after it](https://github.com/rahuldave/babykev/tree/414874463b887dedf65c5c74caeac8a064b0e876).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/414874463b887dedf65c5c74caeac8a064b0e876){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/414874463b887dedf65c5c74caeac8a064b0e876){.btn .btn-sm .btn-primary}
 
 ## 1.5 The author of babykev {#tut-01.5}
 
@@ -105,7 +114,7 @@ exit code 0. The words of the three moves change no dependency, so `uv.lock` sta
 
 ### What changed {#tut-01.5-what-changed-182c57}
 
-- <a id="tut-01.5-pyproject.toml-5d07e7"></a>`pyproject.toml`: the author. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/7f38877e597f5404208fdca2eabb176077d95a8e/pyproject.toml).
+- <a id="tut-01.5-pyproject.toml-5d07e7"></a>`pyproject.toml`: the author. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/7f38877e597f5404208fdca2eabb176077d95a8e/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `authors = [{ name = "Rahul Dave" }]`
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
@@ -123,4 +132,6 @@ exit code 0. The words of the three moves change no dependency, so `uv.lock` sta
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/7f38877e597f5404208fdca2eabb176077d95a8e). [The code after it](https://github.com/rahuldave/babykev/tree/7f38877e597f5404208fdca2eabb176077d95a8e).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7f38877e597f5404208fdca2eabb176077d95a8e){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `7f38877e597f`, partway through `tut-01`. [The code after this part](https://github.com/rahuldave/babykev/tree/7f38877e597f5404208fdca2eabb176077d95a8e){.btn .btn-sm .btn-primary}

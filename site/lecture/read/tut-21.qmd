@@ -1,0 +1,343 @@
+---
+title: "21 A second file: model.py"
+---
+
+<!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-20`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-20){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach tut-20
+```
+
+**Init.** `just setup` brings the stack of the model, 31 packages in all. They are torch, transformers, peft and safetensors, and the packages that they need, and ty, the type checker. From the cache of uv it takes about a second, and the first time on a machine it downloads a few hundred megabytes.
+
+```bash
+just setup
+```
+
+**What is new.** `src/babykev/model.py`, the model of kev, comes in whole from his first version, and `src/babykev/smoke.py` runs it on the real model. `babykev smoke` and `just smoke` run the smoke, and `just types` runs ty, the type checker. A tiny model stands in for the real one in the tests, in `tests/tiny.py` and `tests/conftest.py`. `tests/unit/test_model.py` and `tests/unit/test_smoke.py` hold the tests of the model and of the smoke. `just check` has a floor on the coverage, 90%.
+
+**torch, from its own index.** torch comes in several builds. On Linux, the build on PyPI brings the libraries of CUDA, which a laptop and the tests do not need. Lines 31 to 37 of `pyproject.toml` name the index of PyTorch's builds for the CPU, and send torch there and nothing else. `uv tree --invert --package torch` shows why torch came in first. peft needs torch, through accelerate, and peft added first would have taken torch from PyPI.
+
+```bash
+sed -n '29,37p' pyproject.toml
+uv tree --invert --package torch
+```
+
+**The four ideas.** The `sed` line prints the docstring of `model.py`, lines 1 to 18, which names them. Packing writes the state and every question into one sequence, marked off by five delimiter tokens. The mask lets each token see the state and its own question, and never another question. The positions restart after the state, so a question looks the same wherever it comes. Pointing scores the closing token of each option against the decide token of the question, and no text is generated.
+
+```bash
+sed -n '1,18p' src/babykev/model.py
+```
+
+**Packing, in the signature.** `encode`, lines 100 to 113, takes a tokenizer, a record as `to_record` returns it, and two limits, and returns an `Encoded`. Each docment says what the parameter is. The docstring says that a record that is too long is refused by name, and nothing is cut to fit.
+
+```bash
+sed -n '100,113p' src/babykev/model.py
+```
+
+**The mask, as designed.** The docstring of `branch_mask`, lines 150 to 155, states the rule. Token i may attend to token j when j is not after i, and j is in the state or in the question of i. The slide draws the rule as a grid. In the cell to watch, a token of question 2 looks at question 1, which a plain causal mask allows and the rule forbids. That one cell is why question 2 gets the same answer whether question 1 was asked or not.
+
+```bash
+sed -n '150,155p' src/babykev/model.py
+```
+
+**Pointing.** `PointerHead`, lines 165 to 186, holds two linear layers and a scaled dot product. The docments carry the shapes, `[d]`, `[K, d]` and `[K]`.
+
+```bash
+sed -n '165,186p' src/babykev/model.py
+```
+
+**What is trained.** The `python` line loads the real model, Qwen2.5-0.5B, with an adapter of rank 16, and counts its parameters. It prints `503290240 494032768 8798208 459264 9257472`, and the first two numbers say that 494,032,768 of the 503,290,240 parameters are the frozen language model. Two parts train, the LoRA adapter, 8,798,208 parameters, and the pointer head, 459,264. So 9,257,472 parameters train, and the smoke prints them as `503M parameters, 9.3M of them trainable`.
+
+```bash
+uv run python -c "from babykev.model import DecisionModel; m = DecisionModel('Qwen/Qwen2.5-0.5B', 'cpu', lora=16); n = lambda ps: sum(p.numel() for p in ps); lora = n(p for k, p in m.named_parameters() if 'lora_' in k); head = n(m.head.parameters()); print(n(m.parameters()), n(m.parameters()) - lora - head, lora, head, n(m.trainable_parameters()))"
+```
+
+**The smoke, as a command.** The name comes from electronics, where a new circuit is switched on to see whether it smokes. A smoke test asks whether the whole program starts and gives an answer at all, and not whether the answer is right. `uv run babykev smoke` loads the real model on the best device of this machine, `mps` here, the GPU of the Mac. It prints the seconds to load and `503M parameters, 9.3M of them trainable`, and then each answer to the five sample requests beside its label. At the end it prints `6 of 15 right`, with the milliseconds of a request, which change from run to run.
+
+```bash
+uv run babykev smoke
+```
+
+`just --show smoke` prints the recipe, which runs `uv run babykev smoke` with the words after `just smoke`. `just smoke` gives the same report, 6 of 15 right. The times change from run to run, and the answers do not. From here on, `just smoke`.
+
+```bash
+just --show smoke
+just smoke
+```
+
+**The type checker.** A type says what kind of value something is, a whole number, a list of numbers or a tokenizer. Every function of babykev gives the types that it takes and the type that it returns. `uv run ty check` is ty, which compares every call and every `return` with those types, by reading the code and without running it. It prints `All checks passed!`. `just --show types` prints the recipe, `uv run ty check "$@"`, and `just types` gives the same answer.
+
+```bash
+uv run ty check
+just --show types
+just types
+```
+
+**Two comments, and what they answer.** The `sed` line prints lines 178 to 180 of `model.py`, a comment of two lines and a `def forward` that ends with `# ty: ignore[invalid-mutable-override]`. With both such comments taken out by the second `sed` line, `just types` prints `Found 2 diagnostics`, both `invalid-mutable-override`, at lines 180 and 260. `nn.Module` declares `forward` as an attribute that may hold any function, and a method of two tensors takes fewer calls. torch only calls `forward`, and never sets it, so the rule is right in general and wrong here. The comment turns off one rule on one line, with its reason above it, and `git restore` puts the comments back.
+
+```bash
+sed -n '178,180p' src/babykev/model.py
+sed -i '' 's/  # ty: ignore\[invalid-mutable-override\]//' src/babykev/model.py
+just types
+git restore src/babykev/model.py
+```
+
+**Fixtures.** A fixture makes a stand-in that tests need, such as a request, a tokenizer or a model, in one place for every test. It is a function marked `@pytest.fixture`, and a test names it as an argument. The `sed` line prints the three fixtures of `tests/conftest.py`, lines 16 to 40. pytest builds `tok` once for the whole run, because of `scope="session"`. It builds `record` and `model` again for each test, so no test can spoil them for the next.
+
+```bash
+sed -n '16,40p' tests/conftest.py
+```
+
+**Writing a fixture.** The tests of the contract build a request with a helper, `cheese_request`, on lines 32 to 43 of `test_api.py`. Six tests call it themselves, as on line 81. The fixture `record` does the same job the other way round, because a test asks for it by name, and pytest calls it. A fixture goes in `conftest.py` when more than one file needs it. If the test leaves something to clean up, the fixture can `yield` its value, and the code after `yield` runs when the test is done.
+
+```bash
+sed -n '32,43p' tests/unit/test_api.py
+sed -n '81p' tests/unit/test_api.py
+```
+
+**`conftest.py`.** pytest reads `tests/conftest.py` before it runs a test, and every test file under `tests/` can use its fixtures, with no import. `just test --fixtures` lists every fixture that pytest can see, in 124 lines. The fixtures of pytest and of its plugins come first. Ours come at the end, under `fixtures defined from conftest`, each with the line of its `def`, 17, 23 and 31, and its docstring.
+
+```bash
+just test --fixtures
+```
+
+**Fixtures in use.** `test_positions_restart_after_the_state`, lines 48 to 57 of `test_model.py`, takes `tok` and `record`. `test_probabilities_sum_to_one_for_every_question`, lines 21 to 30, takes all three. It expects `[2, 3, 3]`, because the three questions of `record` have 2, 3 and 3 options. The data of a fixture is known, so a test can expect exact numbers. `just test --fixtures-per-test` names the fixtures of each selected test, with the line where each is defined, such as `model -- tests/conftest.py:23`.
+
+```bash
+sed -n '48,57p' tests/unit/test_model.py
+sed -n '21,30p' tests/unit/test_model.py
+just test --fixtures-per-test -k "probabilities_sum or positions_restart"
+```
+
+**The tiny model.** `tests/tiny.py` has two ordinary functions with no `@pytest.fixture`, `tiny_tokenizer` on line 12 and `tiny_backbone` on line 27. The fixtures `tok` and `model` call them, and so does line 117 of `test_model.py`, for a model with an adapter. The tokenizer has 106 tokens, one for each of the 100 printable characters and the five delimiters, and `[UNK]` for any other character. The first `python` line splits "Roquefort" into nine tokens.
+
+The backbone is the code of Qwen, `Qwen2Model`, with 2 layers of 32 numbers, where the real model has 24 layers of 896. The second `python` line counts its 24,224 parameters.
+
+```bash
+sed -n '12,24p;27,42p' tests/tiny.py
+uv run python -c "from tests.tiny import tiny_tokenizer; t = tiny_tokenizer(); print(len(t), t.tokenize('Roquefort'))"
+uv run python -c "from tests.tiny import tiny_backbone; print(sum(p.numel() for p in tiny_backbone(106).parameters()))"
+```
+
+**Why the tiny model is enough.** The tests check exact facts, such as which token may see which, and which parameters get a gradient, and those hold for any weights. The tiny model cannot tell whether the answers are any good, or how fast the real model runs on a GPU. It needs no download and no GPU, so only our code can make these tests fail. Such tests are hermetic, and they can run before every `git commit`.
+
+**Kinds of tests.** The names say how much of the program a test runs.
+
+- **Unit:** one function alone, such as `test_pointer_head_gives_one_logit_per_option`.
+- **Integration:** several of our parts together, with stand-ins for what comes from outside. `test_probabilities_sum_to_one_for_every_question` packs a request, and runs the model and the head, on the tiny model.
+- **End-to-end, or system:** the whole program with its real parts, as a user runs it. A smoke test is a quick end-to-end run, and ours is `just smoke`.
+- **Acceptance:** a promise to the users, such as an answer within 50 ms. We have none.
+
+**The tests.** `just test` runs 75 tests, and all pass. The first run after `just setup` can take half a minute, while Python compiles the modules of torch. The table has two new rows, `model.py` at 94% and `smoke.py` at 79%, and the total is 92%. The lines left are those that need the Hub or a GPU of NVIDIA, and the `main` of the smoke, lines 105 to 119.
+
+```bash
+just test
+```
+
+**The danger, then the defence.** `just test -k forge` runs 6 tests, the unit tests of a forged delimiter. The `sed` line prints them, lines 78 to 93. The first proves that the danger is real, because a tokenizer turns the text `<|fim_suffix|>` into the decide token. The second runs once for each of the five delimiters, and proves that `user_tokens` closes the door.
+
+```bash
+just test -k forge
+sed -n '78,93p' tests/unit/test_model.py
+```
+
+**What trains.** `test_with_an_adapter_only_the_adapter_and_the_head_train`, lines 112 to 130, is an integration test. It runs one backward pass on a tiny model with an adapter. Every parameter that gets a gradient belongs to the adapter or to the head, and `trainable_parameters` lists exactly those. The backbone never moves, and about nine million parameters do. One test passes.
+
+```bash
+sed -n '112,130p' tests/unit/test_model.py
+just test -k only_the_adapter
+```
+
+**The whole smoke, on the tiny model.** `test_smoke_reports_on_every_question_of_the_sample`, lines 32 to 42 of `test_smoke.py`, calls our function `smoke` on the five sample requests. The report must have fifteen verdicts and a closing count. It is an integration test, and no model is downloaded for it. Its name says what it calls, and not what kind of test it is.
+
+```bash
+sed -n '32,42p' tests/unit/test_smoke.py
+just test -k smoke_reports
+```
+
+**The floor.** `just --show check` prints six lines now. `just types` runs after the linter, and `just test -q --cov-fail-under=90` fails when the tests run less than 90% of the code. The model came in with no test, and passed the formatter, the linter and the docs check, because tidy is not tested. The next command runs only the tests of the contract and the command under the floor. `model.py` is at 33%, the lines that run when the module is imported, and pytest prints `FAIL Required test coverage of 90% not reached. Total coverage: 55.43%`.
+
+```bash
+just --show check
+just test -q --cov-fail-under=90 tests/unit/test_api.py tests/unit/test_cli.py
+```
+
+**All of it, together.** `just check` passes. The format, the linter, ty, 75 tests at 91.76% over the floor, `88 of 88` in the docs check, and the config files.
+
+```bash
+just check
+```
+
+**The problem with the mask as written.** Take a small request of six tokens, two for the state, two for question 1 and two for question 2. The slide draws the mask as a grid, with a row for each token, `#` for may look and `.` for may not. Rows 5 and 6 are question 2, and their columns 3 and 4 must say may not. The `python` line asks `branch_mask` for this mask, and rows 5 and 6 are `#####.` and `######`, so question 2 may look at question 1. The `sed` line prints the cause, line 159, where `torch.ones_like(causal)` makes every pair of tokens the same question.
+
+```bash
+uv run python -c "from babykev.model import branch_mask; m = branch_mask([0, 0, 1, 1, 2, 2], 'cpu')[0, 0] == 0; print('\n'.join(''.join('#' if x else '.' for x in r) for r in m))"
+sed -n '159p' src/babykev/model.py
+```
+
+**A check that sees it.** A few lines of Python compare the right grid with the one that `branch_mask` builds, row by row. The shell runs them as a here document, where `python -` reads the lines up to `EOF`. Rows 1 to 4 print `ok`. Row 5 prints `##..#. #####. WRONG`, and row 6 prints `##..## ###### WRONG`. Nothing in `just check` runs these lines, so nothing in `just check` sees the mask.
+
+```bash
+uv run python - <<'EOF'
+from babykev.model import branch_mask
+picture = ["#.....", "##....", "###...", "####..", "##..#.", "##..##"]
+mask = branch_mask([0, 0, 1, 1, 2, 2], "cpu")[0, 0] == 0
+rows = ["".join("#" if ok else "." for ok in row) for row in mask]
+for want, got in zip(picture, rows, strict=True): print(want, got, "ok" if want == got else "WRONG")
+EOF
+```
+
+**Right as software, wrong for its domain.** The mask came in this way with the model, and every check passes. The code is formatted, linted and typed, every function is documented, and 75 tests pass at 92%. Coverage counts `branch_mask` as tested, because its lines ran, and no test looked at what the mask allows. The code is right as software and wrong for its domain, and the tests of the next stop look at the domain.
+
+## What changed {#tut-21-what-changed-182c57}
+
+- <a id="tut-21-README.md-8ec9a0"></a>`README.md`: 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/922d6ba2495756622ad215301da7c48f2ec33fa9/README.md){.btn .btn-sm .btn-secondary}
+- <a id="tut-21-justfile-424f0b"></a>`justfile`: 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/922d6ba2495756622ad215301da7c48f2ec33fa9/justfile){.btn .btn-sm .btn-secondary}
+- <a id="tut-21-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: adds `test_records_of_different_lengths_answer_in_one_pass_as_alone`, `test_with_an_adapter_only_the_adapter_and_the_head_train`. 38 lines added. [The file](https://github.com/rahuldave/babykev/blob/922d6ba2495756622ad215301da7c48f2ec33fa9/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
+- <a id="tut-21-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: adds `test_smoke_reports_on_every_question_of_the_sample`. 17 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/922d6ba2495756622ad215301da7c48f2ec33fa9/tests/unit/test_smoke.py){.btn .btn-sm .btn-secondary}
+
+<details><summary>The diff of <code>README.md</code></summary>
+
+```diff
+@@ -67,8 +67,8 @@ downloads the base model from the Hugging Face Hub, about 1 GB. It answers the f
+ untrained, and prints each answer beside its label.
+ 
+ Run `just hook` once in each clone. It installs a git hook, which runs `just check` before each commit.
+-`just check` runs every check of the project, and if one fails, git makes no commit. You can run `just check`
+-yourself at any time.
++`just check` runs every check of the project, and if one fails, git makes no commit. One check is a floor.
++The tests must run at least 90% of the code. You can run `just check` yourself at any time.
+ 
+ ## What is here
+ 
+```
+
+</details>
+
+<details><summary>The diff of <code>justfile</code></summary>
+
+```diff
+@@ -69,7 +69,7 @@ types *args:
+ test *args:
+     @{{ if args == "help" { "just help test" } else { 'uv run pytest "$@"' } }}
+ 
+-# Run the checks one after another, and stop at the first that fails: the format, the linter, the types, the tests, the docs, the config files
++# Run the checks one after another, and stop at the first that fails: the format, the linter, the types, the tests and their coverage, the docs, the config files
+ [group('quality')]
+ [no-exit-message]
+ check *args:
+@@ -79,7 +79,7 @@ check *args:
+     just fmt --check
+     just lint
+     just types
+-    just test -q
++    just test -q --cov-fail-under=90
+     just docs check
+     just lint-config
+ 
+```
+
+</details>
+
+<details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
+
+```diff
+@@ -15,6 +15,7 @@ from babykev.model import (
+     pick_device,
+     user_tokens,
+ )
++from tests.tiny import tiny_backbone
+ 
+ 
+ def test_probabilities_sum_to_one_for_every_question(
+@@ -106,3 +107,40 @@ def test_pick_device_takes_an_override() -> None:
+ def test_pick_device_finds_something_to_run_on() -> None:
+     """With no override, the choice is one of the three kinds of device."""
+     assert pick_device() in {"cuda", "mps", "cpu"}
++
++
++def test_with_an_adapter_only_the_adapter_and_the_head_train(
++    tok: PreTrainedTokenizerFast,  # The tiny tokenizer
++    record: dict[str, Any],  # A record with three questions
++) -> None:
++    """The backbone is frozen: gradients reach the adapter and the pointer head, nothing else."""
++    model = DecisionModel("tiny", "cpu", lora=4, backbone=tiny_backbone(len(tok)))
++    enc = encode(tok, record)
++    labels = torch.tensor(enc["labels"])
++    losses = [
++        torch.nn.functional.cross_entropy(z[None], y[None])
++        for z, y in zip(model(enc), labels, strict=True)
++    ]
++    torch.stack(losses).sum().backward()
++    with_gradient = {name for name, p in model.named_parameters() if p.grad is not None}
++    assert with_gradient
++    assert all("lora_" in name or name.startswith("head.") for name in with_gradient)
++    assert {id(p) for p in model.trainable_parameters()} == {
++        id(p) for name, p in model.named_parameters() if name in with_gradient
++    }
++
++
++def test_records_of_different_lengths_answer_in_one_pass_as_alone(
++    model: DecisionModel,  # The tiny model
++    tok: PreTrainedTokenizerFast,  # Its tokenizer
++    record: dict[str, Any],  # A record with three questions
++) -> None:
++    """Padded to the longest, each record gets the logits that it gets in a pass of its own."""
++    short = {"state": "Brie.", "questions": record["questions"][:1]}
++    encs = [encode(tok, record), encode(tok, short)]
++    with torch.no_grad():
++        together = model.forward_batch(encs)
++        alone = [model(enc) for enc in encs]
++    for batch, single in zip(together, alone, strict=True):
++        for a, b in zip(batch, single, strict=True):
++            assert torch.allclose(a, b, atol=1e-5)
+```
+
+</details>
+
+<details><summary>The diff of <code>tests/unit/test_smoke.py</code></summary>
+
+```diff
+@@ -1,6 +1,9 @@
+ """Tests of the smoke run, without the real model."""
+ 
+-from babykev.smoke import verdict
++from transformers import PreTrainedTokenizerFast
++
++from babykev.model import DecisionModel
++from babykev.smoke import read_lines, smoke, verdict
+ 
+ 
+ def test_verdict_agrees_when_the_answer_is_the_label() -> None:
+@@ -24,3 +27,16 @@ def test_verdict_reads_a_score_answer_as_its_most_likely_level() -> None:
+         "level 1",
+         True,
+     )
++
++
++def test_smoke_reports_on_every_question_of_the_sample(
++    model: DecisionModel,  # The tiny model
++    tok: PreTrainedTokenizerFast,  # Its tokenizer
++) -> None:
++    """Five requests of three questions: fifteen verdicts and a closing count."""
++    lines = read_lines()
++    report = list(smoke(model, tok, lines))
++    verdicts = [text for text in report if text.startswith(("  ok", "  --"))]
++    assert len(verdicts) == sum(len(line["questions"]) for line in lines) == 15
++    right = sum(text.startswith("  ok") for text in verdicts)
++    assert f"\n{right} of 15 right" in report[-2]
+```
+
+</details>
+
+[This change on GitHub](https://github.com/rahuldave/babykev/compare/ebfa2a8cee251782b3709a379c35af77c80c6170...922d6ba2495756622ad215301da7c48f2ec33fa9){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-21`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-21){.btn .btn-sm .btn-primary}

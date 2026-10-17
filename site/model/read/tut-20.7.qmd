@@ -6,6 +6,17 @@ title: "20.7 A pointer head in place of the vocabulary head"
 
 **Read the tutorial.** [Build it yourself](../build/tut-20.7.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `e30ea2eb52ae`, partway through `tut-20`. [The code before this part](https://github.com/rahuldave/babykev/tree/e30ea2eb52ae23815152f60b09d07d9d0dd1fd3a){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach e30ea2eb52ae
+```
+
 ```bash
 just setup
 ```
@@ -27,8 +38,6 @@ vector of the decide token, and `k` maps the vector of each option. Line 186 tak
 the decide token, and scales it by one over the square root of 256. The head computes one row of attention. The
 query comes from the decide token, a key comes from each option, and the scores are the logits. `probs` turns them
 into probabilities with a softmax.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/e30ea2eb52ae23815152f60b09d07d9d0dd1fd3a). [The code after it](https://github.com/rahuldave/babykev/tree/455b6a8ae64dae7e79fea6dd6b8434d11eb8f542).
 
 ## 20.7 The pointer head gives one logit per option {#tut-20.7}
 
@@ -54,7 +63,7 @@ The test builds a head alone, of width 32 and `dp` 8, and gives it the vector of
 
 ### What changed {#tut-20.7-what-changed-182c57}
 
-- <a id="tut-20.7-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: five options in, five logits out. 8 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/455b6a8ae64dae7e79fea6dd6b8434d11eb8f542/tests/unit/test_model.py).
+- <a id="tut-20.7-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: five options in, five logits out. 8 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/455b6a8ae64dae7e79fea6dd6b8434d11eb8f542/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_pointer_head_gives_one_logit_per_option() -> None:`
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
@@ -86,4 +95,6 @@ The test builds a head alone, of width 32 and `dp` 8, and gives it the vector of
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/455b6a8ae64dae7e79fea6dd6b8434d11eb8f542). [The code after it](https://github.com/rahuldave/babykev/tree/455b6a8ae64dae7e79fea6dd6b8434d11eb8f542).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/455b6a8ae64dae7e79fea6dd6b8434d11eb8f542){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `455b6a8ae64d`, partway through `tut-20`. [The code after this part](https://github.com/rahuldave/babykev/tree/455b6a8ae64dae7e79fea6dd6b8434d11eb8f542){.btn .btn-sm .btn-primary}

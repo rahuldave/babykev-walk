@@ -6,6 +6,17 @@ title: "8 Lint"
 
 **Read the tutorial.** [Build it yourself](../build/tut-08.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-07`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-07){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach tut-07
+```
+
 ```bash
 just setup
 ```
@@ -16,8 +27,6 @@ The formatter changes how the code looks, and leaves a wrong line wrong. A linte
 and reports what breaks them, from an import that nobody uses to a `zip` that drops items silently. ruff is the
 linter too, and the families of rules come first. The linter finds 8 problems in `api.py`, and each rule then gets
 a fix of its own. ruff makes the last fix itself.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/84b3ac0ce858d907d8d59ffdc9c9096ab8cb2ac4). [The code after it](https://github.com/rahuldave/babykev/tree/7cdb1ba696a32050cba1c335892fccb68bb4fd24).
 
 ## 8.1 The rules of the linter {#tut-08.1}
 
@@ -41,7 +50,7 @@ with `assert`. The other 8 are in `api.py`.
 
 ### What changed {#tut-08.1-what-changed-182c57}
 
-- <a id="tut-08.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: a family of rules on each line. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/1a067ec6d90256e2f0142390db307c537909c047/pyproject.toml).
+- <a id="tut-08.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: a family of rules on each line. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/1a067ec6d90256e2f0142390db307c537909c047/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `    "B",   # bugbear: code that is likely a bug, such as a zip that drops items silently`
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
@@ -69,7 +78,7 @@ with `assert`. The other 8 are in `api.py`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/1a067ec6d90256e2f0142390db307c537909c047). [The code after it](https://github.com/rahuldave/babykev/tree/1a067ec6d90256e2f0142390db307c537909c047).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/1a067ec6d90256e2f0142390db307c537909c047){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/1a067ec6d90256e2f0142390db307c537909c047){.btn .btn-sm .btn-primary}
 
 ## 8.2 The tests may use assert {#tut-08.2}
 
@@ -91,7 +100,7 @@ once each. The last line says that `--fix` can fix one, and that 2 unsafe fixes 
 
 ### What changed {#tut-08.2-what-changed-182c57}
 
-- <a id="tut-08.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the tests may use `assert`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/a6325da466f16c6379613b62554e1e4cf2144e7e/pyproject.toml).
+- <a id="tut-08.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the tests may use `assert`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/a6325da466f16c6379613b62554e1e4cf2144e7e/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `"tests/**" = ["S101"]`
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
@@ -109,7 +118,7 @@ once each. The last line says that `--fix` can fix one, and that 2 unsafe fixes 
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/a6325da466f16c6379613b62554e1e4cf2144e7e). [The code after it](https://github.com/rahuldave/babykev/tree/a6325da466f16c6379613b62554e1e4cf2144e7e).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a6325da466f16c6379613b62554e1e4cf2144e7e){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/a6325da466f16c6379613b62554e1e4cf2144e7e){.btn .btn-sm .btn-primary}
 
 ## 8.3 The recipe lint {#tut-08.3}
 
@@ -143,7 +152,7 @@ the recipe. The next parts fix the problems one code at a time, by hand. ruff fi
 
 ### What changed {#tut-08.3-what-changed-182c57}
 
-- <a id="tut-08.3-justfile-424f0b"></a>`justfile`: the recipe `lint`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/58d6ece95cf464e01996ad8dbed1d98e92bcc502/justfile).
+- <a id="tut-08.3-justfile-424f0b"></a>`justfile`: the recipe `lint`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/58d6ece95cf464e01996ad8dbed1d98e92bcc502/justfile){.btn .btn-sm .btn-secondary}
   - look at `lint *args:`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -166,7 +175,7 @@ the recipe. The next parts fix the problems one code at a time, by hand. ruff fi
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/58d6ece95cf464e01996ad8dbed1d98e92bcc502). [The code after it](https://github.com/rahuldave/babykev/tree/58d6ece95cf464e01996ad8dbed1d98e92bcc502).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/58d6ece95cf464e01996ad8dbed1d98e92bcc502){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/58d6ece95cf464e01996ad8dbed1d98e92bcc502){.btn .btn-sm .btn-primary}
 
 ## 8.4 The docstring of api.py fits in 100 characters {#tut-08.4}
 
@@ -189,7 +198,7 @@ The formatter leaves the text of a docstring as it is.
 
 ### What changed {#tut-08.4-what-changed-182c57}
 
-- <a id="tut-08.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the table of the docstring, in 97 characters. 3 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/4a25204449af75e24305189a1395c418ec0295d3/src/babykev/api.py).
+- <a id="tut-08.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the table of the docstring, in 97 characters. 3 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/4a25204449af75e24305189a1395c418ec0295d3/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `Score  -> options = the levels, in order; answer = expected level, legend, probabilities by index`
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
@@ -211,7 +220,7 @@ The formatter leaves the text of a docstring as it is.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/4a25204449af75e24305189a1395c418ec0295d3). [The code after it](https://github.com/rahuldave/babykev/tree/4a25204449af75e24305189a1395c418ec0295d3).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/4a25204449af75e24305189a1395c418ec0295d3){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/4a25204449af75e24305189a1395c418ec0295d3){.btn .btn-sm .btn-primary}
 
 ## 8.5 X | Y in place of Union {#tut-08.5}
 
@@ -237,7 +246,7 @@ pydantic reads `X | Y` as it read `Union`.
 
 ### What changed {#tut-08.5-what-changed-182c57}
 
-- <a id="tut-08.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: two unions, written with `|`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/01c4956b31ad768bd11dc5da0c13128a7a3ab0fc/src/babykev/api.py).
+- <a id="tut-08.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: two unions, written with `|`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/01c4956b31ad768bd11dc5da0c13128a7a3ab0fc/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `JSONContent = str | dict | list | int | float | bool | None`
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
@@ -265,7 +274,7 @@ pydantic reads `X | Y` as it read `Union`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/01c4956b31ad768bd11dc5da0c13128a7a3ab0fc). [The code after it](https://github.com/rahuldave/babykev/tree/01c4956b31ad768bd11dc5da0c13128a7a3ab0fc).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/01c4956b31ad768bd11dc5da0c13128a7a3ab0fc){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/01c4956b31ad768bd11dc5da0c13128a7a3ab0fc){.btn .btn-sm .btn-primary}
 
 ## 8.6 K and n, in lower case {#tut-08.6}
 
@@ -288,7 +297,7 @@ functions, and prints `9 passed, 44 deselected`. A new name changes nothing that
 
 ### What changed {#tut-08.6-what-changed-182c57}
 
-- <a id="tut-08.6-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: two names, in lower case. 6 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/37fed4d2a9bff48f0a928851c8eb640736c7e313/src/babykev/api.py).
+- <a id="tut-08.6-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: two names, in lower case. 6 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/37fed4d2a9bff48f0a928851c8eb640736c7e313/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `    n = len(p)`
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
@@ -326,7 +335,7 @@ functions, and prints `9 passed, 44 deselected`. A new name changes nothing that
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/37fed4d2a9bff48f0a928851c8eb640736c7e313). [The code after it](https://github.com/rahuldave/babykev/tree/37fed4d2a9bff48f0a928851c8eb640736c7e313).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/37fed4d2a9bff48f0a928851c8eb640736c7e313){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/37fed4d2a9bff48f0a928851c8eb640736c7e313){.btn .btn-sm .btn-primary}
 
 ## 8.7 Zip with strict=True {#tut-08.7}
 
@@ -354,7 +363,7 @@ lengths, so nothing raises.
 
 ### What changed {#tut-08.7-what-changed-182c57}
 
-- <a id="tut-08.7-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: two calls of `zip`, with `strict=True`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/ca9cfc3b70b7a0c926c9407336c217e3f04c73aa/src/babykev/api.py).
+- <a id="tut-08.7-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: two calls of `zip`, with `strict=True`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/ca9cfc3b70b7a0c926c9407336c217e3f04c73aa/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `    for p, m in zip(probs, meta, strict=True):`
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
@@ -378,7 +387,7 @@ lengths, so nothing raises.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/ca9cfc3b70b7a0c926c9407336c217e3f04c73aa). [The code after it](https://github.com/rahuldave/babykev/tree/ca9cfc3b70b7a0c926c9407336c217e3f04c73aa).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ca9cfc3b70b7a0c926c9407336c217e3f04c73aa){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/ca9cfc3b70b7a0c926c9407336c217e3f04c73aa){.btn .btn-sm .btn-primary}
 
 ## 8.8 Just lint --fix sorts the imports {#tut-08.8}
 
@@ -405,7 +414,7 @@ prints `53 passed`.
 
 ### What changed {#tut-08.8-what-changed-182c57}
 
-- <a id="tut-08.8-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the imports, sorted. 2 lines added, 1 removed. It comes from `just lint --fix`. [The file](https://github.com/rahuldave/babykev/blob/7cdb1ba696a32050cba1c335892fccb68bb4fd24/src/babykev/api.py).
+- <a id="tut-08.8-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the imports, sorted. 2 lines added, 1 removed. It comes from `just lint --fix`. [The file](https://github.com/rahuldave/babykev/blob/7cdb1ba696a32050cba1c335892fccb68bb4fd24/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `from typing import Any, Literal`
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
@@ -425,4 +434,6 @@ prints `53 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/7cdb1ba696a32050cba1c335892fccb68bb4fd24). [The code after it](https://github.com/rahuldave/babykev/tree/7cdb1ba696a32050cba1c335892fccb68bb4fd24).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7cdb1ba696a32050cba1c335892fccb68bb4fd24){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-08`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-08){.btn .btn-sm .btn-primary}

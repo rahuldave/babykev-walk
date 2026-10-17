@@ -2,7 +2,7 @@
 project:
   type: website
   output-dir: _site
-  render: ["index.qmd", "read/*.qmd", "build/*.qmd", "narrative/index.qmd", "narrative/read/*.qmd", "uv/index.qmd", "uv/read/*.qmd", "uv/build/*.qmd", "linting/index.qmd", "linting/read/*.qmd", "linting/build/*.qmd", "docs/index.qmd", "docs/read/*.qmd", "docs/build/*.qmd", "just/index.qmd", "just/read/*.qmd", "just/build/*.qmd", "model/index.qmd", "model/read/*.qmd", "model/build/*.qmd", "testing/index.qmd", "testing/read/*.qmd", "testing/build/*.qmd", "contract/index.qmd", "contract/read/*.qmd", "contract/build/*.qmd"]   # only these pages
+  render: ["index.qmd", "read/*.qmd", "build/*.qmd", "narrative/index.qmd", "narrative/read/*.qmd", "uv/index.qmd", "uv/read/*.qmd", "uv/build/*.qmd", "linting/index.qmd", "linting/read/*.qmd", "linting/build/*.qmd", "docs/index.qmd", "docs/read/*.qmd", "docs/build/*.qmd", "just/index.qmd", "just/read/*.qmd", "just/build/*.qmd", "model/index.qmd", "model/read/*.qmd", "model/build/*.qmd", "testing/index.qmd", "testing/read/*.qmd", "testing/build/*.qmd", "contract/index.qmd", "contract/read/*.qmd", "contract/build/*.qmd", "lecture/index.qmd", "lecture/read/*.qmd"]   # only these pages
 
 website:
   title: "babykev, shown one move at a time"
@@ -2659,6 +2659,30 @@ website:
               contents:
                 - text: "10.3 The docstrings of the four classes of a request"
                   href: contract/build/tut-10.3.qmd#tut-10.3
+    - title: "babykev, the lecture"
+      style: docked
+      contents:
+        - lecture/index.qmd
+        - section: "Read the tutorial"
+          contents:
+            - text: "1 Where we start"
+              href: lecture/read/tut-01.qmd
+            - text: "5 The contract, and its tests"
+              href: lecture/read/tut-05.qmd
+            - text: "8 Fix the two bugs, format and lint"
+              href: lecture/read/tut-08.qmd
+            - text: "12 Clean, and kept clean"
+              href: lecture/read/tut-12.qmd
+            - text: "13 Documentation from the code"
+              href: lecture/read/tut-13.qmd
+            - text: "14 The docs site"
+              href: lecture/read/tut-14.qmd
+            - text: "21 A second file: model.py"
+              href: lecture/read/tut-21.qmd
+            - text: "22 The tests that could tell"
+              href: lecture/read/tut-22.qmd
+            - text: "26 Two images from one lockfile"
+              href: lecture/read/tut-26.qmd
 
 metadata-files: ["_settings.yml"]   # the class's own settings
 theme: "ac215"

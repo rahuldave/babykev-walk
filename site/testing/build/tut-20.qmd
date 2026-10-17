@@ -6,10 +6,12 @@ title: "20 Unit tests of the model and the smoke"
 
 **Build it yourself.** [Read the tutorial](../read/tut-20.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-19`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-19){.btn .btn-sm .btn-primary}
+
 If you start at this part, make your clone as **Get the project** says, and then run this command. It puts in your clone the files that this part starts from. A file that the project deleted before this part stays, so delete it if `git check` lists it:
 
 ```bash
-git rm -rq --cached --ignore-unmatch -- :/ && git restore --source 88b3a9e08db8 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch -- :/ && git restore --source tut-19 --staged --worktree -- :/
 ```
 
 Each test here runs one function alone, with the tiny model or with no model at all.
@@ -23,8 +25,6 @@ just setup
 A unit test runs one function alone. The tests here check the packing, the defence against a forged
 delimiter, the head and the device. Then they check the verdicts of the smoke, and the command `smoke`. Each move adds one test. The
 coverage does not rise with every test. It counts the lines that a test runs, and not what a test checks.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/88b3a9e08db851ce891ecfcfcf26d18892beea90). [The code after it](https://github.com/rahuldave/babykev/tree/ebfa2a8cee251782b3709a379c35af77c80c6170).
 
 ## 20.1 Packing marks every part with its delimiter {#tut-20.1}
 
@@ -67,12 +67,12 @@ git check 6d2401817f1b
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 88b3a9e08db8 --staged -- :/ && git restore --source 6d2401817f1b --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source tut-19 --staged -- :/ && git restore --source 6d2401817f1b --staged --worktree -- :/
 ```
 
 ### What changed {#tut-20.1-what-changed-182c57}
 
-- <a id="tut-20.1-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the tokens of a packed record. 16 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/6d2401817f1bc2d56de4f3021cfceaa80d5b80f9/tests/unit/test_model.py).
+- <a id="tut-20.1-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the tokens of a packed record. 16 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/6d2401817f1bc2d56de4f3021cfceaa80d5b80f9/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_packing_marks_every_part_with_its_delimiter(`
 
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
@@ -110,7 +110,7 @@ git restore --source 88b3a9e08db8 --staged -- :/ && git restore --source 6d24018
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/6d2401817f1bc2d56de4f3021cfceaa80d5b80f9). [The code after it](https://github.com/rahuldave/babykev/tree/6d2401817f1bc2d56de4f3021cfceaa80d5b80f9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/6d2401817f1bc2d56de4f3021cfceaa80d5b80f9){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/6d2401817f1bc2d56de4f3021cfceaa80d5b80f9){.btn .btn-sm .btn-primary}
 
 ## 20.2 Positions restart after the state {#tut-20.2}
 
@@ -144,7 +144,7 @@ git restore --source 6d2401817f1b --staged -- :/ && git restore --source e947449
 
 ### What changed {#tut-20.2-what-changed-182c57}
 
-- <a id="tut-20.2-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the positions of each question. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/e947449de17438d3aa5ee006bfc98db3944d4457/tests/unit/test_model.py).
+- <a id="tut-20.2-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the positions of each question. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/e947449de17438d3aa5ee006bfc98db3944d4457/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_positions_restart_after_the_state(`
 
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
@@ -170,7 +170,7 @@ git restore --source 6d2401817f1b --staged -- :/ && git restore --source e947449
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e947449de17438d3aa5ee006bfc98db3944d4457). [The code after it](https://github.com/rahuldave/babykev/tree/e947449de17438d3aa5ee006bfc98db3944d4457).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e947449de17438d3aa5ee006bfc98db3944d4457){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/e947449de17438d3aa5ee006bfc98db3944d4457){.btn .btn-sm .btn-primary}
 
 ## 20.3 A question that does not fit is refused {#tut-20.3}
 
@@ -206,7 +206,7 @@ git restore --source e947449de174 --staged -- :/ && git restore --source ff09783
 
 ### What changed {#tut-20.3-what-changed-182c57}
 
-- <a id="tut-20.3-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a question longer than the limit. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/ff097836c2f1b752bb4347f8e5ae59aeca648a05/tests/unit/test_model.py).
+- <a id="tut-20.3-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a question longer than the limit. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/ff097836c2f1b752bb4347f8e5ae59aeca648a05/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_a_question_that_does_not_fit_is_refused(`
 
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
@@ -229,7 +229,7 @@ git restore --source e947449de174 --staged -- :/ && git restore --source ff09783
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/ff097836c2f1b752bb4347f8e5ae59aeca648a05). [The code after it](https://github.com/rahuldave/babykev/tree/ff097836c2f1b752bb4347f8e5ae59aeca648a05).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ff097836c2f1b752bb4347f8e5ae59aeca648a05){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/ff097836c2f1b752bb4347f8e5ae59aeca648a05){.btn .btn-sm .btn-primary}
 
 ## 20.4 A state that does not fit is refused {#tut-20.4}
 
@@ -272,7 +272,7 @@ git restore --source ff097836c2f1 --staged -- :/ && git restore --source e3b3ab0
 
 ### What changed {#tut-20.4-what-changed-182c57}
 
-- <a id="tut-20.4-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a state longer than the limit. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/e3b3ab01357c19f3325d481c80e67ad1f13c1522/tests/unit/test_model.py).
+- <a id="tut-20.4-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a state longer than the limit. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/e3b3ab01357c19f3325d481c80e67ad1f13c1522/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `    with pytest.raises(ValueError, match="state too long: 62 tokens, the limit is 50"):`
 
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
@@ -295,7 +295,7 @@ git restore --source ff097836c2f1 --staged -- :/ && git restore --source e3b3ab0
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e3b3ab01357c19f3325d481c80e67ad1f13c1522). [The code after it](https://github.com/rahuldave/babykev/tree/e3b3ab01357c19f3325d481c80e67ad1f13c1522).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e3b3ab01357c19f3325d481c80e67ad1f13c1522){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/e3b3ab01357c19f3325d481c80e67ad1f13c1522){.btn .btn-sm .btn-primary}
 
 ## 20.5 A tokenizer alone would let text forge a delimiter {#tut-20.5}
 
@@ -333,7 +333,7 @@ git restore --source e3b3ab01357c --staged -- :/ && git restore --source 1782e1e
 
 ### What changed {#tut-20.5-what-changed-182c57}
 
-- <a id="tut-20.5-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the danger, a forged delimiter. 9 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/1782e1e6803efd49be04e682f3453e39c1c2fc23/tests/unit/test_model.py).
+- <a id="tut-20.5-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the danger, a forged delimiter. 9 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/1782e1e6803efd49be04e682f3453e39c1c2fc23/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_a_tokenizer_alone_would_let_text_forge_a_delimiter(`
 
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
@@ -364,7 +364,7 @@ git restore --source e3b3ab01357c --staged -- :/ && git restore --source 1782e1e
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/1782e1e6803efd49be04e682f3453e39c1c2fc23). [The code after it](https://github.com/rahuldave/babykev/tree/1782e1e6803efd49be04e682f3453e39c1c2fc23).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/1782e1e6803efd49be04e682f3453e39c1c2fc23){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/1782e1e6803efd49be04e682f3453e39c1c2fc23){.btn .btn-sm .btn-primary}
 
 ## 20.6 User text cannot forge a delimiter {#tut-20.6}
 
@@ -407,7 +407,7 @@ git restore --source 1782e1e6803e --staged -- :/ && git restore --source e30ea2e
 
 ### What changed {#tut-20.6-what-changed-182c57}
 
-- <a id="tut-20.6-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the defence, for each of the five delimiters. 11 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/e30ea2eb52ae23815152f60b09d07d9d0dd1fd3a/tests/unit/test_model.py).
+- <a id="tut-20.6-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the defence, for each of the five delimiters. 11 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/e30ea2eb52ae23815152f60b09d07d9d0dd1fd3a/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_user_text_cannot_forge_a_delimiter(`
 
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
@@ -440,7 +440,7 @@ git restore --source 1782e1e6803e --staged -- :/ && git restore --source e30ea2e
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e30ea2eb52ae23815152f60b09d07d9d0dd1fd3a). [The code after it](https://github.com/rahuldave/babykev/tree/e30ea2eb52ae23815152f60b09d07d9d0dd1fd3a).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e30ea2eb52ae23815152f60b09d07d9d0dd1fd3a){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/e30ea2eb52ae23815152f60b09d07d9d0dd1fd3a){.btn .btn-sm .btn-primary}
 
 ## 20.7 The pointer head gives one logit per option {#tut-20.7}
 
@@ -475,7 +475,7 @@ git restore --source e30ea2eb52ae --staged -- :/ && git restore --source 455b6a8
 
 ### What changed {#tut-20.7-what-changed-182c57}
 
-- <a id="tut-20.7-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: five options in, five logits out. 8 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/455b6a8ae64dae7e79fea6dd6b8434d11eb8f542/tests/unit/test_model.py).
+- <a id="tut-20.7-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: five options in, five logits out. 8 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/455b6a8ae64dae7e79fea6dd6b8434d11eb8f542/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_pointer_head_gives_one_logit_per_option() -> None:`
 
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
@@ -507,7 +507,7 @@ git restore --source e30ea2eb52ae --staged -- :/ && git restore --source 455b6a8
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/455b6a8ae64dae7e79fea6dd6b8434d11eb8f542). [The code after it](https://github.com/rahuldave/babykev/tree/455b6a8ae64dae7e79fea6dd6b8434d11eb8f542).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/455b6a8ae64dae7e79fea6dd6b8434d11eb8f542){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/455b6a8ae64dae7e79fea6dd6b8434d11eb8f542){.btn .btn-sm .btn-primary}
 
 ## 20.8 pick_device takes an override {#tut-20.8}
 
@@ -542,7 +542,7 @@ git restore --source 455b6a8ae64d --staged -- :/ && git restore --source 4e6dafd
 
 ### What changed {#tut-20.8-what-changed-182c57}
 
-- <a id="tut-20.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a device asked for by name. 14 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/4e6dafdd492c6ca8c6ebe4935f7065e8434064da/tests/unit/test_model.py).
+- <a id="tut-20.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a device asked for by name. 14 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/4e6dafdd492c6ca8c6ebe4935f7065e8434064da/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_pick_device_takes_an_override() -> None:`
 
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
@@ -578,7 +578,7 @@ git restore --source 455b6a8ae64d --staged -- :/ && git restore --source 4e6dafd
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/4e6dafdd492c6ca8c6ebe4935f7065e8434064da). [The code after it](https://github.com/rahuldave/babykev/tree/4e6dafdd492c6ca8c6ebe4935f7065e8434064da).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/4e6dafdd492c6ca8c6ebe4935f7065e8434064da){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/4e6dafdd492c6ca8c6ebe4935f7065e8434064da){.btn .btn-sm .btn-primary}
 
 ## 20.9 pick_device finds something to run on {#tut-20.9}
 
@@ -615,7 +615,7 @@ git restore --source 4e6dafdd492c --staged -- :/ && git restore --source fe15072
 
 ### What changed {#tut-20.9-what-changed-182c57}
 
-- <a id="tut-20.9-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a device, whatever the machine. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/fe15072f571cb54b810bf22b511cce5cc81920fa/tests/unit/test_model.py).
+- <a id="tut-20.9-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a device, whatever the machine. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/fe15072f571cb54b810bf22b511cce5cc81920fa/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_pick_device_finds_something_to_run_on() -> None:`
 
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
@@ -634,7 +634,7 @@ git restore --source 4e6dafdd492c --staged -- :/ && git restore --source fe15072
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/fe15072f571cb54b810bf22b511cce5cc81920fa). [The code after it](https://github.com/rahuldave/babykev/tree/fe15072f571cb54b810bf22b511cce5cc81920fa).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/fe15072f571cb54b810bf22b511cce5cc81920fa){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/fe15072f571cb54b810bf22b511cce5cc81920fa){.btn .btn-sm .btn-primary}
 
 ## 20.10 A verdict agrees when the answer is the label {#tut-20.10}
 
@@ -677,7 +677,7 @@ git restore --source fe15072f571c --staged -- :/ && git restore --source 46f7e96
 
 ### What changed {#tut-20.10-what-changed-182c57}
 
-- <a id="tut-20.10-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: the first test of `verdict`. New, 10 lines. [The file](https://github.com/rahuldave/babykev/blob/46f7e9637f1653265e237ae9676f543af062afc5/tests/unit/test_smoke.py).
+- <a id="tut-20.10-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: the first test of `verdict`. New, 10 lines. [The file](https://github.com/rahuldave/babykev/blob/46f7e9637f1653265e237ae9676f543af062afc5/tests/unit/test_smoke.py){.btn .btn-sm .btn-secondary}
   - look at `def test_verdict_agrees_when_the_answer_is_the_label() -> None:`
 
 <details open><summary>The patch to <code>tests/unit/test_smoke.py</code></summary>
@@ -698,7 +698,7 @@ git restore --source fe15072f571c --staged -- :/ && git restore --source 46f7e96
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/46f7e9637f1653265e237ae9676f543af062afc5). [The code after it](https://github.com/rahuldave/babykev/tree/46f7e9637f1653265e237ae9676f543af062afc5).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/46f7e9637f1653265e237ae9676f543af062afc5){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/46f7e9637f1653265e237ae9676f543af062afc5){.btn .btn-sm .btn-primary}
 
 ## 20.11 A verdict reads a noul as yes from one half {#tut-20.11}
 
@@ -732,7 +732,7 @@ git restore --source 46f7e9637f16 --staged -- :/ && git restore --source ec3c03d
 
 ### What changed {#tut-20.11-what-changed-182c57}
 
-- <a id="tut-20.11-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: a noul at the edge. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/ec3c03dc7b395c22a898f0c25e754daaa9ce1afa/tests/unit/test_smoke.py).
+- <a id="tut-20.11-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: a noul at the edge. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/ec3c03dc7b395c22a898f0c25e754daaa9ce1afa/tests/unit/test_smoke.py){.btn .btn-sm .btn-secondary}
   - look at `def test_verdict_reads_a_noul_answer_as_yes_from_one_half() -> None:`
 
 <details open><summary>The patch to <code>tests/unit/test_smoke.py</code></summary>
@@ -752,7 +752,7 @@ git restore --source 46f7e9637f16 --staged -- :/ && git restore --source ec3c03d
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/ec3c03dc7b395c22a898f0c25e754daaa9ce1afa). [The code after it](https://github.com/rahuldave/babykev/tree/ec3c03dc7b395c22a898f0c25e754daaa9ce1afa).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ec3c03dc7b395c22a898f0c25e754daaa9ce1afa){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/ec3c03dc7b395c22a898f0c25e754daaa9ce1afa){.btn .btn-sm .btn-primary}
 
 ## 20.12 A verdict reads a score as its most likely level {#tut-20.12}
 
@@ -789,7 +789,7 @@ git restore --source ec3c03dc7b39 --staged -- :/ && git restore --source adb57ff
 
 ### What changed {#tut-20.12-what-changed-182c57}
 
-- <a id="tut-20.12-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: a score, by its most likely level. 10 lines added. [The file](https://github.com/rahuldave/babykev/blob/adb57ffc75cd347933a0bebec13312802817faee/tests/unit/test_smoke.py).
+- <a id="tut-20.12-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: a score, by its most likely level. 10 lines added. [The file](https://github.com/rahuldave/babykev/blob/adb57ffc75cd347933a0bebec13312802817faee/tests/unit/test_smoke.py){.btn .btn-sm .btn-secondary}
   - look at `def test_verdict_reads_a_score_answer_as_its_most_likely_level() -> None:`
 
 <details open><summary>The patch to <code>tests/unit/test_smoke.py</code></summary>
@@ -813,7 +813,7 @@ git restore --source ec3c03dc7b39 --staged -- :/ && git restore --source adb57ff
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/adb57ffc75cd347933a0bebec13312802817faee). [The code after it](https://github.com/rahuldave/babykev/tree/adb57ffc75cd347933a0bebec13312802817faee).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/adb57ffc75cd347933a0bebec13312802817faee){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/adb57ffc75cd347933a0bebec13312802817faee){.btn .btn-sm .btn-primary}
 
 ## 20.13 babykev smoke help prints the usage {#tut-20.13}
 
@@ -857,7 +857,7 @@ git restore --source adb57ffc75cd --staged -- :/ && git restore --source 4322906
 
 ### What changed {#tut-20.13-what-changed-182c57}
 
-- <a id="tut-20.13-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: `babykev smoke help`. 13 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/4322906929f4c1b22be716cd4a341d80b8e75e25/tests/unit/test_cli.py).
+- <a id="tut-20.13-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: `babykev smoke help`. 13 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/4322906929f4c1b22be716cd4a341d80b8e75e25/tests/unit/test_cli.py){.btn .btn-sm .btn-secondary}
   - look at `def test_smoke_help_prints_the_usage(`
 
 <details open><summary>The patch to <code>tests/unit/test_cli.py</code></summary>
@@ -893,7 +893,7 @@ git restore --source adb57ffc75cd --staged -- :/ && git restore --source 4322906
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/4322906929f4c1b22be716cd4a341d80b8e75e25). [The code after it](https://github.com/rahuldave/babykev/tree/4322906929f4c1b22be716cd4a341d80b8e75e25).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/4322906929f4c1b22be716cd4a341d80b8e75e25){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/4322906929f4c1b22be716cd4a341d80b8e75e25){.btn .btn-sm .btn-primary}
 
 ## 20.14 babykev smoke refuses a word it does not know {#tut-20.14}
 
@@ -929,7 +929,7 @@ git restore --source 4322906929f4 --staged -- :/ && git restore --source 13ba537
 
 ### What changed {#tut-20.14-what-changed-182c57}
 
-- <a id="tut-20.14-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: a word that `babykev smoke` refuses. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/13ba53784ecd145301a1413d56e43938365bbf99/tests/unit/test_cli.py).
+- <a id="tut-20.14-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: a word that `babykev smoke` refuses. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/13ba53784ecd145301a1413d56e43938365bbf99/tests/unit/test_cli.py){.btn .btn-sm .btn-secondary}
   - look at `def test_smoke_refuses_a_word_it_does_not_know(`
 
 <details open><summary>The patch to <code>tests/unit/test_cli.py</code></summary>
@@ -954,7 +954,7 @@ git restore --source 4322906929f4 --staged -- :/ && git restore --source 13ba537
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/13ba53784ecd145301a1413d56e43938365bbf99). [The code after it](https://github.com/rahuldave/babykev/tree/13ba53784ecd145301a1413d56e43938365bbf99).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/13ba53784ecd145301a1413d56e43938365bbf99){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/13ba53784ecd145301a1413d56e43938365bbf99){.btn .btn-sm .btn-primary}
 
 ## 20.15 The README names the tests of the smoke {#tut-20.15}
 
@@ -983,12 +983,12 @@ git check ebfa2a8cee25
 If you are stuck, this command puts the files of this move in place of yours. A file that you made yourself stays:
 
 ```bash
-git restore --source 13ba53784ecd --staged -- :/ && git restore --source ebfa2a8cee25 --staged --worktree -- :/
+git fetch --quiet --tags --force origin; git restore --source 13ba53784ecd --staged -- :/ && git restore --source tut-20 --staged --worktree -- :/
 ```
 
 ### What changed {#tut-20.15-what-changed-182c57}
 
-- <a id="tut-20.15-README.md-8ec9a0"></a>`README.md`: the tests of the smoke, in the row of `tests/unit/`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/ebfa2a8cee251782b3709a379c35af77c80c6170/README.md).
+- <a id="tut-20.15-README.md-8ec9a0"></a>`README.md`: the tests of the smoke, in the row of `tests/unit/`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/ebfa2a8cee251782b3709a379c35af77c80c6170/README.md){.btn .btn-sm .btn-secondary}
   - look at ``| `tests/unit/` | The tests of the contract, of the command, of the model and of the smoke. One test checks every line of the sample data against the contract |``
 
 <details open><summary>The patch to <code>README.md</code></summary>
@@ -1007,4 +1007,6 @@ git restore --source 13ba53784ecd --staged -- :/ && git restore --source ebfa2a8
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/ebfa2a8cee251782b3709a379c35af77c80c6170). [The code after it](https://github.com/rahuldave/babykev/tree/ebfa2a8cee251782b3709a379c35af77c80c6170).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/ebfa2a8cee251782b3709a379c35af77c80c6170){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-20`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-20){.btn .btn-sm .btn-primary}

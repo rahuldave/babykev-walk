@@ -6,6 +6,17 @@ title: "5.1 to 5.7 From a request to text for the model"
 
 **Read the tutorial.** [Build it yourself](../build/tut-05.1-to-tut-05.7.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-04`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-04){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach tut-04
+```
+
 ```bash
 just setup
 ```
@@ -14,8 +25,6 @@ The model reads text, and picks between options. So each question becomes a list
 `yes`. A choice becomes one option for each name in its `criteria`, and a score becomes one option for each of its
 levels. `api.py` already does this, because the whole file came in one move, in the section on the contract in
 pydantic. The moves of this section add the tests that show it.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/1fef13ae49e24d280d05c250289c41d5636feff7). [The code after it](https://github.com/rahuldave/babykev/tree/8368a8202dab8159f95043310e2bf22a24c1e474).
 
 ## 5.1 render turns JSON into text {#tut-05.1}
 
@@ -34,7 +43,7 @@ pytest prints `9 passed`, one for each value.
 
 ### What changed {#tut-05.1-what-changed-182c57}
 
-- <a id="tut-05.1-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: nine values, and their text. 26 lines added. [The file](https://github.com/rahuldave/babykev/blob/9f861048b50c3705e7e1195ccbd90a7b01e60180/tests/unit/test_api.py).
+- <a id="tut-05.1-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: nine values, and their text. 26 lines added. [The file](https://github.com/rahuldave/babykev/blob/9f861048b50c3705e7e1195ccbd90a7b01e60180/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_render_flattens_json_into_text(value, text):`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -81,7 +90,7 @@ pytest prints `9 passed`, one for each value.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/9f861048b50c3705e7e1195ccbd90a7b01e60180). [The code after it](https://github.com/rahuldave/babykev/tree/9f861048b50c3705e7e1195ccbd90a7b01e60180).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9f861048b50c3705e7e1195ccbd90a7b01e60180){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/9f861048b50c3705e7e1195ccbd90a7b01e60180){.btn .btn-sm .btn-primary}
 
 ## 5.2 An option has a description only when it has one {#tut-05.2}
 
@@ -100,7 +109,7 @@ pytest prints `3 passed`.
 
 ### What changed {#tut-05.2-what-changed-182c57}
 
-- <a id="tut-05.2-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: three cases of an option. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/e6270727deb4467393c6c7b73cfaf0908392387f/tests/unit/test_api.py).
+- <a id="tut-05.2-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: three cases of an option. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/e6270727deb4467393c6c7b73cfaf0908392387f/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_option_text_adds_a_description_only_when_there_is_one(name, description, text):`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -135,7 +144,7 @@ pytest prints `3 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e6270727deb4467393c6c7b73cfaf0908392387f). [The code after it](https://github.com/rahuldave/babykev/tree/e6270727deb4467393c6c7b73cfaf0908392387f).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e6270727deb4467393c6c7b73cfaf0908392387f){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/e6270727deb4467393c6c7b73cfaf0908392387f){.btn .btn-sm .btn-primary}
 
 ## 5.3 A record keeps the state and the order of questions {#tut-05.3}
 
@@ -154,7 +163,7 @@ pytest prints `1 passed`.
 
 ### What changed {#tut-05.3-what-changed-182c57}
 
-- <a id="tut-05.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the state, and the order. 15 lines added. [The file](https://github.com/rahuldave/babykev/blob/3d272bd2edaf22b970b8888429dd23940ffd3f17/tests/unit/test_api.py).
+- <a id="tut-05.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the state, and the order. 15 lines added. [The file](https://github.com/rahuldave/babykev/blob/3d272bd2edaf22b970b8888429dd23940ffd3f17/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert [m["id"] for m in meta] == ["blue", "milk", "firmness"]`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -183,7 +192,7 @@ pytest prints `1 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/3d272bd2edaf22b970b8888429dd23940ffd3f17). [The code after it](https://github.com/rahuldave/babykev/tree/3d272bd2edaf22b970b8888429dd23940ffd3f17).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3d272bd2edaf22b970b8888429dd23940ffd3f17){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/3d272bd2edaf22b970b8888429dd23940ffd3f17){.btn .btn-sm .btn-primary}
 
 ## 5.4 A noul becomes no, then yes {#tut-05.4}
 
@@ -202,7 +211,7 @@ pytest prints `1 passed`.
 
 ### What changed {#tut-05.4-what-changed-182c57}
 
-- <a id="tut-05.4-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the two options of a noul. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/7dee26abd961a5a85d897f82332ae46e556e2f80/tests/unit/test_api.py).
+- <a id="tut-05.4-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the two options of a noul. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/7dee26abd961a5a85d897f82332ae46e556e2f80/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert record["questions"][0]["options"] == ["no", "yes"]`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -223,7 +232,7 @@ pytest prints `1 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/7dee26abd961a5a85d897f82332ae46e556e2f80). [The code after it](https://github.com/rahuldave/babykev/tree/7dee26abd961a5a85d897f82332ae46e556e2f80).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7dee26abd961a5a85d897f82332ae46e556e2f80){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/7dee26abd961a5a85d897f82332ae46e556e2f80){.btn .btn-sm .btn-primary}
 
 ## 5.5 The criteria of a noul describe no and yes {#tut-05.5}
 
@@ -241,7 +250,7 @@ pytest prints `1 passed`.
 
 ### What changed {#tut-05.5-what-changed-182c57}
 
-- <a id="tut-05.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the descriptions of no and yes. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/f9b390d64cc717326b28f9c7a6adbb88de59363f/tests/unit/test_api.py).
+- <a id="tut-05.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the descriptions of no and yes. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/f9b390d64cc717326b28f9c7a6adbb88de59363f/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_noul_criteria_describe_no_and_yes():`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -264,7 +273,7 @@ pytest prints `1 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/f9b390d64cc717326b28f9c7a6adbb88de59363f). [The code after it](https://github.com/rahuldave/babykev/tree/f9b390d64cc717326b28f9c7a6adbb88de59363f).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/f9b390d64cc717326b28f9c7a6adbb88de59363f){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/f9b390d64cc717326b28f9c7a6adbb88de59363f){.btn .btn-sm .btn-primary}
 
 ## 5.6 A choice becomes one option per criterion {#tut-05.6}
 
@@ -282,7 +291,7 @@ pytest prints `1 passed`.
 
 ### What changed {#tut-05.6-what-changed-182c57}
 
-- <a id="tut-05.6-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the options of a choice. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/0930c8de69e9710470eb60380b99cae5c3e82558/tests/unit/test_api.py).
+- <a id="tut-05.6-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the options of a choice. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/0930c8de69e9710470eb60380b99cae5c3e82558/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_choice_becomes_one_option_per_criterion_in_order():`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -308,7 +317,7 @@ pytest prints `1 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/0930c8de69e9710470eb60380b99cae5c3e82558). [The code after it](https://github.com/rahuldave/babykev/tree/0930c8de69e9710470eb60380b99cae5c3e82558).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0930c8de69e9710470eb60380b99cae5c3e82558){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/0930c8de69e9710470eb60380b99cae5c3e82558){.btn .btn-sm .btn-primary}
 
 ## 5.7 A score becomes one option per level {#tut-05.7}
 
@@ -326,7 +335,7 @@ pytest prints `1 passed`.
 
 ### What changed {#tut-05.7-what-changed-182c57}
 
-- <a id="tut-05.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the levels, and the legend. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/8368a8202dab8159f95043310e2bf22a24c1e474/tests/unit/test_api.py).
+- <a id="tut-05.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the levels, and the legend. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/8368a8202dab8159f95043310e2bf22a24c1e474/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_score_becomes_one_option_per_level_with_a_legend():`
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
@@ -347,4 +356,6 @@ pytest prints `1 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/8368a8202dab8159f95043310e2bf22a24c1e474). [The code after it](https://github.com/rahuldave/babykev/tree/8368a8202dab8159f95043310e2bf22a24c1e474).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/8368a8202dab8159f95043310e2bf22a24c1e474){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `8368a8202dab`, partway through `tut-05`. [The code after this part](https://github.com/rahuldave/babykev/tree/8368a8202dab8159f95043310e2bf22a24c1e474){.btn .btn-sm .btn-primary}

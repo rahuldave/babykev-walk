@@ -57,6 +57,8 @@ that the code of the section needs.
 
 ## 0 Where we start
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part is where the project starts, at `tut-00`. [The code of this part](https://github.com/rahuldave/babykev/tree/tut-00)
+
 babykev starts as a README, before any code. Its table already gives the three types of question.
 
 babykev starts as words, before any code. The README says what babykev is, and what request it reads. The licence is
@@ -623,11 +625,11 @@ git ignores each of them before it exists.
 
 </details>
 
-[The code](https://github.com/rahuldave/babykev/tree/70ac5b0a0a1d927dfc4da6f8b7b92344917e4a33).
-
 <a id="tut-03.1-to-tut-03.2"></a>
 
 ## 3.1 to 3.2 The contract, in pydantic
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-02`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-02)
 
 ```bash
 just setup
@@ -637,8 +639,6 @@ The whole tutorial first made babykev a Python project with uv. It gave babykev 
 `src/babykev/cli.py`. It also added a justfile, a file of short named commands called recipes, with the recipes
 `setup` and `help`. Then it added pytest, a tool that runs tests, and coverage, which shows the lines of code that the
 tests run. The recipe `just test` runs them both, and five tests check the command. The project has no contract yet.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/4640589d80e4f224a4b2c1fd9567e952f564f102). [The code after it](https://github.com/rahuldave/babykev/tree/e8e2e72adad9364a58be21dadf6d757e84436b97).
 
 <a id="tut-03.1"></a>
 
@@ -839,11 +839,15 @@ The 5 tests pass, and coverage falls. `api.py` has 70 statements, and no test ru
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e8e2e72adad9364a58be21dadf6d757e84436b97). [The code after it](https://github.com/rahuldave/babykev/tree/e8e2e72adad9364a58be21dadf6d757e84436b97).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e8e2e72adad9364a58be21dadf6d757e84436b97).
+
+This part ends at the code at `e8e2e72adad9`, partway through `tut-03`. [The code after this part](https://github.com/rahuldave/babykev/tree/e8e2e72adad9364a58be21dadf6d757e84436b97)
 
 <a id="tut-03.3-to-tut-03.5"></a>
 
 ## 3.3 to 3.5 What babykev leaves out of the contract
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `e8e2e72adad9`, partway through `tut-03`. [The code before this part](https://github.com/rahuldave/babykev/tree/e8e2e72adad9364a58be21dadf6d757e84436b97)
 
 ```bash
 just setup
@@ -856,8 +860,6 @@ model reads.
 babykev has no server and no bill. A docstring is the text at the top of a file, or under a class or a function, that
 says what it is for. The moves take the server out of the docstring of `api.py`. They also take the name of the model
 out of a request, and remove the count of tokens.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/e8e2e72adad9364a58be21dadf6d757e84436b97). [The code after it](https://github.com/rahuldave/babykev/tree/43b7ea4eda990f90abd605920e2fb1d9b376378d).
 
 <a id="tut-03.3"></a>
 
@@ -972,19 +974,21 @@ just test
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/43b7ea4eda990f90abd605920e2fb1d9b376378d). [The code after it](https://github.com/rahuldave/babykev/tree/43b7ea4eda990f90abd605920e2fb1d9b376378d).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/43b7ea4eda990f90abd605920e2fb1d9b376378d).
+
+This part ends at the code at `43b7ea4eda99`, partway through `tut-03`. [The code after this part](https://github.com/rahuldave/babykev/tree/43b7ea4eda990f90abd605920e2fb1d9b376378d)
 
 <a id="tut-03.6-to-tut-03.7"></a>
 
 ## 3.6 to 3.7 Sample data
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `43b7ea4eda99`, partway through `tut-03`. [The code before this part](https://github.com/rahuldave/babykev/tree/43b7ea4eda990f90abd605920e2fb1d9b376378d)
 
 ```bash
 just setup
 ```
 
 A file holds five requests about cheese, one on each line. Each line must fit the contract.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/43b7ea4eda990f90abd605920e2fb1d9b376378d). [The code after it](https://github.com/rahuldave/babykev/tree/56606771fb23f7a0a01825f477050d2980a47736).
 
 <a id="tut-03.6"></a>
 
@@ -1065,11 +1069,15 @@ grep -n -E 'api.py|sample.jsonl' README.md
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/56606771fb23f7a0a01825f477050d2980a47736). [The code after it](https://github.com/rahuldave/babykev/tree/56606771fb23f7a0a01825f477050d2980a47736).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/56606771fb23f7a0a01825f477050d2980a47736).
+
+This part ends at the code at `tut-03`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-03)
 
 <a id="tut-04"></a>
 
 ## 4 What the contract accepts and refuses
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-03`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-03)
 
 No test reaches the contract yet. The first tests check each line of the sample data against it. The others check one
 rule each. A contract must refuse bad data as well as accept good data. When data does not fit, pydantic refuses it
@@ -1082,8 +1090,6 @@ just setup
 The contract says what a request is, and no test checks it. The tests of this part check the five sample requests
 against the contract. Then they check what the contract accepts and refuses, one rule at a time. They go in
 `tests/unit/test_api.py`, one test in each move.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/56606771fb23f7a0a01825f477050d2980a47736). [The code after it](https://github.com/rahuldave/babykev/tree/1fef13ae49e24d280d05c250289c41d5636feff7).
 
 <a id="tut-04.1"></a>
 
@@ -1580,11 +1586,15 @@ grep -n 'tests/unit' README.md
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/1fef13ae49e24d280d05c250289c41d5636feff7). [The code after it](https://github.com/rahuldave/babykev/tree/1fef13ae49e24d280d05c250289c41d5636feff7).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/1fef13ae49e24d280d05c250289c41d5636feff7).
+
+This part ends at the code at `tut-04`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-04)
 
 <a id="tut-05.1-to-tut-05.7"></a>
 
 ## 5.1 to 5.7 From a request to text for the model
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-04`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-04)
 
 ```bash
 just setup
@@ -1594,8 +1604,6 @@ The model reads text, and picks between options. So each question becomes a list
 `yes`. A choice becomes one option for each name in its `criteria`, and a score becomes one option for each of its
 levels. `api.py` already does this, because the whole file came in one move, in the section on the contract in
 pydantic. The moves of this section add the tests that show it.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/1fef13ae49e24d280d05c250289c41d5636feff7). [The code after it](https://github.com/rahuldave/babykev/tree/8368a8202dab8159f95043310e2bf22a24c1e474).
 
 <a id="tut-05.1"></a>
 
@@ -1941,11 +1949,15 @@ pytest prints `1 passed`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/8368a8202dab8159f95043310e2bf22a24c1e474). [The code after it](https://github.com/rahuldave/babykev/tree/8368a8202dab8159f95043310e2bf22a24c1e474).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/8368a8202dab8159f95043310e2bf22a24c1e474).
+
+This part ends at the code at `8368a8202dab`, partway through `tut-05`. [The code after this part](https://github.com/rahuldave/babykev/tree/8368a8202dab8159f95043310e2bf22a24c1e474)
 
 <a id="tut-05.8-to-tut-05.11"></a>
 
 ## 5.8 to 5.11 From probabilities back to answers
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `8368a8202dab`, partway through `tut-05`. [The code before this part](https://github.com/rahuldave/babykev/tree/8368a8202dab8159f95043310e2bf22a24c1e474)
 
 ```bash
 just setup
@@ -1953,8 +1965,6 @@ just setup
 
 The model gives a probability for each option. The function `to_answers`, in `api.py`, turns them into an answer of
 the type of each question. The moves of this section add a test for each type.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/8368a8202dab8159f95043310e2bf22a24c1e474). [The code after it](https://github.com/rahuldave/babykev/tree/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f).
 
 <a id="tut-05.8"></a>
 
@@ -2144,11 +2154,15 @@ shows them. Coverage says which lines ran. It does not say that a test checked w
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f). [The code after it](https://github.com/rahuldave/babykev/tree/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f).
+
+This part ends at the code at `tut-05`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-05)
 
 <a id="tut-10.3"></a>
 
 ## 10.3 The classes of a request say what they are
+
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `7943e585faa8`, partway through `tut-10`. [The code before this part](https://github.com/rahuldave/babykev/tree/7943e585faa81e4c0400f5e2e9ca7b42ce4bf286)
 
 ```bash
 just setup
@@ -2163,8 +2177,6 @@ the kind of value that each input and the result hold. The tests grew to 53.
 Then the whole tutorial turned on the rules `D1` of ruff. They ask for a docstring on every public file, class and
 function. A name is public when it does not start with `_`. The package, the folder `src/babykev` that holds the code,
 got its docstring first.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/7943e585faa81e4c0400f5e2e9ca7b42ce4bf286). [The code after it](https://github.com/rahuldave/babykev/tree/9a769c7d9551fb181bf7c36d989f94f35f836c2d).
 
 ### 10.3 The docstrings of the four classes of a request
 
@@ -2236,4 +2248,6 @@ question.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/9a769c7d9551fb181bf7c36d989f94f35f836c2d). [The code after it](https://github.com/rahuldave/babykev/tree/9a769c7d9551fb181bf7c36d989f94f35f836c2d).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9a769c7d9551fb181bf7c36d989f94f35f836c2d).
+
+This part ends at the code at `9a769c7d9551`, partway through `tut-10`. [The code after this part](https://github.com/rahuldave/babykev/tree/9a769c7d9551fb181bf7c36d989f94f35f836c2d)

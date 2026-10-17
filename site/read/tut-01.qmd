@@ -6,14 +6,23 @@ title: "1 The project"
 
 **Read the tutorial.** [Build it yourself](../build/tut-01.qmd) is the other way to read this part.
 
+This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-00`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-00){.btn .btn-sm .btn-primary}
+
+To look at this code on your machine, run these commands. The first one makes a clone, if this folder has none:
+
+```bash
+[ -d babykev ] || git clone https://github.com/rahuldave/babykev
+cd babykev
+git fetch --quiet --tags --force origin
+git switch --detach tut-00
+```
+
 babykev must be a Python project before it can hold code. uv makes the project. Then babykev gets its words, its
 command, and a justfile that names the tasks of the project.
 
 There is no justfile until the ninth move, so do not run `just` in the project before then. `just` looks for a
 justfile in the folder, and then in the folders above it. In the walk repository, the folder above the project has a
 justfile of its own. So an early `just setup` runs that recipe, and not one of babykev.
-
-[The code before this part](https://github.com/rahuldave/babykev/tree/70ac5b0a0a1d927dfc4da6f8b7b92344917e4a33). [The code after it](https://github.com/rahuldave/babykev/tree/7ad3a06605fadc9f34b5e2d8180145a3e53389a9).
 
 ## 1.1 uv makes the project {#tut-01.1}
 
@@ -47,10 +56,10 @@ git status --short
 
 ### What changed {#tut-01.1-what-changed-182c57}
 
-- <a id="tut-01.1-.python-version-7696e9"></a>`.python-version`: `3.13`, the version of Python that uv installs for the project. New, 1 line. It comes from `uv init --package --name babykev --python 3.13`. [The file](https://github.com/rahuldave/babykev/blob/eac75e0becc78c9a872e734ea715ac3903947844/.python-version).
-- <a id="tut-01.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: `[project.scripts]` makes a command `babykev` that runs `main` of the package `babykev`. `[build-system]` names `uv_build`, the tool that builds the package. New, 14 lines. It comes from `uv init --package --name babykev --python 3.13`. [The file](https://github.com/rahuldave/babykev/blob/eac75e0becc78c9a872e734ea715ac3903947844/pyproject.toml).
+- <a id="tut-01.1-.python-version-7696e9"></a>`.python-version`: `3.13`, the version of Python that uv installs for the project. New, 1 line. It comes from `uv init --package --name babykev --python 3.13`. [The file](https://github.com/rahuldave/babykev/blob/eac75e0becc78c9a872e734ea715ac3903947844/.python-version){.btn .btn-sm .btn-secondary}
+- <a id="tut-01.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: `[project.scripts]` makes a command `babykev` that runs `main` of the package `babykev`. `[build-system]` names `uv_build`, the tool that builds the package. New, 14 lines. It comes from `uv init --package --name babykev --python 3.13`. [The file](https://github.com/rahuldave/babykev/blob/eac75e0becc78c9a872e734ea715ac3903947844/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `babykev = "babykev:main"`
-- <a id="tut-01.1-src-babykev-__init__.py-a40393"></a>`src/babykev/__init__.py`: the function that the command runs. It prints a greeting. New, 2 lines. It comes from `uv init --package --name babykev --python 3.13`. [The file](https://github.com/rahuldave/babykev/blob/eac75e0becc78c9a872e734ea715ac3903947844/src/babykev/__init__.py).
+- <a id="tut-01.1-src-babykev-__init__.py-a40393"></a>`src/babykev/__init__.py`: the function that the command runs. It prints a greeting. New, 2 lines. It comes from `uv init --package --name babykev --python 3.13`. [The file](https://github.com/rahuldave/babykev/blob/eac75e0becc78c9a872e734ea715ac3903947844/src/babykev/__init__.py){.btn .btn-sm .btn-secondary}
   - look at `print("Hello from babykev!")`
 
 <details><summary>The diff of <code>.python-version</code></summary>
@@ -94,7 +103,7 @@ git status --short
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/eac75e0becc78c9a872e734ea715ac3903947844). [The code after it](https://github.com/rahuldave/babykev/tree/eac75e0becc78c9a872e734ea715ac3903947844).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/eac75e0becc78c9a872e734ea715ac3903947844){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/eac75e0becc78c9a872e734ea715ac3903947844){.btn .btn-sm .btn-primary}
 
 ## 1.2 uv lock writes the lockfile {#tut-01.2}
 
@@ -119,10 +128,10 @@ then changes the packages of `.venv` to match, and does not print `Creating virt
 
 ### What changed {#tut-01.2-what-changed-182c57}
 
-- <a id="tut-01.2-uv.lock-8356d8"></a>`uv.lock`: babykev itself, installed from this folder. `editable` means that a change to the code shows at the next run, with no new install. New, 8 lines. It comes from `uv lock`. [The file](https://github.com/rahuldave/babykev/blob/489f27fad816149652a8d608b162fa98c37563f5/uv.lock).
+- <a id="tut-01.2-uv.lock-8356d8"></a>`uv.lock`: babykev itself, installed from this folder. `editable` means that a change to the code shows at the next run, with no new install. New, 8 lines. It comes from `uv lock`. [The file](https://github.com/rahuldave/babykev/blob/489f27fad816149652a8d608b162fa98c37563f5/uv.lock){.btn .btn-sm .btn-secondary}
   - look at `source = { editable = "." }`
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/489f27fad816149652a8d608b162fa98c37563f5). [The code after it](https://github.com/rahuldave/babykev/tree/489f27fad816149652a8d608b162fa98c37563f5).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/489f27fad816149652a8d608b162fa98c37563f5){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/489f27fad816149652a8d608b162fa98c37563f5){.btn .btn-sm .btn-primary}
 
 ## 1.3 The description of babykev {#tut-01.3}
 
@@ -141,7 +150,7 @@ grep -n description pyproject.toml
 
 ### What changed {#tut-01.3-what-changed-182c57}
 
-- <a id="tut-01.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: the description. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/0497c0dc9d3772df47e79361aa4165e5de8e227d/pyproject.toml).
+- <a id="tut-01.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: the description. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/0497c0dc9d3772df47e79361aa4165e5de8e227d/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `description = "A small decision model: one state, typed questions, a probability for every answer"`
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
@@ -160,7 +169,7 @@ grep -n description pyproject.toml
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/0497c0dc9d3772df47e79361aa4165e5de8e227d). [The code after it](https://github.com/rahuldave/babykev/tree/0497c0dc9d3772df47e79361aa4165e5de8e227d).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0497c0dc9d3772df47e79361aa4165e5de8e227d){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/0497c0dc9d3772df47e79361aa4165e5de8e227d){.btn .btn-sm .btn-primary}
 
 ## 1.4 The licence of babykev {#tut-01.4}
 
@@ -180,7 +189,7 @@ them at the end of `[project]`, so the numbers can differ.
 
 ### What changed {#tut-01.4-what-changed-182c57}
 
-- <a id="tut-01.4-pyproject.toml-5d07e7"></a>`pyproject.toml`: the licence, and the files a package carries. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/414874463b887dedf65c5c74caeac8a064b0e876/pyproject.toml).
+- <a id="tut-01.4-pyproject.toml-5d07e7"></a>`pyproject.toml`: the licence, and the files a package carries. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/414874463b887dedf65c5c74caeac8a064b0e876/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `license-files = ["LICENSE", "NOTICE"]`
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
@@ -199,7 +208,7 @@ them at the end of `[project]`, so the numbers can differ.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/414874463b887dedf65c5c74caeac8a064b0e876). [The code after it](https://github.com/rahuldave/babykev/tree/414874463b887dedf65c5c74caeac8a064b0e876).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/414874463b887dedf65c5c74caeac8a064b0e876){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/414874463b887dedf65c5c74caeac8a064b0e876){.btn .btn-sm .btn-primary}
 
 ## 1.5 The author of babykev {#tut-01.5}
 
@@ -218,7 +227,7 @@ exit code 0. The words of the three moves change no dependency, so `uv.lock` sta
 
 ### What changed {#tut-01.5-what-changed-182c57}
 
-- <a id="tut-01.5-pyproject.toml-5d07e7"></a>`pyproject.toml`: the author. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/7f38877e597f5404208fdca2eabb176077d95a8e/pyproject.toml).
+- <a id="tut-01.5-pyproject.toml-5d07e7"></a>`pyproject.toml`: the author. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/7f38877e597f5404208fdca2eabb176077d95a8e/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `authors = [{ name = "Rahul Dave" }]`
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
@@ -236,7 +245,7 @@ exit code 0. The words of the three moves change no dependency, so `uv.lock` sta
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/7f38877e597f5404208fdca2eabb176077d95a8e). [The code after it](https://github.com/rahuldave/babykev/tree/7f38877e597f5404208fdca2eabb176077d95a8e).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7f38877e597f5404208fdca2eabb176077d95a8e){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/7f38877e597f5404208fdca2eabb176077d95a8e){.btn .btn-sm .btn-primary}
 
 ## 1.6 cli.py, the command with help {#tut-01.6}
 
@@ -261,7 +270,7 @@ the `main` of `__init__.py`.
 
 ### What changed {#tut-01.6-what-changed-182c57}
 
-- <a id="tut-01.6-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: `main` reads the words after `babykev`. A word other than `help`, `--help` or `-h` ends the command with exit code 2. New, 21 lines. [The file](https://github.com/rahuldave/babykev/blob/64a78cf48bc1b0f508dfd7b83c3a2b0572fb1912/src/babykev/cli.py).
+- <a id="tut-01.6-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: `main` reads the words after `babykev`. A word other than `help`, `--help` or `-h` ends the command with exit code 2. New, 21 lines. [The file](https://github.com/rahuldave/babykev/blob/64a78cf48bc1b0f508dfd7b83c3a2b0572fb1912/src/babykev/cli.py){.btn .btn-sm .btn-secondary}
   - look at `raise SystemExit(2)`
 
 <details><summary>The diff of <code>src/babykev/cli.py</code></summary>
@@ -293,7 +302,7 @@ the `main` of `__init__.py`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/64a78cf48bc1b0f508dfd7b83c3a2b0572fb1912). [The code after it](https://github.com/rahuldave/babykev/tree/64a78cf48bc1b0f508dfd7b83c3a2b0572fb1912).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/64a78cf48bc1b0f508dfd7b83c3a2b0572fb1912){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/64a78cf48bc1b0f508dfd7b83c3a2b0572fb1912){.btn .btn-sm .btn-primary}
 
 ## 1.7 The command babykev runs cli.py {#tut-01.7}
 
@@ -313,7 +322,7 @@ uv run babykev train
 
 ### What changed {#tut-01.7-what-changed-182c57}
 
-- <a id="tut-01.7-pyproject.toml-5d07e7"></a>`pyproject.toml`: the command now runs `main` of the module `cli`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/292ddcc99a287378929f14e2082d40f0947a2880/pyproject.toml).
+- <a id="tut-01.7-pyproject.toml-5d07e7"></a>`pyproject.toml`: the command now runs `main` of the module `cli`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/292ddcc99a287378929f14e2082d40f0947a2880/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `babykev = "babykev.cli:main"`
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
@@ -332,7 +341,7 @@ uv run babykev train
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/292ddcc99a287378929f14e2082d40f0947a2880). [The code after it](https://github.com/rahuldave/babykev/tree/292ddcc99a287378929f14e2082d40f0947a2880).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/292ddcc99a287378929f14e2082d40f0947a2880){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/292ddcc99a287378929f14e2082d40f0947a2880){.btn .btn-sm .btn-primary}
 
 ## 1.8 The greeting of uv goes {#tut-01.8}
 
@@ -352,7 +361,7 @@ uv run babykev
 
 ### What changed {#tut-01.8-what-changed-182c57}
 
-- <a id="tut-01.8-src-babykev-__init__.py-a40393"></a>`src/babykev/__init__.py`: the greeting goes, and the file is empty. 0 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/e32c7ba9f7983fc03cc8d91411562b1eac1d38e9/src/babykev/__init__.py).
+- <a id="tut-01.8-src-babykev-__init__.py-a40393"></a>`src/babykev/__init__.py`: the greeting goes, and the file is empty. 0 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/e32c7ba9f7983fc03cc8d91411562b1eac1d38e9/src/babykev/__init__.py){.btn .btn-sm .btn-secondary}
 
 <details><summary>The diff of <code>src/babykev/__init__.py</code></summary>
 
@@ -364,7 +373,7 @@ uv run babykev
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e32c7ba9f7983fc03cc8d91411562b1eac1d38e9). [The code after it](https://github.com/rahuldave/babykev/tree/e32c7ba9f7983fc03cc8d91411562b1eac1d38e9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e32c7ba9f7983fc03cc8d91411562b1eac1d38e9){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/e32c7ba9f7983fc03cc8d91411562b1eac1d38e9){.btn .btn-sm .btn-primary}
 
 ## 1.9 A justfile with the recipe setup {#tut-01.9}
 
@@ -398,7 +407,7 @@ the one recipe, under `[setup]`.
 
 ### What changed {#tut-01.9-what-changed-182c57}
 
-- <a id="tut-01.9-justfile-424f0b"></a>`justfile`: the recipe `setup` and its line. New, 10 lines. [The file](https://github.com/rahuldave/babykev/blob/e14dffa877a2d24a53d67d8dd3d54b17204885b1/justfile).
+- <a id="tut-01.9-justfile-424f0b"></a>`justfile`: the recipe `setup` and its line. New, 10 lines. [The file](https://github.com/rahuldave/babykev/blob/e14dffa877a2d24a53d67d8dd3d54b17204885b1/justfile){.btn .btn-sm .btn-secondary}
   - look at `setup:`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -419,7 +428,7 @@ the one recipe, under `[setup]`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/e14dffa877a2d24a53d67d8dd3d54b17204885b1). [The code after it](https://github.com/rahuldave/babykev/tree/e14dffa877a2d24a53d67d8dd3d54b17204885b1).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/e14dffa877a2d24a53d67d8dd3d54b17204885b1){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/e14dffa877a2d24a53d67d8dd3d54b17204885b1){.btn .btn-sm .btn-primary}
 
 ## 1.10 The recipe help {#tut-01.10}
 
@@ -450,7 +459,7 @@ just help
 
 ### What changed {#tut-01.10-what-changed-182c57}
 
-- <a id="tut-01.10-justfile-424f0b"></a>`justfile`: the recipe `help`. 12 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a55c90355687e4bf94dfad2277262548ba4ea682/justfile).
+- <a id="tut-01.10-justfile-424f0b"></a>`justfile`: the recipe `help`. 12 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a55c90355687e4bf94dfad2277262548ba4ea682/justfile){.btn .btn-sm .btn-secondary}
   - look at `help *verb:`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -482,7 +491,7 @@ just help
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/a55c90355687e4bf94dfad2277262548ba4ea682). [The code after it](https://github.com/rahuldave/babykev/tree/a55c90355687e4bf94dfad2277262548ba4ea682).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/a55c90355687e4bf94dfad2277262548ba4ea682){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/a55c90355687e4bf94dfad2277262548ba4ea682){.btn .btn-sm .btn-primary}
 
 ## 1.11 setup answers help {#tut-01.11}
 
@@ -505,7 +514,7 @@ longer prints `uv sync --locked` first, because of the `@`.
 
 ### What changed {#tut-01.11-what-changed-182c57}
 
-- <a id="tut-01.11-justfile-424f0b"></a>`justfile`: `setup` answers `help`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/3016e7ee53854d719456c12a48c8c8e620614bde/justfile).
+- <a id="tut-01.11-justfile-424f0b"></a>`justfile`: `setup` answers `help`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/3016e7ee53854d719456c12a48c8c8e620614bde/justfile){.btn .btn-sm .btn-secondary}
   - look at `@{{ if args == "help" { "just help setup" } else { "uv sync --locked" } }}`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -523,7 +532,7 @@ longer prints `uv sync --locked` first, because of the `@`.
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/3016e7ee53854d719456c12a48c8c8e620614bde). [The code after it](https://github.com/rahuldave/babykev/tree/3016e7ee53854d719456c12a48c8c8e620614bde).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/3016e7ee53854d719456c12a48c8c8e620614bde){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/3016e7ee53854d719456c12a48c8c8e620614bde){.btn .btn-sm .btn-primary}
 
 ## 1.12 help gives the help of the program too {#tut-01.12}
 
@@ -549,7 +558,7 @@ just help setup
 
 ### What changed {#tut-01.12-what-changed-182c57}
 
-- <a id="tut-01.12-justfile-424f0b"></a>`justfile`: the variable `program`, and the branch of `help` that runs the program's help. 6 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/9218f21a784277593cf6930e10389b04e41bf9d0/justfile).
+- <a id="tut-01.12-justfile-424f0b"></a>`justfile`: the variable `program`, and the branch of `help` that runs the program's help. 6 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/9218f21a784277593cf6930e10389b04e41bf9d0/justfile){.btn .btn-sm .btn-secondary}
   - look at `program := "babykev"`
 
 <details><summary>The diff of <code>justfile</code></summary>
@@ -585,7 +594,7 @@ just help setup
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/9218f21a784277593cf6930e10389b04e41bf9d0). [The code after it](https://github.com/rahuldave/babykev/tree/9218f21a784277593cf6930e10389b04e41bf9d0).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/9218f21a784277593cf6930e10389b04e41bf9d0){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/9218f21a784277593cf6930e10389b04e41bf9d0){.btn .btn-sm .btn-primary}
 
 ## 1.13 The README says how to start {#tut-01.13}
 
@@ -605,7 +614,7 @@ grep -n '^## ' README.md
 
 ### What changed {#tut-01.13-what-changed-182c57}
 
-- <a id="tut-01.13-README.md-8ec9a0"></a>`README.md`: how to start. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/0d2e163cca5d3eeb9fc8f7223fddd8d7da735fde/README.md).
+- <a id="tut-01.13-README.md-8ec9a0"></a>`README.md`: how to start. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/0d2e163cca5d3eeb9fc8f7223fddd8d7da735fde/README.md){.btn .btn-sm .btn-secondary}
   - look at ``Run `just setup` first. It installs Python and every dependency into `.venv`, exactly as `uv.lock` says.``
 
 <details><summary>The diff of <code>README.md</code></summary>
@@ -628,7 +637,7 @@ grep -n '^## ' README.md
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/0d2e163cca5d3eeb9fc8f7223fddd8d7da735fde). [The code after it](https://github.com/rahuldave/babykev/tree/0d2e163cca5d3eeb9fc8f7223fddd8d7da735fde).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/0d2e163cca5d3eeb9fc8f7223fddd8d7da735fde){.btn .btn-sm .btn-secondary} [The code after it](https://github.com/rahuldave/babykev/tree/0d2e163cca5d3eeb9fc8f7223fddd8d7da735fde){.btn .btn-sm .btn-primary}
 
 ## 1.14 The README says what each file is {#tut-01.14}
 
@@ -649,7 +658,7 @@ Both commands of "Start" work. `just setup` prints `Resolved 1 package` and `Che
 
 ### What changed {#tut-01.14-what-changed-182c57}
 
-- <a id="tut-01.14-README.md-8ec9a0"></a>`README.md`: a table of the files. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/7ad3a06605fadc9f34b5e2d8180145a3e53389a9/README.md).
+- <a id="tut-01.14-README.md-8ec9a0"></a>`README.md`: a table of the files. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/7ad3a06605fadc9f34b5e2d8180145a3e53389a9/README.md){.btn .btn-sm .btn-secondary}
   - look at ``| `justfile` | Every task of the project, one recipe each. `just help` explains them |``
 
 <details><summary>The diff of <code>README.md</code></summary>
@@ -678,4 +687,6 @@ Both commands of "Start" work. `just setup` prints `Resolved 1 package` and `Che
 
 </details>
 
-[This change on GitHub](https://github.com/rahuldave/babykev/commit/7ad3a06605fadc9f34b5e2d8180145a3e53389a9). [The code after it](https://github.com/rahuldave/babykev/tree/7ad3a06605fadc9f34b5e2d8180145a3e53389a9).
+[This change on GitHub](https://github.com/rahuldave/babykev/commit/7ad3a06605fadc9f34b5e2d8180145a3e53389a9){.btn .btn-sm .btn-secondary}
+
+This part ends at the code at `tut-01`. [The code after this part](https://github.com/rahuldave/babykev/tree/tut-01){.btn .btn-sm .btn-primary}
