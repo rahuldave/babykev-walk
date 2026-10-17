@@ -66,7 +66,7 @@ just test -k help_is_printed
 **The gaps, as they were.** `just docs check` holds every function, method and class to one rule. A parameter and a return value need a type and a docment, a function needs a docstring, and a field needs a description. A return of `None` needs no docment. The `git restore` line takes the code and the tests of `tut-12`, and `just docs check` then prints `24 of 45 functions, methods and classes are typed and documented`, with exit code 1. Above that line it prints the count for each file, `babykev.api 0 of 12` to `tests/unit/test_cli.py 0 of 3`, and 46 gaps, one to a line.
 
 ```bash
-git checkout tut-12 -- src tests
+git checkout tut-12 -- src tests && git restore --staged src tests
 just docs check
 ```
 

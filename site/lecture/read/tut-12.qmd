@@ -27,7 +27,7 @@ just setup
 
 ```bash
 sed -n '66,67p' pyproject.toml
-git checkout tut-08 -- src tests
+git checkout tut-08 -- src tests && git restore --staged src tests
 just lint --statistics
 ```
 

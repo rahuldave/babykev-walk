@@ -34,7 +34,7 @@ just test
 The rule that no token sees a later token still passes, because the old mask was causal. The hook runs `just check`, and `just check` runs these tests, so git would refuse this code now.
 
 ```bash
-git checkout tut-21 -- src/babykev/model.py
+git checkout tut-21 -- src/babykev/model.py && git restore --staged src/babykev/model.py
 just test
 git restore src/babykev/model.py
 ```
@@ -48,7 +48,7 @@ sed -n '28,39p' tests/unit/test_mask.py
 Suppose someone fixed the mask in another way, so that a question cannot see the question just before it, and sees the others. The `git checkout` line takes such a fix from the history, two changes before `tut-22`, and `git diff` shows its line 159. The here document of the last stop then prints `ok` six times. Its picture has only two questions, so it cannot tell the fix from the right one.
 
 ```bash
-git checkout tut-22~2 -- src/babykev/model.py
+git checkout tut-22~2 -- src/babykev/model.py && git restore --staged src/babykev/model.py
 git diff src/babykev/model.py
 uv run python - <<'EOF'
 from babykev.model import branch_mask
@@ -91,7 +91,7 @@ git restore src/babykev/model.py
 
 ```bash
 sed -n '149,160p' tests/unit/test_model.py
-git checkout tut-21 -- src/babykev/model.py
+git checkout tut-21 -- src/babykev/model.py && git restore --staged src/babykev/model.py
 just test -k a_question_cannot_see_its_sibling
 git restore src/babykev/model.py
 ```

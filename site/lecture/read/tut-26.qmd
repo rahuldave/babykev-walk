@@ -41,7 +41,7 @@ docker run --rm babykev-run
 docker image ls babykev-run:latest --format '{{.Repository}}:{{.Tag}}  {{.Size}}'
 ```
 
-**The smoke on Linux.** The same smoke runs in the image. `-v` mounts the cache of the Hugging Face Hub of this Mac at `/hf`, where line 36 looks, so the model needs no download. It says `on cpu`, because a container on a Mac is Linux in a virtual machine, and sees no GPU of Apple. It says `4 of 15 right`, at several seconds a request. The fifteen answers are those of `mps`, line for line, to the two decimals that it prints.
+**The smoke on Linux.** The same smoke runs in the image. `-v` mounts the cache of the Hugging Face Hub of this Mac at `/hf`, where line 36 looks, so the model needs no download. It says `on cpu`, because a container on a Mac is Linux in a virtual machine, and sees no GPU of Apple. It says `4 of 15 right`, at several seconds a request. The count is the one that `just smoke` gave on `mps` at the last stop.
 
 ```bash
 docker run --rm -v ~/.cache/huggingface:/hf babykev-run smoke

@@ -481,7 +481,7 @@ git show tut-05:src/babykev/api.py | sed -n '82,90p'
 **The tests find the bugs.** The `git checkout` line puts the file of kev back, from `tut-05`, under the tests of today. `just test -k` then runs the seven tests of the confidences and of rounding, and 3 fail. pytest prints `assert 0.77 == 1 ± 0.02` for the sum of the 77 probabilities, and prints `assert 0.5 == 0 ± 1.0e-12` for the confidence of a guess. A scale of one level stops with `ZeroDivisionError` at line 86, and the last line puts today's file back.
 
 ```bash
-git checkout tut-05 -- src/babykev/api.py
+git checkout tut-05 -- src/babykev/api.py && git restore --staged src/babykev/api.py
 just test -k "rounded_probabilities or score_confidence"
 git restore src/babykev/api.py
 ```
@@ -520,7 +520,7 @@ just test -k single_level
 **The formatter, on the file before it.** The `git checkout` line takes `api.py` as it was at the end of the fixes, before the formatter and the linter, from `tut-06`. `uv run ruff check --statistics` runs the linter on it first, so that we can count again after the formatter. It prints one line for each code with its count, and then `Found 17 errors.`, which is the total. The codes are `E501`, a line over 100 characters, 6 of them, and `E701`, two statements on one line, 4 of them. The others are `N806`, `UP007` and `B905`, 2 each, and `I001`, 1.
 
 ```bash
-git checkout tut-06 -- src/babykev/api.py
+git checkout tut-06 -- src/babykev/api.py && git restore --staged src/babykev/api.py
 uv run ruff check --statistics
 ```
 
@@ -740,7 +740,7 @@ just setup
 
 ```bash
 sed -n '66,67p' pyproject.toml
-git checkout tut-08 -- src tests
+git checkout tut-08 -- src tests && git restore --staged src tests
 just lint --statistics
 ```
 
@@ -1048,7 +1048,7 @@ just test -k help_is_printed
 **The gaps, as they were.** `just docs check` holds every function, method and class to one rule. A parameter and a return value need a type and a docment, a function needs a docstring, and a field needs a description. A return of `None` needs no docment. The `git restore` line takes the code and the tests of `tut-12`, and `just docs check` then prints `24 of 45 functions, methods and classes are typed and documented`, with exit code 1. Above that line it prints the count for each file, `babykev.api 0 of 12` to `tests/unit/test_cli.py 0 of 3`, and 46 gaps, one to a line.
 
 ```bash
-git checkout tut-12 -- src tests
+git checkout tut-12 -- src tests && git restore --staged src tests
 just docs check
 ```
 
@@ -1985,7 +1985,7 @@ just test
 The rule that no token sees a later token still passes, because the old mask was causal. The hook runs `just check`, and `just check` runs these tests, so git would refuse this code now.
 
 ```bash
-git checkout tut-21 -- src/babykev/model.py
+git checkout tut-21 -- src/babykev/model.py && git restore --staged src/babykev/model.py
 just test
 git restore src/babykev/model.py
 ```
@@ -1999,7 +1999,7 @@ sed -n '28,39p' tests/unit/test_mask.py
 Suppose someone fixed the mask in another way, so that a question cannot see the question just before it, and sees the others. The `git checkout` line takes such a fix from the history, two changes before `tut-22`, and `git diff` shows its line 159. The here document of the last stop then prints `ok` six times. Its picture has only two questions, so it cannot tell the fix from the right one.
 
 ```bash
-git checkout tut-22~2 -- src/babykev/model.py
+git checkout tut-22~2 -- src/babykev/model.py && git restore --staged src/babykev/model.py
 git diff src/babykev/model.py
 uv run python - <<'EOF'
 from babykev.model import branch_mask
@@ -2042,7 +2042,7 @@ git restore src/babykev/model.py
 
 ```bash
 sed -n '149,160p' tests/unit/test_model.py
-git checkout tut-21 -- src/babykev/model.py
+git checkout tut-21 -- src/babykev/model.py && git restore --staged src/babykev/model.py
 just test -k a_question_cannot_see_its_sibling
 git restore src/babykev/model.py
 ```
@@ -2289,7 +2289,7 @@ docker run --rm babykev-run
 docker image ls babykev-run:latest --format '{{.Repository}}:{{.Tag}}  {{.Size}}'
 ```
 
-**The smoke on Linux.** The same smoke runs in the image. `-v` mounts the cache of the Hugging Face Hub of this Mac at `/hf`, where line 36 looks, so the model needs no download. It says `on cpu`, because a container on a Mac is Linux in a virtual machine, and sees no GPU of Apple. It says `4 of 15 right`, at several seconds a request. The fifteen answers are those of `mps`, line for line, to the two decimals that it prints.
+**The smoke on Linux.** The same smoke runs in the image. `-v` mounts the cache of the Hugging Face Hub of this Mac at `/hf`, where line 36 looks, so the model needs no download. It says `on cpu`, because a container on a Mac is Linux in a virtual machine, and sees no GPU of Apple. It says `4 of 15 right`, at several seconds a request. The count is the one that `just smoke` gave on `mps` at the last stop.
 
 ```bash
 docker run --rm -v ~/.cache/huggingface:/hf babykev-run smoke
