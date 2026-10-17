@@ -1,5 +1,5 @@
 ---
-title: "babykev, shown one move at a time"
+title: "babykev"
 ---
 
 <!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
@@ -29,7 +29,13 @@ what it did and where to look.
 Each move first says what problem it solves. Then it gives the change, piece by piece. Last, a command checks the
 result, and a list names each file that changed, with what to look for in it.
 
-Each page is one part. A part is one or more changes to the project, each a section of its page. The code where a part starts and where it ends has a tag on GitHub, such as `tut-00`, or is a commit between two tags. The top of each page says where its part starts, and the bottom says where it ends, each with a link to that code.
+## How the walk is cut
+
+Each page is one part, a stage of the project. At the end of every part, the project works. It runs, and its checks pass. A tutorial cuts each part into moves, one small change each, and a move is a section of its page. Between two moves, the code can be broken on purpose. For example, a move adds a test that fails, and the next move makes it pass. A part never ends broken.
+
+Working is not the same as right. A part can end with code that runs and passes its checks. That code can still be wrong for the problem, such as a mask that leaves out the wrong rows. Such a mistake is part of the story, and a later part finds it and fixes it.
+
+The code where a part starts and where it ends has a tag on GitHub, such as `tut-00`, or is a commit between two tags. The top of each page says where its part starts, and the bottom says where it ends, each with a link to that code.
 
 There are two ways to read this tutorial. Both have the same parts, in the same order.
 
@@ -218,15 +224,15 @@ git config alias.check '!f() { i="$(git rev-parse --git-path check-index)" && { 
 
 Each other walk through the project has pages of its own:
 
-- [babykev, the first lecture](narrative/index.html). The first lecture, on the branch main of babykev: the steps step-00 to step-05b, with no moves between them.
-- [uv and the groups of dependencies of babykev](uv/index.html). The project and its lockfile, the groups `test` and `lint`, the first dependency, the packages of the model from the index of PyTorch, and the two Docker images, which install no group and every group.
-- [The formatter, the linter and the type checker of babykev](linting/index.html). ruff as the formatter and the linter, types in every signature, docstrings, one recipe for every check, pre-commit before each `git commit`, a check of the config files, and ty.
-- [The documentation of babykev](docs/index.html). The README as it grows, docstrings and their rule, docments and the docs check, a site built with smalldocs, a guide to the model, and the site on GitHub Pages.
-- [just, the recipes of babykev](just/index.html). The justfile of babykev, one recipe at a time, as each one comes in: setup, help, test, fmt, lint, check, hook, lint-config, docs, types, smoke, image, and GitHub running `just check`.
-- [The model of babykev, explained](model/index.html). A transformer decoder made into a model that decides: packing, a block-causal mask, positions that start again, and a pointer head, each with its tests on a tiny model.
-- [The tests of babykev](testing/index.html). pytest and the first tests, coverage, the tests of the contract, fixtures and a tiny model, unit and integration tests, a floor, property tests of the mask with hypothesis, the system test, and the tests on GitHub.
-- [The contract of babykev](contract/index.html). What a request and an answer hold, written with pydantic: the three types of question, the sample data, tests of what the contract refuses, and the code that turns a request into text for the model and probabilities into answers.
-- [babykev, the lecture](lecture/index.html). The first lecture, on the branch tutorial of babykev, in nine stops from tut-01 to tut-26. Each stop takes in all the work since the stop before, and ends with every check passing.
+- [The lecture, as given](narrative/index.html). The first lecture, on the branch main of babykev: the steps step-00 to step-05b, with no moves between them.
+- [uv and dependencies](uv/index.html). The project and its lockfile, the groups `test` and `lint`, the first dependency, the packages of the model from the index of PyTorch, and the two Docker images, which install no group and every group.
+- [Linting and types](linting/index.html). ruff as the formatter and the linter, types in every signature, docstrings, one recipe for every check, pre-commit before each `git commit`, a check of the config files, and ty.
+- [The docs](docs/index.html). The README as it grows, docstrings and their rule, docments and the docs check, a site built with smalldocs, a guide to the model, and the site on GitHub Pages.
+- [The recipes](just/index.html). The justfile of babykev, one recipe at a time, as each one comes in: setup, help, test, fmt, lint, check, hook, lint-config, docs, types, smoke, image, and GitHub running `just check`.
+- [The model](model/index.html). A transformer decoder made into a model that decides: packing, a block-causal mask, positions that start again, and a pointer head, each with its tests on a tiny model.
+- [The tests](testing/index.html). pytest and the first tests, coverage, the tests of the contract, fixtures and a tiny model, unit and integration tests, a floor, property tests of the mask with hypothesis, the system test, and the tests on GitHub.
+- [The contract](contract/index.html). What a request and an answer hold, written with pydantic: the three types of question, the sample data, tests of what the contract refuses, and the code that turns a request into text for the model and probabilities into answers.
+- [The lecture](lecture/index.html). The first lecture, on the branch tutorial of babykev, in nine stops from tut-01 to tut-26. Each stop takes in all the work since the stop before, and ends with every check passing.
 
 ## Follow the walks in timewalk
 
@@ -244,16 +250,16 @@ cd babykev-walk
 just present
 ```
 
-`just present` opens the first walk, *babykev, shown one move at a time* (a tutorial). To open another, give its id:
+`just present` opens the first walk, *babykev* (a tutorial). To open another, give its id:
 
-- `just present narrative`: *babykev, the first lecture* (a narrative)
-- `just present uv`: *uv and the groups of dependencies of babykev* (a tutorial)
-- `just present linting`: *The formatter, the linter and the type checker of babykev* (a tutorial)
-- `just present docs`: *The documentation of babykev* (a tutorial)
-- `just present just`: *just, the recipes of babykev* (a tutorial)
-- `just present model`: *The model of babykev, explained* (a tutorial)
-- `just present testing`: *The tests of babykev* (a tutorial)
-- `just present contract`: *The contract of babykev* (a tutorial)
-- `just present lecture`: *babykev, the lecture* (a narrative)
+- `just present narrative`: *The lecture, as given* (a narrative)
+- `just present uv`: *uv and dependencies* (a tutorial)
+- `just present linting`: *Linting and types* (a tutorial)
+- `just present docs`: *The docs* (a tutorial)
+- `just present just`: *The recipes* (a tutorial)
+- `just present model`: *The model* (a tutorial)
+- `just present testing`: *The tests* (a tutorial)
+- `just present contract`: *The contract* (a tutorial)
+- `just present lecture`: *The lecture* (a narrative)
 
 ![Do mode: you make each change, and timewalk checks your files](https://rahuldave.com/timewalk/images/tutorial-do.png)

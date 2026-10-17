@@ -1,10 +1,10 @@
 ---
-title: "babykev, the lecture"
+title: "The lecture"
 ---
 
 <!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
 
-This walk is one of several through the project. The website of the first, [babykev, shown one move at a time](../), lists them all.
+This walk is one of several through the project. The website of the first, [babykev](../), lists them all.
 
 The lecture walks through babykev on its branch `tutorial`, in nine stops, from `tut-01` to `tut-26`. Each stop takes
 in all the work since the stop before it, and the code at each stop passes every check of the project. The tutorial,
@@ -12,7 +12,13 @@ on the same branch, builds the same project one move at a time.
 
 The repository [babykev](https://github.com/rahuldave/babykev/tree/tutorial) holds a small decision model and the project around it, on the branch `tutorial`. At the end, `src/babykev/` holds `cli.py`, the command, `api.py`, the contract, `model.py`, the model, and `smoke.py`, a run of the real model. `tests/unit/` holds the unit and integration tests, and `tests/system/` holds the system test. `data/cheese/` holds sample requests, and `docs/` holds the site. `justfile`, `pyproject.toml` and `uv.lock` say how to work on it, and a `Dockerfile` and `.github/workflows/` run it on other machines. The tools are [uv](https://docs.astral.sh/uv/), [just](https://just.systems/), [pytest](https://docs.pytest.org/), [ruff](https://docs.astral.sh/ruff/), [ty](https://docs.astral.sh/ty/), [smalldocs](https://github.com/rahuldave/smalldocs) and [Docker](https://www.docker.com/).
 
-Each page is one part. A part is one or more changes to the project, each a section of its page. The code where a part starts and where it ends has a tag on GitHub, such as `tut-01`, or is a commit between two tags. The top of each page says where its part starts, and the bottom says where it ends, each with a link to that code.
+## How the walk is cut
+
+Each page is one part, a stage of the project. At the end of every part, the project works. It runs, and its checks pass.
+
+Working is not the same as right. A part can end with code that runs and passes its checks. That code can still be wrong for the problem, such as a mask that leaves out the wrong rows. Such a mistake is part of the story, and a later part finds it and fixes it.
+
+The code where a part starts and where it ends has a tag on GitHub, such as `tut-01`, or is a commit between two tags. The top of each page says where its part starts, and the bottom says where it ends, each with a link to that code.
 
 Each part ends with a section called **What changed**. It lists every file that the part changes, with a link to the file, and then the whole diff of each file, folded. A lockfile and a binary file have a link alone. The text above it explains the change.
 

@@ -5,7 +5,7 @@
 
 [[walk]]
 id = "tutorial"
-title = "babykev, shown one move at a time"
+title = "babykev"
 description = "Watch babykev and the engineering around it grow, one move at a time. uv, just, tests, format, lint, docs, the model and its tests."
 kind = "tutorial"
 tags = "tut-*"
@@ -16,7 +16,7 @@ moves = "watch"                         # Show checks out the commit of each mov
 
 [[walk]]
 id = "tutorial-do"
-title = "babykev, one move at a time, by hand"
+title = "Build babykev"
 description = "Build babykev yourself, one move at a time, from the notes. Each move ends with a command that shows what it did."
 kind = "tutorial"
 tags = "tut-*"
@@ -27,7 +27,7 @@ moves = "do"                            # the student makes each move from the n
 
 [[walk]]
 id = "narrative"
-title = "babykev, the first lecture"
+title = "The lecture, as given"
 description = "The first lecture, on the branch main of babykev: the steps step-00 to step-05b, with no moves between them."
 kind = "narrative"
 tags = "step-*"
@@ -40,7 +40,7 @@ intro = "walks/narrative/intro.md"
 
 [[walk]]
 id = "uv"
-title = "uv and the groups of dependencies of babykev"
+title = "uv and dependencies"
 description = "The project and its lockfile, the groups `test` and `lint`, the first dependency, the packages of the model from the index of PyTorch, and the two Docker images, which install no group and every group."
 kind = "tutorial"
 tags = "tut-*"
@@ -52,7 +52,7 @@ moves = "watch"
 
 [[walk]]
 id = "linting"
-title = "The formatter, the linter and the type checker of babykev"
+title = "Linting and types"
 description = "ruff as the formatter and the linter, types in every signature, docstrings, one recipe for every check, pre-commit before each `git commit`, a check of the config files, and ty."
 kind = "tutorial"
 tags = "tut-*"
@@ -64,7 +64,7 @@ moves = "watch"
 
 [[walk]]
 id = "docs"
-title = "The documentation of babykev"
+title = "The docs"
 description = "The README as it grows, docstrings and their rule, docments and the docs check, a site built with smalldocs, a guide to the model, and the site on GitHub Pages."
 kind = "tutorial"
 tags = "tut-*"
@@ -76,7 +76,7 @@ moves = "watch"
 
 [[walk]]
 id = "just"
-title = "just, the recipes of babykev"
+title = "The recipes"
 description = "The justfile of babykev, one recipe at a time, as each one comes in: setup, help, test, fmt, lint, check, hook, lint-config, docs, types, smoke, image, and GitHub running `just check`."
 kind = "tutorial"
 tags = "tut-*"
@@ -88,7 +88,7 @@ moves = "watch"
 
 [[walk]]
 id = "model"
-title = "The model of babykev, explained"
+title = "The model"
 description = "A transformer decoder made into a model that decides: packing, a block-causal mask, positions that start again, and a pointer head, each with its tests on a tiny model."
 kind = "tutorial"
 tags = "tut-*"
@@ -100,7 +100,7 @@ moves = "watch"
 
 [[walk]]
 id = "testing"
-title = "The tests of babykev"
+title = "The tests"
 description = "pytest and the first tests, coverage, the tests of the contract, fixtures and a tiny model, unit and integration tests, a floor, property tests of the mask with hypothesis, the system test, and the tests on GitHub."
 kind = "tutorial"
 tags = "tut-*"
@@ -112,7 +112,7 @@ moves = "watch"
 
 [[walk]]
 id = "contract"
-title = "The contract of babykev"
+title = "The contract"
 description = "What a request and an answer hold, written with pydantic: the three types of question, the sample data, tests of what the contract refuses, and the code that turns a request into text for the model and probabilities into answers."
 kind = "tutorial"
 tags = "tut-*"
@@ -124,7 +124,7 @@ moves = "watch"
 
 [[walk]]
 id = "lecture"
-title = "babykev, the lecture"
+title = "The lecture"
 description = "The first lecture, on the branch tutorial of babykev, in nine stops from tut-01 to tut-26. Each stop takes in all the work since the stop before, and ends with every check passing."
 kind = "narrative"
 tags = "tut-*"

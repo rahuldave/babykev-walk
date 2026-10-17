@@ -1,6 +1,6 @@
 <!-- Made by the walk skill's render.py from the facts of the walk. Do not edit it by hand: run just walk-update again. -->
 
-# babykev, the first lecture
+# The lecture, as given
 
 **Read the tutorial.** Each change explained, with the code to look at.
 
