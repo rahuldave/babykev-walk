@@ -15,6 +15,8 @@ git fetch --quiet --tags --force origin
 git switch --detach tut-00
 ```
 
+Two tools run everything in this lecture. [uv](https://docs.astral.sh/uv/) manages the project. It installs Python and the packages, keeps them in `.venv`, and pins their versions in `uv.lock`. [just](https://just.systems/) runs the tasks of the project by name, from the recipes of its `justfile`.
+
 **Init.** uv makes the environment, before any recipe exists. `uv sync --locked` reads `pyproject.toml` and `uv.lock`, and makes `.venv` with exactly what the lockfile names. In a new clone it prints `Using CPython 3.13.3`, `Creating virtual environment at: .venv` and `Resolved 1 package`. Then it installs one package, babykev itself, as `+ babykev==0.1.0`. `--locked` makes uv refuse a lockfile that no longer matches `pyproject.toml`, so uv never writes a new lockfile on the quiet.
 
 ```bash

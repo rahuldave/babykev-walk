@@ -36,7 +36,7 @@ to. A build makes all three again from the code, so they do not belong in git. `
 does not track, and three lines at its end name these, before the first build. A `/` at the start of a line means
 the root of the repository, so `/docs/api/` is only that folder.
 
-A patch to [`.gitignore`](#tut-14.1-.gitignore-a5cc29).
+[± See the change to `.gitignore`](#tut-14.1-.gitignore-a5cc29){.btn .btn-sm .btn-secondary}
 
 At the end of `.gitignore`, the comment is on line 222, and `/docs/_site/`, `/docs/api/` and `/docs/_symbols.json` on
 lines 223 to 225.
@@ -76,7 +76,7 @@ tail -n 4 .gitignore
 the HTML of every page into `docs/_site`. With no words, the recipe `docs` now runs it. With words, it runs
 `smalldocs api` as before. So the body of the recipe is a script of `sh`.
 
-A patch to [`justfile`](#tut-14.2-justfile-424f0b).
+[± See the change to `justfile`](#tut-14.2-justfile-424f0b){.btn .btn-sm .btn-secondary}
 
 In the `justfile`, the recipe `docs` starts at line 79, with its comment. Line 85,
 `if [ "$#" -eq 0 ]; then exec uv run smalldocs render docs; fi`, is the case with no words.
@@ -130,7 +130,7 @@ section `api`, which stays as it is. They are the type of the project, its outpu
 theme and a table of contents on each page. With them, a name in backticks, such as `Score`, becomes a link to its
 entry in the reference.
 
-A patch to [`docs/_smalldocs.yml`](#tut-14.3-docs-_smalldocs.yml-4b0b48).
+[± See the change to `docs/_smalldocs.yml`](#tut-14.3-docs-_smalldocs.yml-4b0b48){.btn .btn-sm .btn-secondary}
 
 In `docs/_smalldocs.yml`, the sidebar is on lines 8 to 12. It lists the front page, `index.qmd`, then the reference
 pages, `contents: api/*`, under the title Reference. The section `api` is on lines 18 to 21, as before.
@@ -186,7 +186,7 @@ The front page, `docs/index.qmd`, says what babykev is, what a request holds, an
 file is Markdown, with a header between two lines `---` that gives the title of the page. The file is new, and comes
 whole, as a patch.
 
-A patch to [`docs/index.qmd`](#tut-14.4-docs-index.qmd-d6d880).
+[± See the new file `docs/index.qmd`](#tut-14.4-docs-index.qmd-d6d880){.btn .btn-sm .btn-secondary}
 
 The new file `docs/index.qmd` has 29 lines. Lines 1 to 3 are the header, with `title: babykev`. The list of modules is
 on lines 17 to 19.
@@ -250,7 +250,7 @@ the reference of `api.py`, seven of them. `SystemOneRequest`, `Noul`, `Choice` a
 The table of the README says where each part of the project is, and it does not list the docs. `docs/` gets a row,
 under the tests.
 
-A patch to [`README.md`](#tut-14.5-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-14.5-README.md-8ec9a0){.btn .btn-sm .btn-secondary}
 
 In `README.md`, the row of `docs/` is on line 74.
 

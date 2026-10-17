@@ -31,7 +31,7 @@ out, with the reason in a comment. Docker built the dev image before hadolint ca
 The README gets a section on the images, with a table and the commands of the recipe. The table of the files gets a
 row for the `Dockerfile` and `.dockerignore`.
 
-A patch to [`README.md`](#tut-25.9-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-25.9-README.md-8ec9a0){.btn .btn-sm .btn-secondary}
 
 In `README.md`, the section is on lines 77 to 99, and the row on line 118.
 

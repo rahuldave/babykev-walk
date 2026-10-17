@@ -45,6 +45,8 @@ Some moves of the whole tutorial are not in this one. After such a gap, the next
 and begins from their code. Each section after the first runs `just setup` before its moves. It installs the packages
 that the code of the section needs.
 
+Two tools run everything here. [uv](https://docs.astral.sh/uv/) manages the project. It installs Python and the packages, keeps them in `.venv`, and pins their versions in `uv.lock`. [just](https://just.systems/) runs the tasks of the project by name, from the recipes of its `justfile`. `just setup`, for example, runs `uv sync`.
+
 ## Where we start
 
 babykev starts as a README, before any code. Its table already gives the three types of question.

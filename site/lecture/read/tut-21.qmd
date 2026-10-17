@@ -149,7 +149,7 @@ just test -k forge
 sed -n '78,93p' tests/unit/test_model.py
 ```
 
-**What trains.** `test_with_an_adapter_only_the_adapter_and_the_head_train`, lines 112 to 130, is an integration test. It runs one backward pass on a tiny model with an adapter. Every parameter that gets a gradient belongs to the adapter or to the head, and `trainable_parameters` lists exactly those. The backbone never moves, and about nine million parameters do. One test passes.
+**What trains.** `test_with_an_adapter_only_the_adapter_and_the_head_train`, lines 112 to 130, is an integration test. It runs one backward pass on a tiny model with an adapter. Every parameter that gets a gradient belongs to the adapter or to the head, and `trainable_parameters` lists exactly those. The backbone never moves; only the adapter and the head train. One test passes.
 
 ```bash
 sed -n '112,130p' tests/unit/test_model.py

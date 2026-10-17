@@ -15,7 +15,7 @@ git fetch --quiet --tags --force origin
 git switch --detach tut-04
 ```
 
-**Init.** `just setup` installs 12 packages and builds babykev again. They are pydantic and pydantic-core, pytest, pytest-cov and coverage, and the packages that they need. Coming back to `tut-01` and running `just setup` there removes them again.
+**Init.** `just setup` installs 12 packages and builds babykev again. They are pydantic and pydantic-core, pytest, pytest-cov and coverage, and the packages that they need.
 
 ```bash
 just setup

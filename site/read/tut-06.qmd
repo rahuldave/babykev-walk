@@ -30,7 +30,7 @@ The probabilities of an answer must sum to 1. The test makes a choice of 77 opti
 each. `pytest.approx(1, abs=0.02)` accepts any number from 0.98 to 1.02. The test fails on purpose, because it finds
 a bug of kev.
 
-A patch to [`tests/unit/test_api.py`](#tut-06.1-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-06.1-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the new test sums the probabilities of 77 equal options.
 
@@ -80,7 +80,7 @@ Lines 89 and 90 are `r2`, which rounds to two decimals. 1/77 is about 0.013, and
 Two decimals lose too much, and 77 equal options sum to 0.77. `round_prob` takes the place of `r2`, and rounds to four
 decimals. Each 1/77 becomes 0.013, and the 77 probabilities sum to 1.001, within 0.02 of 1.
 
-A patch to [`src/babykev/api.py`](#tut-06.2-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-06.2-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/api.py`, `round_prob` stands where `r2` was, and `to_answers` calls it.
 
@@ -138,7 +138,7 @@ just test
 Confidence runs from 1, when the model is sure, to 0, when it knows nothing. A choice that gives every option the same
 probability is a guess.
 
-A patch to [`tests/unit/test_api.py`](#tut-06.3-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-06.3-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test gives `choice_confidence` four equal probabilities.
 
@@ -186,7 +186,7 @@ pytest prints `1 passed`.
 
 All the probability on one option is certainty, with three options or with one.
 
-A patch to [`tests/unit/test_api.py`](#tut-06.4-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-06.4-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test checks `[0, 1, 0]` and `[1.0]`.
 
@@ -225,7 +225,7 @@ pytest prints `2 passed`.
 Between a guess and certainty, confidence follows the probability of the most likely option. `[0.5, 0.25, 0.25]` gets
 0.25.
 
-A patch to [`tests/unit/test_api.py`](#tut-06.5-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-06.5-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test expects 0.25 for `[0.5, 0.25, 0.25]`.
 
@@ -263,7 +263,7 @@ pytest prints `3 passed`.
 A score has its own confidence, which measures how close the probabilities sit to the most likely level. All the
 probability on one level is certainty, wherever the level is. The test runs for each of three levels.
 
-A patch to [`tests/unit/test_api.py`](#tut-06.6-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-06.6-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the parametrized test puts 1.0 on level 0, 1 and 2 in turn.
 
@@ -311,7 +311,7 @@ pytest prints `6 passed`.
 
 Doubt between two neighbouring levels is closer to certain than doubt between the two ends of the scale.
 
-A patch to [`tests/unit/test_api.py`](#tut-06.7-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-06.7-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test compares `[0.5, 0.5, 0, 0]` with `[0.5, 0, 0, 0.5]`.
 
@@ -349,7 +349,7 @@ pytest prints `7 passed`.
 A score that gives every level the same probability is a guess, as it is for a choice, and its confidence must be 0.
 The test fails on purpose, because it finds the second bug of kev.
 
-A patch to [`tests/unit/test_api.py`](#tut-06.8-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-06.8-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test gives `score_confidence` three equal probabilities.
 
@@ -400,7 +400,7 @@ places from it, so the spread is 1/3 × 0 + 1/3 × 1 + 1/3 × 2 = 1 place. The l
 A guess gets confidence 0.5, because the code measures the spread against the length of the scale. The fix measures it
 against the spread of a guess around the middle level.
 
-A patch to [`src/babykev/api.py`](#tut-06.9-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-06.9-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/api.py`, `score_confidence` now computes `spread` and `guess`, and divides one by the other.
 
@@ -466,7 +466,7 @@ hold a scale of one level, so no test reaches it.
 Line 90 runs in no test. A scale of one level leaves nothing to doubt, so its confidence is 1, and a test that calls
 `score_confidence` itself can say so.
 
-A patch to [`tests/unit/test_api.py`](#tut-06.10-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-06.10-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the new test calls `score_confidence([1.0])`.
 

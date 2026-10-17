@@ -71,7 +71,7 @@ check the whole sequence, token by token.
 The test packs a small record, the state `ab` and one question `x?` with the options `n` and `y`. With one token per
 character, it can write down every token that it expects.
 
-A patch to [`tests/unit/test_model.py`](#tut-20.1-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-20.1-tests-unit-test_model.py-583145){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_model.py`, the new test is on lines 23 to 35.
 

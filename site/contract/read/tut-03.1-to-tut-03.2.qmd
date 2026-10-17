@@ -31,6 +31,8 @@ tests run. The recipe `just test` runs them both, and five tests check the comma
 The contract is written with pydantic, and babykev does not have it yet. pydantic checks that data has the shape that
 a class describes. `uv add` writes the package into `dependencies`, because a package of babykev needs it to run.
 
+[pydantic](https://docs.pydantic.dev/) checks data against a description written as Python classes with type hints. A model says which fields a request has and of what type. pydantic then refuses data that does not fit, with a message that names the field. So the rules of a request live in one place, as code.
+
 This change came from running `uv add pydantic`.
 
 `uv add pydantic` prints `Resolved 14 packages`, and lists what it installed. It installed pydantic and the four
@@ -77,7 +79,7 @@ pydantic and its version, and the group `test` with pytest and pytest-cov.
 babykev has no contract yet. `api.py`, from kev, says what a request is and what an answer is. It comes in whole,
 all 111 lines, and we read it before we change it.
 
-A patch to [`src/babykev/api.py`](#tut-03.2-src-babykev-api.py-2ea65f).
+[± See the new file `src/babykev/api.py`](#tut-03.2-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
 
 `src/babykev/api.py` is new. Lines 14 to 43 are the classes of a request. The functions after them turn a request into
 options, and probabilities into answers.

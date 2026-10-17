@@ -44,6 +44,8 @@ time. A long docment then shows what the formatter can do to one, and the gate r
 Nothing reads the documentation of the code yet. smalldocs is a Python package, so uv installs it like any other. It
 is for the documentation, so it goes in a third dependency group, `docs`.
 
+[smalldocs](https://github.com/rahuldave/smalldocs) makes documentation from the code. It reads docstrings and docments, the comments beside each parameter. It prints them in a terminal, checks that every function has them, and builds a website from them. Its own documentation is at [docs.smallish.dev](https://docs.smallish.dev/).
+
 ```bash
 uv add --group docs smalldocs
 ```

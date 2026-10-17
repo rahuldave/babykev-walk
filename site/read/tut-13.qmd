@@ -36,6 +36,8 @@ time. A long docment then shows what the formatter can do to one, and the gate r
 Nothing reads the documentation of the code yet. smalldocs is a Python package, so uv installs it like any other. It
 is for the documentation, so it goes in a third dependency group, `docs`.
 
+[smalldocs](https://github.com/rahuldave/smalldocs) makes documentation from the code. It reads docstrings and docments, the comments beside each parameter. It prints them in a terminal, checks that every function has them, and builds a website from them. Its own documentation is at [docs.smallish.dev](https://docs.smallish.dev/).
+
 This change came from running `uv add --group docs smalldocs`.
 
 `uv add` prints `Resolved 34 packages`, and installs smalldocs and four packages that it needs, among them
@@ -87,7 +89,7 @@ has one section, `api`, the reference. It names the package and the address of i
 the files of the tests, which smalldocs holds to the same rule as the package. The file is new, and comes whole, as a
 patch.
 
-A patch to [`docs/_smalldocs.yml`](#tut-13.2-docs-_smalldocs.yml-4b0b48).
+[± See the new file `docs/_smalldocs.yml`](#tut-13.2-docs-_smalldocs.yml-4b0b48){.btn .btn-sm .btn-secondary}
 
 The new file `docs/_smalldocs.yml` has 5 lines. Line 3 names the package, `babykev`, and line 5 names the tests,
 `tests/**/*.py`.
@@ -140,7 +142,7 @@ method, which the linter does not ask for.
 
 The command that lists the gaps is long. The recipe `docs` gives its words to `smalldocs api`, and adds `--dir docs`.
 
-A patch to [`justfile`](#tut-13.3-justfile-424f0b).
+[± See the change to `justfile`](#tut-13.3-justfile-424f0b){.btn .btn-sm .btn-secondary}
 
 At the end of the `justfile`, the recipe `docs` is on lines 78 to 82. Line 82 runs `uv run smalldocs api "$@" --dir
 docs`.
@@ -184,7 +186,7 @@ just help docs
 parameter on a line, with its docment beside it, and a docment on its return type, after `-> TYPE:`. The type says
 `int`, and the docment says what the number means.
 
-A patch to [`src/babykev/api.py`](#tut-13.4-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-13.4-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/api.py`, the signature of `render` is on lines 56 to 59. `indent: int = 0,  # How deeply the value is
 nested. Each level indents by two spaces` is line 58, and `) -> str:  # The text that the model sees` is line 59. The
@@ -295,7 +297,7 @@ The reference of `render` has its signature, its docstring, and a table with a r
 reference leaves it out. smalldocs checks it still, because a reader of the code needs to know what it does. It gets
 a docstring, and a docment on its return, the choice itself.
 
-A patch to [`src/babykev/api.py`](#tut-13.5-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-13.5-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/api.py`, line 32 is now `def _check(self) -> Self:  # The choice itself, unchanged`, and line 33 is its
 docstring.
@@ -336,7 +338,7 @@ The four classes of a request have no signature to put a docment on. Each field 
 `type: Literal["noul"]`. pydantic takes a description of a field in `Field(description="...")`. It keeps the
 description in the schema of the model, which other programs read, and smalldocs puts it in the reference.
 
-A patch to [`src/babykev/api.py`](#tut-13.6-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-13.6-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/api.py`, the fields of `Noul` are on lines 19 to 24, and the fields of `SystemOneRequest` on lines 62
 to 65. The `criteria` of `Score`, on lines 49 to 53, keep their limits, `min_length=2` and `max_length=MAX_OPTIONS`,
@@ -432,7 +434,7 @@ The tests are documentation too. A reader learns from them what the code must do
 tests to the same rule as the package. In `test_cli.py`, `run` and the two tests have parameters with no docment.
 Each now has one parameter on a line, with its docment.
 
-A patch to [`tests/unit/test_cli.py`](#tut-13.7-tests-unit-test_cli.py-44d4a0).
+[± See the change to `tests/unit/test_cli.py`](#tut-13.7-tests-unit-test_cli.py-44d4a0){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_cli.py`, the signature of `run` is on lines 8 to 11. The parameters of the two tests are on lines
 19 to 21 and 29 to 30.
@@ -502,7 +504,7 @@ prints `tests/unit/test_cli.py 3 of 3`, and `39 of 45`.
 In `test_api.py`, the helper `cheese_request` has no docment on its return. Five tests take parameters from
 `@pytest.mark.parametrize`, with no docment. Each gets its docments.
 
-A patch to [`tests/unit/test_api.py`](#tut-13.8-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-13.8-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_api.py`, line 32 is `def cheese_request() -> SystemOneRequest:  # A noul, a choice and a score about
 one cheese`. The test of `option_text` is on lines 155 to 169, with its three parameters on lines 164 to 166.
@@ -603,7 +605,7 @@ A docment is on the line of its parameter or of its return type, and a line has 
 makes a mistake on purpose. The docment of the return of `to_record` says more, and its line grows to 119
 characters. The next moves show what the formatter makes of it.
 
-A patch to [`src/babykev/api.py`](#tut-13.9-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-13.9-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/api.py`, line 98 now ends with `# The record that the model reads, and the metadata of each question`.
 
@@ -694,7 +696,7 @@ the formatter are happy, and only the docs check sees the lost docment. `just ch
 The fix is a docment that fits on the line of the return type, with the type on one line again. The docment of
 before, `The record, and the metadata of each question`, fits, at 98 characters.
 
-A patch to [`src/babykev/api.py`](#tut-13.11-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-13.11-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/api.py`, line 98 is `) -> tuple[dict[str, Any], list[dict[str, Any]]]:  # The record, and the metadata of
 each question`, as it was before the mistake.
@@ -736,7 +738,7 @@ just docs check
 `just check` passed with a docment lost. As a line of `check`, `just docs check` runs before each `git commit`,
 through the hook. It goes after the tests, and before the config files.
 
-A patch to [`justfile`](#tut-13.12-justfile-424f0b).
+[± See the change to `justfile`](#tut-13.12-justfile-424f0b){.btn .btn-sm .btn-secondary}
 
 In the `justfile`, `just docs check` is line 76, between `just test -q` and `just lint-config`. The comment on line 66
 names the docs.

@@ -35,7 +35,7 @@ The test runs `main` of `smoke.py`, as `babykev smoke` does. It checks what hold
 code 0, fifteen verdicts, and the count of the right ones. It does not check the count itself, because an untrained model
 guesses.
 
-A patch to [`tests/system/test_real_model.py`](#tut-23.1-tests-system-test_real_model.py-df0b9d).
+[± See the new file `tests/system/test_real_model.py`](#tut-23.1-tests-system-test_real_model.py-df0b9d){.btn .btn-sm .btn-secondary}
 
 The new file `tests/system/test_real_model.py` has the docstring on lines 1 to 7, and the test on lines 14 to 24.
 
@@ -109,7 +109,7 @@ and not because it is hermetic.
 A marker is a name that a test carries. `pytestmark` puts a marker on every test of a file. This file gets the marker
 `system`.
 
-A patch to [`tests/system/test_real_model.py`](#tut-23.2-tests-system-test_real_model.py-df0b9d).
+[± See the change to `tests/system/test_real_model.py`](#tut-23.2-tests-system-test_real_model.py-df0b9d){.btn .btn-sm .btn-secondary}
 
 In `tests/system/test_real_model.py`, the comment is on line 13, and `pytestmark` on line 14.
 
@@ -149,7 +149,7 @@ error.
 
 `markers` in `pyproject.toml` declares each marker, with what it means.
 
-A patch to [`pyproject.toml`](#tut-23.3-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-23.3-pyproject.toml-5d07e7){.btn .btn-sm .btn-secondary}
 
 In `pyproject.toml`, the comment is on line 62, and `markers` on line 63.
 
@@ -189,7 +189,7 @@ The test passes with no warning. `just test --markers` lists every marker, and t
 `-m` chooses the tests by their markers. `-m 'not system'` in `addopts` leaves out every test marked `system` from
 every run. A `-m` on the command line comes after `addopts`, and wins.
 
-A patch to [`pyproject.toml`](#tut-23.4-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-23.4-pyproject.toml-5d07e7){.btn .btn-sm .btn-secondary}
 
 In `pyproject.toml`, the comment is on lines 60 and 61, and line 62 is
 `addopts = "--cov=babykev --cov-report=term-missing -m 'not system'"`.
@@ -234,7 +234,7 @@ the same tests, so the gate and the hook never need the network. `just test -m s
 The README says what `just test` runs, and how to run the test of the real model. The table gets a row for
 `tests/system/`.
 
-A patch to [`README.md`](#tut-23.5-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-23.5-README.md-8ec9a0){.btn .btn-sm .btn-secondary}
 
 In `README.md`, the new paragraph is on lines 69 to 71, and the row of `tests/system/` on line 88.
 

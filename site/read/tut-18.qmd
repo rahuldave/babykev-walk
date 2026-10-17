@@ -35,7 +35,7 @@ it, on this machine only.
 The smoke reads the five labelled requests of `data/cheese/sample.jsonl`. `read_lines` reads one request from each
 line of the file.
 
-A patch to [`src/babykev/smoke.py`](#tut-18.1-src-babykev-smoke.py-76d2ec).
+[± See the new file `src/babykev/smoke.py`](#tut-18.1-src-babykev-smoke.py-76d2ec){.btn .btn-sm .btn-secondary}
 
 The new file `src/babykev/smoke.py` has 22 lines. The docstring of the module, on lines 1 to 8, says what the smoke
 does. `SAMPLE` is on line 14, and `read_lines` on lines 17 to 22.
@@ -96,7 +96,7 @@ The coverage counts every file of the package, and no test imports `smoke.py`.
 into a record. `encode` packs the record into tokens, and `model.probs` gives the probabilities. `to_answers` turns
 them into an answer for each question. `answer` also counts the tokens and times the pass of the model.
 
-A patch to [`src/babykev/smoke.py`](#tut-18.2-src-babykev-smoke.py-76d2ec).
+[± See the change to `src/babykev/smoke.py`](#tut-18.2-src-babykev-smoke.py-76d2ec){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/smoke.py`, the new imports are on lines 13, 17, 19 and 20, and `answer` is on lines 31 to 41.
 
@@ -162,7 +162,7 @@ A label is the right answer to a question. `verdict` puts the answer of the mode
 three types of question. A noul says yes from a probability of 0.5. A choice names its option. A score is judged by
 its most likely level.
 
-A patch to [`src/babykev/smoke.py`](#tut-18.3-src-babykev-smoke.py-76d2ec).
+[± See the change to `src/babykev/smoke.py`](#tut-18.3-src-babykev-smoke.py-76d2ec){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/smoke.py`, `verdict` is on lines 44 to 61.
 
@@ -217,7 +217,7 @@ they agree. `smoke.py` imports `model.py`, so torch prints its note too.
 device is slow, so it runs once before the timing starts. Each request gets a line with its state, its tokens and its
 time. Each question gets a line with `ok` or `--`. The last lines give the count of right answers.
 
-A patch to [`src/babykev/smoke.py`](#tut-18.4-src-babykev-smoke.py-76d2ec).
+[± See the change to `src/babykev/smoke.py`](#tut-18.4-src-babykev-smoke.py-76d2ec){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/smoke.py`, `Iterator` is on line 14 and `render` on line 20. `smoke` is on lines 65 to 85.
 
@@ -291,7 +291,7 @@ a string.
 the same at every run. `main` counts the parameters, and prints the report of `smoke`. It takes the words after
 `babykev smoke`, and answers `help` with the usage.
 
-A patch to [`src/babykev/smoke.py`](#tut-18.5-src-babykev-smoke.py-76d2ec).
+[± See the change to `src/babykev/smoke.py`](#tut-18.5-src-babykev-smoke.py-76d2ec){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/smoke.py`, `BASE`, `LORA_RANK` and `USAGE` are on lines 24 to 28, and `main` is on lines 95 to 119.
 
@@ -395,7 +395,7 @@ just test
 help lists the command. `smoke.py` imports torch, which takes about two seconds. So `cli.py` imports `smoke` inside the
 branch of the command, and `babykev help` stays fast.
 
-A patch to [`src/babykev/cli.py`](#tut-18.6-src-babykev-cli.py-a9e184).
+[± See the change to `src/babykev/cli.py`](#tut-18.6-src-babykev-cli.py-a9e184){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/cli.py`, the commands of `HELP` are on lines 11 and 12, and the branch of `smoke` is on lines 22 to
 25.
@@ -465,7 +465,7 @@ prints `4 passed, 49 deselected`. Its table of coverage counts only the four tes
 The recipe `smoke` runs the command. It answers `help` as every recipe does, and gives any other word to `babykev
 smoke`. It is in a group of its own, `model`.
 
-A patch to [`justfile`](#tut-18.7-justfile-424f0b).
+[± See the change to `justfile`](#tut-18.7-justfile-424f0b){.btn .btn-sm .btn-secondary}
 
 In the `justfile`, the recipe `smoke` is on lines 95 to 101. Line 101 runs `uv run {{ program }} smoke "$@"`.
 
@@ -517,7 +517,7 @@ the usage of the program.
 
 The front page of the docs lists the modules of the code. `babykev.smoke` is the fourth.
 
-A patch to [`docs/index.qmd`](#tut-18.8-docs-index.qmd-d6d880).
+[± See the change to `docs/index.qmd`](#tut-18.8-docs-index.qmd-d6d880){.btn .btn-sm .btn-secondary}
 
 In `docs/index.qmd`, line 15 says `four modules`, and the item of `babykev.smoke` is on lines 22 and 23.
 
@@ -564,7 +564,7 @@ grep -o 'href="api/smoke.html#[^"]*"' docs/_site/index.html
 
 The README says what `just smoke` does, and what it downloads. The table gets a row for `smoke.py`.
 
-A patch to [`README.md`](#tut-18.9-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-18.9-README.md-8ec9a0){.btn .btn-sm .btn-secondary}
 
 In `README.md`, the paragraph about `just smoke` is on lines 65 to 67, and the row of `smoke.py` is on line 81.
 

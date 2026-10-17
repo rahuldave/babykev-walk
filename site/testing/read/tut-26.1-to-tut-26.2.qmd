@@ -34,7 +34,9 @@ The workflow `check.yaml` has one job. It takes the code, installs uv and just, 
 check`, as a student does. It runs after a push to any branch and on every pull request. `branches: ["**"]` leaves
 out a push of a tag.
 
-A patch to [`.github/workflows/check.yaml`](#tut-26.1-.github-workflows-check.yaml-6ceb50).
+[GitHub Actions](https://docs.github.com/actions) runs commands on GitHub's machines. A workflow, a YAML file in `.github/workflows/`, says when it runs, such as after every push, and which commands its jobs run. Each run shows its log on the page of the repository.
+
+[± See the new file `.github/workflows/check.yaml`](#tut-26.1-.github-workflows-check.yaml-6ceb50){.btn .btn-sm .btn-secondary}
 
 The new file `.github/workflows/check.yaml` has `on` on lines 5 to 8, and what the job `check` runs on lines 16
 to 21.
@@ -88,7 +90,7 @@ word `on` as true. GitHub reads it as the name `on`, and every workflow has it. 
 The rule `truthy` of yamllint has the option `check-keys`. With `false`, the rule checks the values and not the keys.
 A value of `on` or `yes` is still a warning.
 
-A patch to [`.yamllint`](#tut-26.2-.yamllint-dfe50a).
+[± See the change to `.yamllint`](#tut-26.2-.yamllint-dfe50a){.btn .btn-sm .btn-secondary}
 
 In `.yamllint`, line 7 is `truthy: {check-keys: false}`, with its reason.
 

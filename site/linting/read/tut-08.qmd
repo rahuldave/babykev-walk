@@ -34,7 +34,7 @@ ruff has more than 900 rules. The table `[tool.ruff.lint]` chooses which to chec
 rules has a prefix, such as `E` or `B`. The list has one family on each line, with a comment that says what it
 finds.
 
-A patch to [`pyproject.toml`](#tut-08.1-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-08.1-pyproject.toml-5d07e7){.btn .btn-sm .btn-secondary}
 
 At the end of `pyproject.toml`, the new table `[tool.ruff.lint]` starts at line 51. `select = [` on line 53 lists
 nine families of rules, from `E` to `N`.
@@ -86,7 +86,7 @@ The 44 `S101` hide the 8 problems of `api.py`. A test is written with `assert`, 
 `python -O`. The table `[tool.ruff.lint.per-file-ignores]` lets the files under `tests/` break `S101`. The package
 still may not use `assert`.
 
-A patch to [`pyproject.toml`](#tut-08.2-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-08.2-pyproject.toml-5d07e7){.btn .btn-sm .btn-secondary}
 
 At the end of `pyproject.toml`, the new table `[tool.ruff.lint.per-file-ignores]` is on lines 65 to 67. It names
 `S101` for `"tests/**"`.
@@ -125,7 +125,7 @@ once each. The last line says that `--fix` can fix one, and that 2 unsafe fixes 
 The command that runs the linter is `uv run ruff check`. The recipe `lint` runs it, and gives it every word after
 `lint`, as `fmt` does.
 
-A patch to [`justfile`](#tut-08.3-justfile-424f0b).
+[± See the change to `justfile`](#tut-08.3-justfile-424f0b){.btn .btn-sm .btn-secondary}
 
 In `justfile`, the recipe `lint` is on lines 34 to 38, between `fmt` and `test`. It runs `uv run ruff check "$@"`.
 
@@ -184,7 +184,7 @@ lines 3 to 5, and `answer =` lined up in one column. Line 5 is the longest, and 
 order" takes the place of "ordered level descriptions", and says the same in fewer characters. The three lines
 line up again, at column 43.
 
-A patch to [`src/babykev/api.py`](#tut-08.4-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-08.4-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/api.py`, lines 3 to 5 now have `answer =` at column 43. Line 5 has 97 characters.
 
@@ -228,7 +228,7 @@ The formatter leaves the text of a docstring as it is.
 babykev needs Python 3.13. `JSONContent` on line 11 and `Question` on line 39 become `X | Y`. ruff has no fix for
 these two lines, so a person writes them.
 
-A patch to [`src/babykev/api.py`](#tut-08.5-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-08.5-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/api.py`, line 11 is now `JSONContent = str | dict | list | int | float | bool | None`, and line 39
 is `Question = Noul | Choice | Score`.
@@ -282,7 +282,7 @@ pydantic reads `X | Y` as it read `Union`.
 `choice_confidence` is the number of options, and becomes `k`. `L` in `score_confidence` is the number of levels.
 `l` would break another rule, `E741`, because `l` looks like `1` and `I` in many fonts. So `L` becomes `n`.
 
-A patch to [`src/babykev/api.py`](#tut-08.6-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-08.6-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/api.py`, `k = len(p)` is on line 94, and `n = len(p)` on line 104. Each use of the two names
 changes with them.
@@ -347,7 +347,7 @@ stop the program.
 ruff's own fix writes `strict=False`, which keeps the silent drop and says so. ruff calls it unsafe, and leaves the
 choice to a person. `strict=True` makes `zip` raise a `ValueError` when the lengths differ.
 
-A patch to [`src/babykev/api.py`](#tut-08.7-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-08.7-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/api.py`, line 121 is now `for p, m in zip(probs, meta, strict=True):`, and line 125 ends with
 `zip(m["keys"], p, strict=True)}`.

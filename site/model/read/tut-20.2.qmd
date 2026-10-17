@@ -40,7 +40,7 @@ the other half, in the last part of this walk.
 
 The positions of each question begin right after the state, so a question looks the same wherever it comes.
 
-A patch to [`tests/unit/test_model.py`](#tut-20.2-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-20.2-tests-unit-test_model.py-583145){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_model.py`, the new test is on lines 38 to 47.
 

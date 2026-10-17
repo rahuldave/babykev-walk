@@ -32,7 +32,7 @@ The smoke gets a recipe of its own, in a group `model`. `just check` does not ru
 The recipe `smoke` runs the command. It answers `help` as every recipe does, and gives any other word to `babykev
 smoke`. It is in a group of its own, `model`.
 
-A patch to [`justfile`](#tut-18.7-justfile-424f0b).
+[± See the change to `justfile`](#tut-18.7-justfile-424f0b){.btn .btn-sm .btn-secondary}
 
 In the `justfile`, the recipe `smoke` is on lines 95 to 101. Line 101 runs `uv run {{ program }} smoke "$@"`.
 

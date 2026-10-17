@@ -29,7 +29,7 @@ read its docstring first.
 `model.py` turns a language model into a model that decides. It has 274 lines, and four ideas, which its docstring
 names. The file comes in whole, as a patch.
 
-A patch to [`src/babykev/model.py`](#tut-16.1-src-babykev-model.py-a86a0b).
+[± See the new file `src/babykev/model.py`](#tut-16.1-src-babykev-model.py-a86a0b){.btn .btn-sm .btn-secondary}
 
 `src/babykev/model.py` is new, with 274 lines. The docstring of the module is on lines 1 to 18. The functions that
 pack a record are on lines 78 to 142, and the mask is on lines 145 to 162. The head is on lines 165 to 184, and

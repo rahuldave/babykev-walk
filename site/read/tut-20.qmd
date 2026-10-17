@@ -32,7 +32,7 @@ coverage does not rise with every test. It counts the lines that a test runs, an
 The test packs a small record, the state `ab` and one question `x?` with the options `n` and `y`. With one token per
 character, it can write down every token that it expects.
 
-A patch to [`tests/unit/test_model.py`](#tut-20.1-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-20.1-tests-unit-test_model.py-583145){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_model.py`, the new test is on lines 23 to 35.
 
@@ -101,7 +101,7 @@ run, and not what a test checks.
 
 The positions of each question begin right after the state, so a question looks the same wherever it comes.
 
-A patch to [`tests/unit/test_model.py`](#tut-20.2-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-20.2-tests-unit-test_model.py-583145){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_model.py`, the new test is on lines 38 to 47.
 
@@ -146,7 +146,7 @@ pytest prints `1 passed, 55 deselected`.
 `encode` refuses a question that does not fit, and names its length. The record of the fixture has a state of 62
 tokens. The test gives a limit of 80 tokens to the state and a question together, and the questions do not fit.
 
-A patch to [`tests/unit/test_model.py`](#tut-20.3-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-20.3-tests-unit-test_model.py-583145){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_model.py`, the new test is on lines 50 to 56.
 
@@ -189,7 +189,7 @@ run, and it left `encode` before the lines after it.
 `encode` refuses a state that is longer than its limit, and names its length and the limit. The state of the fixture
 is the state delimiter and 61 characters, 62 tokens.
 
-A patch to [`tests/unit/test_model.py`](#tut-20.4-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-20.4-tests-unit-test_model.py-583145){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_model.py`, the new test is on lines 59 to 65.
 
@@ -240,7 +240,7 @@ A caller writes the state, the instructions and the options. A tokenizer turns t
 decide token, wherever it is. So text could close an option early, or make a question of its own. This test shows the
 danger, before the next test shows the defence.
 
-A patch to [`tests/unit/test_model.py`](#tut-20.5-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-20.5-tests-unit-test_model.py-583145){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_model.py`, the new test is on lines 68 to 73.
 
@@ -292,7 +292,7 @@ tokens. pytest prints `1 passed`. The danger is real.
 `user_tokens` rewrites `<|name|>` to `<¦name¦>` before it tokenizes, so the text of a delimiter is ordinary text. The
 test runs once for each of the five delimiters.
 
-A patch to [`tests/unit/test_model.py`](#tut-20.6-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-20.6-tests-unit-test_model.py-583145){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_model.py`, the new test is on lines 76 to 83.
 
@@ -354,7 +354,7 @@ The 14 lines are the same as at the end of tut-20.4, so the two new tests add no
 The head takes the hidden state of a decide token and those of the options, and gives one logit for each option. The
 test builds a head alone, with no model, and gives it five options.
 
-A patch to [`tests/unit/test_model.py`](#tut-20.7-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-20.7-tests-unit-test_model.py-583145){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_model.py`, the new test is on lines 87 to 90.
 
@@ -404,7 +404,7 @@ pytest prints `1 passed`.
 
 `pick_device` returns a device that it is given by name, whatever the machine has.
 
-A patch to [`tests/unit/test_model.py`](#tut-20.8-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-20.8-tests-unit-test_model.py-583145){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_model.py`, the import from `babykev.model` is on lines 9 to 17, and the new test is on lines 101 to
 103.
@@ -459,7 +459,7 @@ pytest prints `1 passed`. The column Missing of `model.py` starts at `62-64`, so
 
 With no override, `pick_device` chooses CUDA, then the GPU of Apple, then the CPU.
 
-A patch to [`tests/unit/test_model.py`](#tut-20.9-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-20.9-tests-unit-test_model.py-583145){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_model.py`, the new test is on lines 106 to 108.
 
@@ -499,7 +499,7 @@ train. The total is 69%.
 
 The tests of the smoke go in a file of their own. `verdict` needs no model, so its tests are unit tests.
 
-A patch to [`tests/unit/test_smoke.py`](#tut-20.10-tests-unit-test_smoke.py-89db04).
+[± See the new file `tests/unit/test_smoke.py`](#tut-20.10-tests-unit-test_smoke.py-89db04){.btn .btn-sm .btn-secondary}
 
 The new file `tests/unit/test_smoke.py` has the test on lines 6 to 10.
 
@@ -547,7 +547,7 @@ just test
 
 A probability of yes of 0.5 or more is a yes. The test gives `verdict` exactly 0.5, the edge.
 
-A patch to [`tests/unit/test_smoke.py`](#tut-20.11-tests-unit-test_smoke.py-89db04).
+[± See the change to `tests/unit/test_smoke.py`](#tut-20.11-tests-unit-test_smoke.py-89db04){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_smoke.py`, the new test is on lines 13 to 16.
 
@@ -586,7 +586,7 @@ pytest prints `1 passed`. The label is no, so the verdict is `("yes (0.50)", "no
 A score is judged by the level with the highest probability, and not by the expected level. The expected level is
 1.1. The probabilities are 0.2, 0.5 and 0.3, and level 1 is the most likely.
 
-A patch to [`tests/unit/test_smoke.py`](#tut-20.12-tests-unit-test_smoke.py-89db04).
+[± See the change to `tests/unit/test_smoke.py`](#tut-20.12-tests-unit-test_smoke.py-89db04){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_smoke.py`, the new test is on lines 19 to 26.
 
@@ -631,7 +631,7 @@ just test
 `main` of `smoke.py` answers `help` before it loads anything. So a test can run `babykev smoke help` with no model.
 It goes in the tests of the command, and uses their helper `run`.
 
-A patch to [`tests/unit/test_cli.py`](#tut-20.13-tests-unit-test_cli.py-44d4a0).
+[± See the change to `tests/unit/test_cli.py`](#tut-20.13-tests-unit-test_cli.py-44d4a0){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_cli.py`, the docstring on line 1 names `smoke help`, the import is on line 6, and the new test is
 on lines 42 to 50.
@@ -694,7 +694,7 @@ just test
 
 A word after `babykev smoke` that is not `help` gets the usage on the error stream, and exit code 2.
 
-A patch to [`tests/unit/test_cli.py`](#tut-20.14-tests-unit-test_cli.py-44d4a0).
+[± See the change to `tests/unit/test_cli.py`](#tut-20.14-tests-unit-test_cli.py-44d4a0){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_cli.py`, the new test is on lines 53 to 61.
 
@@ -739,7 +739,7 @@ and no unit test has one.
 
 The row of `tests/unit/` names the tests of the smoke too.
 
-A patch to [`README.md`](#tut-20.15-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-20.15-README.md-8ec9a0){.btn .btn-sm .btn-secondary}
 
 In `README.md`, line 83 is the row of `tests/unit/`.
 

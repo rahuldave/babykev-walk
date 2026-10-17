@@ -30,6 +30,8 @@ The tests come in four kinds. Each kind comes in where the table says, and no te
 Some changes of the whole tutorial are not in this one. After such a gap, the next section says what those changes
 did, and starts from the code that they left. It first runs `just setup`, which installs the packages of that code.
 
+Two tools run everything here. [uv](https://docs.astral.sh/uv/) manages the project. It installs Python and the packages, keeps them in `.venv`, and pins their versions in `uv.lock`. [just](https://just.systems/) runs the tasks of the project by name, from the recipes of its `justfile`. `just setup`, for example, runs `uv sync`.
+
 ## Get the project
 
 You build the project in a clone of your own, on a branch `mine` that starts where this walk starts. Run the commands of these pages in its top folder.
@@ -220,7 +222,7 @@ path.write_text(tomlkit.dumps(doc), encoding='utf-8')
 PY
 ```
 
-The patch adds the table `[tool.uv]` at the end of `pyproject.toml`, after the table `[build-system]`. It has a
+The patch adds the table `[tool.uv]` to `pyproject.toml`. It has a
 comment and one setting.
 
 The setting changes which groups uv installs, and not which versions. So `uv.lock` still matches `pyproject.toml`.
@@ -271,6 +273,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-01 --staged --
 ### 2.2 Pytest, in the group test
 
 Nothing runs tests yet. pytest finds the tests and runs them. It goes into the group `test`.
+
+[pytest](https://docs.pytest.org/) is the test runner of most Python projects. It finds every file `test_*.py`, runs each function whose name starts with `test_`, and reports each failure with the values that made it fail. A test is a plain function with `assert` in it.
 
 ```bash
 uv add --group test pytest
@@ -582,7 +586,7 @@ path.write_text(tomlkit.dumps(doc), encoding='utf-8')
 PY
 ```
 
-The patch adds the table `[tool.pytest.ini_options]` at the end of `pyproject.toml`.
+The patch adds the table `[tool.pytest.ini_options]` to `pyproject.toml`.
 
 ```bash
 just test
@@ -629,6 +633,8 @@ git restore --source 9a4100fd1962 --staged -- :/ && git restore --source 348290a
 
 The tests pass, but nothing says which lines of babykev they run. Coverage measures that. pytest-cov is a plugin of
 pytest that measures it, when pytest gets the option `--cov`. It goes in the group `test`.
+
+[pytest-cov](https://pytest-cov.readthedocs.io/) connects pytest to [coverage.py](https://coverage.readthedocs.io/), which records each line of the code that the tests run. The report then names the lines that no test reaches. A line that no test runs can break without any test failing.
 
 ```bash
 uv add --group test pytest-cov
@@ -732,7 +738,7 @@ path.write_text(tomlkit.dumps(doc), encoding='utf-8')
 PY
 ```
 
-The patch adds a comment and the line `addopts` at the end of `pyproject.toml`, under `testpaths`.
+The patch adds a comment and the line `addopts` to the table `[tool.pytest.ini_options]` of `pyproject.toml`.
 
 ```bash
 just test
@@ -4565,6 +4571,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-21 --staged --
 A picture checks one size of request. The mask must hold for every size, and nobody can draw them all. hypothesis is
 a library for tests. A test states a rule, and hypothesis draws many inputs and runs the test on each.
 
+[hypothesis](https://hypothesis.readthedocs.io/) writes test inputs. A test says what kind of input it takes, such as a list of up to five numbers. hypothesis then tries many of them, and when one fails, it shrinks it to the smallest input that still fails.
+
 ```bash
 uv add --group test hypothesis
 ```
@@ -5697,6 +5705,8 @@ never met the checks. GitHub runs `just check` itself, on its own machines, afte
 The workflow `check.yaml` has one job. It takes the code, installs uv and just, and runs `just setup` and `just
 check`, as a student does. It runs after a push to any branch and on every pull request. `branches: ["**"]` leaves
 out a push of a tag.
+
+[GitHub Actions](https://docs.github.com/actions) runs commands on GitHub's machines. A workflow, a YAML file in `.github/workflows/`, says when it runs, such as after every push, and which commands its jobs run. Each run shows its log on the page of the repository.
 
 Apply the patch to [`.github/workflows/check.yaml`](#tut-26.1-.github-workflows-check.yaml-6ceb50), from the top of the project:
 

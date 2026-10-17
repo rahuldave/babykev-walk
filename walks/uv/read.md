@@ -20,6 +20,8 @@ We make the project in moves. A move is one small change, made by one patch or b
 Some changes of the whole tutorial are not in this one. After such a gap, the next section says what those changes
 did, and begins from the code that they left. It first runs `just setup`, which installs the packages of that code.
 
+The tasks of the project run through [just](https://just.systems/), which runs a command by name from the recipes of the `justfile`. `just setup`, for example, runs `uv sync`.
+
 <a id="tut-01.1-to-tut-01.2"></a>
 
 ## 1.1 to 1.2 The project, and its lockfile
@@ -36,6 +38,8 @@ project, and `uv lock` writes its lockfile. There is no justfile yet, so these t
 The folder has words and a licence, but nothing that Python can build or run. `uv init` makes the files of a Python
 project. `--package` makes a package in `src/babykev/`, with a command that runs its function `main`.
 `--name babykev` names the project, and `--python 3.13` sets the version of Python.
+
+[uv](https://docs.astral.sh/uv/) is a tool, written in Rust, that manages a Python project. It installs Python itself, makes the project's environment `.venv`, adds packages and pins their exact versions in a lockfile. It takes the place of pip, venv and pip-tools, and it is fast. Every command of this tutorial that installs or runs Python goes through uv.
 
 This change came from running `uv init --package --name babykev --python 3.13`.
 
@@ -160,7 +164,7 @@ it, and who wrote it. None of them is a dependency, so the lockfile stays as it 
 `pyproject.toml` still has the words of uv. Its description is a placeholder, `Add your description here`. The patch
 puts in what babykev is.
 
-A patch to [`pyproject.toml`](#tut-01.3-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-01.3-pyproject.toml-5d07e7)
 
 In `pyproject.toml`, the line `description` now says what babykev is.
 
@@ -200,7 +204,7 @@ grep -n description pyproject.toml
 A package says under which licence others may use it. babykev's licence is kev's, the Apache License 2.0.
 `license` names it, and `license-files` names the two files that a package of babykev carries with it.
 
-A patch to [`pyproject.toml`](#tut-01.4-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-01.4-pyproject.toml-5d07e7)
 
 In `pyproject.toml`, `license` and `license-files` now stand under `readme`.
 
@@ -240,7 +244,7 @@ them at the end of `[project]`, so the numbers can differ.
 
 A package names who wrote it. `authors` names Rahul Dave.
 
-A patch to [`pyproject.toml`](#tut-01.5-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-01.5-pyproject.toml-5d07e7)
 
 In `pyproject.toml`, `authors` now stands under `license-files`.
 
@@ -302,7 +306,7 @@ uv installs only the group `dev` by default. The setting `default-groups = "all"
 install every group. So each later `uv add --group` needs no other change to `pyproject.toml`. A patch adds the
 table `[tool.uv]` with this setting.
 
-A patch to [`pyproject.toml`](#tut-02.1-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-02.1-pyproject.toml-5d07e7)
 
 At the end of `pyproject.toml`, the new table `[tool.uv]` has the line `default-groups = "all"`, with a comment above
 it.
@@ -343,6 +347,8 @@ later move adds one.
 ### 2.2 Pytest, in the group test
 
 Nothing runs tests yet. pytest finds the tests and runs them. It goes into the group `test`.
+
+[pytest](https://docs.pytest.org/) is the test runner of most Python projects. It finds every file `test_*.py`, runs each function whose name starts with `test_`, and reports each failure with the values that made it fail. A test is a plain function with `assert` in it.
 
 This change came from running `uv add --group test pytest`.
 
@@ -391,7 +397,7 @@ code 5. pytest uses exit code 5 to say that it found no test.
 The command that runs the tests is `uv run pytest`, and every task of the project has a recipe. A recipe `test` gives
 the command a short name.
 
-A patch to [`justfile`](#tut-02.3-justfile-424f0b).
+[± See the change to `justfile`](#tut-02.3-justfile-424f0b)
 
 At the end of `justfile`, the recipe `test` runs `uv run pytest "$@"`. It sits under a new heading, `quality`.
 
@@ -452,6 +458,8 @@ dependencies of the project, and into no group.
 
 The contract is written with pydantic, and babykev does not have it yet. pydantic checks that data has the shape that
 a class describes. `uv add` writes the package into `dependencies`, because a package of babykev needs it to run.
+
+[pydantic](https://docs.pydantic.dev/) checks data against a description written as Python classes with type hints. A model says which fields a request has and of what type. pydantic then refuses data that does not fit, with a message that names the field. So the rules of a request live in one place, as code.
 
 This change came from running `uv add pydantic`.
 
@@ -516,6 +524,8 @@ Nothing formats the code yet. ruff is a formatter and a linter in one program. T
 looks, and never what it does. The linter comes in the next part of the tutorial. ruff is for working on babykev,
 and a user of the package does not need it. So it goes in a second dependency group, `lint`, next to the group
 `test`.
+
+[ruff](https://docs.astral.sh/ruff/) is a formatter and a linter for Python, written in Rust by the makers of uv. As a formatter, it rewrites code into one layout. As a linter, it reads code for mistakes and bad habits, each rule with a code such as `F401`. It takes the place of black, isort, flake8 and many plugins, and it is fast.
 
 This change came from running `uv add --group lint ruff`.
 
@@ -588,7 +598,7 @@ torch has several builds of each version. On Linux, the build on PyPI brings the
 NVIDIA. PyTorch keeps a build for the CPU alone on an index of its own, `https://download.pytorch.org/whl/cpu`. An
 index is a server of packages, as PyPI is. The patch names the index in `pyproject.toml`.
 
-A patch to [`pyproject.toml`](#tut-15.1-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-15.1-pyproject.toml-5d07e7)
 
 In `pyproject.toml`, the comment is on lines 25 and 26. The index is on lines 27 to 30, with its name `pytorch-cpu`,
 its address and `explicit = true`.
@@ -639,6 +649,8 @@ lockfile does not change.
 `[tool.uv.sources]` itself. `uv add` then resolves, and for that one run `--index` puts the index of PyTorch first,
 for every package. It would take other packages from there, older than on PyPI. `--frozen` writes `pyproject.toml`
 and leaves `uv.lock` alone, so uv resolves nothing yet.
+
+[PyTorch](https://pytorch.org/), the package `torch`, holds tensors, the arrays of numbers that a model computes with, and the layers of neural networks. It runs on a CPU, on an NVIDIA GPU, and on the GPU of a Mac.
 
 This change came from running `uv add torch --index pytorch-cpu --frozen`.
 
@@ -738,6 +750,8 @@ too.
 
 The base model of kev, and its tokenizer, are on the Hugging Face Hub. transformers loads them.
 
+[transformers](https://huggingface.co/docs/transformers), from Hugging Face, loads trained language models and their tokenizers by name, such as `Qwen/Qwen2.5-0.5B`, and downloads their weights once.
+
 This change came from running `uv add transformers`.
 
 `uv add` prints `Resolved 63 packages`, and installs transformers and 18 packages that it needs, among
@@ -780,6 +794,8 @@ It prints the version of transformers, and no warning. numpy came with transform
 ### 15.5 peft
 
 The base model stays as it is, and a small adapter, LoRA, learns the task. peft adds the adapter.
+
+[peft](https://huggingface.co/docs/peft), also from Hugging Face, trains a small adapter beside a large model, such as LoRA, in place of all its weights. Training then changes a few million numbers, not hundreds of millions.
 
 This change came from running `uv add peft`.
 
@@ -830,6 +846,8 @@ safetensors is the format of the weights on the Hub. transformers installed it a
 because babykev saves the weights that it trains to the Hub in this format. A package that only comes with another
 can go when that package stops needing it.
 
+[safetensors](https://huggingface.co/docs/safetensors) stores the weights of a model in a file that loads fast and runs no code when it loads. It is the format that Hugging Face uses to share models.
+
 This change came from running `uv add safetensors`.
 
 `uv add` prints `Resolved 66 packages`, the same count as before, and installs no new package. It installs babykev
@@ -875,7 +893,7 @@ no `babykev`.
 The README says what the project installs. A paragraph under "Start" names the four packages of the model, and
 what they cost on disk.
 
-A patch to [`README.md`](#tut-15.7-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-15.7-README.md-8ec9a0)
 
 In `README.md`, the new paragraph is on lines 61 to 63.
 
@@ -935,10 +953,12 @@ stage `build` installs the environment into `/opt/venv`, with no group of the de
 come first, and the code after. Docker keeps each instruction of a build in its cache, so a change to the code installs one
 package again, and not torch.
 
+[Docker](https://www.docker.com/) builds an image, a file system with an operating system, Python and the project in it, from a `Dockerfile`. A container runs the image the same way on any machine, so the project does not depend on what a laptop has installed.
+
 The stage `run` starts from a fresh Python, and takes only the finished environment and the sample data. uv stays in
 the stage `build`.
 
-A patch to [`Dockerfile`](#tut-25.1-Dockerfile-6651dd).
+[± See the new file `Dockerfile`](#tut-25.1-Dockerfile-6651dd)
 
 In the new file `Dockerfile`, the stage `uv` is on line 9, and the stage `build` on lines 13 to 25. The stage `run`
 is on lines 28 to 36.
@@ -1048,7 +1068,7 @@ The stage `dev` builds the image to work in. It installs git with `apt-get`, and
 as a wheel from PyPI. Then it installs the whole project with every group, into `/opt/venv`. The folder of this
 machine can then be mounted at `/work`, and the image runs it with its own environment.
 
-A patch to [`Dockerfile`](#tut-25.2-Dockerfile-6651dd).
+[± See the change to `Dockerfile`](#tut-25.2-Dockerfile-6651dd)
 
 In `Dockerfile`, the comment names the dev image on lines 5 and 6, and the stage `dev` is on lines 41 to 66. Line 64,
 `COPY . .`, copies the folder of the project.
@@ -1134,7 +1154,7 @@ docker image ls babykev-dev:latest
 git never tracks. They are the history of git, the environment and the settings of this machine, and what a run or a
 tool writes.
 
-A patch to [`.dockerignore`](#tut-25.3-.dockerignore-05a721).
+[± See the new file `.dockerignore`](#tut-25.3-.dockerignore-05a721)
 
 The new file `.dockerignore` names `.git` on line 3 and `.venv` on line 4, and twelve more paths.
 
@@ -1207,7 +1227,7 @@ out, with the reason in a comment. Docker built the dev image before hadolint ca
 The README gets a section on the images, with a table and the commands of the recipe. The table of the files gets a
 row for the `Dockerfile` and `.dockerignore`.
 
-A patch to [`README.md`](#tut-25.9-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-25.9-README.md-8ec9a0)
 
 In `README.md`, the section is on lines 77 to 99, and the row on line 118.
 

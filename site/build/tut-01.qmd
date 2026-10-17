@@ -27,6 +27,8 @@ The folder has words and a licence, but nothing that Python can build or run. `u
 project. `--package` makes a package in `src/babykev/`, with a command that runs its function `main`.
 `--name babykev` names the project, and `--python 3.13` sets the version of Python.
 
+[uv](https://docs.astral.sh/uv/) is a tool, written in Rust, that manages a Python project. It installs Python itself, makes the project's environment `.venv`, adds packages and pins their exact versions in a lockfile. It takes the place of pip, venv and pip-tools, and it is fast. Every command of this tutorial that installs or runs Python goes through uv.
+
 ```bash
 uv init --package --name babykev --python 3.13
 ```
@@ -657,6 +659,8 @@ git restore --source 292ddcc99a28 --staged -- :/ && git restore --source e32c7ba
 The command that sets up the project is `uv sync --locked`, and nobody should have to remember it. A `justfile` names
 each task of the project once. `just` reads the file. Each task is a recipe, a name and then the commands to run,
 indented. Before the justfile comes in, we run the command of the recipe `setup` by hand.
+
+[just](https://just.systems/) runs commands by name. A file called `justfile` lists recipes. Each has a name, a comment that says what it does, and the commands it runs. `just setup` runs the recipe `setup`, and `just` alone lists every recipe. So the justfile is the one place that says how to work on the project, for a person and for a machine.
 
 ```bash
 uv sync --locked

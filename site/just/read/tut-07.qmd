@@ -43,6 +43,8 @@ looks, and never what it does. The linter comes in the next part of the tutorial
 and a user of the package does not need it. So it goes in a second dependency group, `lint`, next to the group
 `test`.
 
+[ruff](https://docs.astral.sh/ruff/) is a formatter and a linter for Python, written in Rust by the makers of uv. As a formatter, it rewrites code into one layout. As a linter, it reads code for mistakes and bad habits, each rule with a code such as `F401`. It takes the place of black, isort, flake8 and many plugins, and it is fast.
+
 This change came from running `uv add --group lint ruff`.
 
 `uv add` prints `Resolved 15 packages`, and installs ruff. ruff is one program, and needs no other
@@ -92,7 +94,7 @@ At 88 characters, the formatter would split lines of `cli.py` and of the tests t
 setting `line-length` in the table `[tool.ruff]` lets a line run to 100 characters. The formatter and the linter
 both read the table.
 
-A patch to [`pyproject.toml`](#tut-07.2-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-07.2-pyproject.toml-5d07e7){.btn .btn-sm .btn-secondary}
 
 At the end of `pyproject.toml`, the new table `[tool.ruff]` is on lines 39 to 41, with `line-length = 100`.
 
@@ -134,7 +136,7 @@ The formatter has almost no options, and its defaults are its style. A reader of
 The table `[tool.ruff.format]` writes out five of them, each with a comment. They are the defaults, so the output of
 the formatter does not change.
 
-A patch to [`pyproject.toml`](#tut-07.3-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-07.3-pyproject.toml-5d07e7){.btn .btn-sm .btn-secondary}
 
 At the end of `pyproject.toml`, the new table `[tool.ruff.format]` is on lines 43 to 49. It sets double quotes, four
 spaces, and three more defaults, each with a comment.
@@ -181,7 +183,7 @@ The command that formats the code is `uv run ruff format`, and every task of the
 `fmt` runs it, and gives it every word after `fmt`. The check fails, because `api.py` is not formatted yet. The
 next part formats it.
 
-A patch to [`justfile`](#tut-07.4-justfile-424f0b).
+[± See the change to `justfile`](#tut-07.4-justfile-424f0b){.btn .btn-sm .btn-secondary}
 
 In `justfile`, the recipe `fmt` is on lines 28 to 32, above `test`, in the group `quality`. It runs
 `uv run ruff format "$@"`.

@@ -59,7 +59,7 @@ The first test asks for the three fixtures. It packs the record with the tiny to
 the head. Each question gets one probability per option, and they sum to 1. Nothing is trained, so the probabilities
 mean nothing. The test checks what is true of any probabilities.
 
-A patch to [`tests/unit/test_model.py`](#tut-19.8-tests-unit-test_model.py-583145).
+[± See the new file `tests/unit/test_model.py`](#tut-19.8-tests-unit-test_model.py-583145){.btn .btn-sm .btn-secondary}
 
 The new file `tests/unit/test_model.py` has one test, on lines 11 to 20.
 

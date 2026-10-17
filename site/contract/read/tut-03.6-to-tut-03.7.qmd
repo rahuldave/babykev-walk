@@ -28,7 +28,7 @@ A file holds five requests about cheese, one on each line. Each line must fit th
 The tests of the contract need requests to check, and the project has none. Five requests about cheese come in a file
 of their own. Each line of the file is one request, in JSON. Each question has a `label`, the right answer.
 
-A patch to [`data/cheese/sample.jsonl`](#tut-03.6-data-cheese-sample.jsonl-79f982).
+[± See the new file `data/cheese/sample.jsonl`](#tut-03.6-data-cheese-sample.jsonl-79f982){.btn .btn-sm .btn-secondary}
 
 `data/cheese/sample.jsonl` is new, with one request on each line.
 
@@ -64,7 +64,7 @@ label `1`, the second level. `milk` is a `choice` of five options with the label
 The table of the README names neither the contract nor the data. Rows for `api.py`, `cli.py` and the sample data take
 the place of the row of `src/babykev/`.
 
-A patch to [`README.md`](#tut-03.7-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-03.7-README.md-8ec9a0){.btn .btn-sm .btn-secondary}
 
 In the table of `README.md`, the rows of `src/babykev/api.py`, `src/babykev/cli.py` and `data/cheese/sample.jsonl`
 stand above the row of the tests.

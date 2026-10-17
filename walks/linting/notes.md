@@ -25,6 +25,8 @@ This tutorial has eight sections:
 7. **The config files, checked**
 8. **The type checker**
 
+Two tools run everything here. [uv](https://docs.astral.sh/uv/) manages the project. It installs Python and the packages, keeps them in `.venv`, and pins their versions in `uv.lock`. [just](https://just.systems/) runs the tasks of the project by name, from the recipes of its `justfile`. `just setup`, for example, runs `uv sync`.
+
 ## Where we start
 
 The first section shows the folder of babykev before it holds any code.

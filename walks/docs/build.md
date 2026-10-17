@@ -48,6 +48,8 @@ The table gives each kind of documentation, and the sections where it appears.
 | A written page | What babykev is, on the front page of the site, and why the model is built as it is, in the guide | Sections 5 and 6 |
 | A published site | The site, on GitHub Pages, built again after every push to `main` | Section 7 |
 
+Two tools run everything here. [uv](https://docs.astral.sh/uv/) manages the project. It installs Python and the packages, keeps them in `.venv`, and pins their versions in `uv.lock`. [just](https://just.systems/) runs the tasks of the project by name, from the recipes of its `justfile`. `just setup`, for example, runs `uv sync`.
+
 ## Get the project
 
 You build the project in a clone of your own, on a branch `mine` that starts where this walk starts. Run the commands of these pages in its top folder.
@@ -1290,6 +1292,8 @@ time. A long docment then shows what the formatter can do to one, and the gate r
 Nothing reads the documentation of the code yet. smalldocs is a Python package, so uv installs it like any other. It
 is for the documentation, so it goes in a third dependency group, `docs`.
 
+[smalldocs](https://github.com/rahuldave/smalldocs) makes documentation from the code. It reads docstrings and docments, the comments beside each parameter. It prints them in a terminal, checks that every function has them, and builds a website from them. Its own documentation is at [docs.smallish.dev](https://docs.smallish.dev/).
+
 ```bash
 uv add --group docs smalldocs
 ```
@@ -2346,6 +2350,8 @@ same line as the command.
 
 `git status --short --ignored docs` lists the three paths that the build made, each marked `!!`, ignored. The lines
 of `.gitignore` from the move before keep them out of git.
+
+Your copy also lists `?? docs/` first. git does not know the folder yet, because nothing in it is staged.
 
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 

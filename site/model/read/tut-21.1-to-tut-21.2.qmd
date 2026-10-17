@@ -42,7 +42,7 @@ Training changes the adapter and the head, and the backbone stays as it is. The 
 adapter of rank 4, and takes one backward pass. Then it names every parameter that got a gradient. The fixture
 `model` has no adapter, so the test calls `tiny_backbone` itself.
 
-A patch to [`tests/unit/test_model.py`](#tut-21.1-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-21.1-tests-unit-test_model.py-583145){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_model.py`, the import is on line 18, and the new test is on lines 112 to 130.
 
@@ -134,7 +134,7 @@ reads only the places of `decide_idx` and `opt_idx`.
 `forward_batch` reads several records in one pass. They are padded to the length of the longest. The test packs the
 record of the fixture and a shorter record, and runs them in one pass. It compares each with a pass of its own.
 
-A patch to [`tests/unit/test_model.py`](#tut-21.2-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-21.2-tests-unit-test_model.py-583145){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_model.py`, the new test is on lines 133 to 146.
 

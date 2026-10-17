@@ -36,6 +36,8 @@ decoder, and changes four things around them:
 the same code as the real one. The walk uses one small request all along, a state `ab` and a question `x?` with the
 options `n` and `y`. It packs the question twice, so that the two copies can be compared.
 
+Two tools run everything here. [uv](https://docs.astral.sh/uv/) manages the project. It installs Python and the packages, keeps them in `.venv`, and pins their versions in `uv.lock`. [just](https://just.systems/) runs the tasks of the project by name, from the recipes of its `justfile`. `just setup`, for example, runs `uv sync`.
+
 <a id="tut-16.1"></a>
 
 ## 16.1 The model, and the decoder under it
@@ -54,7 +56,7 @@ read its docstring first.
 `model.py` turns a language model into a model that decides. It has 274 lines, and four ideas, which its docstring
 names. The file comes in whole, as a patch.
 
-A patch to [`src/babykev/model.py`](#tut-16.1-src-babykev-model.py-a86a0b).
+[± See the new file `src/babykev/model.py`](#tut-16.1-src-babykev-model.py-a86a0b)
 
 `src/babykev/model.py` is new, with 274 lines. The docstring of the module is on lines 1 to 18. The functions that
 pack a record are on lines 78 to 142, and the mask is on lines 145 to 162. The head is on lines 165 to 184, and
@@ -478,7 +480,7 @@ The first test asks for the three fixtures. It packs the record with the tiny to
 the head. Each question gets one probability per option, and they sum to 1. Nothing is trained, so the probabilities
 mean nothing. The test checks what is true of any probabilities.
 
-A patch to [`tests/unit/test_model.py`](#tut-19.8-tests-unit-test_model.py-583145).
+[± See the new file `tests/unit/test_model.py`](#tut-19.8-tests-unit-test_model.py-583145)
 
 The new file `tests/unit/test_model.py` has one test, on lines 11 to 20.
 
@@ -607,7 +609,7 @@ check the whole sequence, token by token.
 The test packs a small record, the state `ab` and one question `x?` with the options `n` and `y`. With one token per
 character, it can write down every token that it expects.
 
-A patch to [`tests/unit/test_model.py`](#tut-20.1-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-20.1-tests-unit-test_model.py-583145)
 
 In `tests/unit/test_model.py`, the new test is on lines 23 to 35.
 
@@ -703,7 +705,7 @@ the other half, in the last part of this walk.
 
 The positions of each question begin right after the state, so a question looks the same wherever it comes.
 
-A patch to [`tests/unit/test_model.py`](#tut-20.2-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-20.2-tests-unit-test_model.py-583145)
 
 In `tests/unit/test_model.py`, the new test is on lines 38 to 47.
 
@@ -792,7 +794,7 @@ A caller writes the state, the instructions and the options. A tokenizer turns t
 decide token, wherever it is. So text could close an option early, or make a question of its own. This test shows the
 danger, before the next test shows the defence.
 
-A patch to [`tests/unit/test_model.py`](#tut-20.5-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-20.5-tests-unit-test_model.py-583145)
 
 In `tests/unit/test_model.py`, the new test is on lines 68 to 73.
 
@@ -846,7 +848,7 @@ tokens. pytest prints `1 passed`. The danger is real.
 `user_tokens` rewrites `<|name|>` to `<¦name¦>` before it tokenizes, so the text of a delimiter is ordinary text. The
 test runs once for each of the five delimiters.
 
-A patch to [`tests/unit/test_model.py`](#tut-20.6-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-20.6-tests-unit-test_model.py-583145)
 
 In `tests/unit/test_model.py`, the new test is on lines 76 to 83.
 
@@ -945,7 +947,7 @@ into probabilities with a softmax.
 The head takes the hidden state of a decide token and those of the options, and gives one logit for each option. The
 test builds a head alone, with no model, and gives it five options.
 
-A patch to [`tests/unit/test_model.py`](#tut-20.7-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-20.7-tests-unit-test_model.py-583145)
 
 In `tests/unit/test_model.py`, the new test is on lines 87 to 90.
 
@@ -1033,7 +1035,7 @@ Training changes the adapter and the head, and the backbone stays as it is. The 
 adapter of rank 4, and takes one backward pass. Then it names every parameter that got a gradient. The fixture
 `model` has no adapter, so the test calls `tiny_backbone` itself.
 
-A patch to [`tests/unit/test_model.py`](#tut-21.1-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-21.1-tests-unit-test_model.py-583145)
 
 In `tests/unit/test_model.py`, the import is on line 18, and the new test is on lines 112 to 130.
 
@@ -1127,7 +1129,7 @@ reads only the places of `decide_idx` and `opt_idx`.
 `forward_batch` reads several records in one pass. They are padded to the length of the longest. The test packs the
 record of the fixture and a shorter record, and runs them in one pass. It compares each with a pass of its own.
 
-A patch to [`tests/unit/test_model.py`](#tut-21.2-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-21.2-tests-unit-test_model.py-583145)
 
 In `tests/unit/test_model.py`, the new test is on lines 133 to 146.
 
@@ -1225,7 +1227,7 @@ The first test draws the mask of one small request by hand. The request has a st
 of two tokens each, so its segments are `[0, 0, 1, 1, 2, 2]`. Row i of the picture is token i, and column j is token
 j. `#` means that token i may attend to token j, and `.` means that it may not.
 
-A patch to [`tests/unit/test_mask.py`](#tut-22.1-tests-unit-test_mask.py-aeb55a).
+[± See the new file `tests/unit/test_mask.py`](#tut-22.1-tests-unit-test_mask.py-aeb55a)
 
 The new file `tests/unit/test_mask.py` has `allowed` on lines 8 to 12, and the test on lines 15 to 26.
 
@@ -1299,6 +1301,8 @@ covered. It does the wrong thing for its task.
 A picture checks one size of request. The mask must hold for every size, and nobody can draw them all. hypothesis is
 a library for tests. A test states a rule, and hypothesis draws many inputs and runs the test on each.
 
+[hypothesis](https://hypothesis.readthedocs.io/) writes test inputs. A test says what kind of input it takes, such as a list of up to five numbers. hypothesis then tries many of them, and when one fails, it shrinks it to the smallest input that still fails.
+
 This change came from running `uv add --group test hypothesis`.
 
 `uv add` prints `Resolved 69 packages`, and installs hypothesis and sortedcontainers, which
@@ -1344,7 +1348,7 @@ may be. `shapes` draws a state of 1 to 6 tokens, then up to 4 questions of 1 to 
 shape as `encode` does. The test states the rule that no token of a question attends to a token of another question.
 `@given(shapes)` runs it on up to 100 shapes.
 
-A patch to [`tests/unit/test_mask.py`](#tut-22.3-tests-unit-test_mask.py-aeb55a).
+[± See the change to `tests/unit/test_mask.py`](#tut-22.3-tests-unit-test_mask.py-aeb55a)
 
 In `tests/unit/test_mask.py`, `shapes` is on line 10, `segments` on lines 13 to 18, and the new test on lines 42 to
 49.
@@ -1423,7 +1427,7 @@ mask. hypothesis keeps the failing shape in the folder `.hypothesis`, and tries 
 The second rule is the causal part of the mask. Nothing above the diagonal is allowed, so a token never attends to a
 token after it.
 
-A patch to [`tests/unit/test_mask.py`](#tut-22.4-tests-unit-test_mask.py-aeb55a).
+[± See the change to `tests/unit/test_mask.py`](#tut-22.4-tests-unit-test_mask.py-aeb55a)
 
 In `tests/unit/test_mask.py`, the new test is on lines 52 to 57.
 
@@ -1467,7 +1471,7 @@ The last rule says the whole of it, in plain Python. Token i may attend to token
 in the state or in the question of i. The test builds that table for every pair of tokens, and compares it with the
 mask.
 
-A patch to [`tests/unit/test_mask.py`](#tut-22.5-tests-unit-test_mask.py-aeb55a).
+[± See the change to `tests/unit/test_mask.py`](#tut-22.5-tests-unit-test_mask.py-aeb55a)
 
 In `tests/unit/test_mask.py`, the new test is on lines 60 to 70.
 
@@ -1518,7 +1522,7 @@ The rules check the mask alone. The next three tests check what the mask is for,
 must get the answer that it would get if it were the only question. The first test rewrites question 2 of the record,
 and the answers to questions 1 and 3 must not move, to the last bit.
 
-A patch to [`tests/unit/test_model.py`](#tut-22.6-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-22.6-tests-unit-test_model.py-583145)
 
 In `tests/unit/test_model.py`, the new test is on lines 149 to 160.
 
@@ -1571,7 +1575,7 @@ question 1 comes first and sees only the state. The tiny model is untrained, so 
 The second test of isolation packs the three questions of the record in one pass. Then it asks each question in a
 record of its own, with the same state. The answers must be the same, to within `1e-6`.
 
-A patch to [`tests/unit/test_model.py`](#tut-22.7-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-22.7-tests-unit-test_model.py-583145)
 
 In `tests/unit/test_model.py`, the new test is on lines 163 to 172.
 
@@ -1619,7 +1623,7 @@ The test fails on question 2. Packed, it gets `[0.3321, 0.3346, 0.3333]`, and al
 The positions of every question restart after the state. So a question must get the same answer first or last. The
 third test of isolation asks the questions in the reverse order.
 
-A patch to [`tests/unit/test_model.py`](#tut-22.8-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-22.8-tests-unit-test_model.py-583145)
 
 In `tests/unit/test_model.py`, the new test is on lines 175 to 184.
 
@@ -1680,7 +1684,7 @@ The mistake of this move is on purpose. The picture failed on rows 5 and 6, wher
 fix blocks only the question just before a question. A token sees its own question, the state, and any question two
 or more before it. The fix makes the picture right.
 
-A patch to [`src/babykev/model.py`](#tut-22.9-src-babykev-model.py-a86a0b).
+[± See the change to `src/babykev/model.py`](#tut-22.9-src-babykev-model.py-a86a0b)
 
 In `src/babykev/model.py`, line 159 now ends with `| (s[None, :] < s[:, None] - 1)`. A token may see a question
 whose number is less than its own minus one.
@@ -1729,7 +1733,7 @@ The line of the mask becomes kev's line. A token may attend to a token of the st
 of its own question, `s[None, :] == s[:, None]`. `causal`, on line 158, keeps out every token after it, and line 160
 joins the two. The docstring of `branch_mask`, lines 150 to 154, has stated this rule from the start.
 
-A patch to [`src/babykev/model.py`](#tut-22.10-src-babykev-model.py-a86a0b).
+[± See the change to `src/babykev/model.py`](#tut-22.10-src-babykev-model.py-a86a0b)
 
 In `src/babykev/model.py`, line 159 is `same = (s[None, :] == s[:, None]) | (s[None, :] == 0)`.
 

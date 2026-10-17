@@ -39,6 +39,8 @@ section that changes what it runs.
 | `just image` | `just lint-config` checks the `Dockerfile` too |
 | GitHub runs `just check` | `just lint-config` checks the workflows too |
 
+The project is managed by [uv](https://docs.astral.sh/uv/), which installs Python and the packages, keeps them in `.venv`, and pins their versions in `uv.lock`. `just setup` runs `uv sync`.
+
 <a id="tut-01.9-to-tut-01.12"></a>
 
 ## 1.9 to 1.12 The project, and its justfile
@@ -59,6 +61,8 @@ The command that sets up the project is `uv sync --locked`, and nobody should ha
 each task of the project once. `just` reads the file. Each task is a recipe, a name and then the commands to run,
 indented. Before the justfile comes in, we run the command of the recipe `setup` by hand.
 
+[just](https://just.systems/) runs commands by name. A file called `justfile` lists recipes. Each has a name, a comment that says what it does, and the commands it runs. `just setup` runs the recipe `setup`, and `just` alone lists every recipe. So the justfile is the one place that says how to work on the project, for a person and for a machine.
+
 ```bash
 uv sync --locked
 ```
@@ -67,7 +71,7 @@ uv sync --locked
 `pyproject.toml`. It prints `Resolved 1 package`. When `.venv` is already right, it then prints `Checked 1 package`, and changes
 nothing. In a new clone, it first prints `Creating virtual environment at: .venv`, and then installs babykev.
 
-A patch to [`justfile`](#tut-01.9-justfile-424f0b).
+[± See the new file `justfile`](#tut-01.9-justfile-424f0b)
 
 `justfile` is new, with two recipes. `default` lists the others, and `setup` runs `uv sync --locked`.
 
@@ -119,7 +123,7 @@ the recipe `setup`, and `just help` alone prints the list.
 `set positional-arguments` passes such words to the commands of a recipe. The first word becomes `"$1"` and the
 second `"$2"`, and a word with spaces in it stays one word. So `help` finds the name `setup` in `"$1"`.
 
-A patch to [`justfile`](#tut-01.10-justfile-424f0b).
+[± See the change to `justfile`](#tut-01.10-justfile-424f0b)
 
 In `justfile`, `set positional-arguments` now stands near the top, and the recipe `help` comes after `default`. The
 first line of the file now names `just help VERB`.
@@ -181,7 +185,7 @@ A person who types `just setup help` gets `uv sync --locked`, and no help. The r
 answers the word `help` with `just help setup`. The `@` at the start of its line stops `just` from printing the
 command before it runs it.
 
-A patch to [`justfile`](#tut-01.11-justfile-424f0b).
+[± See the change to `justfile`](#tut-01.11-justfile-424f0b)
 
 In `justfile`, `setup` takes `*args`. Its one line runs `just help setup` for the word `help`, and
 `uv sync --locked` for anything else.
@@ -224,7 +228,7 @@ Later recipes run the program, as `uv run babykev VERB`. Their help should also 
 variable, `program`, names the command once. `help` looks for `uv run {{ program }} VERB` in a recipe, and then runs
 the program's own help too.
 
-A patch to [`justfile`](#tut-01.12-justfile-424f0b).
+[± See the change to `justfile`](#tut-01.12-justfile-424f0b)
 
 In `justfile`, `program := "babykev"` stands near the top. `help` now ends with an `if` that runs
 `uv run {{ program }} "$1" help`.
@@ -304,6 +308,8 @@ pytest comes into the group `test`, and the command that runs it gets a recipe.
 
 Nothing runs tests yet. pytest finds the tests and runs them. It goes into the group `test`.
 
+[pytest](https://docs.pytest.org/) is the test runner of most Python projects. It finds every file `test_*.py`, runs each function whose name starts with `test_`, and reports each failure with the values that made it fail. A test is a plain function with `assert` in it.
+
 This change came from running `uv add --group test pytest`.
 
 `uv add --group test` writes the group `test` in `pyproject.toml`, under `[dependency-groups]`. It prints
@@ -351,7 +357,7 @@ code 5. pytest uses exit code 5 to say that it found no test.
 The command that runs the tests is `uv run pytest`, and every task of the project has a recipe. A recipe `test` gives
 the command a short name.
 
-A patch to [`justfile`](#tut-02.3-justfile-424f0b).
+[± See the change to `justfile`](#tut-02.3-justfile-424f0b)
 
 At the end of `justfile`, the recipe `test` runs `uv run pytest "$@"`. It sits under a new heading, `quality`.
 
@@ -428,6 +434,8 @@ looks, and never what it does. The linter comes in the next part of the tutorial
 and a user of the package does not need it. So it goes in a second dependency group, `lint`, next to the group
 `test`.
 
+[ruff](https://docs.astral.sh/ruff/) is a formatter and a linter for Python, written in Rust by the makers of uv. As a formatter, it rewrites code into one layout. As a linter, it reads code for mistakes and bad habits, each rule with a code such as `F401`. It takes the place of black, isort, flake8 and many plugins, and it is fast.
+
 This change came from running `uv add --group lint ruff`.
 
 `uv add` prints `Resolved 15 packages`, and installs ruff. ruff is one program, and needs no other
@@ -479,7 +487,7 @@ At 88 characters, the formatter would split lines of `cli.py` and of the tests t
 setting `line-length` in the table `[tool.ruff]` lets a line run to 100 characters. The formatter and the linter
 both read the table.
 
-A patch to [`pyproject.toml`](#tut-07.2-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-07.2-pyproject.toml-5d07e7)
 
 At the end of `pyproject.toml`, the new table `[tool.ruff]` is on lines 39 to 41, with `line-length = 100`.
 
@@ -523,7 +531,7 @@ The formatter has almost no options, and its defaults are its style. A reader of
 The table `[tool.ruff.format]` writes out five of them, each with a comment. They are the defaults, so the output of
 the formatter does not change.
 
-A patch to [`pyproject.toml`](#tut-07.3-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-07.3-pyproject.toml-5d07e7)
 
 At the end of `pyproject.toml`, the new table `[tool.ruff.format]` is on lines 43 to 49. It sets double quotes, four
 spaces, and three more defaults, each with a comment.
@@ -572,7 +580,7 @@ The command that formats the code is `uv run ruff format`, and every task of the
 `fmt` runs it, and gives it every word after `fmt`. The check fails, because `api.py` is not formatted yet. The
 next part formats it.
 
-A patch to [`justfile`](#tut-07.4-justfile-424f0b).
+[± See the change to `justfile`](#tut-07.4-justfile-424f0b)
 
 In `justfile`, the recipe `fmt` is on lines 28 to 32, above `test`, in the group `quality`. It runs
 `uv run ruff format "$@"`.
@@ -758,7 +766,7 @@ ruff has more than 900 rules. The table `[tool.ruff.lint]` chooses which to chec
 rules has a prefix, such as `E` or `B`. The list has one family on each line, with a comment that says what it
 finds.
 
-A patch to [`pyproject.toml`](#tut-08.1-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-08.1-pyproject.toml-5d07e7)
 
 At the end of `pyproject.toml`, the new table `[tool.ruff.lint]` starts at line 51. `select = [` on line 53 lists
 nine families of rules, from `E` to `N`.
@@ -812,7 +820,7 @@ The 44 `S101` hide the 8 problems of `api.py`. A test is written with `assert`, 
 `python -O`. The table `[tool.ruff.lint.per-file-ignores]` lets the files under `tests/` break `S101`. The package
 still may not use `assert`.
 
-A patch to [`pyproject.toml`](#tut-08.2-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-08.2-pyproject.toml-5d07e7)
 
 At the end of `pyproject.toml`, the new table `[tool.ruff.lint.per-file-ignores]` is on lines 65 to 67. It names
 `S101` for `"tests/**"`.
@@ -853,7 +861,7 @@ once each. The last line says that `--fix` can fix one, and that 2 unsafe fixes 
 The command that runs the linter is `uv run ruff check`. The recipe `lint` runs it, and gives it every word after
 `lint`, as `fmt` does.
 
-A patch to [`justfile`](#tut-08.3-justfile-424f0b).
+[± See the change to `justfile`](#tut-08.3-justfile-424f0b)
 
 In `justfile`, the recipe `lint` is on lines 34 to 38, between `fmt` and `test`. It runs `uv run ruff check "$@"`.
 
@@ -1005,7 +1013,7 @@ shows the gate at work.
 The three checks are three commands, and a person can forget one. The recipe `check` runs them one after another.
 `set -e` stops it at the first that fails, so the last line that it prints names the check that failed.
 
-A patch to [`justfile`](#tut-11.1-justfile-424f0b).
+[± See the change to `justfile`](#tut-11.1-justfile-424f0b)
 
 At the end of the `justfile`, the recipe `check` is on lines 46 to 55, in the group `quality`. Its body is a script
 of `sh`. `set -e` is on line 51, and the three checks are on lines 53 to 55.
@@ -1070,6 +1078,8 @@ and ends with exit code 0. `just help check` prints the line of the recipe.
 hook. If the program fails, `git commit` records nothing. pre-commit installs such a hook, and runs the checks that a
 file of settings names. It is for working on babykev, so it goes in the group `lint`.
 
+[pre-commit](https://pre-commit.com/) runs checks each time you run `git commit`, before git records the change. The file `.pre-commit-config.yaml` lists hooks. `pre-commit install` puts a script into `.git/hooks`, so `git commit` runs them first, and stops when one fails.
+
 This change came from running `uv add --group lint pre-commit`.
 
 `uv add` prints `Resolved 25 packages`, and installs pre-commit and the 9 packages that it needs, such as
@@ -1115,7 +1125,7 @@ pre-commit reads its hooks from a file, `.pre-commit-config.yaml`. The first hoo
 a command of the project itself, `just check`. So the hook and the terminal run the same checks. The file is new,
 and comes whole, as a patch.
 
-A patch to [`.pre-commit-config.yaml`](#tut-11.3-.pre-commit-config.yaml-e7d14d).
+[± See the new file `.pre-commit-config.yaml`](#tut-11.3-.pre-commit-config.yaml-e7d14d)
 
 The new file `.pre-commit-config.yaml` has 14 lines. The hook is on lines 9 to 14. `entry: just check`, on line 11,
 is the command. `pass_filenames: false` gives `just check` no file names, and `always_run: true` runs it for any
@@ -1168,7 +1178,7 @@ line for the hook, `just check....Passed`. A hook that passes prints nothing mor
 that folder, so each clone installs its own hook, once. The recipe `hook` runs the command. It is a recipe of its own,
 because `just setup` runs often, and never touches git.
 
-A patch to [`justfile`](#tut-11.4-justfile-424f0b).
+[± See the change to `justfile`](#tut-11.4-justfile-424f0b)
 
 In the `justfile`, the recipe `hook` is on lines 28 to 31, under `setup`. It runs `uv run pre-commit install`.
 
@@ -1220,7 +1230,7 @@ A model's weights or a large file of data does not belong in git. Once git recor
 and every clone downloads it. pre-commit-hooks is pre-commit's own collection of hooks, and its hook
 `check-added-large-files` refuses a file over a size. `--maxkb=1000` sets the size, 1000 KB.
 
-A patch to [`.pre-commit-config.yaml`](#tut-11.5-.pre-commit-config.yaml-e7d14d).
+[± See the change to `.pre-commit-config.yaml`](#tut-11.5-.pre-commit-config.yaml-e7d14d)
 
 In `.pre-commit-config.yaml`, the new repository is on lines 7 to 11, above `repo: local`. `rev: v6.0.0` is the tag
 of the collection that pre-commit uses.
@@ -1266,7 +1276,7 @@ When git cannot merge two changes to the same lines, it writes both into the fil
 `=======` and `>>>>>>>`. A person must choose, and remove the markers. The hook `check-merge-conflict` refuses a file
 that still has them.
 
-A patch to [`.pre-commit-config.yaml`](#tut-11.6-.pre-commit-config.yaml-e7d14d).
+[± See the change to `.pre-commit-config.yaml`](#tut-11.6-.pre-commit-config.yaml-e7d14d)
 
 In `.pre-commit-config.yaml`, line 12 is the new hook, `- id: check-merge-conflict`.
 
@@ -1306,7 +1316,7 @@ A `.env` file holds the settings and secrets of one machine, such as a token. `.
 `git add -f .env` would still add it. A local hook with `language: fail` fails for every file that it is given, and
 prints its `entry` as the reason. `files:` gives it only the files named `.env`.
 
-A patch to [`.pre-commit-config.yaml`](#tut-11.7-.pre-commit-config.yaml-e7d14d).
+[± See the change to `.pre-commit-config.yaml`](#tut-11.7-.pre-commit-config.yaml-e7d14d)
 
 In `.pre-commit-config.yaml`, the hook `no-env-file` is on lines 15 to 19. `files: (^|/)\.env$`, on line 19, matches
 a file named `.env` in any folder.
@@ -1351,7 +1361,7 @@ other three pass.
 The hook works only if it fails on a mistake. This move makes one on purpose. `cli.py` imports `os`, and never uses
 it. The next move removes it.
 
-A patch to [`src/babykev/cli.py`](#tut-11.8-src-babykev-cli.py-a9e184).
+[± See the change to `src/babykev/cli.py`](#tut-11.8-src-babykev-cli.py-a9e184)
 
 In `src/babykev/cli.py`, line 3 is now `import os`, and nothing in the file uses `os`.
 
@@ -1393,7 +1403,7 @@ stop here, and record nothing.
 
 The linter said what is wrong, and that `--fix` can remove the line. The move removes it by hand.
 
-A patch to [`src/babykev/cli.py`](#tut-11.9-src-babykev-cli.py-a9e184).
+[± See the change to `src/babykev/cli.py`](#tut-11.9-src-babykev-cli.py-a9e184)
 
 In `src/babykev/cli.py`, `import sys` is on line 3 again.
 
@@ -1431,7 +1441,7 @@ The four hooks pass or skip, and pre-commit ends with exit code 0. A `git commit
 A new clone has no hook until someone runs `just hook`. The README says so, under "Start", and its table names the
 file of the hooks.
 
-A patch to [`README.md`](#tut-11.10-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-11.10-README.md-8ec9a0)
 
 In `README.md`, the new paragraph is on lines 61 to 63, and the row of `.pre-commit-config.yaml` is on line 79.
 
@@ -1503,6 +1513,8 @@ fails on its defaults, for real, and its settings fix it. Then the gate runs `li
 `pyproject.toml` has a standard, which says which tables it has, which keys each table may hold, and what each value
 is. validate-pyproject checks the file against the standard. It goes in the group `lint`.
 
+[validate-pyproject](https://github.com/abravalheri/validate-pyproject) checks `pyproject.toml` against the published schemas of its tables. It finds a misspelt key or a value of the wrong type, which most tools ignore without a word.
+
 This change came from running `uv add --group lint validate-pyproject`.
 
 `uv add` prints `Resolved 27 packages`, and installs validate-pyproject and `fastjsonschema`, which it needs.
@@ -1547,7 +1559,7 @@ A recipe `lint-config` will run a check for each kind of config file. Its first 
 `pyproject.toml`. Its body is a script, with `set -e`, as in `check`, so that the next checks can come one line at a
 time.
 
-A patch to [`justfile`](#tut-12.2-justfile-424f0b).
+[± See the change to `justfile`](#tut-12.2-justfile-424f0b)
 
 In the `justfile`, the recipe `lint-config` is on lines 45 to 52, between `lint` and `test`. Line 52 runs
 `uv run validate-pyproject pyproject.toml`.
@@ -1602,7 +1614,7 @@ just help lint-config
 `uv lock`, they disagree. `uv lock --check` resolves the dependencies again, compares the result with `uv.lock`, and
 fails if they differ. It changes no file.
 
-A patch to [`justfile`](#tut-12.3-justfile-424f0b).
+[± See the change to `justfile`](#tut-12.3-justfile-424f0b)
 
 In the `justfile`, `uv lock --check` is line 53, the second check of `lint-config`. The comment on line 45 now names
 the lockfile too.
@@ -1655,7 +1667,7 @@ recipe can then change the lockfile, and the person who ran it does not see the 
 every `uv run` refuse a lockfile that is out of date, in place of writing it. The `justfile` exports it to every
 recipe.
 
-A patch to [`justfile`](#tut-12.4-justfile-424f0b).
+[± See the change to `justfile`](#tut-12.4-justfile-424f0b)
 
 Near the top of the `justfile`, `export UV_LOCKED := "1"` is on line 9, under its comment.
 
@@ -1697,7 +1709,7 @@ recipe sees it.
 The `justfile` is a config file too. just has a formatter of its own, `just --fmt`. With `--check`, it writes nothing,
 and fails if the file is not in its format. just still calls the formatter unstable, so it needs `--unstable`.
 
-A patch to [`justfile`](#tut-12.5-justfile-424f0b).
+[± See the change to `justfile`](#tut-12.5-justfile-424f0b)
 
 In the `justfile`, `just --fmt --check --unstable` is line 57, the third check of `lint-config`. The comment on line
 48 names the `justfile`.
@@ -1748,6 +1760,8 @@ in the format of just. `just lint-config` prints the same two lines as before.
 `.pre-commit-config.yaml` is YAML. A mistake of indentation there breaks the hook, and with it every `git commit`. yamllint
 checks YAML files, for their syntax and for their style. It goes in the group `lint`.
 
+[yamllint](https://yamllint.readthedocs.io/) checks YAML files, such as the configuration of pre-commit. It finds syntax errors, keys given twice, and a layout that differs from file to file.
+
 This change came from running `uv add --group lint yamllint`.
 
 `uv add` prints `Resolved 29 packages`, and installs yamllint and `pathspec`, which it needs.
@@ -1791,7 +1805,7 @@ It prints the version of yamllint that uv installed.
 `yamllint --strict .` checks every YAML file under the folder. `--strict` makes a warning fail, as an error does. It is the fourth check of `lint-config`. yamllint has no settings yet, and it fails on its defaults. The next
 moves give it settings.
 
-A patch to [`justfile`](#tut-12.7-justfile-424f0b).
+[± See the change to `justfile`](#tut-12.7-justfile-424f0b)
 
 In the `justfile`, `uv run yamllint --strict .` is line 58, the last check of `lint-config`.
 
@@ -1850,7 +1864,7 @@ yamllint reads its settings from a file `.yamllint`. `extends: default` keeps it
 `ignore-from-file: .gitignore` skips each file that git ignores, `.venv` among them. The file is new, and comes
 whole, as a patch.
 
-A patch to [`.yamllint`](#tut-12.8-.yamllint-dfe50a).
+[± See the new file `.yamllint`](#tut-12.8-.yamllint-dfe50a)
 
 The new file `.yamllint` has 3 lines. Line 3 is `ignore-from-file: .gitignore`, with a comment.
 
@@ -1887,7 +1901,7 @@ findings of `.pre-commit-config.yaml` stay. `.yamllint` is YAML too, and yamllin
 A line `---` marks the start of a document, in a YAML file that holds several. Our files hold one each, and pre-commit
 does not ask for the line. The rule `document-start` goes off.
 
-A patch to [`.yamllint`](#tut-12.9-.yamllint-dfe50a).
+[± See the change to `.yamllint`](#tut-12.9-.yamllint-dfe50a)
 
 In `.yamllint`, `rules:` is on line 4, and line 5 is `document-start: disable`, with a comment.
 
@@ -1925,7 +1939,7 @@ yamllint finds four problems, and ends with exit code 1. The four are the lines 
 The Python of the project has lines of up to 100 characters, and the comments of the YAML files follow it. The rule
 `line-length` lets a line have 100 characters, as `line-length = 100` in `[tool.ruff]` does for ruff.
 
-A patch to [`.yamllint`](#tut-12.10-.yamllint-dfe50a).
+[± See the change to `.yamllint`](#tut-12.10-.yamllint-dfe50a)
 
 In `.yamllint`, line 6 is `line-length: {max: 100}`, with a comment.
 
@@ -1962,7 +1976,7 @@ yamllint prints nothing, and `just lint-config` passes. It prints `Valid file: p
 `just lint-config` passes, but only when a person runs it. As the last line of `check`, it runs before each
 `git commit`, through the hook.
 
-A patch to [`justfile`](#tut-12.11-justfile-424f0b).
+[± See the change to `justfile`](#tut-12.11-justfile-424f0b)
 
 In the `justfile`, `just lint-config` is line 76, the last line of `check`. The comment on line 66 names the config
 files.
@@ -2009,7 +2023,7 @@ the tests, as before, then `Valid file: pyproject.toml` and `Resolved 29 package
 
 The table of the README names every config file of the project. `.yamllint` gets a row.
 
-A patch to [`README.md`](#tut-12.12-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-12.12-README.md-8ec9a0)
 
 In `README.md`, the row of `.yamllint` is on line 80, the last row of the table.
 
@@ -2062,6 +2076,8 @@ documentation. The words after `docs` go to `smalldocs api`.
 
 Nothing reads the documentation of the code yet. smalldocs is a Python package, so uv installs it like any other. It
 is for the documentation, so it goes in a third dependency group, `docs`.
+
+[smalldocs](https://github.com/rahuldave/smalldocs) makes documentation from the code. It reads docstrings and docments, the comments beside each parameter. It prints them in a terminal, checks that every function has them, and builds a website from them. Its own documentation is at [docs.smallish.dev](https://docs.smallish.dev/).
 
 This change came from running `uv add --group docs smalldocs`.
 
@@ -2116,7 +2132,7 @@ has one section, `api`, the reference. It names the package and the address of i
 the files of the tests, which smalldocs holds to the same rule as the package. The file is new, and comes whole, as a
 patch.
 
-A patch to [`docs/_smalldocs.yml`](#tut-13.2-docs-_smalldocs.yml-4b0b48).
+[± See the new file `docs/_smalldocs.yml`](#tut-13.2-docs-_smalldocs.yml-4b0b48)
 
 The new file `docs/_smalldocs.yml` has 5 lines. Line 3 names the package, `babykev`, and line 5 names the tests,
 `tests/**/*.py`.
@@ -2171,7 +2187,7 @@ method, which the linter does not ask for.
 
 The command that lists the gaps is long. The recipe `docs` gives its words to `smalldocs api`, and adds `--dir docs`.
 
-A patch to [`justfile`](#tut-13.3-justfile-424f0b).
+[± See the change to `justfile`](#tut-13.3-justfile-424f0b)
 
 At the end of the `justfile`, the recipe `docs` is on lines 78 to 82. Line 82 runs `uv run smalldocs api "$@" --dir
 docs`.
@@ -2232,7 +2248,7 @@ The code now has its documentation. A docment is a comment beside a parameter or
 `just check` passed with a docment lost. As a line of `check`, `just docs check` runs before each `git commit`,
 through the hook. It goes after the tests, and before the config files.
 
-A patch to [`justfile`](#tut-13.12-justfile-424f0b).
+[± See the change to `justfile`](#tut-13.12-justfile-424f0b)
 
 In the `justfile`, `just docs check` is line 76, between `just test -q` and `just lint-config`. The comment on line 66
 names the docs.
@@ -2302,7 +2318,7 @@ to. A build makes all three again from the code, so they do not belong in git. `
 does not track, and three lines at its end name these, before the first build. A `/` at the start of a line means
 the root of the repository, so `/docs/api/` is only that folder.
 
-A patch to [`.gitignore`](#tut-14.1-.gitignore-a5cc29).
+[± See the change to `.gitignore`](#tut-14.1-.gitignore-a5cc29)
 
 At the end of `.gitignore`, the comment is on line 222, and `/docs/_site/`, `/docs/api/` and `/docs/_symbols.json` on
 lines 223 to 225.
@@ -2344,7 +2360,7 @@ tail -n 4 .gitignore
 the HTML of every page into `docs/_site`. With no words, the recipe `docs` now runs it. With words, it runs
 `smalldocs api` as before. So the body of the recipe is a script of `sh`.
 
-A patch to [`justfile`](#tut-14.2-justfile-424f0b).
+[± See the change to `justfile`](#tut-14.2-justfile-424f0b)
 
 In the `justfile`, the recipe `docs` starts at line 79, with its comment. Line 85,
 `if [ "$#" -eq 0 ]; then exec uv run smalldocs render docs; fi`, is the case with no words.
@@ -2424,6 +2440,8 @@ places in `model.py`, and both have one cause, in torch.
 
 ty is for working on babykev, so it goes in the group `lint`.
 
+[ty](https://docs.astral.sh/ty/) is a type checker for Python, from the makers of uv and ruff. It reads the type hints and finds the places where a value cannot have the type that the code expects, without running the code.
+
 This change came from running `uv add --group lint ty`.
 
 `uv add` prints `Resolved 67 packages`, and installs ty, which needs no other package.
@@ -2465,7 +2483,7 @@ It prints the version of ty that uv installed. A newer ty can find more, or less
 
 `ty check` checks every Python file of the project. The recipe `types` runs it, and gives it any extra words.
 
-A patch to [`justfile`](#tut-17.2-justfile-424f0b).
+[± See the change to `justfile`](#tut-17.2-justfile-424f0b)
 
 In the `justfile`, the recipe `types` is on lines 60 to 64. Line 64 runs `uv run ty check "$@"`.
 
@@ -2545,7 +2563,7 @@ rule is right in general, and does not fit here.
 A comment `# ty: ignore[invalid-mutable-override]` on the line of a diagnostic turns off that one rule on that one
 line. Each other rule still checks the line. A comment above the method says why.
 
-A patch to [`src/babykev/model.py`](#tut-17.3-src-babykev-model.py-a86a0b).
+[± See the change to `src/babykev/model.py`](#tut-17.3-src-babykev-model.py-a86a0b)
 
 In `src/babykev/model.py`, the reason is on lines 178 and 179, and line 180 is
 `def forward(  # ty: ignore[invalid-mutable-override]`.
@@ -2592,7 +2610,7 @@ or of the return type.
 The `forward` of `DecisionModel` is the same case. It gets the same comment, and one line of reason that points to
 the first.
 
-A patch to [`src/babykev/model.py`](#tut-17.4-src-babykev-model.py-a86a0b).
+[± See the change to `src/babykev/model.py`](#tut-17.4-src-babykev-model.py-a86a0b)
 
 In `src/babykev/model.py`, the reason is on line 259, and line 260 is
 `def forward(  # ty: ignore[invalid-mutable-override]`.
@@ -2634,7 +2652,7 @@ just types
 `just types` passes, and nothing runs it before `git commit`. As a line of `check`, it runs before each `git commit`,
 through the hook. It goes after the linter, and before the tests.
 
-A patch to [`justfile`](#tut-17.5-justfile-424f0b).
+[± See the change to `justfile`](#tut-17.5-justfile-424f0b)
 
 In the `justfile`, `just types` is line 81, between `just lint` and `just test -q`. The comment on line 72 names the
 types.
@@ -2702,7 +2720,7 @@ The smoke gets a recipe of its own, in a group `model`. `just check` does not ru
 The recipe `smoke` runs the command. It answers `help` as every recipe does, and gives any other word to `babykev
 smoke`. It is in a group of its own, `model`.
 
-A patch to [`justfile`](#tut-18.7-justfile-424f0b).
+[± See the change to `justfile`](#tut-18.7-justfile-424f0b)
 
 In the `justfile`, the recipe `smoke` is on lines 95 to 101. Line 101 runs `uv run {{ program }} smoke "$@"`.
 
@@ -2772,7 +2790,7 @@ of the model and the smoke run on it. The total coverage is 91.76%.
 `just check` runs the tests with `--cov-fail-under=90`. A change that brings the total under 90% then fails the gate, and the hook refuses it.
 `just test` alone has no floor, so a run of a few tests, with `-k`, does not fail on the total.
 
-A patch to [`justfile`](#tut-21.4-justfile-424f0b).
+[± See the change to `justfile`](#tut-21.4-justfile-424f0b)
 
 In the `justfile`, line 82 is `just test -q --cov-fail-under=90`, and the comment on line 72 names the coverage.
 
@@ -2857,10 +2875,12 @@ stage `build` installs the environment into `/opt/venv`, with no group of the de
 come first, and the code after. Docker keeps each instruction of a build in its cache, so a change to the code installs one
 package again, and not torch.
 
+[Docker](https://www.docker.com/) builds an image, a file system with an operating system, Python and the project in it, from a `Dockerfile`. A container runs the image the same way on any machine, so the project does not depend on what a laptop has installed.
+
 The stage `run` starts from a fresh Python, and takes only the finished environment and the sample data. uv stays in
 the stage `build`.
 
-A patch to [`Dockerfile`](#tut-25.1-Dockerfile-6651dd).
+[± See the new file `Dockerfile`](#tut-25.1-Dockerfile-6651dd)
 
 In the new file `Dockerfile`, the stage `uv` is on line 9, and the stage `build` on lines 13 to 25. The stage `run`
 is on lines 28 to 36.
@@ -2952,7 +2972,7 @@ The stage `dev` builds the image to work in. It installs git with `apt-get`, and
 as a wheel from PyPI. Then it installs the whole project with every group, into `/opt/venv`. The folder of this
 machine can then be mounted at `/work`, and the image runs it with its own environment.
 
-A patch to [`Dockerfile`](#tut-25.2-Dockerfile-6651dd).
+[± See the change to `Dockerfile`](#tut-25.2-Dockerfile-6651dd)
 
 In `Dockerfile`, the comment names the dev image on lines 5 and 6, and the stage `dev` is on lines 41 to 66. Line 64,
 `COPY . .`, copies the folder of the project.
@@ -3038,7 +3058,7 @@ docker image ls babykev-dev:latest
 git never tracks. They are the history of git, the environment and the settings of this machine, and what a run or a
 tool writes.
 
-A patch to [`.dockerignore`](#tut-25.3-.dockerignore-05a721).
+[± See the new file `.dockerignore`](#tut-25.3-.dockerignore-05a721)
 
 The new file `.dockerignore` names `.git` on line 3 and `.venv` on line 4, and twelve more paths.
 
@@ -3098,7 +3118,7 @@ the test then fails, by chance, with `DeadlineExceeded`. A run of the dev image 
 same test passed at the next run. A test that fails by chance cannot be a reason to refuse a `git commit`. The tests of the mask check a
 rule, and not a speed, so a profile of hypothesis turns the deadline off for every test.
 
-A patch to [`tests/conftest.py`](#tut-25.4-tests-conftest.py-626af3).
+[± See the change to `tests/conftest.py`](#tut-25.4-tests-conftest.py-626af3)
 
 In `tests/conftest.py`, the import is on line 10, the comment on lines 16 to 18, and the profile on lines 19 and 20.
 
@@ -3156,7 +3176,7 @@ The recipe `image` runs the commands of the last moves. It has three words:
 
 `shell` and `run` mount the cache of the Hub at `/hf`.
 
-A patch to [`justfile`](#tut-25.5-justfile-424f0b).
+[± See the change to `justfile`](#tut-25.5-justfile-424f0b)
 
 In the `justfile`, the recipe `image` is on lines 36 to 67. `build` is on lines 47 to 52, `shell` on lines 53 to 61,
 and `run` on lines 62 to 65.
@@ -3235,6 +3255,8 @@ shell` starts a shell in the image, where `exit` ends it.
 
 hadolint is a linter for a `Dockerfile`. The package `hadolint-bin` holds its program, built for each system.
 
+[hadolint](https://github.com/hadolint/hadolint) is a linter for Dockerfiles. It finds mistakes such as an `apt-get install` with no pinned versions, and it checks the shell commands of each `RUN`.
+
 This change came from running `uv add --group lint hadolint-bin`.
 
 `uv add` prints `Resolved 70 packages`, and installs hadolint-bin.
@@ -3277,7 +3299,7 @@ It prints `Haskell Dockerfile Linter` and its version.
 `just lint-config` checks the config files, and the `Dockerfile` is one of them. The command behind the new line comes
 first.
 
-A patch to [`justfile`](#tut-25.7-justfile-424f0b).
+[± See the change to `justfile`](#tut-25.7-justfile-424f0b)
 
 In the `justfile`, the comment on line 81 names the `Dockerfile`, and line 92 is `uv run hadolint Dockerfile`.
 
@@ -3331,7 +3353,7 @@ the old version leaves the archive. So a pinned version stops building within we
 
 A comment says so, and a line tells hadolint to ignore DL3008 on the next instruction.
 
-A patch to [`Dockerfile`](#tut-25.8-Dockerfile-6651dd).
+[± See the change to `Dockerfile`](#tut-25.8-Dockerfile-6651dd)
 
 In `Dockerfile`, the reason is on lines 44 to 46, and `# hadolint ignore=DL3008` on line 47.
 
@@ -3373,7 +3395,7 @@ just lint-config
 The README gets a section on the images, with a table and the commands of the recipe. The table of the files gets a
 row for the `Dockerfile` and `.dockerignore`.
 
-A patch to [`README.md`](#tut-25.9-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-25.9-README.md-8ec9a0)
 
 In `README.md`, the section is on lines 77 to 99, and the row on line 118.
 
@@ -3479,7 +3501,9 @@ The workflow `check.yaml` has one job. It takes the code, installs uv and just, 
 check`, as a student does. It runs after a push to any branch and on every pull request. `branches: ["**"]` leaves
 out a push of a tag.
 
-A patch to [`.github/workflows/check.yaml`](#tut-26.1-.github-workflows-check.yaml-6ceb50).
+[GitHub Actions](https://docs.github.com/actions) runs commands on GitHub's machines. A workflow, a YAML file in `.github/workflows/`, says when it runs, such as after every push, and which commands its jobs run. Each run shows its log on the page of the repository.
+
+[± See the new file `.github/workflows/check.yaml`](#tut-26.1-.github-workflows-check.yaml-6ceb50)
 
 The new file `.github/workflows/check.yaml` has `on` on lines 5 to 8, and what the job `check` runs on lines 16
 to 21.
@@ -3535,7 +3559,7 @@ word `on` as true. GitHub reads it as the name `on`, and every workflow has it. 
 The rule `truthy` of yamllint has the option `check-keys`. With `false`, the rule checks the values and not the keys.
 A value of `on` or `yes` is still a warning.
 
-A patch to [`.yamllint`](#tut-26.2-.yamllint-dfe50a).
+[± See the change to `.yamllint`](#tut-26.2-.yamllint-dfe50a)
 
 In `.yamllint`, line 7 is `truthy: {check-keys: false}`, with its reason.
 
@@ -3571,6 +3595,8 @@ just lint-config
 yamllint checks that a workflow is good YAML, and knows nothing of GitHub. actionlint is a linter for the workflows of
 GitHub. It checks the events, the jobs, the actions and their inputs. The package `actionlint-py` holds its program,
 built for each system.
+
+[actionlint](https://github.com/rhysd/actionlint) checks the workflows of GitHub Actions. It finds a key that GitHub does not know, a wrong expression, and mistakes in the shell commands of each `run:` line.
 
 This change came from running `uv add --group lint actionlint-py`.
 
@@ -3614,7 +3640,7 @@ The first line is the version of actionlint.
 actionlint finds the workflows of the project itself, in `.github/workflows/`. The command behind the new line comes
 first.
 
-A patch to [`justfile`](#tut-26.4-justfile-424f0b).
+[± See the change to `justfile`](#tut-26.4-justfile-424f0b)
 
 In the `justfile`, the comment on line 81 names the workflows, and line 93 is `uv run actionlint`.
 
@@ -3664,7 +3690,7 @@ The workflow `docs.yaml` has two jobs. The job `build` installs the package and 
 It runs `smalldocs render docs`, the command behind `just docs`, and gives the folder `docs/_site` to Pages. The job
 `deploy` publishes it. The workflow runs after a push to `main`, and a person can also run it from the tab Actions.
 
-A patch to [`.github/workflows/docs.yaml`](#tut-26.5-.github-workflows-docs.yaml-ce7835).
+[± See the new file `.github/workflows/docs.yaml`](#tut-26.5-.github-workflows-docs.yaml-ce7835)
 
 In the new file `.github/workflows/docs.yaml`, `on` is on lines 6 to 9, and `permissions` on lines 11 to 14. Line 26
 renders the site with the group `docs` alone.
@@ -3744,7 +3770,7 @@ workflows on, on the tab **Actions**. Pages publishes from a workflow when **Set
 The README gets a section on GitHub, with the two settings that a fork needs. The table gets a row for
 `.github/workflows/`.
 
-A patch to [`README.md`](#tut-26.6-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-26.6-README.md-8ec9a0)
 
 In `README.md`, the section is on lines 100 to 112, and the row on line 135.
 

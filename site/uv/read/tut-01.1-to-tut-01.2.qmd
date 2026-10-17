@@ -26,6 +26,8 @@ The folder has words and a licence, but nothing that Python can build or run. `u
 project. `--package` makes a package in `src/babykev/`, with a command that runs its function `main`.
 `--name babykev` names the project, and `--python 3.13` sets the version of Python.
 
+[uv](https://docs.astral.sh/uv/) is a tool, written in Rust, that manages a Python project. It installs Python itself, makes the project's environment `.venv`, adds packages and pins their exact versions in a lockfile. It takes the place of pip, venv and pip-tools, and it is fast. Every command of this tutorial that installs or runs Python goes through uv.
+
 This change came from running `uv init --package --name babykev --python 3.13`.
 
 `uv init` leaves the README alone, because the project has one.

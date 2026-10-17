@@ -33,6 +33,8 @@ looks, and never what it does. The linter comes in the next part of the tutorial
 and a user of the package does not need it. So it goes in a second dependency group, `lint`, next to the group
 `test`.
 
+[ruff](https://docs.astral.sh/ruff/) is a formatter and a linter for Python, written in Rust by the makers of uv. As a formatter, it rewrites code into one layout. As a linter, it reads code for mistakes and bad habits, each rule with a code such as `F401`. It takes the place of black, isort, flake8 and many plugins, and it is fast.
+
 ```bash
 uv add --group lint ruff
 ```
@@ -142,7 +144,7 @@ path.write_text(tomlkit.dumps(doc), encoding='utf-8')
 PY
 ```
 
-The patch adds the table `[tool.ruff]` at the end of `pyproject.toml`, with a comment and `line-length = 100`.
+The patch adds the table `[tool.ruff]` to `pyproject.toml`, with a comment and `line-length = 100`.
 
 ```bash
 uv run ruff format --check
@@ -240,7 +242,7 @@ path.write_text(tomlkit.dumps(doc), encoding='utf-8')
 PY
 ```
 
-The patch adds the table `[tool.ruff.format]` at the end of `pyproject.toml`. Read the comment beside each setting.
+The patch adds the table `[tool.ruff.format]` to `pyproject.toml`. Read the comment beside each setting.
 
 `skip-magic-trailing-comma = false` is the one that a reader meets most. A list that ends with a comma keeps one item
 on each line, even when it would fit on one line. The group `lint`, on lines 26 to 28, is such a list.

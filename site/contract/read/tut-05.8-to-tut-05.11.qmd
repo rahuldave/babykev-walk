@@ -29,7 +29,7 @@ the type of each question. The moves of this section add a test for each type.
 `to_answers` turns the probabilities of the model into answers. The answer to a noul is one number, the probability of
 yes.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.8-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.8-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test gives `to_answers` the probabilities `[0.25, 0.75]`, and expects
 `0.75`.
@@ -79,7 +79,7 @@ just test
 
 The answer to a choice has its most likely option, a probability for each option, and a confidence.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.9-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.9-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test gives `[0.1, 0.7, 0.2]`, and expects `goat`.
 
@@ -121,7 +121,7 @@ just test
 The answer to a score is the expected level, the mean of the levels weighted by their probabilities. For
 `[0.1, 0.2, 0.7]` it is 0 × 0.1 + 1 × 0.2 + 2 × 0.7 = 1.6.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.10-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.10-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test expects the score `1.6`.
 
@@ -165,7 +165,7 @@ just test
 A request of three questions must get three answers, each under the id of its question, each of its type. The test
 runs `to_record` and `to_answers` one after the other.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.11-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.11-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test checks the type of the answer to each of the three questions.
 

@@ -31,7 +31,7 @@ The first test of `api.py` checks each of the five sample requests against the c
 file. `parametrize` gives the test each line in turn. `model_validate` checks the line, and raises an error if it does
 not fit.
 
-A patch to [`tests/unit/test_api.py`](#tut-04.1-tests-unit-test_api.py-58d97c).
+[± See the new file `tests/unit/test_api.py`](#tut-04.1-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 The new file `tests/unit/test_api.py` reads the sample data into `SAMPLE_LINES`, and has one test,
 `test_sample_line_fits_the_contract`.
@@ -90,7 +90,7 @@ lines are the functions that turn probabilities into answers.
 The tests will compare answers with labels, so each label must have the right kind. A label is a boolean for a noul,
 the name of an option for a choice, and the number of a level for a score.
 
-A patch to [`tests/unit/test_api.py`](#tut-04.2-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-04.2-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the new test checks the label of every question of each line.
 
@@ -137,7 +137,7 @@ The field `type` of a question decides which class of the contract it becomes. A
 request with a question of each type, for the tests to share. The test checks that the noul is a `Noul`, the choice a
 `Choice` and the score a `Score`.
 
-A patch to [`tests/unit/test_api.py`](#tut-04.3-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-04.3-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_api.py`, `cheese_request` stands under the constants. The new test at the end checks the class of
 each of its three questions.
@@ -218,7 +218,7 @@ pytest prints `1 passed`.
 A request must ask at least one question. `Field(min_length=1)` on `questions` says so. The test checks that pydantic
 refuses a request with none.
 
-A patch to [`tests/unit/test_api.py`](#tut-04.4-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-04.4-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the new test expects a `ValidationError` for `"questions": {}`.
 
@@ -264,7 +264,7 @@ pytest prints `1 passed`.
 
 Only noul, choice and score exist. The test gives a question the type `essay`, and expects a refusal.
 
-A patch to [`tests/unit/test_api.py`](#tut-04.5-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-04.5-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the new test makes a question of type `essay`.
 
@@ -304,7 +304,7 @@ pytest prints `1 passed`.
 A question of yes or no may leave out what yes and no mean. The test makes a `Noul` with no criteria, and checks that
 its criteria are `None`.
 
-A patch to [`tests/unit/test_api.py`](#tut-04.6-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-04.6-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the new test makes a `Noul` with an instruction alone.
 
@@ -341,7 +341,7 @@ pytest prints `1 passed`.
 
 A choice needs at least one option. The test gives a `Choice` empty criteria, and expects a refusal.
 
-A patch to [`tests/unit/test_api.py`](#tut-04.7-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-04.7-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the new test makes a `Choice` with `criteria={}`.
 
@@ -380,7 +380,7 @@ pytest prints `1 passed`.
 `MAX_OPTIONS` is 255. The test makes a choice of exactly 255 options, which is valid, and one of 256, which is
 refused. A limit is tested on both of its sides.
 
-A patch to [`tests/unit/test_api.py`](#tut-04.8-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-04.8-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the new test makes `at_limit`, 255 options, and then adds `one_more`.
 
@@ -430,7 +430,7 @@ pytest prints `1 passed`.
 
 A scale needs two levels at least, or it measures nothing. The test gives a `Score` one level, and expects a refusal.
 
-A patch to [`tests/unit/test_api.py`](#tut-04.9-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-04.9-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the new test makes a `Score` with the one level `Soft`.
 
@@ -469,7 +469,7 @@ already.
 
 The row of `tests/unit/` names only the tests of the command. It now names the tests of the contract too.
 
-A patch to [`README.md`](#tut-04.10-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-04.10-README.md-8ec9a0){.btn .btn-sm .btn-secondary}
 
 In the table of `README.md`, the row of `tests/unit/` names the tests of the contract and the sample data.
 

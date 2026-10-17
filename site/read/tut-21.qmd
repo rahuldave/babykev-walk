@@ -33,7 +33,7 @@ Training changes the adapter and the head, and the backbone stays as it is. The 
 adapter of rank 4, and takes one backward pass. Then it names every parameter that got a gradient. The fixture
 `model` has no adapter, so the test calls `tiny_backbone` itself.
 
-A patch to [`tests/unit/test_model.py`](#tut-21.1-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-21.1-tests-unit-test_model.py-583145){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_model.py`, the import is on line 18, and the new test is on lines 112 to 130.
 
@@ -105,7 +105,7 @@ coverage of 90% not reached. Total coverage: 83.52%`, and ends with exit code 1.
 `forward_batch` reads several records in one pass. They are padded to the length of the longest. The test packs the
 record of the fixture and a shorter record, and runs them in one pass. It compares each with a pass of its own.
 
-A patch to [`tests/unit/test_model.py`](#tut-21.2-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-21.2-tests-unit-test_model.py-583145){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_model.py`, the new test is on lines 133 to 146.
 
@@ -163,7 +163,7 @@ still fails.
 packing, the model and the answers, with no download. The answers mean nothing. The report must have a verdict for
 each of the fifteen questions, and the count.
 
-A patch to [`tests/unit/test_smoke.py`](#tut-21.3-tests-unit-test_smoke.py-89db04).
+[± See the change to `tests/unit/test_smoke.py`](#tut-21.3-tests-unit-test_smoke.py-89db04){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_smoke.py`, the imports are on lines 3 to 6, and the new test is on lines 32 to 42.
 
@@ -229,7 +229,7 @@ need the Hub or a GPU of NVIDIA. They are `63, 72-75, 204-207` of `model.py`, an
 `just check` runs the tests with `--cov-fail-under=90`. A change that brings the total under 90% then fails the gate, and the hook refuses it.
 `just test` alone has no floor, so a run of a few tests, with `-k`, does not fail on the total.
 
-A patch to [`justfile`](#tut-21.4-justfile-424f0b).
+[± See the change to `justfile`](#tut-21.4-justfile-424f0b){.btn .btn-sm .btn-secondary}
 
 In the `justfile`, line 82 is `just test -q --cov-fail-under=90`, and the comment on line 72 names the coverage.
 
@@ -277,7 +277,7 @@ exit code 0.
 
 The README says that one of the checks of `just check` is the floor.
 
-A patch to [`README.md`](#tut-21.5-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-21.5-README.md-8ec9a0){.btn .btn-sm .btn-secondary}
 
 In `README.md`, the two lines are 70 and 71.
 

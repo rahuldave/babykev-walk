@@ -32,7 +32,7 @@ person writes each type that ruff cannot guess, and ruff writes the rest.
 
 Nothing asks for types yet. The family `ANN` joins the list `select`, on a line of its own, with its comment.
 
-A patch to [`pyproject.toml`](#tut-09.1-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-09.1-pyproject.toml-5d07e7){.btn .btn-sm .btn-secondary}
 
 In `pyproject.toml`, the line `"ANN", # annotations: every parameter and every return value has a type` is now line
 63, the last of the list `select`.
@@ -79,7 +79,7 @@ nothing.
 `ANN202`: `_check` is the validator of `Choice`, and returns the choice itself, `self`. `Self`, from `typing`, is
 the type of the class that the method belongs to.
 
-A patch to [`src/babykev/api.py`](#tut-09.2-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-09.2-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/api.py`, line 8 imports `Self` from `typing`, and line 28 is now `def _check(self) -> Self:`.
 
@@ -130,9 +130,9 @@ type is `None`. The other two return something, and a person names the type. `to
 things, the record and the metadata of its questions. The record is a dictionary, and the metadata is a list of
 dictionaries. `cheese_request` in the tests returns a `SystemOneRequest`.
 
-A patch to [`src/babykev/api.py`](#tut-09.3-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-09.3-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
 
-A patch to [`tests/unit/test_api.py`](#tut-09.3-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-09.3-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/api.py`, line 69 now ends with `-> tuple[dict[str, Any], list[dict[str, Any]]]:`. In
 `tests/unit/test_api.py`, line 30 is now `def cheese_request() -> SystemOneRequest:`.
@@ -191,7 +191,7 @@ in by their names. `monkeypatch` is a `pytest.MonkeyPatch`, and `capsys` is a `p
 catches text. With the types, the two signatures of the tests pass 100 characters, so each is split over three
 lines, as the formatter splits it.
 
-A patch to [`tests/unit/test_cli.py`](#tut-09.4-tests-unit-test_cli.py-44d4a0).
+[± See the change to `tests/unit/test_cli.py`](#tut-09.4-tests-unit-test_cli.py-44d4a0){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_cli.py`, line 8 is now `def run(monkeypatch: pytest.MonkeyPatch, *words):`. The parameters of the two
 tests are on lines 16 and 24, each between the line of the name and the line `):`.
@@ -261,9 +261,9 @@ values in its list.
   `babykev.api`.
 - `text` and `name` are strings, and `level` is an `int`.
 
-A patch to [`tests/unit/test_api.py`](#tut-09.5-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-09.5-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
-A patch to [`tests/unit/test_cli.py`](#tut-09.5-tests-unit-test_cli.py-44d4a0).
+[± See the change to `tests/unit/test_cli.py`](#tut-09.5-tests-unit-test_cli.py-44d4a0){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_api.py`, `from typing import Any` is on line 5, and `JSONContent` on line 13. The five tests with
 parameters now give their types, for example `def test_score_confidence_is_one_when_certain(level: int):` on line
@@ -377,7 +377,7 @@ just test
 `ANN002`: `*words` in `run` gathers any number of words into a tuple. Its annotation is the type of each word, `str`,
 and not of the tuple.
 
-A patch to [`tests/unit/test_cli.py`](#tut-09.6-tests-unit-test_cli.py-44d4a0).
+[± See the change to `tests/unit/test_cli.py`](#tut-09.6-tests-unit-test_cli.py-44d4a0){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_cli.py`, line 8 is now `def run(monkeypatch: pytest.MonkeyPatch, *words: str):`.
 

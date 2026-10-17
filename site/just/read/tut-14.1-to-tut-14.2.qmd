@@ -32,7 +32,7 @@ to. A build makes all three again from the code, so they do not belong in git. `
 does not track, and three lines at its end name these, before the first build. A `/` at the start of a line means
 the root of the repository, so `/docs/api/` is only that folder.
 
-A patch to [`.gitignore`](#tut-14.1-.gitignore-a5cc29).
+[± See the change to `.gitignore`](#tut-14.1-.gitignore-a5cc29){.btn .btn-sm .btn-secondary}
 
 At the end of `.gitignore`, the comment is on line 222, and `/docs/_site/`, `/docs/api/` and `/docs/_symbols.json` on
 lines 223 to 225.
@@ -72,7 +72,7 @@ tail -n 4 .gitignore
 the HTML of every page into `docs/_site`. With no words, the recipe `docs` now runs it. With words, it runs
 `smalldocs api` as before. So the body of the recipe is a script of `sh`.
 
-A patch to [`justfile`](#tut-14.2-justfile-424f0b).
+[± See the change to `justfile`](#tut-14.2-justfile-424f0b){.btn .btn-sm .btn-secondary}
 
 In the `justfile`, the recipe `docs` starts at line 79, with its comment. Line 85,
 `if [ "$#" -eq 0 ]; then exec uv run smalldocs render docs; fi`, is the case with no words.

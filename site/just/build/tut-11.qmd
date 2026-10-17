@@ -124,6 +124,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-10 --staged --
 hook. If the program fails, `git commit` records nothing. pre-commit installs such a hook, and runs the checks that a
 file of settings names. It is for working on babykev, so it goes in the group `lint`.
 
+[pre-commit](https://pre-commit.com/) runs checks each time you run `git commit`, before git records the change. The file `.pre-commit-config.yaml` lists hooks. `pre-commit install` puts a script into `.git/hooks`, so `git commit` runs them first, and stops when one fails.
+
 ```bash
 uv add --group lint pre-commit
 ```

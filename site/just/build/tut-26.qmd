@@ -36,6 +36,8 @@ The workflow `check.yaml` has one job. It takes the code, installs uv and just, 
 check`, as a student does. It runs after a push to any branch and on every pull request. `branches: ["**"]` leaves
 out a push of a tag.
 
+[GitHub Actions](https://docs.github.com/actions) runs commands on GitHub's machines. A workflow, a YAML file in `.github/workflows/`, says when it runs, such as after every push, and which commands its jobs run. Each run shows its log on the page of the repository.
+
 Apply the patch to [`.github/workflows/check.yaml`](#tut-26.1-.github-workflows-check.yaml-6ceb50), from the top of the project:
 
 ```bash
@@ -155,6 +157,8 @@ git restore --source 2f210829183a --staged -- :/ && git restore --source 7b7e22f
 yamllint checks that a workflow is good YAML, and knows nothing of GitHub. actionlint is a linter for the workflows of
 GitHub. It checks the events, the jobs, the actions and their inputs. The package `actionlint-py` holds its program,
 built for each system.
+
+[actionlint](https://github.com/rhysd/actionlint) checks the workflows of GitHub Actions. It finds a key that GitHub does not know, a wrong expression, and mistakes in the shell commands of each `run:` line.
 
 ```bash
 uv add --group lint actionlint-py

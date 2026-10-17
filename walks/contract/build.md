@@ -55,6 +55,8 @@ Some moves of the whole tutorial are not in this one. After such a gap, the next
 and begins from their code. Each section after the first runs `just setup` before its moves. It installs the packages
 that the code of the section needs.
 
+Two tools run everything here. [uv](https://docs.astral.sh/uv/) manages the project. It installs Python and the packages, keeps them in `.venv`, and pins their versions in `uv.lock`. [just](https://just.systems/) runs the tasks of the project by name, from the recipes of its `justfile`. `just setup`, for example, runs `uv sync`.
+
 ## Get the project
 
 You build the project in a clone of your own, on a branch `mine` that starts where this walk starts. Run the commands of these pages in its top folder.
@@ -777,6 +779,8 @@ tests run. The recipe `just test` runs them both, and five tests check the comma
 
 The contract is written with pydantic, and babykev does not have it yet. pydantic checks that data has the shape that
 a class describes. `uv add` writes the package into `dependencies`, because a package of babykev needs it to run.
+
+[pydantic](https://docs.pydantic.dev/) checks data against a description written as Python classes with type hints. A model says which fields a request has and of what type. pydantic then refuses data that does not fit, with a message that names the field. So the rules of a request live in one place, as code.
 
 ```bash
 uv add pydantic

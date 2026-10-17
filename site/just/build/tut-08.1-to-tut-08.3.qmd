@@ -73,7 +73,7 @@ path.write_text(tomlkit.dumps(doc), encoding='utf-8')
 PY
 ```
 
-The patch adds the table `[tool.ruff.lint]` at the end of `pyproject.toml`. Read the comment beside each family.
+The patch adds the table `[tool.ruff.lint]` to `pyproject.toml`. Read the comment beside each family.
 
 ```bash
 uv run ruff check --statistics
@@ -180,7 +180,7 @@ path.write_text(tomlkit.dumps(doc), encoding='utf-8')
 PY
 ```
 
-The patch adds the table `[tool.ruff.lint.per-file-ignores]` at the end of `pyproject.toml`.
+The patch adds the table `[tool.ruff.lint.per-file-ignores]` to `pyproject.toml`.
 
 ```bash
 uv run ruff check --statistics

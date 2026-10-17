@@ -30,6 +30,8 @@ fails on its defaults, for real, and its settings fix it. Then the gate runs `li
 `pyproject.toml` has a standard, which says which tables it has, which keys each table may hold, and what each value
 is. validate-pyproject checks the file against the standard. It goes in the group `lint`.
 
+[validate-pyproject](https://github.com/abravalheri/validate-pyproject) checks `pyproject.toml` against the published schemas of its tables. It finds a misspelt key or a value of the wrong type, which most tools ignore without a word.
+
 ```bash
 uv add --group lint validate-pyproject
 ```
@@ -338,6 +340,8 @@ git restore --source 9f70971667e9 --staged -- :/ && git restore --source 284e4b7
 
 `.pre-commit-config.yaml` is YAML. A mistake of indentation there breaks the hook, and with it every `git commit`. yamllint
 checks YAML files, for their syntax and for their style. It goes in the group `lint`.
+
+[yamllint](https://yamllint.readthedocs.io/) checks YAML files, such as the configuration of pre-commit. It finds syntax errors, keys given twice, and a layout that differs from file to file.
 
 ```bash
 uv add --group lint yamllint

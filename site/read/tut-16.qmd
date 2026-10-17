@@ -32,7 +32,7 @@ front page of the docs and the README name it.
 `model.py` turns a language model into a model that decides. It has 274 lines, and four ideas, which its docstring
 names. The file comes in whole, as a patch.
 
-A patch to [`src/babykev/model.py`](#tut-16.1-src-babykev-model.py-a86a0b).
+[± See the new file `src/babykev/model.py`](#tut-16.1-src-babykev-model.py-a86a0b){.btn .btn-sm .btn-secondary}
 
 `src/babykev/model.py` is new, with 274 lines. The docstring of the module is on lines 1 to 18. The functions that
 pack a record are on lines 78 to 142, and the mask is on lines 145 to 162. The head is on lines 165 to 184, and
@@ -387,7 +387,7 @@ tests of the model come later, and bring the coverage back.
 
 The front page of the docs says that the code is in two modules. Now it is in three.
 
-A patch to [`docs/index.qmd`](#tut-16.2-docs-index.qmd-d6d880).
+[± See the change to `docs/index.qmd`](#tut-16.2-docs-index.qmd-d6d880){.btn .btn-sm .btn-secondary}
 
 In `docs/index.qmd`, line 15 says `three modules`, and the item of `babykev.model` is on lines 20 and 21.
 
@@ -435,7 +435,7 @@ grep -o 'href="api/model.html#[^"]*"' docs/_site/index.html
 
 The table of the README lists each file of the code. `model.py` gets a row, under `cli.py`.
 
-A patch to [`README.md`](#tut-16.3-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-16.3-README.md-8ec9a0){.btn .btn-sm .btn-secondary}
 
 In `README.md`, the row of `src/babykev/model.py` is on line 76.
 

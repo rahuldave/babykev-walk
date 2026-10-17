@@ -30,7 +30,7 @@ ruff has more than 900 rules. The table `[tool.ruff.lint]` chooses which to chec
 rules has a prefix, such as `E` or `B`. The list has one family on each line, with a comment that says what it
 finds.
 
-A patch to [`pyproject.toml`](#tut-08.1-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-08.1-pyproject.toml-5d07e7){.btn .btn-sm .btn-secondary}
 
 At the end of `pyproject.toml`, the new table `[tool.ruff.lint]` starts at line 51. `select = [` on line 53 lists
 nine families of rules, from `E` to `N`.
@@ -82,7 +82,7 @@ The 44 `S101` hide the 8 problems of `api.py`. A test is written with `assert`, 
 `python -O`. The table `[tool.ruff.lint.per-file-ignores]` lets the files under `tests/` break `S101`. The package
 still may not use `assert`.
 
-A patch to [`pyproject.toml`](#tut-08.2-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-08.2-pyproject.toml-5d07e7){.btn .btn-sm .btn-secondary}
 
 At the end of `pyproject.toml`, the new table `[tool.ruff.lint.per-file-ignores]` is on lines 65 to 67. It names
 `S101` for `"tests/**"`.
@@ -121,7 +121,7 @@ once each. The last line says that `--fix` can fix one, and that 2 unsafe fixes 
 The command that runs the linter is `uv run ruff check`. The recipe `lint` runs it, and gives it every word after
 `lint`, as `fmt` does.
 
-A patch to [`justfile`](#tut-08.3-justfile-424f0b).
+[± See the change to `justfile`](#tut-08.3-justfile-424f0b){.btn .btn-sm .btn-secondary}
 
 In `justfile`, the recipe `lint` is on lines 34 to 38, between `fmt` and `test`. It runs `uv run ruff check "$@"`.
 

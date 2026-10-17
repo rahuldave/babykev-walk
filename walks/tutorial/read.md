@@ -620,6 +620,8 @@ The folder has words and a licence, but nothing that Python can build or run. `u
 project. `--package` makes a package in `src/babykev/`, with a command that runs its function `main`.
 `--name babykev` names the project, and `--python 3.13` sets the version of Python.
 
+[uv](https://docs.astral.sh/uv/) is a tool, written in Rust, that manages a Python project. It installs Python itself, makes the project's environment `.venv`, adds packages and pins their exact versions in a lockfile. It takes the place of pip, venv and pip-tools, and it is fast. Every command of this tutorial that installs or runs Python goes through uv.
+
 This change came from running `uv init --package --name babykev --python 3.13`.
 
 `uv init` leaves the README alone, because the project has one.
@@ -732,7 +734,7 @@ then changes the packages of `.venv` to match, and does not print `Creating virt
 `pyproject.toml` still has the words of uv. Its description is a placeholder, `Add your description here`. The patch
 puts in what babykev is.
 
-A patch to [`pyproject.toml`](#tut-01.3-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-01.3-pyproject.toml-5d07e7)
 
 In `pyproject.toml`, the line `description` now says what babykev is.
 
@@ -772,7 +774,7 @@ grep -n description pyproject.toml
 A package says under which licence others may use it. babykev's licence is kev's, the Apache License 2.0.
 `license` names it, and `license-files` names the two files that a package of babykev carries with it.
 
-A patch to [`pyproject.toml`](#tut-01.4-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-01.4-pyproject.toml-5d07e7)
 
 In `pyproject.toml`, `license` and `license-files` now stand under `readme`.
 
@@ -812,7 +814,7 @@ them at the end of `[project]`, so the numbers can differ.
 
 A package names who wrote it. `authors` names Rahul Dave.
 
-A patch to [`pyproject.toml`](#tut-01.5-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-01.5-pyproject.toml-5d07e7)
 
 In `pyproject.toml`, `authors` now stands under `license-files`.
 
@@ -853,7 +855,7 @@ exit code 0. The words of the three moves change no dependency, so `uv.lock` sta
 command gets a file of its own, `src/babykev/cli.py`. `main` there reads the words after `babykev`. With no word, or
 with `help`, `--help` or `-h`, it prints `HELP`. Any other word ends with a message and exit code 2.
 
-A patch to [`src/babykev/cli.py`](#tut-01.6-src-babykev-cli.py-a9e184).
+[± See the new file `src/babykev/cli.py`](#tut-01.6-src-babykev-cli.py-a9e184)
 
 The new file `src/babykev/cli.py` holds `HELP`, the text of the help, and `main` under it. The line
 `raise SystemExit(2)` ends the command on a word it does not know.
@@ -910,7 +912,7 @@ the `main` of `__init__.py`.
 
 The command still runs the greeting. One line of `pyproject.toml` points it at the new `main`.
 
-A patch to [`pyproject.toml`](#tut-01.7-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-01.7-pyproject.toml-5d07e7)
 
 In `pyproject.toml`, the command now runs `babykev.cli:main`.
 
@@ -952,7 +954,7 @@ uv run babykev train
 Nothing runs the `main` of `src/babykev/__init__.py` any more. Code that nothing runs only misleads a reader. The
 patch takes its two lines out, and leaves the file empty, with not even a blank line.
 
-A patch to [`src/babykev/__init__.py`](#tut-01.8-src-babykev-__init__.py-a40393).
+[± See the change to `src/babykev/__init__.py`](#tut-01.8-src-babykev-__init__.py-a40393)
 
 `src/babykev/__init__.py` is empty. Python still needs the file, because it makes `src/babykev` a package.
 
@@ -987,6 +989,8 @@ The command that sets up the project is `uv sync --locked`, and nobody should ha
 each task of the project once. `just` reads the file. Each task is a recipe, a name and then the commands to run,
 indented. Before the justfile comes in, we run the command of the recipe `setup` by hand.
 
+[just](https://just.systems/) runs commands by name. A file called `justfile` lists recipes. Each has a name, a comment that says what it does, and the commands it runs. `just setup` runs the recipe `setup`, and `just` alone lists every recipe. So the justfile is the one place that says how to work on the project, for a person and for a machine.
+
 ```bash
 uv sync --locked
 ```
@@ -995,7 +999,7 @@ uv sync --locked
 `pyproject.toml`. It prints `Resolved 1 package`. When `.venv` is already right, it then prints `Checked 1 package`, and changes
 nothing. In a new clone, it first prints `Creating virtual environment at: .venv`, and then installs babykev.
 
-A patch to [`justfile`](#tut-01.9-justfile-424f0b).
+[± See the new file `justfile`](#tut-01.9-justfile-424f0b)
 
 `justfile` is new, with two recipes. `default` lists the others, and `setup` runs `uv sync --locked`.
 
@@ -1047,7 +1051,7 @@ the recipe `setup`, and `just help` alone prints the list.
 `set positional-arguments` passes such words to the commands of a recipe. The first word becomes `"$1"` and the
 second `"$2"`, and a word with spaces in it stays one word. So `help` finds the name `setup` in `"$1"`.
 
-A patch to [`justfile`](#tut-01.10-justfile-424f0b).
+[± See the change to `justfile`](#tut-01.10-justfile-424f0b)
 
 In `justfile`, `set positional-arguments` now stands near the top, and the recipe `help` comes after `default`. The
 first line of the file now names `just help VERB`.
@@ -1109,7 +1113,7 @@ A person who types `just setup help` gets `uv sync --locked`, and no help. The r
 answers the word `help` with `just help setup`. The `@` at the start of its line stops `just` from printing the
 command before it runs it.
 
-A patch to [`justfile`](#tut-01.11-justfile-424f0b).
+[± See the change to `justfile`](#tut-01.11-justfile-424f0b)
 
 In `justfile`, `setup` takes `*args`. Its one line runs `just help setup` for the word `help`, and
 `uv sync --locked` for anything else.
@@ -1152,7 +1156,7 @@ Later recipes run the program, as `uv run babykev VERB`. Their help should also 
 variable, `program`, names the command once. `help` looks for `uv run {{ program }} VERB` in a recipe, and then runs
 the program's own help too.
 
-A patch to [`justfile`](#tut-01.12-justfile-424f0b).
+[± See the change to `justfile`](#tut-01.12-justfile-424f0b)
 
 In `justfile`, `program := "babykev"` stands near the top. `help` now ends with an `if` that runs
 `uv run {{ program }} "$1" help`.
@@ -1215,7 +1219,7 @@ just help setup
 A reader of the README cannot yet tell how to start. A section, "Start", says to run `just setup` first, and names
 `just`, `just help VERB` and the help of the program.
 
-A patch to [`README.md`](#tut-01.13-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-01.13-README.md-8ec9a0)
 
 In `README.md`, "Start" says to run `just setup` first, and then names `just`, `just help VERB` and
 `uv run babykev help`.
@@ -1260,7 +1264,7 @@ grep -n '^## ' README.md
 A reader still cannot tell what each file of the project is. A section, "What is here", has a table, with a row for
 each file.
 
-A patch to [`README.md`](#tut-01.14-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-01.14-README.md-8ec9a0)
 
 In `README.md`, "What is here" is a table of the files of the project, from `pyproject.toml` to `.gitignore`.
 
@@ -1337,7 +1341,7 @@ uv installs only the group `dev` by default. The setting `default-groups = "all"
 install every group. So each later `uv add --group` needs no other change to `pyproject.toml`. A patch adds the
 table `[tool.uv]` with this setting.
 
-A patch to [`pyproject.toml`](#tut-02.1-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-02.1-pyproject.toml-5d07e7)
 
 At the end of `pyproject.toml`, the new table `[tool.uv]` has the line `default-groups = "all"`, with a comment above
 it.
@@ -1378,6 +1382,8 @@ later move adds one.
 ### 2.2 Pytest, in the group test
 
 Nothing runs tests yet. pytest finds the tests and runs them. It goes into the group `test`.
+
+[pytest](https://docs.pytest.org/) is the test runner of most Python projects. It finds every file `test_*.py`, runs each function whose name starts with `test_`, and reports each failure with the values that made it fail. A test is a plain function with `assert` in it.
 
 This change came from running `uv add --group test pytest`.
 
@@ -1426,7 +1432,7 @@ code 5. pytest uses exit code 5 to say that it found no test.
 The command that runs the tests is `uv run pytest`, and every task of the project has a recipe. A recipe `test` gives
 the command a short name.
 
-A patch to [`justfile`](#tut-02.3-justfile-424f0b).
+[± See the change to `justfile`](#tut-02.3-justfile-424f0b)
 
 At the end of `justfile`, the recipe `test` runs `uv run pytest "$@"`. It sits under a new heading, `quality`.
 
@@ -1477,7 +1483,7 @@ a function whose name starts with `test_`, in a file whose name starts with `tes
 
 The first test runs `babykev` with no word, then with `help`, `--help` and `-h`, and checks that each prints the help.
 
-A patch to [`tests/unit/test_cli.py`](#tut-02.4-tests-unit-test_cli.py-44d4a0).
+[± See the new file `tests/unit/test_cli.py`](#tut-02.4-tests-unit-test_cli.py-44d4a0)
 
 The new file `tests/unit/test_cli.py` has the helper `run`, and the test `test_help_is_printed_for_help_and_for_no_words`.
 
@@ -1533,7 +1539,7 @@ The tests check the help, and nothing checks what `babykev` does with a word it 
 `babykev train`. It checks that the command ends with exit code 2, and that the message names the word and points to
 the help.
 
-A patch to [`tests/unit/test_cli.py`](#tut-02.5-tests-unit-test_cli.py-44d4a0).
+[± See the change to `tests/unit/test_cli.py`](#tut-02.5-tests-unit-test_cli.py-44d4a0)
 
 At the end of `tests/unit/test_cli.py`, the new test runs `train` inside `pytest.raises(SystemExit)`.
 
@@ -1582,7 +1588,7 @@ just test -k unknown_command
 pytest looks for tests in every folder of the project. The tests are all in `tests/`, and a setting says so.
 `testpaths` in the table `[tool.pytest.ini_options]` names the folder.
 
-A patch to [`pyproject.toml`](#tut-02.6-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-02.6-pyproject.toml-5d07e7)
 
 At the end of `pyproject.toml`, the new table `[tool.pytest.ini_options]` has `testpaths = ["tests"]`.
 
@@ -1619,6 +1625,8 @@ just test
 
 The tests pass, but nothing says which lines of babykev they run. Coverage measures that. pytest-cov is a plugin of
 pytest that measures it, when pytest gets the option `--cov`. It goes in the group `test`.
+
+[pytest-cov](https://pytest-cov.readthedocs.io/) connects pytest to [coverage.py](https://coverage.readthedocs.io/), which records each line of the code that the tests run. The report then names the lines that no test reaches. A line that no test runs can break without any test failing.
 
 This change came from running `uv add --group test pytest-cov`.
 
@@ -1665,7 +1673,7 @@ just test --cov=babykev
 A person can forget to type `--cov=babykev`. `addopts` gives pytest options on every run. `--cov=babykev` measures
 the package babykev, and `--cov-report=term-missing` adds a column of the lines that no test ran.
 
-A patch to [`pyproject.toml`](#tut-02.8-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-02.8-pyproject.toml-5d07e7)
 
 At the end of `pyproject.toml`, `addopts` stands under `testpaths`, with a comment above it.
 
@@ -1702,7 +1710,7 @@ just test
 "Start" in the README does not name `just test`. Its paragraph now says to run it, and that a recipe gives its extra
 words to the tool behind it.
 
-A patch to [`README.md`](#tut-02.9-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-02.9-README.md-8ec9a0)
 
 In `README.md`, "Start" now says to run `just test`, and gives `just test -k help` as an example.
 
@@ -1745,7 +1753,7 @@ pytest runs the 4 tests with `help` in their name, and prints `4 passed, 1 desel
 The table of "What is here" has no row for the tests. A row for `tests/unit/` comes in. The row of `pyproject.toml`
 now says that it has the settings of the tools too.
 
-A patch to [`README.md`](#tut-02.10-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-02.10-README.md-8ec9a0)
 
 In the table of `README.md`, the new row names `tests/unit/` and `test_cli.py`.
 
@@ -1807,6 +1815,8 @@ contract yet, so coverage falls.
 The contract is written with pydantic, and babykev does not have it yet. pydantic checks that data has the shape that
 a class describes. `uv add` writes the package into `dependencies`, because a package of babykev needs it to run.
 
+[pydantic](https://docs.pydantic.dev/) checks data against a description written as Python classes with type hints. A model says which fields a request has and of what type. pydantic then refuses data that does not fit, with a message that names the field. So the rules of a request live in one place, as code.
+
 This change came from running `uv add pydantic`.
 
 `uv add pydantic` prints `Resolved 14 packages`, and lists what it installed. It installed pydantic and the four
@@ -1855,7 +1865,7 @@ pydantic and its version, and the group `test` with pytest and pytest-cov.
 babykev has no contract yet. `api.py`, from kev, says what a request is and what an answer is. It comes in whole,
 all 111 lines, and we read it before we change it.
 
-A patch to [`src/babykev/api.py`](#tut-03.2-src-babykev-api.py-2ea65f).
+[± See the new file `src/babykev/api.py`](#tut-03.2-src-babykev-api.py-2ea65f)
 
 `src/babykev/api.py` is new. Lines 14 to 43 are the classes of a request. The functions after them turn a request into
 options, and probabilities into answers.
@@ -2008,7 +2018,7 @@ The 5 tests pass, and coverage falls. `api.py` has 70 statements, and no test ru
 kev served the model over HTTP, and babykev has no server. The first line of `api.py` names the address of kev's
 server, `POST /v1/systemone`.
 
-A patch to [`src/babykev/api.py`](#tut-03.3-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-03.3-src-babykev-api.py-2ea65f)
 
 In `src/babykev/api.py`, the docstring no longer names `POST /v1/systemone`.
 
@@ -2044,7 +2054,7 @@ It prints the new first line.
 
 The field `model` named the model for kev's server to run. babykev has one model, so a request names none.
 
-A patch to [`src/babykev/api.py`](#tut-03.4-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-03.4-src-babykev-api.py-2ea65f)
 
 In `src/babykev/api.py`, `SystemOneRequest` ends with the line `questions`.
 
@@ -2082,7 +2092,7 @@ uv run python -c "from babykev.api import SystemOneRequest; print(sorted(SystemO
 
 `output_tokens` counted the tokens of an answer for a bill, and needs the tokenizer of a model. babykev bills nothing.
 
-A patch to [`src/babykev/api.py`](#tut-03.5-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-03.5-src-babykev-api.py-2ea65f)
 
 `src/babykev/api.py` now ends with `to_answers`.
 
@@ -2123,7 +2133,7 @@ just test
 The tests of the contract need requests to check, and the project has none. Five requests about cheese come in a file
 of their own. Each line of the file is one request, in JSON. Each question has a `label`, the right answer.
 
-A patch to [`data/cheese/sample.jsonl`](#tut-03.6-data-cheese-sample.jsonl-79f982).
+[± See the new file `data/cheese/sample.jsonl`](#tut-03.6-data-cheese-sample.jsonl-79f982)
 
 `data/cheese/sample.jsonl` is new, with one request on each line.
 
@@ -2161,7 +2171,7 @@ label `1`, the second level. `milk` is a `choice` of five options with the label
 The table of the README names neither the contract nor the data. Rows for `api.py`, `cli.py` and the sample data take
 the place of the row of `src/babykev/`.
 
-A patch to [`README.md`](#tut-03.7-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-03.7-README.md-8ec9a0)
 
 In the table of `README.md`, the rows of `src/babykev/api.py`, `src/babykev/cli.py` and `data/cheese/sample.jsonl`
 stand above the row of the tests.
@@ -2221,7 +2231,7 @@ The first test of `api.py` checks each of the five sample requests against the c
 file. `parametrize` gives the test each line in turn. `model_validate` checks the line, and raises an error if it does
 not fit.
 
-A patch to [`tests/unit/test_api.py`](#tut-04.1-tests-unit-test_api.py-58d97c).
+[± See the new file `tests/unit/test_api.py`](#tut-04.1-tests-unit-test_api.py-58d97c)
 
 The new file `tests/unit/test_api.py` reads the sample data into `SAMPLE_LINES`, and has one test,
 `test_sample_line_fits_the_contract`.
@@ -2282,7 +2292,7 @@ lines are the functions that turn probabilities into answers.
 The tests will compare answers with labels, so each label must have the right kind. A label is a boolean for a noul,
 the name of an option for a choice, and the number of a level for a score.
 
-A patch to [`tests/unit/test_api.py`](#tut-04.2-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-04.2-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the new test checks the label of every question of each line.
 
@@ -2331,7 +2341,7 @@ The field `type` of a question decides which class of the contract it becomes. A
 request with a question of each type, for the tests to share. The test checks that the noul is a `Noul`, the choice a
 `Choice` and the score a `Score`.
 
-A patch to [`tests/unit/test_api.py`](#tut-04.3-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-04.3-tests-unit-test_api.py-58d97c)
 
 In `tests/unit/test_api.py`, `cheese_request` stands under the constants. The new test at the end checks the class of
 each of its three questions.
@@ -2414,7 +2424,7 @@ pytest prints `1 passed`.
 A request must ask at least one question. `Field(min_length=1)` on `questions` says so. The test checks that pydantic
 refuses a request with none.
 
-A patch to [`tests/unit/test_api.py`](#tut-04.4-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-04.4-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the new test expects a `ValidationError` for `"questions": {}`.
 
@@ -2462,7 +2472,7 @@ pytest prints `1 passed`.
 
 Only noul, choice and score exist. The test gives a question the type `essay`, and expects a refusal.
 
-A patch to [`tests/unit/test_api.py`](#tut-04.5-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-04.5-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the new test makes a question of type `essay`.
 
@@ -2504,7 +2514,7 @@ pytest prints `1 passed`.
 A question of yes or no may leave out what yes and no mean. The test makes a `Noul` with no criteria, and checks that
 its criteria are `None`.
 
-A patch to [`tests/unit/test_api.py`](#tut-04.6-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-04.6-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the new test makes a `Noul` with an instruction alone.
 
@@ -2543,7 +2553,7 @@ pytest prints `1 passed`.
 
 A choice needs at least one option. The test gives a `Choice` empty criteria, and expects a refusal.
 
-A patch to [`tests/unit/test_api.py`](#tut-04.7-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-04.7-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the new test makes a `Choice` with `criteria={}`.
 
@@ -2584,7 +2594,7 @@ pytest prints `1 passed`.
 `MAX_OPTIONS` is 255. The test makes a choice of exactly 255 options, which is valid, and one of 256, which is
 refused. A limit is tested on both of its sides.
 
-A patch to [`tests/unit/test_api.py`](#tut-04.8-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-04.8-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the new test makes `at_limit`, 255 options, and then adds `one_more`.
 
@@ -2636,7 +2646,7 @@ pytest prints `1 passed`.
 
 A scale needs two levels at least, or it measures nothing. The test gives a `Score` one level, and expects a refusal.
 
-A patch to [`tests/unit/test_api.py`](#tut-04.9-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-04.9-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the new test makes a `Score` with the one level `Soft`.
 
@@ -2677,7 +2687,7 @@ already.
 
 The row of `tests/unit/` names only the tests of the command. It now names the tests of the contract too.
 
-A patch to [`README.md`](#tut-04.10-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-04.10-README.md-8ec9a0)
 
 In the table of `README.md`, the row of `tests/unit/` names the tests of the contract and the sample data.
 
@@ -2733,7 +2743,7 @@ turns probabilities into answers. Each test checks one of their rules.
 The model reads text, and the state of a request is JSON. `render` writes JSON as text. One test gives `render` nine
 values, from `None` to a list of objects, and checks the text of each.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.1-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.1-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the parametrized test lists nine pairs, each a value and its text.
 
@@ -2801,7 +2811,7 @@ pytest prints `9 passed`, one for each value.
 An option is its name, followed by its description when it has one. `option_text` writes it. The test gives it no
 description, an empty one, and a real one.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.2-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.2-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the test gives `option_text` three cases.
 
@@ -2857,7 +2867,7 @@ pytest prints `3 passed`.
 `to_record` turns a request into a record, the text and options that the model reads, and the metadata that maps
 them back. The test checks that the state is rendered once, and that the questions keep their order.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.3-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.3-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the test reads `record["state"]` and the order of the questions.
 
@@ -2907,7 +2917,7 @@ pytest prints `1 passed`.
 A noul has two options, `no` first and `yes` second. The code counts the options from 0, so `yes` is option 1. The
 answer to a noul is the probability of option 1.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.4-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.4-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the test checks the options `["no", "yes"]`.
 
@@ -2948,7 +2958,7 @@ pytest prints `1 passed`.
 
 A noul can say what yes and no mean, under `true` and `false`. They become the descriptions of the two options.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.5-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.5-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the test expects `"no: It has none"` and `"yes: It has blue veins"`.
 
@@ -2991,7 +3001,7 @@ pytest prints `1 passed`.
 
 A choice has one option for each criterion, in order, and the metadata keeps their names.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.6-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.6-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the test expects four options, the last with its description.
 
@@ -3037,7 +3047,7 @@ pytest prints `1 passed`.
 
 A score has one option for each level, in order. Its legend maps the number of each level to its name.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.7-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.7-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the test checks the options and the legend of `firmness`.
 
@@ -3079,7 +3089,7 @@ pytest prints `1 passed`.
 `to_answers` turns the probabilities of the model into answers. The answer to a noul is one number, the probability of
 yes.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.8-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.8-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the test gives `to_answers` the probabilities `[0.25, 0.75]`, and expects
 `0.75`.
@@ -3131,7 +3141,7 @@ just test
 
 The answer to a choice has its most likely option, a probability for each option, and a confidence.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.9-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.9-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the test gives `[0.1, 0.7, 0.2]`, and expects `goat`.
 
@@ -3175,7 +3185,7 @@ just test
 The answer to a score is the expected level, the mean of the levels weighted by their probabilities. For
 `[0.1, 0.2, 0.7]` it is 0 × 0.1 + 1 × 0.2 + 2 × 0.7 = 1.6.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.10-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.10-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the test expects the score `1.6`.
 
@@ -3221,7 +3231,7 @@ just test
 A request of three questions must get three answers, each under the id of its question, each of its type. The test
 runs `to_record` and `to_answers` one after the other.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.11-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.11-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the test checks the type of the answer to each of the three questions.
 
@@ -3285,7 +3295,7 @@ The probabilities of an answer must sum to 1. The test makes a choice of 77 opti
 each. `pytest.approx(1, abs=0.02)` accepts any number from 0.98 to 1.02. The test fails on purpose, because it finds
 a bug of kev.
 
-A patch to [`tests/unit/test_api.py`](#tut-06.1-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-06.1-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the new test sums the probabilities of 77 equal options.
 
@@ -3337,7 +3347,7 @@ Lines 89 and 90 are `r2`, which rounds to two decimals. 1/77 is about 0.013, and
 Two decimals lose too much, and 77 equal options sum to 0.77. `round_prob` takes the place of `r2`, and rounds to four
 decimals. Each 1/77 becomes 0.013, and the 77 probabilities sum to 1.001, within 0.02 of 1.
 
-A patch to [`src/babykev/api.py`](#tut-06.2-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-06.2-src-babykev-api.py-2ea65f)
 
 In `src/babykev/api.py`, `round_prob` stands where `r2` was, and `to_answers` calls it.
 
@@ -3397,7 +3407,7 @@ just test
 Confidence runs from 1, when the model is sure, to 0, when it knows nothing. A choice that gives every option the same
 probability is a guess.
 
-A patch to [`tests/unit/test_api.py`](#tut-06.3-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-06.3-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the test gives `choice_confidence` four equal probabilities.
 
@@ -3447,7 +3457,7 @@ pytest prints `1 passed`.
 
 All the probability on one option is certainty, with three options or with one.
 
-A patch to [`tests/unit/test_api.py`](#tut-06.4-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-06.4-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the test checks `[0, 1, 0]` and `[1.0]`.
 
@@ -3488,7 +3498,7 @@ pytest prints `2 passed`.
 Between a guess and certainty, confidence follows the probability of the most likely option. `[0.5, 0.25, 0.25]` gets
 0.25.
 
-A patch to [`tests/unit/test_api.py`](#tut-06.5-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-06.5-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the test expects 0.25 for `[0.5, 0.25, 0.25]`.
 
@@ -3528,7 +3538,7 @@ pytest prints `3 passed`.
 A score has its own confidence, which measures how close the probabilities sit to the most likely level. All the
 probability on one level is certainty, wherever the level is. The test runs for each of three levels.
 
-A patch to [`tests/unit/test_api.py`](#tut-06.6-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-06.6-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the parametrized test puts 1.0 on level 0, 1 and 2 in turn.
 
@@ -3578,7 +3588,7 @@ pytest prints `6 passed`.
 
 Doubt between two neighbouring levels is closer to certain than doubt between the two ends of the scale.
 
-A patch to [`tests/unit/test_api.py`](#tut-06.7-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-06.7-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the test compares `[0.5, 0.5, 0, 0]` with `[0.5, 0, 0, 0.5]`.
 
@@ -3618,7 +3628,7 @@ pytest prints `7 passed`.
 A score that gives every level the same probability is a guess, as it is for a choice, and its confidence must be 0.
 The test fails on purpose, because it finds the second bug of kev.
 
-A patch to [`tests/unit/test_api.py`](#tut-06.8-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-06.8-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the test gives `score_confidence` three equal probabilities.
 
@@ -3671,7 +3681,7 @@ places from it, so the spread is 1/3 × 0 + 1/3 × 1 + 1/3 × 2 = 1 place. The l
 A guess gets confidence 0.5, because the code measures the spread against the length of the scale. The fix measures it
 against the spread of a guess around the middle level.
 
-A patch to [`src/babykev/api.py`](#tut-06.9-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-06.9-src-babykev-api.py-2ea65f)
 
 In `src/babykev/api.py`, `score_confidence` now computes `spread` and `guess`, and divides one by the other.
 
@@ -3739,7 +3749,7 @@ hold a scale of one level, so no test reaches it.
 Line 90 runs in no test. A scale of one level leaves nothing to doubt, so its confidence is 1, and a test that calls
 `score_confidence` itself can say so.
 
-A patch to [`tests/unit/test_api.py`](#tut-06.10-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-06.10-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the new test calls `score_confidence([1.0])`.
 
@@ -3801,6 +3811,8 @@ looks, and never what it does. The linter comes in the next part of the tutorial
 and a user of the package does not need it. So it goes in a second dependency group, `lint`, next to the group
 `test`.
 
+[ruff](https://docs.astral.sh/ruff/) is a formatter and a linter for Python, written in Rust by the makers of uv. As a formatter, it rewrites code into one layout. As a linter, it reads code for mistakes and bad habits, each rule with a code such as `F401`. It takes the place of black, isort, flake8 and many plugins, and it is fast.
+
 This change came from running `uv add --group lint ruff`.
 
 `uv add` prints `Resolved 15 packages`, and installs ruff. ruff is one program, and needs no other
@@ -3852,7 +3864,7 @@ At 88 characters, the formatter would split lines of `cli.py` and of the tests t
 setting `line-length` in the table `[tool.ruff]` lets a line run to 100 characters. The formatter and the linter
 both read the table.
 
-A patch to [`pyproject.toml`](#tut-07.2-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-07.2-pyproject.toml-5d07e7)
 
 At the end of `pyproject.toml`, the new table `[tool.ruff]` is on lines 39 to 41, with `line-length = 100`.
 
@@ -3896,7 +3908,7 @@ The formatter has almost no options, and its defaults are its style. A reader of
 The table `[tool.ruff.format]` writes out five of them, each with a comment. They are the defaults, so the output of
 the formatter does not change.
 
-A patch to [`pyproject.toml`](#tut-07.3-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-07.3-pyproject.toml-5d07e7)
 
 At the end of `pyproject.toml`, the new table `[tool.ruff.format]` is on lines 43 to 49. It sets double quotes, four
 spaces, and three more defaults, each with a comment.
@@ -3945,7 +3957,7 @@ The command that formats the code is `uv run ruff format`, and every task of the
 `fmt` runs it, and gives it every word after `fmt`. The check fails, because `api.py` is not formatted yet. The
 next part formats it.
 
-A patch to [`justfile`](#tut-07.4-justfile-424f0b).
+[± See the change to `justfile`](#tut-07.4-justfile-424f0b)
 
 In `justfile`, the recipe `fmt` is on lines 28 to 32, above `test`, in the group `quality`. It runs
 `uv run ruff format "$@"`.
@@ -4135,7 +4147,7 @@ ruff has more than 900 rules. The table `[tool.ruff.lint]` chooses which to chec
 rules has a prefix, such as `E` or `B`. The list has one family on each line, with a comment that says what it
 finds.
 
-A patch to [`pyproject.toml`](#tut-08.1-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-08.1-pyproject.toml-5d07e7)
 
 At the end of `pyproject.toml`, the new table `[tool.ruff.lint]` starts at line 51. `select = [` on line 53 lists
 nine families of rules, from `E` to `N`.
@@ -4189,7 +4201,7 @@ The 44 `S101` hide the 8 problems of `api.py`. A test is written with `assert`, 
 `python -O`. The table `[tool.ruff.lint.per-file-ignores]` lets the files under `tests/` break `S101`. The package
 still may not use `assert`.
 
-A patch to [`pyproject.toml`](#tut-08.2-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-08.2-pyproject.toml-5d07e7)
 
 At the end of `pyproject.toml`, the new table `[tool.ruff.lint.per-file-ignores]` is on lines 65 to 67. It names
 `S101` for `"tests/**"`.
@@ -4230,7 +4242,7 @@ once each. The last line says that `--fix` can fix one, and that 2 unsafe fixes 
 The command that runs the linter is `uv run ruff check`. The recipe `lint` runs it, and gives it every word after
 `lint`, as `fmt` does.
 
-A patch to [`justfile`](#tut-08.3-justfile-424f0b).
+[± See the change to `justfile`](#tut-08.3-justfile-424f0b)
 
 In `justfile`, the recipe `lint` is on lines 34 to 38, between `fmt` and `test`. It runs `uv run ruff check "$@"`.
 
@@ -4291,7 +4303,7 @@ lines 3 to 5, and `answer =` lined up in one column. Line 5 is the longest, and 
 order" takes the place of "ordered level descriptions", and says the same in fewer characters. The three lines
 line up again, at column 43.
 
-A patch to [`src/babykev/api.py`](#tut-08.4-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-08.4-src-babykev-api.py-2ea65f)
 
 In `src/babykev/api.py`, lines 3 to 5 now have `answer =` at column 43. Line 5 has 97 characters.
 
@@ -4337,7 +4349,7 @@ The formatter leaves the text of a docstring as it is.
 babykev needs Python 3.13. `JSONContent` on line 11 and `Question` on line 39 become `X | Y`. ruff has no fix for
 these two lines, so a person writes them.
 
-A patch to [`src/babykev/api.py`](#tut-08.5-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-08.5-src-babykev-api.py-2ea65f)
 
 In `src/babykev/api.py`, line 11 is now `JSONContent = str | dict | list | int | float | bool | None`, and line 39
 is `Question = Noul | Choice | Score`.
@@ -4393,7 +4405,7 @@ pydantic reads `X | Y` as it read `Union`.
 `choice_confidence` is the number of options, and becomes `k`. `L` in `score_confidence` is the number of levels.
 `l` would break another rule, `E741`, because `l` looks like `1` and `I` in many fonts. So `L` becomes `n`.
 
-A patch to [`src/babykev/api.py`](#tut-08.6-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-08.6-src-babykev-api.py-2ea65f)
 
 In `src/babykev/api.py`, `k = len(p)` is on line 94, and `n = len(p)` on line 104. Each use of the two names
 changes with them.
@@ -4460,7 +4472,7 @@ stop the program.
 ruff's own fix writes `strict=False`, which keeps the silent drop and says so. ruff calls it unsafe, and leaves the
 choice to a person. `strict=True` makes `zip` raise a `ValueError` when the lengths differ.
 
-A patch to [`src/babykev/api.py`](#tut-08.7-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-08.7-src-babykev-api.py-2ea65f)
 
 In `src/babykev/api.py`, line 121 is now `for p, m in zip(probs, meta, strict=True):`, and line 125 ends with
 `zip(m["keys"], p, strict=True)}`.
@@ -4576,7 +4588,7 @@ person writes each type that ruff cannot guess, and ruff writes the rest.
 
 Nothing asks for types yet. The family `ANN` joins the list `select`, on a line of its own, with its comment.
 
-A patch to [`pyproject.toml`](#tut-09.1-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-09.1-pyproject.toml-5d07e7)
 
 In `pyproject.toml`, the line `"ANN", # annotations: every parameter and every return value has a type` is now line
 63, the last of the list `select`.
@@ -4625,7 +4637,7 @@ nothing.
 `ANN202`: `_check` is the validator of `Choice`, and returns the choice itself, `self`. `Self`, from `typing`, is
 the type of the class that the method belongs to.
 
-A patch to [`src/babykev/api.py`](#tut-09.2-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-09.2-src-babykev-api.py-2ea65f)
 
 In `src/babykev/api.py`, line 8 imports `Self` from `typing`, and line 28 is now `def _check(self) -> Self:`.
 
@@ -4678,9 +4690,9 @@ type is `None`. The other two return something, and a person names the type. `to
 things, the record and the metadata of its questions. The record is a dictionary, and the metadata is a list of
 dictionaries. `cheese_request` in the tests returns a `SystemOneRequest`.
 
-A patch to [`src/babykev/api.py`](#tut-09.3-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-09.3-src-babykev-api.py-2ea65f)
 
-A patch to [`tests/unit/test_api.py`](#tut-09.3-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-09.3-tests-unit-test_api.py-58d97c)
 
 In `src/babykev/api.py`, line 69 now ends with `-> tuple[dict[str, Any], list[dict[str, Any]]]:`. In
 `tests/unit/test_api.py`, line 30 is now `def cheese_request() -> SystemOneRequest:`.
@@ -4741,7 +4753,7 @@ in by their names. `monkeypatch` is a `pytest.MonkeyPatch`, and `capsys` is a `p
 catches text. With the types, the two signatures of the tests pass 100 characters, so each is split over three
 lines, as the formatter splits it.
 
-A patch to [`tests/unit/test_cli.py`](#tut-09.4-tests-unit-test_cli.py-44d4a0).
+[± See the change to `tests/unit/test_cli.py`](#tut-09.4-tests-unit-test_cli.py-44d4a0)
 
 In `tests/unit/test_cli.py`, line 8 is now `def run(monkeypatch: pytest.MonkeyPatch, *words):`. The parameters of the two
 tests are on lines 16 and 24, each between the line of the name and the line `):`.
@@ -4813,9 +4825,9 @@ values in its list.
   `babykev.api`.
 - `text` and `name` are strings, and `level` is an `int`.
 
-A patch to [`tests/unit/test_api.py`](#tut-09.5-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-09.5-tests-unit-test_api.py-58d97c)
 
-A patch to [`tests/unit/test_cli.py`](#tut-09.5-tests-unit-test_cli.py-44d4a0).
+[± See the change to `tests/unit/test_cli.py`](#tut-09.5-tests-unit-test_cli.py-44d4a0)
 
 In `tests/unit/test_api.py`, `from typing import Any` is on line 5, and `JSONContent` on line 13. The five tests with
 parameters now give their types, for example `def test_score_confidence_is_one_when_certain(level: int):` on line
@@ -4931,7 +4943,7 @@ just test
 `ANN002`: `*words` in `run` gathers any number of words into a tuple. Its annotation is the type of each word, `str`,
 and not of the tuple.
 
-A patch to [`tests/unit/test_cli.py`](#tut-09.6-tests-unit-test_cli.py-44d4a0).
+[± See the change to `tests/unit/test_cli.py`](#tut-09.6-tests-unit-test_cli.py-44d4a0)
 
 In `tests/unit/test_cli.py`, line 8 is now `def run(monkeypatch: pytest.MonkeyPatch, *words: str):`.
 
@@ -5293,7 +5305,7 @@ Nothing asks for docstrings yet. The rules `D1` of the family `D`, pydocstyle, j
 part of the family that asks whether a docstring is there. The rest of the family checks how a docstring is written,
 and stays off.
 
-A patch to [`pyproject.toml`](#tut-10.1-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-10.1-pyproject.toml-5d07e7)
 
 In `pyproject.toml`, the line of `"D1"` is now line 64, the last of the list `select`.
 
@@ -5335,7 +5347,7 @@ is private, so it needs none.
 `D104`: `src/babykev/__init__.py` is the package `babykev` itself, and it is empty. Its docstring says what babykev
 is, as the first line of the help of the command does.
 
-A patch to [`src/babykev/__init__.py`](#tut-10.2-src-babykev-__init__.py-a40393).
+[± See the change to `src/babykev/__init__.py`](#tut-10.2-src-babykev-__init__.py-a40393)
 
 `src/babykev/__init__.py` now has one line, the docstring of the package.
 
@@ -5371,7 +5383,7 @@ count a docstring.
 `D101`: `Noul`, `Choice`, `Score` and `SystemOneRequest` are the classes of a request, and none has a docstring.
 Each gets one line, under its `class` line, that says what it is.
 
-A patch to [`src/babykev/api.py`](#tut-10.3-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-10.3-src-babykev-api.py-2ea65f)
 
 In `src/babykev/api.py`, the docstrings of the classes are on lines 17, 25, 39 and 50, under the lines of `Noul`,
 `Choice`, `Score` and `SystemOneRequest`.
@@ -5441,7 +5453,7 @@ the levels in order.` `just lint --statistics` prints 3 problems, all `D103`.
 line, that says what it does. The docstring of `choice_confidence` gives the two ends of its scale, as the docstring
 of `score_confidence` does.
 
-A patch to [`src/babykev/api.py`](#tut-10.4-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-10.4-src-babykev-api.py-2ea65f)
 
 In `src/babykev/api.py`, the docstrings of the functions are on lines 74, 104 and 131, under the lines of
 `option_text`, `choice_confidence` and `to_answers`.
@@ -5524,7 +5536,7 @@ shows the gate at work.
 The three checks are three commands, and a person can forget one. The recipe `check` runs them one after another.
 `set -e` stops it at the first that fails, so the last line that it prints names the check that failed.
 
-A patch to [`justfile`](#tut-11.1-justfile-424f0b).
+[± See the change to `justfile`](#tut-11.1-justfile-424f0b)
 
 At the end of the `justfile`, the recipe `check` is on lines 46 to 55, in the group `quality`. Its body is a script
 of `sh`. `set -e` is on line 51, and the three checks are on lines 53 to 55.
@@ -5589,6 +5601,8 @@ and ends with exit code 0. `just help check` prints the line of the recipe.
 hook. If the program fails, `git commit` records nothing. pre-commit installs such a hook, and runs the checks that a
 file of settings names. It is for working on babykev, so it goes in the group `lint`.
 
+[pre-commit](https://pre-commit.com/) runs checks each time you run `git commit`, before git records the change. The file `.pre-commit-config.yaml` lists hooks. `pre-commit install` puts a script into `.git/hooks`, so `git commit` runs them first, and stops when one fails.
+
 This change came from running `uv add --group lint pre-commit`.
 
 `uv add` prints `Resolved 25 packages`, and installs pre-commit and the 9 packages that it needs, such as
@@ -5634,7 +5648,7 @@ pre-commit reads its hooks from a file, `.pre-commit-config.yaml`. The first hoo
 a command of the project itself, `just check`. So the hook and the terminal run the same checks. The file is new,
 and comes whole, as a patch.
 
-A patch to [`.pre-commit-config.yaml`](#tut-11.3-.pre-commit-config.yaml-e7d14d).
+[± See the new file `.pre-commit-config.yaml`](#tut-11.3-.pre-commit-config.yaml-e7d14d)
 
 The new file `.pre-commit-config.yaml` has 14 lines. The hook is on lines 9 to 14. `entry: just check`, on line 11,
 is the command. `pass_filenames: false` gives `just check` no file names, and `always_run: true` runs it for any
@@ -5687,7 +5701,7 @@ line for the hook, `just check....Passed`. A hook that passes prints nothing mor
 that folder, so each clone installs its own hook, once. The recipe `hook` runs the command. It is a recipe of its own,
 because `just setup` runs often, and never touches git.
 
-A patch to [`justfile`](#tut-11.4-justfile-424f0b).
+[± See the change to `justfile`](#tut-11.4-justfile-424f0b)
 
 In the `justfile`, the recipe `hook` is on lines 28 to 31, under `setup`. It runs `uv run pre-commit install`.
 
@@ -5739,7 +5753,7 @@ A model's weights or a large file of data does not belong in git. Once git recor
 and every clone downloads it. pre-commit-hooks is pre-commit's own collection of hooks, and its hook
 `check-added-large-files` refuses a file over a size. `--maxkb=1000` sets the size, 1000 KB.
 
-A patch to [`.pre-commit-config.yaml`](#tut-11.5-.pre-commit-config.yaml-e7d14d).
+[± See the change to `.pre-commit-config.yaml`](#tut-11.5-.pre-commit-config.yaml-e7d14d)
 
 In `.pre-commit-config.yaml`, the new repository is on lines 7 to 11, above `repo: local`. `rev: v6.0.0` is the tag
 of the collection that pre-commit uses.
@@ -5785,7 +5799,7 @@ When git cannot merge two changes to the same lines, it writes both into the fil
 `=======` and `>>>>>>>`. A person must choose, and remove the markers. The hook `check-merge-conflict` refuses a file
 that still has them.
 
-A patch to [`.pre-commit-config.yaml`](#tut-11.6-.pre-commit-config.yaml-e7d14d).
+[± See the change to `.pre-commit-config.yaml`](#tut-11.6-.pre-commit-config.yaml-e7d14d)
 
 In `.pre-commit-config.yaml`, line 12 is the new hook, `- id: check-merge-conflict`.
 
@@ -5825,7 +5839,7 @@ A `.env` file holds the settings and secrets of one machine, such as a token. `.
 `git add -f .env` would still add it. A local hook with `language: fail` fails for every file that it is given, and
 prints its `entry` as the reason. `files:` gives it only the files named `.env`.
 
-A patch to [`.pre-commit-config.yaml`](#tut-11.7-.pre-commit-config.yaml-e7d14d).
+[± See the change to `.pre-commit-config.yaml`](#tut-11.7-.pre-commit-config.yaml-e7d14d)
 
 In `.pre-commit-config.yaml`, the hook `no-env-file` is on lines 15 to 19. `files: (^|/)\.env$`, on line 19, matches
 a file named `.env` in any folder.
@@ -5870,7 +5884,7 @@ other three pass.
 The hook works only if it fails on a mistake. This move makes one on purpose. `cli.py` imports `os`, and never uses
 it. The next move removes it.
 
-A patch to [`src/babykev/cli.py`](#tut-11.8-src-babykev-cli.py-a9e184).
+[± See the change to `src/babykev/cli.py`](#tut-11.8-src-babykev-cli.py-a9e184)
 
 In `src/babykev/cli.py`, line 3 is now `import os`, and nothing in the file uses `os`.
 
@@ -5912,7 +5926,7 @@ stop here, and record nothing.
 
 The linter said what is wrong, and that `--fix` can remove the line. The move removes it by hand.
 
-A patch to [`src/babykev/cli.py`](#tut-11.9-src-babykev-cli.py-a9e184).
+[± See the change to `src/babykev/cli.py`](#tut-11.9-src-babykev-cli.py-a9e184)
 
 In `src/babykev/cli.py`, `import sys` is on line 3 again.
 
@@ -5950,7 +5964,7 @@ The four hooks pass or skip, and pre-commit ends with exit code 0. A `git commit
 A new clone has no hook until someone runs `just hook`. The README says so, under "Start", and its table names the
 file of the hooks.
 
-A patch to [`README.md`](#tut-11.10-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-11.10-README.md-8ec9a0)
 
 In `README.md`, the new paragraph is on lines 61 to 63, and the row of `.pre-commit-config.yaml` is on line 79.
 
@@ -6019,6 +6033,8 @@ fails on its defaults, for real, and its settings fix it. Then the gate runs `li
 `pyproject.toml` has a standard, which says which tables it has, which keys each table may hold, and what each value
 is. validate-pyproject checks the file against the standard. It goes in the group `lint`.
 
+[validate-pyproject](https://github.com/abravalheri/validate-pyproject) checks `pyproject.toml` against the published schemas of its tables. It finds a misspelt key or a value of the wrong type, which most tools ignore without a word.
+
 This change came from running `uv add --group lint validate-pyproject`.
 
 `uv add` prints `Resolved 27 packages`, and installs validate-pyproject and `fastjsonschema`, which it needs.
@@ -6063,7 +6079,7 @@ A recipe `lint-config` will run a check for each kind of config file. Its first 
 `pyproject.toml`. Its body is a script, with `set -e`, as in `check`, so that the next checks can come one line at a
 time.
 
-A patch to [`justfile`](#tut-12.2-justfile-424f0b).
+[± See the change to `justfile`](#tut-12.2-justfile-424f0b)
 
 In the `justfile`, the recipe `lint-config` is on lines 45 to 52, between `lint` and `test`. Line 52 runs
 `uv run validate-pyproject pyproject.toml`.
@@ -6118,7 +6134,7 @@ just help lint-config
 `uv lock`, they disagree. `uv lock --check` resolves the dependencies again, compares the result with `uv.lock`, and
 fails if they differ. It changes no file.
 
-A patch to [`justfile`](#tut-12.3-justfile-424f0b).
+[± See the change to `justfile`](#tut-12.3-justfile-424f0b)
 
 In the `justfile`, `uv lock --check` is line 53, the second check of `lint-config`. The comment on line 45 now names
 the lockfile too.
@@ -6171,7 +6187,7 @@ recipe can then change the lockfile, and the person who ran it does not see the 
 every `uv run` refuse a lockfile that is out of date, in place of writing it. The `justfile` exports it to every
 recipe.
 
-A patch to [`justfile`](#tut-12.4-justfile-424f0b).
+[± See the change to `justfile`](#tut-12.4-justfile-424f0b)
 
 Near the top of the `justfile`, `export UV_LOCKED := "1"` is on line 9, under its comment.
 
@@ -6213,7 +6229,7 @@ recipe sees it.
 The `justfile` is a config file too. just has a formatter of its own, `just --fmt`. With `--check`, it writes nothing,
 and fails if the file is not in its format. just still calls the formatter unstable, so it needs `--unstable`.
 
-A patch to [`justfile`](#tut-12.5-justfile-424f0b).
+[± See the change to `justfile`](#tut-12.5-justfile-424f0b)
 
 In the `justfile`, `just --fmt --check --unstable` is line 57, the third check of `lint-config`. The comment on line
 48 names the `justfile`.
@@ -6264,6 +6280,8 @@ in the format of just. `just lint-config` prints the same two lines as before.
 `.pre-commit-config.yaml` is YAML. A mistake of indentation there breaks the hook, and with it every `git commit`. yamllint
 checks YAML files, for their syntax and for their style. It goes in the group `lint`.
 
+[yamllint](https://yamllint.readthedocs.io/) checks YAML files, such as the configuration of pre-commit. It finds syntax errors, keys given twice, and a layout that differs from file to file.
+
 This change came from running `uv add --group lint yamllint`.
 
 `uv add` prints `Resolved 29 packages`, and installs yamllint and `pathspec`, which it needs.
@@ -6307,7 +6325,7 @@ It prints the version of yamllint that uv installed.
 `yamllint --strict .` checks every YAML file under the folder. `--strict` makes a warning fail, as an error does. It is the fourth check of `lint-config`. yamllint has no settings yet, and it fails on its defaults. The next
 moves give it settings.
 
-A patch to [`justfile`](#tut-12.7-justfile-424f0b).
+[± See the change to `justfile`](#tut-12.7-justfile-424f0b)
 
 In the `justfile`, `uv run yamllint --strict .` is line 58, the last check of `lint-config`.
 
@@ -6366,7 +6384,7 @@ yamllint reads its settings from a file `.yamllint`. `extends: default` keeps it
 `ignore-from-file: .gitignore` skips each file that git ignores, `.venv` among them. The file is new, and comes
 whole, as a patch.
 
-A patch to [`.yamllint`](#tut-12.8-.yamllint-dfe50a).
+[± See the new file `.yamllint`](#tut-12.8-.yamllint-dfe50a)
 
 The new file `.yamllint` has 3 lines. Line 3 is `ignore-from-file: .gitignore`, with a comment.
 
@@ -6403,7 +6421,7 @@ findings of `.pre-commit-config.yaml` stay. `.yamllint` is YAML too, and yamllin
 A line `---` marks the start of a document, in a YAML file that holds several. Our files hold one each, and pre-commit
 does not ask for the line. The rule `document-start` goes off.
 
-A patch to [`.yamllint`](#tut-12.9-.yamllint-dfe50a).
+[± See the change to `.yamllint`](#tut-12.9-.yamllint-dfe50a)
 
 In `.yamllint`, `rules:` is on line 4, and line 5 is `document-start: disable`, with a comment.
 
@@ -6441,7 +6459,7 @@ yamllint finds four problems, and ends with exit code 1. The four are the lines 
 The Python of the project has lines of up to 100 characters, and the comments of the YAML files follow it. The rule
 `line-length` lets a line have 100 characters, as `line-length = 100` in `[tool.ruff]` does for ruff.
 
-A patch to [`.yamllint`](#tut-12.10-.yamllint-dfe50a).
+[± See the change to `.yamllint`](#tut-12.10-.yamllint-dfe50a)
 
 In `.yamllint`, line 6 is `line-length: {max: 100}`, with a comment.
 
@@ -6478,7 +6496,7 @@ yamllint prints nothing, and `just lint-config` passes. It prints `Valid file: p
 `just lint-config` passes, but only when a person runs it. As the last line of `check`, it runs before each
 `git commit`, through the hook.
 
-A patch to [`justfile`](#tut-12.11-justfile-424f0b).
+[± See the change to `justfile`](#tut-12.11-justfile-424f0b)
 
 In the `justfile`, `just lint-config` is line 76, the last line of `check`. The comment on line 66 names the config
 files.
@@ -6525,7 +6543,7 @@ the tests, as before, then `Valid file: pyproject.toml` and `Resolved 29 package
 
 The table of the README names every config file of the project. `.yamllint` gets a row.
 
-A patch to [`README.md`](#tut-12.12-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-12.12-README.md-8ec9a0)
 
 In `README.md`, the row of `.yamllint` is on line 80, the last row of the table.
 
@@ -6586,6 +6604,8 @@ time. A long docment then shows what the formatter can do to one, and the gate r
 Nothing reads the documentation of the code yet. smalldocs is a Python package, so uv installs it like any other. It
 is for the documentation, so it goes in a third dependency group, `docs`.
 
+[smalldocs](https://github.com/rahuldave/smalldocs) makes documentation from the code. It reads docstrings and docments, the comments beside each parameter. It prints them in a terminal, checks that every function has them, and builds a website from them. Its own documentation is at [docs.smallish.dev](https://docs.smallish.dev/).
+
 This change came from running `uv add --group docs smalldocs`.
 
 `uv add` prints `Resolved 34 packages`, and installs smalldocs and four packages that it needs, among them
@@ -6639,7 +6659,7 @@ has one section, `api`, the reference. It names the package and the address of i
 the files of the tests, which smalldocs holds to the same rule as the package. The file is new, and comes whole, as a
 patch.
 
-A patch to [`docs/_smalldocs.yml`](#tut-13.2-docs-_smalldocs.yml-4b0b48).
+[± See the new file `docs/_smalldocs.yml`](#tut-13.2-docs-_smalldocs.yml-4b0b48)
 
 The new file `docs/_smalldocs.yml` has 5 lines. Line 3 names the package, `babykev`, and line 5 names the tests,
 `tests/**/*.py`.
@@ -6694,7 +6714,7 @@ method, which the linter does not ask for.
 
 The command that lists the gaps is long. The recipe `docs` gives its words to `smalldocs api`, and adds `--dir docs`.
 
-A patch to [`justfile`](#tut-13.3-justfile-424f0b).
+[± See the change to `justfile`](#tut-13.3-justfile-424f0b)
 
 At the end of the `justfile`, the recipe `docs` is on lines 78 to 82. Line 82 runs `uv run smalldocs api "$@" --dir
 docs`.
@@ -6740,7 +6760,7 @@ just help docs
 parameter on a line, with its docment beside it, and a docment on its return type, after `-> TYPE:`. The type says
 `int`, and the docment says what the number means.
 
-A patch to [`src/babykev/api.py`](#tut-13.4-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-13.4-src-babykev-api.py-2ea65f)
 
 In `src/babykev/api.py`, the signature of `render` is on lines 56 to 59. `indent: int = 0,  # How deeply the value is
 nested. Each level indents by two spaces` is line 58, and `) -> str:  # The text that the model sees` is line 59. The
@@ -6853,7 +6873,7 @@ The reference of `render` has its signature, its docstring, and a table with a r
 reference leaves it out. smalldocs checks it still, because a reader of the code needs to know what it does. It gets
 a docstring, and a docment on its return, the choice itself.
 
-A patch to [`src/babykev/api.py`](#tut-13.5-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-13.5-src-babykev-api.py-2ea65f)
 
 In `src/babykev/api.py`, line 32 is now `def _check(self) -> Self:  # The choice itself, unchanged`, and line 33 is its
 docstring.
@@ -6896,7 +6916,7 @@ The four classes of a request have no signature to put a docment on. Each field 
 `type: Literal["noul"]`. pydantic takes a description of a field in `Field(description="...")`. It keeps the
 description in the schema of the model, which other programs read, and smalldocs puts it in the reference.
 
-A patch to [`src/babykev/api.py`](#tut-13.6-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-13.6-src-babykev-api.py-2ea65f)
 
 In `src/babykev/api.py`, the fields of `Noul` are on lines 19 to 24, and the fields of `SystemOneRequest` on lines 62
 to 65. The `criteria` of `Score`, on lines 49 to 53, keep their limits, `min_length=2` and `max_length=MAX_OPTIONS`,
@@ -6994,7 +7014,7 @@ The tests are documentation too. A reader learns from them what the code must do
 tests to the same rule as the package. In `test_cli.py`, `run` and the two tests have parameters with no docment.
 Each now has one parameter on a line, with its docment.
 
-A patch to [`tests/unit/test_cli.py`](#tut-13.7-tests-unit-test_cli.py-44d4a0).
+[± See the change to `tests/unit/test_cli.py`](#tut-13.7-tests-unit-test_cli.py-44d4a0)
 
 In `tests/unit/test_cli.py`, the signature of `run` is on lines 8 to 11. The parameters of the two tests are on lines
 19 to 21 and 29 to 30.
@@ -7066,7 +7086,7 @@ prints `tests/unit/test_cli.py 3 of 3`, and `39 of 45`.
 In `test_api.py`, the helper `cheese_request` has no docment on its return. Five tests take parameters from
 `@pytest.mark.parametrize`, with no docment. Each gets its docments.
 
-A patch to [`tests/unit/test_api.py`](#tut-13.8-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-13.8-tests-unit-test_api.py-58d97c)
 
 In `tests/unit/test_api.py`, line 32 is `def cheese_request() -> SystemOneRequest:  # A noul, a choice and a score about
 one cheese`. The test of `option_text` is on lines 155 to 169, with its three parameters on lines 164 to 166.
@@ -7169,7 +7189,7 @@ A docment is on the line of its parameter or of its return type, and a line has 
 makes a mistake on purpose. The docment of the return of `to_record` says more, and its line grows to 119
 characters. The next moves show what the formatter makes of it.
 
-A patch to [`src/babykev/api.py`](#tut-13.9-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-13.9-src-babykev-api.py-2ea65f)
 
 In `src/babykev/api.py`, line 98 now ends with `# The record that the model reads, and the metadata of each question`.
 
@@ -7264,7 +7284,7 @@ the formatter are happy, and only the docs check sees the lost docment. `just ch
 The fix is a docment that fits on the line of the return type, with the type on one line again. The docment of
 before, `The record, and the metadata of each question`, fits, at 98 characters.
 
-A patch to [`src/babykev/api.py`](#tut-13.11-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-13.11-src-babykev-api.py-2ea65f)
 
 In `src/babykev/api.py`, line 98 is `) -> tuple[dict[str, Any], list[dict[str, Any]]]:  # The record, and the metadata of
 each question`, as it was before the mistake.
@@ -7308,7 +7328,7 @@ just docs check
 `just check` passed with a docment lost. As a line of `check`, `just docs check` runs before each `git commit`,
 through the hook. It goes after the tests, and before the config files.
 
-A patch to [`justfile`](#tut-13.12-justfile-424f0b).
+[± See the change to `justfile`](#tut-13.12-justfile-424f0b)
 
 In the `justfile`, `just docs check` is line 76, between `just test -q` and `just lint-config`. The comment on line 66
 names the docs.
@@ -7382,7 +7402,7 @@ to. A build makes all three again from the code, so they do not belong in git. `
 does not track, and three lines at its end name these, before the first build. A `/` at the start of a line means
 the root of the repository, so `/docs/api/` is only that folder.
 
-A patch to [`.gitignore`](#tut-14.1-.gitignore-a5cc29).
+[± See the change to `.gitignore`](#tut-14.1-.gitignore-a5cc29)
 
 At the end of `.gitignore`, the comment is on line 222, and `/docs/_site/`, `/docs/api/` and `/docs/_symbols.json` on
 lines 223 to 225.
@@ -7424,7 +7444,7 @@ tail -n 4 .gitignore
 the HTML of every page into `docs/_site`. With no words, the recipe `docs` now runs it. With words, it runs
 `smalldocs api` as before. So the body of the recipe is a script of `sh`.
 
-A patch to [`justfile`](#tut-14.2-justfile-424f0b).
+[± See the change to `justfile`](#tut-14.2-justfile-424f0b)
 
 In the `justfile`, the recipe `docs` starts at line 79, with its comment. Line 85,
 `if [ "$#" -eq 0 ]; then exec uv run smalldocs render docs; fi`, is the case with no words.
@@ -7480,7 +7500,7 @@ section `api`, which stays as it is. They are the type of the project, its outpu
 theme and a table of contents on each page. With them, a name in backticks, such as `Score`, becomes a link to its
 entry in the reference.
 
-A patch to [`docs/_smalldocs.yml`](#tut-14.3-docs-_smalldocs.yml-4b0b48).
+[± See the change to `docs/_smalldocs.yml`](#tut-14.3-docs-_smalldocs.yml-4b0b48)
 
 In `docs/_smalldocs.yml`, the sidebar is on lines 8 to 12. It lists the front page, `index.qmd`, then the reference
 pages, `contents: api/*`, under the title Reference. The section `api` is on lines 18 to 21, as before.
@@ -7538,7 +7558,7 @@ The front page, `docs/index.qmd`, says what babykev is, what a request holds, an
 file is Markdown, with a header between two lines `---` that gives the title of the page. The file is new, and comes
 whole, as a patch.
 
-A patch to [`docs/index.qmd`](#tut-14.4-docs-index.qmd-d6d880).
+[± See the new file `docs/index.qmd`](#tut-14.4-docs-index.qmd-d6d880)
 
 The new file `docs/index.qmd` has 29 lines. Lines 1 to 3 are the header, with `title: babykev`. The list of modules is
 on lines 17 to 19.
@@ -7604,7 +7624,7 @@ the reference of `api.py`, seven of them. `SystemOneRequest`, `Noul`, `Choice` a
 The table of the README says where each part of the project is, and it does not list the docs. `docs/` gets a row,
 under the tests.
 
-A patch to [`README.md`](#tut-14.5-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-14.5-README.md-8ec9a0)
 
 In `README.md`, the row of `docs/` is on line 74.
 
@@ -7664,7 +7684,7 @@ torch has several builds of each version. On Linux, the build on PyPI brings the
 NVIDIA. PyTorch keeps a build for the CPU alone on an index of its own, `https://download.pytorch.org/whl/cpu`. An
 index is a server of packages, as PyPI is. The patch names the index in `pyproject.toml`.
 
-A patch to [`pyproject.toml`](#tut-15.1-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-15.1-pyproject.toml-5d07e7)
 
 In `pyproject.toml`, the comment is on lines 25 and 26. The index is on lines 27 to 30, with its name `pytorch-cpu`,
 its address and `explicit = true`.
@@ -7715,6 +7735,8 @@ lockfile does not change.
 `[tool.uv.sources]` itself. `uv add` then resolves, and for that one run `--index` puts the index of PyTorch first,
 for every package. It would take other packages from there, older than on PyPI. `--frozen` writes `pyproject.toml`
 and leaves `uv.lock` alone, so uv resolves nothing yet.
+
+[PyTorch](https://pytorch.org/), the package `torch`, holds tensors, the arrays of numbers that a model computes with, and the layers of neural networks. It runs on a CPU, on an NVIDIA GPU, and on the GPU of a Mac.
 
 This change came from running `uv add torch --index pytorch-cpu --frozen`.
 
@@ -7814,6 +7836,8 @@ too.
 
 The base model of kev, and its tokenizer, are on the Hugging Face Hub. transformers loads them.
 
+[transformers](https://huggingface.co/docs/transformers), from Hugging Face, loads trained language models and their tokenizers by name, such as `Qwen/Qwen2.5-0.5B`, and downloads their weights once.
+
 This change came from running `uv add transformers`.
 
 `uv add` prints `Resolved 63 packages`, and installs transformers and 18 packages that it needs, among
@@ -7856,6 +7880,8 @@ It prints the version of transformers, and no warning. numpy came with transform
 ### 15.5 peft
 
 The base model stays as it is, and a small adapter, LoRA, learns the task. peft adds the adapter.
+
+[peft](https://huggingface.co/docs/peft), also from Hugging Face, trains a small adapter beside a large model, such as LoRA, in place of all its weights. Training then changes a few million numbers, not hundreds of millions.
 
 This change came from running `uv add peft`.
 
@@ -7906,6 +7932,8 @@ safetensors is the format of the weights on the Hub. transformers installed it a
 because babykev saves the weights that it trains to the Hub in this format. A package that only comes with another
 can go when that package stops needing it.
 
+[safetensors](https://huggingface.co/docs/safetensors) stores the weights of a model in a file that loads fast and runs no code when it loads. It is the format that Hugging Face uses to share models.
+
 This change came from running `uv add safetensors`.
 
 `uv add` prints `Resolved 66 packages`, the same count as before, and installs no new package. It installs babykev
@@ -7951,7 +7979,7 @@ no `babykev`.
 The README says what the project installs. A paragraph under "Start" names the four packages of the model, and
 what they cost on disk.
 
-A patch to [`README.md`](#tut-15.7-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-15.7-README.md-8ec9a0)
 
 In `README.md`, the new paragraph is on lines 61 to 63.
 
@@ -8013,7 +8041,7 @@ front page of the docs and the README name it.
 `model.py` turns a language model into a model that decides. It has 274 lines, and four ideas, which its docstring
 names. The file comes in whole, as a patch.
 
-A patch to [`src/babykev/model.py`](#tut-16.1-src-babykev-model.py-a86a0b).
+[± See the new file `src/babykev/model.py`](#tut-16.1-src-babykev-model.py-a86a0b)
 
 `src/babykev/model.py` is new, with 274 lines. The docstring of the module is on lines 1 to 18. The functions that
 pack a record are on lines 78 to 142, and the mask is on lines 145 to 162. The head is on lines 165 to 184, and
@@ -8370,7 +8398,7 @@ tests of the model come later, and bring the coverage back.
 
 The front page of the docs says that the code is in two modules. Now it is in three.
 
-A patch to [`docs/index.qmd`](#tut-16.2-docs-index.qmd-d6d880).
+[± See the change to `docs/index.qmd`](#tut-16.2-docs-index.qmd-d6d880)
 
 In `docs/index.qmd`, line 15 says `three modules`, and the item of `babykev.model` is on lines 20 and 21.
 
@@ -8420,7 +8448,7 @@ grep -o 'href="api/model.html#[^"]*"' docs/_site/index.html
 
 The table of the README lists each file of the code. `model.py` gets a row, under `cli.py`.
 
-A patch to [`README.md`](#tut-16.3-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-16.3-README.md-8ec9a0)
 
 In `README.md`, the row of `src/babykev/model.py` is on line 76.
 
@@ -8477,6 +8505,8 @@ places in `model.py`, and both have one cause, in torch.
 
 ty is for working on babykev, so it goes in the group `lint`.
 
+[ty](https://docs.astral.sh/ty/) is a type checker for Python, from the makers of uv and ruff. It reads the type hints and finds the places where a value cannot have the type that the code expects, without running the code.
+
 This change came from running `uv add --group lint ty`.
 
 `uv add` prints `Resolved 67 packages`, and installs ty, which needs no other package.
@@ -8518,7 +8548,7 @@ It prints the version of ty that uv installed. A newer ty can find more, or less
 
 `ty check` checks every Python file of the project. The recipe `types` runs it, and gives it any extra words.
 
-A patch to [`justfile`](#tut-17.2-justfile-424f0b).
+[± See the change to `justfile`](#tut-17.2-justfile-424f0b)
 
 In the `justfile`, the recipe `types` is on lines 60 to 64. Line 64 runs `uv run ty check "$@"`.
 
@@ -8598,7 +8628,7 @@ rule is right in general, and does not fit here.
 A comment `# ty: ignore[invalid-mutable-override]` on the line of a diagnostic turns off that one rule on that one
 line. Each other rule still checks the line. A comment above the method says why.
 
-A patch to [`src/babykev/model.py`](#tut-17.3-src-babykev-model.py-a86a0b).
+[± See the change to `src/babykev/model.py`](#tut-17.3-src-babykev-model.py-a86a0b)
 
 In `src/babykev/model.py`, the reason is on lines 178 and 179, and line 180 is
 `def forward(  # ty: ignore[invalid-mutable-override]`.
@@ -8645,7 +8675,7 @@ or of the return type.
 The `forward` of `DecisionModel` is the same case. It gets the same comment, and one line of reason that points to
 the first.
 
-A patch to [`src/babykev/model.py`](#tut-17.4-src-babykev-model.py-a86a0b).
+[± See the change to `src/babykev/model.py`](#tut-17.4-src-babykev-model.py-a86a0b)
 
 In `src/babykev/model.py`, the reason is on line 259, and line 260 is
 `def forward(  # ty: ignore[invalid-mutable-override]`.
@@ -8687,7 +8717,7 @@ just types
 `just types` passes, and nothing runs it before `git commit`. As a line of `check`, it runs before each `git commit`,
 through the hook. It goes after the linter, and before the tests.
 
-A patch to [`justfile`](#tut-17.5-justfile-424f0b).
+[± See the change to `justfile`](#tut-17.5-justfile-424f0b)
 
 In the `justfile`, `just types` is line 81, between `just lint` and `just test -q`. The comment on line 72 names the
 types.
@@ -8760,7 +8790,7 @@ it, on this machine only.
 The smoke reads the five labelled requests of `data/cheese/sample.jsonl`. `read_lines` reads one request from each
 line of the file.
 
-A patch to [`src/babykev/smoke.py`](#tut-18.1-src-babykev-smoke.py-76d2ec).
+[± See the new file `src/babykev/smoke.py`](#tut-18.1-src-babykev-smoke.py-76d2ec)
 
 The new file `src/babykev/smoke.py` has 22 lines. The docstring of the module, on lines 1 to 8, says what the smoke
 does. `SAMPLE` is on line 14, and `read_lines` on lines 17 to 22.
@@ -8823,7 +8853,7 @@ The coverage counts every file of the package, and no test imports `smoke.py`.
 into a record. `encode` packs the record into tokens, and `model.probs` gives the probabilities. `to_answers` turns
 them into an answer for each question. `answer` also counts the tokens and times the pass of the model.
 
-A patch to [`src/babykev/smoke.py`](#tut-18.2-src-babykev-smoke.py-76d2ec).
+[± See the change to `src/babykev/smoke.py`](#tut-18.2-src-babykev-smoke.py-76d2ec)
 
 In `src/babykev/smoke.py`, the new imports are on lines 13, 17, 19 and 20, and `answer` is on lines 31 to 41.
 
@@ -8891,7 +8921,7 @@ A label is the right answer to a question. `verdict` puts the answer of the mode
 three types of question. A noul says yes from a probability of 0.5. A choice names its option. A score is judged by
 its most likely level.
 
-A patch to [`src/babykev/smoke.py`](#tut-18.3-src-babykev-smoke.py-76d2ec).
+[± See the change to `src/babykev/smoke.py`](#tut-18.3-src-babykev-smoke.py-76d2ec)
 
 In `src/babykev/smoke.py`, `verdict` is on lines 44 to 61.
 
@@ -8948,7 +8978,7 @@ they agree. `smoke.py` imports `model.py`, so torch prints its note too.
 device is slow, so it runs once before the timing starts. Each request gets a line with its state, its tokens and its
 time. Each question gets a line with `ok` or `--`. The last lines give the count of right answers.
 
-A patch to [`src/babykev/smoke.py`](#tut-18.4-src-babykev-smoke.py-76d2ec).
+[± See the change to `src/babykev/smoke.py`](#tut-18.4-src-babykev-smoke.py-76d2ec)
 
 In `src/babykev/smoke.py`, `Iterator` is on line 14 and `render` on line 20. `smoke` is on lines 65 to 85.
 
@@ -9024,7 +9054,7 @@ a string.
 the same at every run. `main` counts the parameters, and prints the report of `smoke`. It takes the words after
 `babykev smoke`, and answers `help` with the usage.
 
-A patch to [`src/babykev/smoke.py`](#tut-18.5-src-babykev-smoke.py-76d2ec).
+[± See the change to `src/babykev/smoke.py`](#tut-18.5-src-babykev-smoke.py-76d2ec)
 
 In `src/babykev/smoke.py`, `BASE`, `LORA_RANK` and `USAGE` are on lines 24 to 28, and `main` is on lines 95 to 119.
 
@@ -9130,7 +9160,7 @@ just test
 help lists the command. `smoke.py` imports torch, which takes about two seconds. So `cli.py` imports `smoke` inside the
 branch of the command, and `babykev help` stays fast.
 
-A patch to [`src/babykev/cli.py`](#tut-18.6-src-babykev-cli.py-a9e184).
+[± See the change to `src/babykev/cli.py`](#tut-18.6-src-babykev-cli.py-a9e184)
 
 In `src/babykev/cli.py`, the commands of `HELP` are on lines 11 and 12, and the branch of `smoke` is on lines 22 to
 25.
@@ -9202,7 +9232,7 @@ prints `4 passed, 49 deselected`. Its table of coverage counts only the four tes
 The recipe `smoke` runs the command. It answers `help` as every recipe does, and gives any other word to `babykev
 smoke`. It is in a group of its own, `model`.
 
-A patch to [`justfile`](#tut-18.7-justfile-424f0b).
+[± See the change to `justfile`](#tut-18.7-justfile-424f0b)
 
 In the `justfile`, the recipe `smoke` is on lines 95 to 101. Line 101 runs `uv run {{ program }} smoke "$@"`.
 
@@ -9256,7 +9286,7 @@ the usage of the program.
 
 The front page of the docs lists the modules of the code. `babykev.smoke` is the fourth.
 
-A patch to [`docs/index.qmd`](#tut-18.8-docs-index.qmd-d6d880).
+[± See the change to `docs/index.qmd`](#tut-18.8-docs-index.qmd-d6d880)
 
 In `docs/index.qmd`, line 15 says `four modules`, and the item of `babykev.smoke` is on lines 22 and 23.
 
@@ -9305,7 +9335,7 @@ grep -o 'href="api/smoke.html#[^"]*"' docs/_site/index.html
 
 The README says what `just smoke` does, and what it downloads. The table gets a row for `smoke.py`.
 
-A patch to [`README.md`](#tut-18.9-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-18.9-README.md-8ec9a0)
 
 In `README.md`, the paragraph about `just smoke` is on lines 65 to 67, and the row of `smoke.py` is on line 81.
 
@@ -9377,7 +9407,7 @@ The tiny tokenizer has one token for each printable character, and the five deli
 tokenizer of the base model, it turns the text of a delimiter into the delimiter. `tests/tiny.py` is a helper of the
 tests, and not a test, so pytest does not collect it.
 
-A patch to [`tests/tiny.py`](#tut-19.1-tests-tiny.py-70c1c9).
+[± See the new file `tests/tiny.py`](#tut-19.1-tests-tiny.py-70c1c9)
 
 The new file `tests/tiny.py` has 23 lines, and `tiny_tokenizer` on lines 11 to 23.
 
@@ -9449,7 +9479,7 @@ token, and no secret. The next move answers it.
 `S106` reads the name of a parameter, and not what the value is. The tests already may use `assert`, by a line of
 `[tool.ruff.lint.per-file-ignores]`. The same line lets them break `S106`. The package still may not.
 
-A patch to [`pyproject.toml`](#tut-19.2-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-19.2-pyproject.toml-5d07e7)
 
 In `pyproject.toml`, the comment is on lines 89 and 90, and line 91 is `"tests/**" = ["S101", "S106"]`.
 
@@ -9490,7 +9520,7 @@ The backbone is the language model under the head. `tiny_backbone` builds the co
 layers of 32 numbers, where the real one has 24 layers of 896. Its weights are random, from a seed, so they are the
 same at every run.
 
-A patch to [`tests/tiny.py`](#tut-19.3-tests-tiny.py-70c1c9).
+[± See the change to `tests/tiny.py`](#tut-19.3-tests-tiny.py-70c1c9)
 
 In `tests/tiny.py`, `tiny_backbone` is on lines 27 to 42.
 
@@ -9556,7 +9586,7 @@ passes in what it returns. `monkeypatch` and `capsys` are fixtures of pytest. py
 any test, and every test file can use the fixtures in it, with no import. The first fixture, `tok`, is the tiny
 tokenizer. `scope="session"` builds it once for the whole run.
 
-A patch to [`tests/conftest.py`](#tut-19.4-tests-conftest.py-626af3).
+[± See the new file `tests/conftest.py`](#tut-19.4-tests-conftest.py-626af3)
 
 The new file `tests/conftest.py` imports `tiny_tokenizer` from `tests.tiny` on line 10, and has the fixture `tok` on
 lines 13 to 16.
@@ -9607,7 +9637,7 @@ Python, and not the root of the project. So `tests.tiny` cannot be found. The ne
 The setting `pythonpath` of pytest puts folders on the path of Python. `"."` is the root of the project, where the
 folder `tests` is.
 
-A patch to [`pyproject.toml`](#tut-19.5-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-19.5-pyproject.toml-5d07e7)
 
 In `pyproject.toml`, the comment is on line 57, and line 58 is `pythonpath = ["."]`.
 
@@ -9657,7 +9687,7 @@ The fixture `model` is a `DecisionModel` on the tiny backbone, on the CPU, with 
 the backbone needs to know the number of tokens. A fixture can ask for another fixture. `model` has the default scope,
 so pytest builds it again for each test, and no test can spoil it for the next.
 
-A patch to [`tests/conftest.py`](#tut-19.6-tests-conftest.py-626af3).
+[± See the change to `tests/conftest.py`](#tut-19.6-tests-conftest.py-626af3)
 
 In `tests/conftest.py`, the fixture `model` is on lines 20 to 25.
 
@@ -9710,7 +9740,7 @@ new import.
 The fixture `record` is one record about Roquefort, in the form that `to_record` returns. It has a state, and three
 questions of 2, 3 and 3 options.
 
-A patch to [`tests/conftest.py`](#tut-19.7-tests-conftest.py-626af3).
+[± See the change to `tests/conftest.py`](#tut-19.7-tests-conftest.py-626af3)
 
 In `tests/conftest.py`, the fixture `record` is on lines 30 to 40.
 
@@ -9769,7 +9799,7 @@ The first test asks for the three fixtures. It packs the record with the tiny to
 the head. Each question gets one probability per option, and they sum to 1. Nothing is trained, so the probabilities
 mean nothing. The test checks what is true of any probabilities.
 
-A patch to [`tests/unit/test_model.py`](#tut-19.8-tests-unit-test_model.py-583145).
+[± See the new file `tests/unit/test_model.py`](#tut-19.8-tests-unit-test_model.py-583145)
 
 The new file `tests/unit/test_model.py` has one test, on lines 11 to 20.
 
@@ -9841,7 +9871,7 @@ In tut-19.5, before this test, `model.py` was at 33%, and the total at 45%.
 The table of the README gets a row for each of the two new files. The row of `tests/unit/` names the tests of the
 model.
 
-A patch to [`README.md`](#tut-19.9-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-19.9-README.md-8ec9a0)
 
 In `README.md`, the row of `tests/unit/` is on line 83, and the two new rows are on lines 84 and 85.
 
@@ -9902,7 +9932,7 @@ coverage does not rise with every test. It counts the lines that a test runs, an
 The test packs a small record, the state `ab` and one question `x?` with the options `n` and `y`. With one token per
 character, it can write down every token that it expects.
 
-A patch to [`tests/unit/test_model.py`](#tut-20.1-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-20.1-tests-unit-test_model.py-583145)
 
 In `tests/unit/test_model.py`, the new test is on lines 23 to 35.
 
@@ -9973,7 +10003,7 @@ run, and not what a test checks.
 
 The positions of each question begin right after the state, so a question looks the same wherever it comes.
 
-A patch to [`tests/unit/test_model.py`](#tut-20.2-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-20.2-tests-unit-test_model.py-583145)
 
 In `tests/unit/test_model.py`, the new test is on lines 38 to 47.
 
@@ -10020,7 +10050,7 @@ pytest prints `1 passed, 55 deselected`.
 `encode` refuses a question that does not fit, and names its length. The record of the fixture has a state of 62
 tokens. The test gives a limit of 80 tokens to the state and a question together, and the questions do not fit.
 
-A patch to [`tests/unit/test_model.py`](#tut-20.3-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-20.3-tests-unit-test_model.py-583145)
 
 In `tests/unit/test_model.py`, the new test is on lines 50 to 56.
 
@@ -10065,7 +10095,7 @@ run, and it left `encode` before the lines after it.
 `encode` refuses a state that is longer than its limit, and names its length and the limit. The state of the fixture
 is the state delimiter and 61 characters, 62 tokens.
 
-A patch to [`tests/unit/test_model.py`](#tut-20.4-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-20.4-tests-unit-test_model.py-583145)
 
 In `tests/unit/test_model.py`, the new test is on lines 59 to 65.
 
@@ -10118,7 +10148,7 @@ A caller writes the state, the instructions and the options. A tokenizer turns t
 decide token, wherever it is. So text could close an option early, or make a question of its own. This test shows the
 danger, before the next test shows the defence.
 
-A patch to [`tests/unit/test_model.py`](#tut-20.5-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-20.5-tests-unit-test_model.py-583145)
 
 In `tests/unit/test_model.py`, the new test is on lines 68 to 73.
 
@@ -10172,7 +10202,7 @@ tokens. pytest prints `1 passed`. The danger is real.
 `user_tokens` rewrites `<|name|>` to `<¦name¦>` before it tokenizes, so the text of a delimiter is ordinary text. The
 test runs once for each of the five delimiters.
 
-A patch to [`tests/unit/test_model.py`](#tut-20.6-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-20.6-tests-unit-test_model.py-583145)
 
 In `tests/unit/test_model.py`, the new test is on lines 76 to 83.
 
@@ -10236,7 +10266,7 @@ The 14 lines are the same as at the end of tut-20.4, so the two new tests add no
 The head takes the hidden state of a decide token and those of the options, and gives one logit for each option. The
 test builds a head alone, with no model, and gives it five options.
 
-A patch to [`tests/unit/test_model.py`](#tut-20.7-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-20.7-tests-unit-test_model.py-583145)
 
 In `tests/unit/test_model.py`, the new test is on lines 87 to 90.
 
@@ -10288,7 +10318,7 @@ pytest prints `1 passed`.
 
 `pick_device` returns a device that it is given by name, whatever the machine has.
 
-A patch to [`tests/unit/test_model.py`](#tut-20.8-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-20.8-tests-unit-test_model.py-583145)
 
 In `tests/unit/test_model.py`, the import from `babykev.model` is on lines 9 to 17, and the new test is on lines 101 to
 103.
@@ -10345,7 +10375,7 @@ pytest prints `1 passed`. The column Missing of `model.py` starts at `62-64`, so
 
 With no override, `pick_device` chooses CUDA, then the GPU of Apple, then the CPU.
 
-A patch to [`tests/unit/test_model.py`](#tut-20.9-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-20.9-tests-unit-test_model.py-583145)
 
 In `tests/unit/test_model.py`, the new test is on lines 106 to 108.
 
@@ -10387,7 +10417,7 @@ train. The total is 69%.
 
 The tests of the smoke go in a file of their own. `verdict` needs no model, so its tests are unit tests.
 
-A patch to [`tests/unit/test_smoke.py`](#tut-20.10-tests-unit-test_smoke.py-89db04).
+[± See the new file `tests/unit/test_smoke.py`](#tut-20.10-tests-unit-test_smoke.py-89db04)
 
 The new file `tests/unit/test_smoke.py` has the test on lines 6 to 10.
 
@@ -10437,7 +10467,7 @@ just test
 
 A probability of yes of 0.5 or more is a yes. The test gives `verdict` exactly 0.5, the edge.
 
-A patch to [`tests/unit/test_smoke.py`](#tut-20.11-tests-unit-test_smoke.py-89db04).
+[± See the change to `tests/unit/test_smoke.py`](#tut-20.11-tests-unit-test_smoke.py-89db04)
 
 In `tests/unit/test_smoke.py`, the new test is on lines 13 to 16.
 
@@ -10478,7 +10508,7 @@ pytest prints `1 passed`. The label is no, so the verdict is `("yes (0.50)", "no
 A score is judged by the level with the highest probability, and not by the expected level. The expected level is
 1.1. The probabilities are 0.2, 0.5 and 0.3, and level 1 is the most likely.
 
-A patch to [`tests/unit/test_smoke.py`](#tut-20.12-tests-unit-test_smoke.py-89db04).
+[± See the change to `tests/unit/test_smoke.py`](#tut-20.12-tests-unit-test_smoke.py-89db04)
 
 In `tests/unit/test_smoke.py`, the new test is on lines 19 to 26.
 
@@ -10525,7 +10555,7 @@ just test
 `main` of `smoke.py` answers `help` before it loads anything. So a test can run `babykev smoke help` with no model.
 It goes in the tests of the command, and uses their helper `run`.
 
-A patch to [`tests/unit/test_cli.py`](#tut-20.13-tests-unit-test_cli.py-44d4a0).
+[± See the change to `tests/unit/test_cli.py`](#tut-20.13-tests-unit-test_cli.py-44d4a0)
 
 In `tests/unit/test_cli.py`, the docstring on line 1 names `smoke help`, the import is on line 6, and the new test is
 on lines 42 to 50.
@@ -10590,7 +10620,7 @@ just test
 
 A word after `babykev smoke` that is not `help` gets the usage on the error stream, and exit code 2.
 
-A patch to [`tests/unit/test_cli.py`](#tut-20.14-tests-unit-test_cli.py-44d4a0).
+[± See the change to `tests/unit/test_cli.py`](#tut-20.14-tests-unit-test_cli.py-44d4a0)
 
 In `tests/unit/test_cli.py`, the new test is on lines 53 to 61.
 
@@ -10637,7 +10667,7 @@ and no unit test has one.
 
 The row of `tests/unit/` names the tests of the smoke too.
 
-A patch to [`README.md`](#tut-20.15-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-20.15-README.md-8ec9a0)
 
 In `README.md`, line 83 is the row of `tests/unit/`.
 
@@ -10696,7 +10726,7 @@ Training changes the adapter and the head, and the backbone stays as it is. The 
 adapter of rank 4, and takes one backward pass. Then it names every parameter that got a gradient. The fixture
 `model` has no adapter, so the test calls `tiny_backbone` itself.
 
-A patch to [`tests/unit/test_model.py`](#tut-21.1-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-21.1-tests-unit-test_model.py-583145)
 
 In `tests/unit/test_model.py`, the import is on line 18, and the new test is on lines 112 to 130.
 
@@ -10770,7 +10800,7 @@ coverage of 90% not reached. Total coverage: 83.52%`, and ends with exit code 1.
 `forward_batch` reads several records in one pass. They are padded to the length of the longest. The test packs the
 record of the fixture and a shorter record, and runs them in one pass. It compares each with a pass of its own.
 
-A patch to [`tests/unit/test_model.py`](#tut-21.2-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-21.2-tests-unit-test_model.py-583145)
 
 In `tests/unit/test_model.py`, the new test is on lines 133 to 146.
 
@@ -10830,7 +10860,7 @@ still fails.
 packing, the model and the answers, with no download. The answers mean nothing. The report must have a verdict for
 each of the fifteen questions, and the count.
 
-A patch to [`tests/unit/test_smoke.py`](#tut-21.3-tests-unit-test_smoke.py-89db04).
+[± See the change to `tests/unit/test_smoke.py`](#tut-21.3-tests-unit-test_smoke.py-89db04)
 
 In `tests/unit/test_smoke.py`, the imports are on lines 3 to 6, and the new test is on lines 32 to 42.
 
@@ -10898,7 +10928,7 @@ need the Hub or a GPU of NVIDIA. They are `63, 72-75, 204-207` of `model.py`, an
 `just check` runs the tests with `--cov-fail-under=90`. A change that brings the total under 90% then fails the gate, and the hook refuses it.
 `just test` alone has no floor, so a run of a few tests, with `-k`, does not fail on the total.
 
-A patch to [`justfile`](#tut-21.4-justfile-424f0b).
+[± See the change to `justfile`](#tut-21.4-justfile-424f0b)
 
 In the `justfile`, line 82 is `just test -q --cov-fail-under=90`, and the comment on line 72 names the coverage.
 
@@ -10948,7 +10978,7 @@ exit code 0.
 
 The README says that one of the checks of `just check` is the floor.
 
-A patch to [`README.md`](#tut-21.5-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-21.5-README.md-8ec9a0)
 
 In `README.md`, the two lines are 70 and 71.
 
@@ -11012,7 +11042,7 @@ The first test draws the mask of one small request by hand. The request has a st
 of two tokens each, so its segments are `[0, 0, 1, 1, 2, 2]`. Row i of the picture is token i, and column j is token
 j. `#` means that token i may attend to token j, and `.` means that it may not.
 
-A patch to [`tests/unit/test_mask.py`](#tut-22.1-tests-unit-test_mask.py-aeb55a).
+[± See the new file `tests/unit/test_mask.py`](#tut-22.1-tests-unit-test_mask.py-aeb55a)
 
 The new file `tests/unit/test_mask.py` has `allowed` on lines 8 to 12, and the test on lines 15 to 26.
 
@@ -11076,6 +11106,8 @@ the picture has `##..#.` and `##..##`. Question 2 sees question 1.
 A picture checks one size of request. The mask must hold for every size, and nobody can draw them all. hypothesis is
 a library for tests. A test states a rule, and hypothesis draws many inputs and runs the test on each.
 
+[hypothesis](https://hypothesis.readthedocs.io/) writes test inputs. A test says what kind of input it takes, such as a list of up to five numbers. hypothesis then tries many of them, and when one fails, it shrinks it to the smallest input that still fails.
+
 This change came from running `uv add --group test hypothesis`.
 
 `uv add` prints `Resolved 69 packages`, and installs hypothesis and sortedcontainers, which
@@ -11121,7 +11153,7 @@ may be. `shapes` draws a state of 1 to 6 tokens, then up to 4 questions of 1 to 
 shape as `encode` does. The test states the rule that no token of a question attends to a token of another question.
 `@given(shapes)` runs it on up to 100 shapes.
 
-A patch to [`tests/unit/test_mask.py`](#tut-22.3-tests-unit-test_mask.py-aeb55a).
+[± See the change to `tests/unit/test_mask.py`](#tut-22.3-tests-unit-test_mask.py-aeb55a)
 
 In `tests/unit/test_mask.py`, `shapes` is on line 10, `segments` on lines 13 to 18, and the new test on lines 42 to
 49.
@@ -11200,7 +11232,7 @@ mask. hypothesis keeps the failing shape in the folder `.hypothesis`, and tries 
 The second rule is the causal part of the mask. Nothing above the diagonal is allowed, so a token never attends to a
 token after it.
 
-A patch to [`tests/unit/test_mask.py`](#tut-22.4-tests-unit-test_mask.py-aeb55a).
+[± See the change to `tests/unit/test_mask.py`](#tut-22.4-tests-unit-test_mask.py-aeb55a)
 
 In `tests/unit/test_mask.py`, the new test is on lines 52 to 57.
 
@@ -11244,7 +11276,7 @@ The last rule says the whole of it, in plain Python. Token i may attend to token
 in the state or in the question of i. The test builds that table for every pair of tokens, and compares it with the
 mask.
 
-A patch to [`tests/unit/test_mask.py`](#tut-22.5-tests-unit-test_mask.py-aeb55a).
+[± See the change to `tests/unit/test_mask.py`](#tut-22.5-tests-unit-test_mask.py-aeb55a)
 
 In `tests/unit/test_mask.py`, the new test is on lines 60 to 70.
 
@@ -11295,7 +11327,7 @@ The rules check the mask alone. The next three tests check what the mask is for,
 must get the answer that it would get if it were the only question. The first test rewrites question 2 of the record,
 and the answers to questions 1 and 3 must not move, to the last bit.
 
-A patch to [`tests/unit/test_model.py`](#tut-22.6-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-22.6-tests-unit-test_model.py-583145)
 
 In `tests/unit/test_model.py`, the new test is on lines 149 to 160.
 
@@ -11348,7 +11380,7 @@ question 1 comes first and sees only the state. The tiny model is untrained, so 
 The second test of isolation packs the three questions of the record in one pass. Then it asks each question in a
 record of its own, with the same state. The answers must be the same, to within `1e-6`.
 
-A patch to [`tests/unit/test_model.py`](#tut-22.7-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-22.7-tests-unit-test_model.py-583145)
 
 In `tests/unit/test_model.py`, the new test is on lines 163 to 172.
 
@@ -11396,7 +11428,7 @@ The test fails on question 2. Packed, it gets `[0.3321, 0.3346, 0.3333]`, and al
 The positions of every question restart after the state. So a question must get the same answer first or last. The
 third test of isolation asks the questions in the reverse order.
 
-A patch to [`tests/unit/test_model.py`](#tut-22.8-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-22.8-tests-unit-test_model.py-583145)
 
 In `tests/unit/test_model.py`, the new test is on lines 175 to 184.
 
@@ -11446,7 +11478,7 @@ The mistake of this move is on purpose. The picture failed on rows 5 and 6, wher
 fix blocks only the question just before a question. A token sees its own question, the state, and any question two
 or more before it. The fix makes the picture right.
 
-A patch to [`src/babykev/model.py`](#tut-22.9-src-babykev-model.py-a86a0b).
+[± See the change to `src/babykev/model.py`](#tut-22.9-src-babykev-model.py-a86a0b)
 
 In `src/babykev/model.py`, line 159 now ends with `| (s[None, :] < s[:, None] - 1)`. A token may see a question
 whose number is less than its own minus one.
@@ -11495,7 +11527,7 @@ The line of the mask becomes kev's line. A token may attend to a token of the st
 of its own question, `s[None, :] == s[:, None]`. `causal`, on line 158, keeps out every token after it, and line 160
 joins the two. The docstring of `branch_mask`, lines 150 to 154, has stated this rule from the start.
 
-A patch to [`src/babykev/model.py`](#tut-22.10-src-babykev-model.py-a86a0b).
+[± See the change to `src/babykev/model.py`](#tut-22.10-src-babykev-model.py-a86a0b)
 
 In `src/babykev/model.py`, line 159 is `same = (s[None, :] == s[:, None]) | (s[None, :] == 0)`.
 
@@ -11548,7 +11580,7 @@ changed. Both counts are guesses.
 
 The row of the README for `tests/unit/` names the tests of the mask, and hypothesis.
 
-A patch to [`README.md`](#tut-22.11-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-22.11-README.md-8ec9a0)
 
 In `README.md`, the row of `tests/unit/` is on line 83.
 
@@ -11610,7 +11642,7 @@ The test runs `main` of `smoke.py`, as `babykev smoke` does. It checks what hold
 code 0, fifteen verdicts, and the count of the right ones. It does not check the count itself, because an untrained model
 guesses.
 
-A patch to [`tests/system/test_real_model.py`](#tut-23.1-tests-system-test_real_model.py-df0b9d).
+[± See the new file `tests/system/test_real_model.py`](#tut-23.1-tests-system-test_real_model.py-df0b9d)
 
 The new file `tests/system/test_real_model.py` has the docstring on lines 1 to 7, and the test on lines 14 to 24.
 
@@ -11686,7 +11718,7 @@ and not because it is hermetic.
 A marker is a name that a test carries. `pytestmark` puts a marker on every test of a file. This file gets the marker
 `system`.
 
-A patch to [`tests/system/test_real_model.py`](#tut-23.2-tests-system-test_real_model.py-df0b9d).
+[± See the change to `tests/system/test_real_model.py`](#tut-23.2-tests-system-test_real_model.py-df0b9d)
 
 In `tests/system/test_real_model.py`, the comment is on line 13, and `pytestmark` on line 14.
 
@@ -11728,7 +11760,7 @@ error.
 
 `markers` in `pyproject.toml` declares each marker, with what it means.
 
-A patch to [`pyproject.toml`](#tut-23.3-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-23.3-pyproject.toml-5d07e7)
 
 In `pyproject.toml`, the comment is on line 62, and `markers` on line 63.
 
@@ -11770,7 +11802,7 @@ The test passes with no warning. `just test --markers` lists every marker, and t
 `-m` chooses the tests by their markers. `-m 'not system'` in `addopts` leaves out every test marked `system` from
 every run. A `-m` on the command line comes after `addopts`, and wins.
 
-A patch to [`pyproject.toml`](#tut-23.4-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-23.4-pyproject.toml-5d07e7)
 
 In `pyproject.toml`, the comment is on lines 60 and 61, and line 62 is
 `addopts = "--cov=babykev --cov-report=term-missing -m 'not system'"`.
@@ -11817,7 +11849,7 @@ the same tests, so the gate and the hook never need the network. `just test -m s
 The README says what `just test` runs, and how to run the test of the real model. The table gets a row for
 `tests/system/`.
 
-A patch to [`README.md`](#tut-23.5-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-23.5-README.md-8ec9a0)
 
 In `README.md`, the new paragraph is on lines 69 to 71, and the row of `tests/system/` on line 88.
 
@@ -11886,7 +11918,7 @@ and the second draws the mask as a grid. smalldocs runs no code, so a page holds
 The page explains packing, the mask, the positions that restart, and pointing, and then what trains. A name in
 backticks, such as `encode()`, links to its entry in the reference, as on the front page.
 
-A patch to [`docs/guide/model.qmd`](#tut-24.1-docs-guide-model.qmd-3d8904).
+[± See the new file `docs/guide/model.qmd`](#tut-24.1-docs-guide-model.qmd-3d8904)
 
 The new file `docs/guide/model.qmd` has five parts. Packing starts on line 9, the mask on line 33, the positions on
 line 43, pointing on line 48, and what trains on line 57.
@@ -11982,7 +12014,7 @@ the eight links of the page into the reference of `model.py`, `encode` twice. Th
 The page draws the mask of the small request of `test_mask.py`, then the grid of a plain causal mask for the same
 request. The first grid is the picture of the test, so `just test` keeps it true.
 
-A patch to [`docs/guide/mask.qmd`](#tut-24.2-docs-guide-mask.qmd-5cd81a).
+[± See the new file `docs/guide/mask.qmd`](#tut-24.2-docs-guide-mask.qmd-5cd81a)
 
 The new file `docs/guide/mask.qmd` has the grid of the mask on lines 13 to 21. The grid of a plain causal mask is on
 lines 33 to 41.
@@ -12068,7 +12100,7 @@ The sidebar of the site gets a section, Guide, between the front page and the re
 by one, so that the model comes before the mask. A pattern such as `guide/*` would list them in the order of their
 names.
 
-A patch to [`docs/_smalldocs.yml`](#tut-24.3-docs-_smalldocs.yml-4b0b48).
+[± See the change to `docs/_smalldocs.yml`](#tut-24.3-docs-_smalldocs.yml-4b0b48)
 
 In `docs/_smalldocs.yml`, the section `Guide` is on lines 11 to 14.
 
@@ -12111,7 +12143,7 @@ grep -o 'href="guide/[^"]*"' docs/_site/index.html
 
 A paragraph of the front page links to the two pages.
 
-A patch to [`docs/index.qmd`](#tut-24.4-docs-index.qmd-d6d880).
+[± See the change to `docs/index.qmd`](#tut-24.4-docs-index.qmd-d6d880)
 
 In `docs/index.qmd`, the new paragraph is on lines 25 and 26.
 
@@ -12153,7 +12185,7 @@ paragraph.
 
 The row of `docs/` in the table of the README names the two pages.
 
-A patch to [`README.md`](#tut-24.5-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-24.5-README.md-8ec9a0)
 
 In `README.md`, the row of `docs/` is on line 91.
 
@@ -12218,10 +12250,12 @@ stage `build` installs the environment into `/opt/venv`, with no group of the de
 come first, and the code after. Docker keeps each instruction of a build in its cache, so a change to the code installs one
 package again, and not torch.
 
+[Docker](https://www.docker.com/) builds an image, a file system with an operating system, Python and the project in it, from a `Dockerfile`. A container runs the image the same way on any machine, so the project does not depend on what a laptop has installed.
+
 The stage `run` starts from a fresh Python, and takes only the finished environment and the sample data. uv stays in
 the stage `build`.
 
-A patch to [`Dockerfile`](#tut-25.1-Dockerfile-6651dd).
+[± See the new file `Dockerfile`](#tut-25.1-Dockerfile-6651dd)
 
 In the new file `Dockerfile`, the stage `uv` is on line 9, and the stage `build` on lines 13 to 25. The stage `run`
 is on lines 28 to 36.
@@ -12313,7 +12347,7 @@ The stage `dev` builds the image to work in. It installs git with `apt-get`, and
 as a wheel from PyPI. Then it installs the whole project with every group, into `/opt/venv`. The folder of this
 machine can then be mounted at `/work`, and the image runs it with its own environment.
 
-A patch to [`Dockerfile`](#tut-25.2-Dockerfile-6651dd).
+[± See the change to `Dockerfile`](#tut-25.2-Dockerfile-6651dd)
 
 In `Dockerfile`, the comment names the dev image on lines 5 and 6, and the stage `dev` is on lines 41 to 66. Line 64,
 `COPY . .`, copies the folder of the project.
@@ -12399,7 +12433,7 @@ docker image ls babykev-dev:latest
 git never tracks. They are the history of git, the environment and the settings of this machine, and what a run or a
 tool writes.
 
-A patch to [`.dockerignore`](#tut-25.3-.dockerignore-05a721).
+[± See the new file `.dockerignore`](#tut-25.3-.dockerignore-05a721)
 
 The new file `.dockerignore` names `.git` on line 3 and `.venv` on line 4, and twelve more paths.
 
@@ -12459,7 +12493,7 @@ the test then fails, by chance, with `DeadlineExceeded`. A run of the dev image 
 same test passed at the next run. A test that fails by chance cannot be a reason to refuse a `git commit`. The tests of the mask check a
 rule, and not a speed, so a profile of hypothesis turns the deadline off for every test.
 
-A patch to [`tests/conftest.py`](#tut-25.4-tests-conftest.py-626af3).
+[± See the change to `tests/conftest.py`](#tut-25.4-tests-conftest.py-626af3)
 
 In `tests/conftest.py`, the import is on line 10, the comment on lines 16 to 18, and the profile on lines 19 and 20.
 
@@ -12517,7 +12551,7 @@ The recipe `image` runs the commands of the last moves. It has three words:
 
 `shell` and `run` mount the cache of the Hub at `/hf`.
 
-A patch to [`justfile`](#tut-25.5-justfile-424f0b).
+[± See the change to `justfile`](#tut-25.5-justfile-424f0b)
 
 In the `justfile`, the recipe `image` is on lines 36 to 67. `build` is on lines 47 to 52, `shell` on lines 53 to 61,
 and `run` on lines 62 to 65.
@@ -12596,6 +12630,8 @@ shell` starts a shell in the image, where `exit` ends it.
 
 hadolint is a linter for a `Dockerfile`. The package `hadolint-bin` holds its program, built for each system.
 
+[hadolint](https://github.com/hadolint/hadolint) is a linter for Dockerfiles. It finds mistakes such as an `apt-get install` with no pinned versions, and it checks the shell commands of each `RUN`.
+
 This change came from running `uv add --group lint hadolint-bin`.
 
 `uv add` prints `Resolved 70 packages`, and installs hadolint-bin.
@@ -12638,7 +12674,7 @@ It prints `Haskell Dockerfile Linter` and its version.
 `just lint-config` checks the config files, and the `Dockerfile` is one of them. The command behind the new line comes
 first.
 
-A patch to [`justfile`](#tut-25.7-justfile-424f0b).
+[± See the change to `justfile`](#tut-25.7-justfile-424f0b)
 
 In the `justfile`, the comment on line 81 names the `Dockerfile`, and line 92 is `uv run hadolint Dockerfile`.
 
@@ -12692,7 +12728,7 @@ the old version leaves the archive. So a pinned version stops building within we
 
 A comment says so, and a line tells hadolint to ignore DL3008 on the next instruction.
 
-A patch to [`Dockerfile`](#tut-25.8-Dockerfile-6651dd).
+[± See the change to `Dockerfile`](#tut-25.8-Dockerfile-6651dd)
 
 In `Dockerfile`, the reason is on lines 44 to 46, and `# hadolint ignore=DL3008` on line 47.
 
@@ -12734,7 +12770,7 @@ just lint-config
 The README gets a section on the images, with a table and the commands of the recipe. The table of the files gets a
 row for the `Dockerfile` and `.dockerignore`.
 
-A patch to [`README.md`](#tut-25.9-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-25.9-README.md-8ec9a0)
 
 In `README.md`, the section is on lines 77 to 99, and the row on line 118.
 
@@ -12837,7 +12873,9 @@ The workflow `check.yaml` has one job. It takes the code, installs uv and just, 
 check`, as a student does. It runs after a push to any branch and on every pull request. `branches: ["**"]` leaves
 out a push of a tag.
 
-A patch to [`.github/workflows/check.yaml`](#tut-26.1-.github-workflows-check.yaml-6ceb50).
+[GitHub Actions](https://docs.github.com/actions) runs commands on GitHub's machines. A workflow, a YAML file in `.github/workflows/`, says when it runs, such as after every push, and which commands its jobs run. Each run shows its log on the page of the repository.
+
+[± See the new file `.github/workflows/check.yaml`](#tut-26.1-.github-workflows-check.yaml-6ceb50)
 
 The new file `.github/workflows/check.yaml` has `on` on lines 5 to 8, and what the job `check` runs on lines 16
 to 21.
@@ -12893,7 +12931,7 @@ word `on` as true. GitHub reads it as the name `on`, and every workflow has it. 
 The rule `truthy` of yamllint has the option `check-keys`. With `false`, the rule checks the values and not the keys.
 A value of `on` or `yes` is still a warning.
 
-A patch to [`.yamllint`](#tut-26.2-.yamllint-dfe50a).
+[± See the change to `.yamllint`](#tut-26.2-.yamllint-dfe50a)
 
 In `.yamllint`, line 7 is `truthy: {check-keys: false}`, with its reason.
 
@@ -12929,6 +12967,8 @@ just lint-config
 yamllint checks that a workflow is good YAML, and knows nothing of GitHub. actionlint is a linter for the workflows of
 GitHub. It checks the events, the jobs, the actions and their inputs. The package `actionlint-py` holds its program,
 built for each system.
+
+[actionlint](https://github.com/rhysd/actionlint) checks the workflows of GitHub Actions. It finds a key that GitHub does not know, a wrong expression, and mistakes in the shell commands of each `run:` line.
 
 This change came from running `uv add --group lint actionlint-py`.
 
@@ -12972,7 +13012,7 @@ The first line is the version of actionlint.
 actionlint finds the workflows of the project itself, in `.github/workflows/`. The command behind the new line comes
 first.
 
-A patch to [`justfile`](#tut-26.4-justfile-424f0b).
+[± See the change to `justfile`](#tut-26.4-justfile-424f0b)
 
 In the `justfile`, the comment on line 81 names the workflows, and line 93 is `uv run actionlint`.
 
@@ -13022,7 +13062,7 @@ The workflow `docs.yaml` has two jobs. The job `build` installs the package and 
 It runs `smalldocs render docs`, the command behind `just docs`, and gives the folder `docs/_site` to Pages. The job
 `deploy` publishes it. The workflow runs after a push to `main`, and a person can also run it from the tab Actions.
 
-A patch to [`.github/workflows/docs.yaml`](#tut-26.5-.github-workflows-docs.yaml-ce7835).
+[± See the new file `.github/workflows/docs.yaml`](#tut-26.5-.github-workflows-docs.yaml-ce7835)
 
 In the new file `.github/workflows/docs.yaml`, `on` is on lines 6 to 9, and `permissions` on lines 11 to 14. Line 26
 renders the site with the group `docs` alone.
@@ -13102,7 +13142,7 @@ workflows on, on the tab **Actions**. Pages publishes from a workflow when **Set
 The README gets a section on GitHub, with the two settings that a fork needs. The table gets a row for
 `.github/workflows/`.
 
-A patch to [`README.md`](#tut-26.6-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-26.6-README.md-8ec9a0)
 
 In `README.md`, the section is on lines 100 to 112, and the row on line 135.
 

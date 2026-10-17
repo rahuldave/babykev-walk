@@ -32,6 +32,8 @@ places in `model.py`, and both have one cause, in torch.
 
 ty is for working on babykev, so it goes in the group `lint`.
 
+[ty](https://docs.astral.sh/ty/) is a type checker for Python, from the makers of uv and ruff. It reads the type hints and finds the places where a value cannot have the type that the code expects, without running the code.
+
 This change came from running `uv add --group lint ty`.
 
 `uv add` prints `Resolved 67 packages`, and installs ty, which needs no other package.
@@ -71,7 +73,7 @@ It prints the version of ty that uv installed. A newer ty can find more, or less
 
 `ty check` checks every Python file of the project. The recipe `types` runs it, and gives it any extra words.
 
-A patch to [`justfile`](#tut-17.2-justfile-424f0b).
+[± See the change to `justfile`](#tut-17.2-justfile-424f0b){.btn .btn-sm .btn-secondary}
 
 In the `justfile`, the recipe `types` is on lines 60 to 64. Line 64 runs `uv run ty check "$@"`.
 
@@ -149,7 +151,7 @@ rule is right in general, and does not fit here.
 A comment `# ty: ignore[invalid-mutable-override]` on the line of a diagnostic turns off that one rule on that one
 line. Each other rule still checks the line. A comment above the method says why.
 
-A patch to [`src/babykev/model.py`](#tut-17.3-src-babykev-model.py-a86a0b).
+[± See the change to `src/babykev/model.py`](#tut-17.3-src-babykev-model.py-a86a0b){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/model.py`, the reason is on lines 178 and 179, and line 180 is
 `def forward(  # ty: ignore[invalid-mutable-override]`.
@@ -194,7 +196,7 @@ or of the return type.
 The `forward` of `DecisionModel` is the same case. It gets the same comment, and one line of reason that points to
 the first.
 
-A patch to [`src/babykev/model.py`](#tut-17.4-src-babykev-model.py-a86a0b).
+[± See the change to `src/babykev/model.py`](#tut-17.4-src-babykev-model.py-a86a0b){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/model.py`, the reason is on line 259, and line 260 is
 `def forward(  # ty: ignore[invalid-mutable-override]`.
@@ -234,7 +236,7 @@ just types
 `just types` passes, and nothing runs it before `git commit`. As a line of `check`, it runs before each `git commit`,
 through the hook. It goes after the linter, and before the tests.
 
-A patch to [`justfile`](#tut-17.5-justfile-424f0b).
+[± See the change to `justfile`](#tut-17.5-justfile-424f0b){.btn .btn-sm .btn-secondary}
 
 In the `justfile`, `just types` is line 81, between `just lint` and `just test -q`. The comment on line 72 names the
 types.

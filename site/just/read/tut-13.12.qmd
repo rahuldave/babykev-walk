@@ -32,7 +32,7 @@ The code now has its documentation. A docment is a comment beside a parameter or
 `just check` passed with a docment lost. As a line of `check`, `just docs check` runs before each `git commit`,
 through the hook. It goes after the tests, and before the config files.
 
-A patch to [`justfile`](#tut-13.12-justfile-424f0b).
+[± See the change to `justfile`](#tut-13.12-justfile-424f0b){.btn .btn-sm .btn-secondary}
 
 In the `justfile`, `just docs check` is line 76, between `just test -q` and `just lint-config`. The comment on line 66
 names the docs.

@@ -22,6 +22,8 @@ We make the project in moves. A move is one small change, made by one patch or b
 Some changes of the whole tutorial are not in this one. After such a gap, the next section says what those changes
 did, and begins from the code that they left. It first runs `just setup`, which installs the packages of that code.
 
+The tasks of the project run through [just](https://just.systems/), which runs a command by name from the recipes of the `justfile`. `just setup`, for example, runs `uv sync`.
+
 ## Get the project
 
 You build the project in a clone of your own, on a branch `mine` that starts where this walk starts. Run the commands of these pages in its top folder.
@@ -149,6 +151,8 @@ project, and `uv lock` writes its lockfile. There is no justfile yet, so these t
 The folder has words and a licence, but nothing that Python can build or run. `uv init` makes the files of a Python
 project. `--package` makes a package in `src/babykev/`, with a command that runs its function `main`.
 `--name babykev` names the project, and `--python 3.13` sets the version of Python.
+
+[uv](https://docs.astral.sh/uv/) is a tool, written in Rust, that manages a Python project. It installs Python itself, makes the project's environment `.venv`, adds packages and pins their exact versions in a lockfile. It takes the place of pip, venv and pip-tools, and it is fast. Every command of this tutorial that installs or runs Python goes through uv.
 
 ```bash
 uv init --package --name babykev --python 3.13
@@ -660,7 +664,7 @@ path.write_text(tomlkit.dumps(doc), encoding='utf-8')
 PY
 ```
 
-The patch adds the table `[tool.uv]` at the end of `pyproject.toml`, after the table `[build-system]`. It has a
+The patch adds the table `[tool.uv]` to `pyproject.toml`. It has a
 comment and one setting.
 
 The setting changes which groups uv installs, and not which versions. So `uv.lock` still matches `pyproject.toml`.
@@ -711,6 +715,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-01 --staged --
 ### 2.2 Pytest, in the group test
 
 Nothing runs tests yet. pytest finds the tests and runs them. It goes into the group `test`.
+
+[pytest](https://docs.pytest.org/) is the test runner of most Python projects. It finds every file `test_*.py`, runs each function whose name starts with `test_`, and reports each failure with the values that made it fail. A test is a plain function with `assert` in it.
 
 ```bash
 uv add --group test pytest
@@ -856,6 +862,8 @@ dependencies of the project, and into no group.
 The contract is written with pydantic, and babykev does not have it yet. pydantic checks that data has the shape that
 a class describes. `uv add` writes the package into `dependencies`, because a package of babykev needs it to run.
 
+[pydantic](https://docs.pydantic.dev/) checks data against a description written as Python classes with type hints. A model says which fields a request has and of what type. pydantic then refuses data that does not fit, with a message that names the field. So the rules of a request live in one place, as code.
+
 ```bash
 uv add pydantic
 ```
@@ -939,6 +947,8 @@ Nothing formats the code yet. ruff is a formatter and a linter in one program. T
 looks, and never what it does. The linter comes in the next part of the tutorial. ruff is for working on babykev,
 and a user of the package does not need it. So it goes in a second dependency group, `lint`, next to the group
 `test`.
+
+[ruff](https://docs.astral.sh/ruff/) is a formatter and a linter for Python, written in Rust by the makers of uv. As a formatter, it rewrites code into one layout. As a linter, it reads code for mistakes and bad habits, each rule with a code such as `F401`. It takes the place of black, isort, flake8 and many plugins, and it is fast.
 
 ```bash
 uv add --group lint ruff
@@ -1138,6 +1148,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-14 --staged --
 for every package. It would take other packages from there, older than on PyPI. `--frozen` writes `pyproject.toml`
 and leaves `uv.lock` alone, so uv resolves nothing yet.
 
+[PyTorch](https://pytorch.org/), the package `torch`, holds tensors, the arrays of numbers that a model computes with, and the layers of neural networks. It runs on a CPU, on an NVIDIA GPU, and on the GPU of a Mac.
+
 ```bash
 uv add torch --index pytorch-cpu --frozen
 ```
@@ -1258,6 +1270,8 @@ git restore --source a263314ef270 --staged -- :/ && git restore --source 92e8147
 
 The base model of kev, and its tokenizer, are on the Hugging Face Hub. transformers loads them.
 
+[transformers](https://huggingface.co/docs/transformers), from Hugging Face, loads trained language models and their tokenizers by name, such as `Qwen/Qwen2.5-0.5B`, and downloads their weights once.
+
 ```bash
 uv add transformers
 ```
@@ -1311,6 +1325,8 @@ git restore --source 92e81476ed9c --staged -- :/ && git restore --source 92f659c
 ### 15.5 peft
 
 The base model stays as it is, and a small adapter, LoRA, learns the task. peft adds the adapter.
+
+[peft](https://huggingface.co/docs/peft), also from Hugging Face, trains a small adapter beside a large model, such as LoRA, in place of all its weights. Training then changes a few million numbers, not hundreds of millions.
 
 ```bash
 uv add peft
@@ -1371,6 +1387,8 @@ git restore --source 92f659c4e742 --staged -- :/ && git restore --source 4b43f5a
 safetensors is the format of the weights on the Hub. transformers installed it already. babykev names it too,
 because babykev saves the weights that it trains to the Hub in this format. A package that only comes with another
 can go when that package stops needing it.
+
+[safetensors](https://huggingface.co/docs/safetensors) stores the weights of a model in a file that loads fast and runs no code when it loads. It is the format that Hugging Face uses to share models.
 
 ```bash
 uv add safetensors
@@ -1509,6 +1527,8 @@ A `Dockerfile` builds an image in stages, and each `FROM` starts one. The stage 
 stage `build` installs the environment into `/opt/venv`, with no group of the developers. The packages of `uv.lock`
 come first, and the code after. Docker keeps each instruction of a build in its cache, so a change to the code installs one
 package again, and not torch.
+
+[Docker](https://www.docker.com/) builds an image, a file system with an operating system, Python and the project in it, from a `Dockerfile`. A container runs the image the same way on any machine, so the project does not depend on what a laptop has installed.
 
 The stage `run` starts from a fresh Python, and takes only the finished environment and the sample data. uv stays in
 the stage `build`.

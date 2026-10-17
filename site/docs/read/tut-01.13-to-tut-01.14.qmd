@@ -38,7 +38,7 @@ how to begin, and what each file is.
 A reader of the README cannot yet tell how to start. A section, "Start", says to run `just setup` first, and names
 `just`, `just help VERB` and the help of the program.
 
-A patch to [`README.md`](#tut-01.13-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-01.13-README.md-8ec9a0){.btn .btn-sm .btn-secondary}
 
 In `README.md`, "Start" says to run `just setup` first, and then names `just`, `just help VERB` and
 `uv run babykev help`.
@@ -81,7 +81,7 @@ grep -n '^## ' README.md
 A reader still cannot tell what each file of the project is. A section, "What is here", has a table, with a row for
 each file.
 
-A patch to [`README.md`](#tut-01.14-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-01.14-README.md-8ec9a0){.btn .btn-sm .btn-secondary}
 
 In `README.md`, "What is here" is a table of the files of the project, from `pyproject.toml` to `.gitignore`.
 

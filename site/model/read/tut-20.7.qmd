@@ -44,7 +44,7 @@ into probabilities with a softmax.
 The head takes the hidden state of a decide token and those of the options, and gives one logit for each option. The
 test builds a head alone, with no model, and gives it five options.
 
-A patch to [`tests/unit/test_model.py`](#tut-20.7-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-20.7-tests-unit-test_model.py-583145){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_model.py`, the new test is on lines 87 to 90.
 

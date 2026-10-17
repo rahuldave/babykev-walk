@@ -41,6 +41,8 @@ section that changes what it runs.
 | `just image` | `just lint-config` checks the `Dockerfile` too |
 | GitHub runs `just check` | `just lint-config` checks the workflows too |
 
+The project is managed by [uv](https://docs.astral.sh/uv/), which installs Python and the packages, keeps them in `.venv`, and pins their versions in `uv.lock`. `just setup` runs `uv sync`.
+
 ## Get the project
 
 You build the project in a clone of your own, on a branch `mine` that starts where this walk starts. Run the commands of these pages in its top folder.
@@ -171,6 +173,8 @@ The first recipe, `setup`, makes the environment of the project. The second, `he
 The command that sets up the project is `uv sync --locked`, and nobody should have to remember it. A `justfile` names
 each task of the project once. `just` reads the file. Each task is a recipe, a name and then the commands to run,
 indented. Before the justfile comes in, we run the command of the recipe `setup` by hand.
+
+[just](https://just.systems/) runs commands by name. A file called `justfile` lists recipes. Each has a name, a comment that says what it does, and the commands it runs. `just setup` runs the recipe `setup`, and `just` alone lists every recipe. So the justfile is the one place that says how to work on the project, for a person and for a machine.
 
 ```bash
 uv sync --locked
@@ -484,6 +488,8 @@ pytest comes into the group `test`, and the command that runs it gets a recipe.
 
 Nothing runs tests yet. pytest finds the tests and runs them. It goes into the group `test`.
 
+[pytest](https://docs.pytest.org/) is the test runner of most Python projects. It finds every file `test_*.py`, runs each function whose name starts with `test_`, and reports each failure with the values that made it fail. A test is a plain function with `assert` in it.
+
 ```bash
 uv add --group test pytest
 ```
@@ -643,6 +649,8 @@ looks, and never what it does. The linter comes in the next part of the tutorial
 and a user of the package does not need it. So it goes in a second dependency group, `lint`, next to the group
 `test`.
 
+[ruff](https://docs.astral.sh/ruff/) is a formatter and a linter for Python, written in Rust by the makers of uv. As a formatter, it rewrites code into one layout. As a linter, it reads code for mistakes and bad habits, each rule with a code such as `F401`. It takes the place of black, isort, flake8 and many plugins, and it is fast.
+
 ```bash
 uv add --group lint ruff
 ```
@@ -754,7 +762,7 @@ path.write_text(tomlkit.dumps(doc), encoding='utf-8')
 PY
 ```
 
-The patch adds the table `[tool.ruff]` at the end of `pyproject.toml`, with a comment and `line-length = 100`.
+The patch adds the table `[tool.ruff]` to `pyproject.toml`, with a comment and `line-length = 100`.
 
 ```bash
 uv run ruff format --check
@@ -854,7 +862,7 @@ path.write_text(tomlkit.dumps(doc), encoding='utf-8')
 PY
 ```
 
-The patch adds the table `[tool.ruff.format]` at the end of `pyproject.toml`. Read the comment beside each setting.
+The patch adds the table `[tool.ruff.format]` to `pyproject.toml`. Read the comment beside each setting.
 
 `skip-magic-trailing-comma = false` is the one that a reader meets most. A list that ends with a comma keeps one item
 on each line, even when it would fit on one line. The group `lint`, on lines 26 to 28, is such a list.
@@ -1165,7 +1173,7 @@ path.write_text(tomlkit.dumps(doc), encoding='utf-8')
 PY
 ```
 
-The patch adds the table `[tool.ruff.lint]` at the end of `pyproject.toml`. Read the comment beside each family.
+The patch adds the table `[tool.ruff.lint]` to `pyproject.toml`. Read the comment beside each family.
 
 ```bash
 uv run ruff check --statistics
@@ -1274,7 +1282,7 @@ path.write_text(tomlkit.dumps(doc), encoding='utf-8')
 PY
 ```
 
-The patch adds the table `[tool.ruff.lint.per-file-ignores]` at the end of `pyproject.toml`.
+The patch adds the table `[tool.ruff.lint.per-file-ignores]` to `pyproject.toml`.
 
 ```bash
 uv run ruff check --statistics
@@ -1594,6 +1602,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-10 --staged --
 `just check` still waits for a person to run it. git can run a program of its own before it records a change, a
 hook. If the program fails, `git commit` records nothing. pre-commit installs such a hook, and runs the checks that a
 file of settings names. It is for working on babykev, so it goes in the group `lint`.
+
+[pre-commit](https://pre-commit.com/) runs checks each time you run `git commit`, before git records the change. The file `.pre-commit-config.yaml` lists hooks. `pre-commit install` puts a script into `.git/hooks`, so `git commit` runs them first, and stops when one fails.
 
 ```bash
 uv add --group lint pre-commit
@@ -2165,6 +2175,8 @@ fails on its defaults, for real, and its settings fix it. Then the gate runs `li
 `pyproject.toml` has a standard, which says which tables it has, which keys each table may hold, and what each value
 is. validate-pyproject checks the file against the standard. It goes in the group `lint`.
 
+[validate-pyproject](https://github.com/abravalheri/validate-pyproject) checks `pyproject.toml` against the published schemas of its tables. It finds a misspelt key or a value of the wrong type, which most tools ignore without a word.
+
 ```bash
 uv add --group lint validate-pyproject
 ```
@@ -2483,6 +2495,8 @@ git restore --source 9f70971667e9 --staged -- :/ && git restore --source 284e4b7
 
 `.pre-commit-config.yaml` is YAML. A mistake of indentation there breaks the hook, and with it every `git commit`. yamllint
 checks YAML files, for their syntax and for their style. It goes in the group `lint`.
+
+[yamllint](https://yamllint.readthedocs.io/) checks YAML files, such as the configuration of pre-commit. It finds syntax errors, keys given twice, and a layout that differs from file to file.
 
 ```bash
 uv add --group lint yamllint
@@ -2907,6 +2921,8 @@ documentation. The words after `docs` go to `smalldocs api`.
 Nothing reads the documentation of the code yet. smalldocs is a Python package, so uv installs it like any other. It
 is for the documentation, so it goes in a third dependency group, `docs`.
 
+[smalldocs](https://github.com/rahuldave/smalldocs) makes documentation from the code. It reads docstrings and docments, the comments beside each parameter. It prints them in a terminal, checks that every function has them, and builds a website from them. Its own documentation is at [docs.smallish.dev](https://docs.smallish.dev/).
+
 ```bash
 uv add --group docs smalldocs
 ```
@@ -3289,6 +3305,8 @@ same line as the command.
 `git status --short --ignored docs` lists the three paths that the build made, each marked `!!`, ignored. The lines
 of `.gitignore` from the move before keep them out of git.
 
+Your copy also lists `?? docs/` first. git does not know the folder yet, because nothing in it is staged.
+
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash
@@ -3367,6 +3385,8 @@ places in `model.py`, and both have one cause, in torch.
 ### 17.1 ty, in the group lint
 
 ty is for working on babykev, so it goes in the group `lint`.
+
+[ty](https://docs.astral.sh/ty/) is a type checker for Python, from the makers of uv and ruff. It reads the type hints and finds the places where a value cannot have the type that the code expects, without running the code.
 
 ```bash
 uv add --group lint ty
@@ -3928,6 +3948,8 @@ stage `build` installs the environment into `/opt/venv`, with no group of the de
 come first, and the code after. Docker keeps each instruction of a build in its cache, so a change to the code installs one
 package again, and not torch.
 
+[Docker](https://www.docker.com/) builds an image, a file system with an operating system, Python and the project in it, from a `Dockerfile`. A container runs the image the same way on any machine, so the project does not depend on what a laptop has installed.
+
 The stage `run` starts from a fresh Python, and takes only the finished environment and the sample data. uv stays in
 the stage `build`.
 
@@ -4384,6 +4406,8 @@ git restore --source 3043d160e0d6 --staged -- :/ && git restore --source a2cd7c0
 
 hadolint is a linter for a `Dockerfile`. The package `hadolint-bin` holds its program, built for each system.
 
+[hadolint](https://github.com/hadolint/hadolint) is a linter for Dockerfiles. It finds mistakes such as an `apt-get install` with no pinned versions, and it checks the shell commands of each `RUN`.
+
 ```bash
 uv add --group lint hadolint-bin
 ```
@@ -4690,6 +4714,8 @@ The workflow `check.yaml` has one job. It takes the code, installs uv and just, 
 check`, as a student does. It runs after a push to any branch and on every pull request. `branches: ["**"]` leaves
 out a push of a tag.
 
+[GitHub Actions](https://docs.github.com/actions) runs commands on GitHub's machines. A workflow, a YAML file in `.github/workflows/`, says when it runs, such as after every push, and which commands its jobs run. Each run shows its log on the page of the repository.
+
 Apply the patch to [`.github/workflows/check.yaml`](#tut-26.1-.github-workflows-check.yaml-6ceb50), from the top of the project:
 
 ```bash
@@ -4813,6 +4839,8 @@ git restore --source 2f210829183a --staged -- :/ && git restore --source 7b7e22f
 yamllint checks that a workflow is good YAML, and knows nothing of GitHub. actionlint is a linter for the workflows of
 GitHub. It checks the events, the jobs, the actions and their inputs. The package `actionlint-py` holds its program,
 built for each system.
+
+[actionlint](https://github.com/rhysd/actionlint) checks the workflows of GitHub Actions. It finds a key that GitHub does not know, a wrong expression, and mistakes in the shell commands of each `run:` line.
 
 ```bash
 uv add --group lint actionlint-py

@@ -53,6 +53,8 @@ Some moves of the whole tutorial are not in this one. After such a gap, the next
 and begins from their code. Each section after the first runs `just setup` before its moves. It installs the packages
 that the code of the section needs.
 
+Two tools run everything here. [uv](https://docs.astral.sh/uv/) manages the project. It installs Python and the packages, keeps them in `.venv`, and pins their versions in `uv.lock`. [just](https://just.systems/) runs the tasks of the project by name, from the recipes of its `justfile`. `just setup`, for example, runs `uv sync`.
+
 <a id="tut-00"></a>
 
 ## 0 Where we start
@@ -647,6 +649,8 @@ tests run. The recipe `just test` runs them both, and five tests check the comma
 The contract is written with pydantic, and babykev does not have it yet. pydantic checks that data has the shape that
 a class describes. `uv add` writes the package into `dependencies`, because a package of babykev needs it to run.
 
+[pydantic](https://docs.pydantic.dev/) checks data against a description written as Python classes with type hints. A model says which fields a request has and of what type. pydantic then refuses data that does not fit, with a message that names the field. So the rules of a request live in one place, as code.
+
 This change came from running `uv add pydantic`.
 
 `uv add pydantic` prints `Resolved 14 packages`, and lists what it installed. It installed pydantic and the four
@@ -695,7 +699,7 @@ pydantic and its version, and the group `test` with pytest and pytest-cov.
 babykev has no contract yet. `api.py`, from kev, says what a request is and what an answer is. It comes in whole,
 all 111 lines, and we read it before we change it.
 
-A patch to [`src/babykev/api.py`](#tut-03.2-src-babykev-api.py-2ea65f).
+[± See the new file `src/babykev/api.py`](#tut-03.2-src-babykev-api.py-2ea65f)
 
 `src/babykev/api.py` is new. Lines 14 to 43 are the classes of a request. The functions after them turn a request into
 options, and probabilities into answers.
@@ -868,7 +872,7 @@ out of a request, and remove the count of tokens.
 kev served the model over HTTP, and babykev has no server. The first line of `api.py` names the address of kev's
 server, `POST /v1/systemone`.
 
-A patch to [`src/babykev/api.py`](#tut-03.3-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-03.3-src-babykev-api.py-2ea65f)
 
 In `src/babykev/api.py`, the docstring no longer names `POST /v1/systemone`.
 
@@ -904,7 +908,7 @@ It prints the new first line.
 
 The field `model` named the model for kev's server to run. babykev has one model, so a request names none.
 
-A patch to [`src/babykev/api.py`](#tut-03.4-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-03.4-src-babykev-api.py-2ea65f)
 
 In `src/babykev/api.py`, `SystemOneRequest` ends with the line `questions`.
 
@@ -942,7 +946,7 @@ uv run python -c "from babykev.api import SystemOneRequest; print(sorted(SystemO
 
 `output_tokens` counted the tokens of an answer for a bill, and needs the tokenizer of a model. babykev bills nothing.
 
-A patch to [`src/babykev/api.py`](#tut-03.5-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-03.5-src-babykev-api.py-2ea65f)
 
 `src/babykev/api.py` now ends with `to_answers`.
 
@@ -997,7 +1001,7 @@ A file holds five requests about cheese, one on each line. Each line must fit th
 The tests of the contract need requests to check, and the project has none. Five requests about cheese come in a file
 of their own. Each line of the file is one request, in JSON. Each question has a `label`, the right answer.
 
-A patch to [`data/cheese/sample.jsonl`](#tut-03.6-data-cheese-sample.jsonl-79f982).
+[± See the new file `data/cheese/sample.jsonl`](#tut-03.6-data-cheese-sample.jsonl-79f982)
 
 `data/cheese/sample.jsonl` is new, with one request on each line.
 
@@ -1035,7 +1039,7 @@ label `1`, the second level. `milk` is a `choice` of five options with the label
 The table of the README names neither the contract nor the data. Rows for `api.py`, `cli.py` and the sample data take
 the place of the row of `src/babykev/`.
 
-A patch to [`README.md`](#tut-03.7-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-03.7-README.md-8ec9a0)
 
 In the table of `README.md`, the rows of `src/babykev/api.py`, `src/babykev/cli.py` and `data/cheese/sample.jsonl`
 stand above the row of the tests.
@@ -1099,7 +1103,7 @@ The first test of `api.py` checks each of the five sample requests against the c
 file. `parametrize` gives the test each line in turn. `model_validate` checks the line, and raises an error if it does
 not fit.
 
-A patch to [`tests/unit/test_api.py`](#tut-04.1-tests-unit-test_api.py-58d97c).
+[± See the new file `tests/unit/test_api.py`](#tut-04.1-tests-unit-test_api.py-58d97c)
 
 The new file `tests/unit/test_api.py` reads the sample data into `SAMPLE_LINES`, and has one test,
 `test_sample_line_fits_the_contract`.
@@ -1160,7 +1164,7 @@ lines are the functions that turn probabilities into answers.
 The tests will compare answers with labels, so each label must have the right kind. A label is a boolean for a noul,
 the name of an option for a choice, and the number of a level for a score.
 
-A patch to [`tests/unit/test_api.py`](#tut-04.2-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-04.2-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the new test checks the label of every question of each line.
 
@@ -1209,7 +1213,7 @@ The field `type` of a question decides which class of the contract it becomes. A
 request with a question of each type, for the tests to share. The test checks that the noul is a `Noul`, the choice a
 `Choice` and the score a `Score`.
 
-A patch to [`tests/unit/test_api.py`](#tut-04.3-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-04.3-tests-unit-test_api.py-58d97c)
 
 In `tests/unit/test_api.py`, `cheese_request` stands under the constants. The new test at the end checks the class of
 each of its three questions.
@@ -1292,7 +1296,7 @@ pytest prints `1 passed`.
 A request must ask at least one question. `Field(min_length=1)` on `questions` says so. The test checks that pydantic
 refuses a request with none.
 
-A patch to [`tests/unit/test_api.py`](#tut-04.4-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-04.4-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the new test expects a `ValidationError` for `"questions": {}`.
 
@@ -1340,7 +1344,7 @@ pytest prints `1 passed`.
 
 Only noul, choice and score exist. The test gives a question the type `essay`, and expects a refusal.
 
-A patch to [`tests/unit/test_api.py`](#tut-04.5-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-04.5-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the new test makes a question of type `essay`.
 
@@ -1382,7 +1386,7 @@ pytest prints `1 passed`.
 A question of yes or no may leave out what yes and no mean. The test makes a `Noul` with no criteria, and checks that
 its criteria are `None`.
 
-A patch to [`tests/unit/test_api.py`](#tut-04.6-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-04.6-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the new test makes a `Noul` with an instruction alone.
 
@@ -1421,7 +1425,7 @@ pytest prints `1 passed`.
 
 A choice needs at least one option. The test gives a `Choice` empty criteria, and expects a refusal.
 
-A patch to [`tests/unit/test_api.py`](#tut-04.7-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-04.7-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the new test makes a `Choice` with `criteria={}`.
 
@@ -1462,7 +1466,7 @@ pytest prints `1 passed`.
 `MAX_OPTIONS` is 255. The test makes a choice of exactly 255 options, which is valid, and one of 256, which is
 refused. A limit is tested on both of its sides.
 
-A patch to [`tests/unit/test_api.py`](#tut-04.8-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-04.8-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the new test makes `at_limit`, 255 options, and then adds `one_more`.
 
@@ -1514,7 +1518,7 @@ pytest prints `1 passed`.
 
 A scale needs two levels at least, or it measures nothing. The test gives a `Score` one level, and expects a refusal.
 
-A patch to [`tests/unit/test_api.py`](#tut-04.9-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-04.9-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the new test makes a `Score` with the one level `Soft`.
 
@@ -1555,7 +1559,7 @@ already.
 
 The row of `tests/unit/` names only the tests of the command. It now names the tests of the contract too.
 
-A patch to [`README.md`](#tut-04.10-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-04.10-README.md-8ec9a0)
 
 In the table of `README.md`, the row of `tests/unit/` names the tests of the contract and the sample data.
 
@@ -1612,7 +1616,7 @@ pydantic. The moves of this section add the tests that show it.
 The model reads text, and the state of a request is JSON. `render` writes JSON as text. One test gives `render` nine
 values, from `None` to a list of objects, and checks the text of each.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.1-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.1-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the parametrized test lists nine pairs, each a value and its text.
 
@@ -1680,7 +1684,7 @@ pytest prints `9 passed`, one for each value.
 An option is its name, followed by its description when it has one. `option_text` writes it. The test gives it no
 description, an empty one, and a real one.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.2-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.2-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the test gives `option_text` three cases.
 
@@ -1736,7 +1740,7 @@ pytest prints `3 passed`.
 `to_record` turns a request into a record, the text and options that the model reads, and the metadata that maps
 them back. The test checks that the state is rendered once, and that the questions keep their order.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.3-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.3-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the test reads `record["state"]` and the order of the questions.
 
@@ -1786,7 +1790,7 @@ pytest prints `1 passed`.
 A noul has two options, `no` first and `yes` second. The code counts the options from 0, so `yes` is option 1. The
 answer to a noul is the probability of option 1.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.4-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.4-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the test checks the options `["no", "yes"]`.
 
@@ -1827,7 +1831,7 @@ pytest prints `1 passed`.
 
 A noul can say what yes and no mean, under `true` and `false`. They become the descriptions of the two options.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.5-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.5-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the test expects `"no: It has none"` and `"yes: It has blue veins"`.
 
@@ -1870,7 +1874,7 @@ pytest prints `1 passed`.
 
 A choice has one option for each criterion, in order, and the metadata keeps their names.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.6-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.6-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the test expects four options, the last with its description.
 
@@ -1916,7 +1920,7 @@ pytest prints `1 passed`.
 
 A score has one option for each level, in order. Its legend maps the number of each level to its name.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.7-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.7-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the test checks the options and the legend of `firmness`.
 
@@ -1973,7 +1977,7 @@ the type of each question. The moves of this section add a test for each type.
 `to_answers` turns the probabilities of the model into answers. The answer to a noul is one number, the probability of
 yes.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.8-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.8-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the test gives `to_answers` the probabilities `[0.25, 0.75]`, and expects
 `0.75`.
@@ -2025,7 +2029,7 @@ just test
 
 The answer to a choice has its most likely option, a probability for each option, and a confidence.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.9-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.9-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the test gives `[0.1, 0.7, 0.2]`, and expects `goat`.
 
@@ -2069,7 +2073,7 @@ just test
 The answer to a score is the expected level, the mean of the levels weighted by their probabilities. For
 `[0.1, 0.2, 0.7]` it is 0 × 0.1 + 1 × 0.2 + 2 × 0.7 = 1.6.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.10-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.10-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the test expects the score `1.6`.
 
@@ -2115,7 +2119,7 @@ just test
 A request of three questions must get three answers, each under the id of its question, each of its type. The test
 runs `to_record` and `to_answers` one after the other.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.11-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.11-tests-unit-test_api.py-58d97c)
 
 At the end of `tests/unit/test_api.py`, the test checks the type of the answer to each of the three questions.
 
@@ -2183,7 +2187,7 @@ got its docstring first.
 `D101`: `Noul`, `Choice`, `Score` and `SystemOneRequest` are the classes of a request, and none has a docstring.
 Each gets one line, under its `class` line, that says what it is.
 
-A patch to [`src/babykev/api.py`](#tut-10.3-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-10.3-src-babykev-api.py-2ea65f)
 
 In `src/babykev/api.py`, the docstrings of the classes are on lines 17, 25, 39 and 50, under the lines of `Noul`,
 `Choice`, `Score` and `SystemOneRequest`.

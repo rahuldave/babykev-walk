@@ -29,6 +29,8 @@ places in `model.py`, and both have one cause, in torch.
 
 ty is for working on babykev, so it goes in the group `lint`.
 
+[ty](https://docs.astral.sh/ty/) is a type checker for Python, from the makers of uv and ruff. It reads the type hints and finds the places where a value cannot have the type that the code expects, without running the code.
+
 ```bash
 uv add --group lint ty
 ```

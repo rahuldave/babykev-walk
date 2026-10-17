@@ -33,6 +33,8 @@ fails on its defaults, for real, and its settings fix it. Then the gate runs `li
 `pyproject.toml` has a standard, which says which tables it has, which keys each table may hold, and what each value
 is. validate-pyproject checks the file against the standard. It goes in the group `lint`.
 
+[validate-pyproject](https://github.com/abravalheri/validate-pyproject) checks `pyproject.toml` against the published schemas of its tables. It finds a misspelt key or a value of the wrong type, which most tools ignore without a word.
+
 This change came from running `uv add --group lint validate-pyproject`.
 
 `uv add` prints `Resolved 27 packages`, and installs validate-pyproject and `fastjsonschema`, which it needs.
@@ -75,7 +77,7 @@ A recipe `lint-config` will run a check for each kind of config file. Its first 
 `pyproject.toml`. Its body is a script, with `set -e`, as in `check`, so that the next checks can come one line at a
 time.
 
-A patch to [`justfile`](#tut-12.2-justfile-424f0b).
+[± See the change to `justfile`](#tut-12.2-justfile-424f0b){.btn .btn-sm .btn-secondary}
 
 In the `justfile`, the recipe `lint-config` is on lines 45 to 52, between `lint` and `test`. Line 52 runs
 `uv run validate-pyproject pyproject.toml`.
@@ -128,7 +130,7 @@ just help lint-config
 `uv lock`, they disagree. `uv lock --check` resolves the dependencies again, compares the result with `uv.lock`, and
 fails if they differ. It changes no file.
 
-A patch to [`justfile`](#tut-12.3-justfile-424f0b).
+[± See the change to `justfile`](#tut-12.3-justfile-424f0b){.btn .btn-sm .btn-secondary}
 
 In the `justfile`, `uv lock --check` is line 53, the second check of `lint-config`. The comment on line 45 now names
 the lockfile too.
@@ -179,7 +181,7 @@ recipe can then change the lockfile, and the person who ran it does not see the 
 every `uv run` refuse a lockfile that is out of date, in place of writing it. The `justfile` exports it to every
 recipe.
 
-A patch to [`justfile`](#tut-12.4-justfile-424f0b).
+[± See the change to `justfile`](#tut-12.4-justfile-424f0b){.btn .btn-sm .btn-secondary}
 
 Near the top of the `justfile`, `export UV_LOCKED := "1"` is on line 9, under its comment.
 
@@ -219,7 +221,7 @@ recipe sees it.
 The `justfile` is a config file too. just has a formatter of its own, `just --fmt`. With `--check`, it writes nothing,
 and fails if the file is not in its format. just still calls the formatter unstable, so it needs `--unstable`.
 
-A patch to [`justfile`](#tut-12.5-justfile-424f0b).
+[± See the change to `justfile`](#tut-12.5-justfile-424f0b){.btn .btn-sm .btn-secondary}
 
 In the `justfile`, `just --fmt --check --unstable` is line 57, the third check of `lint-config`. The comment on line
 48 names the `justfile`.
@@ -268,6 +270,8 @@ in the format of just. `just lint-config` prints the same two lines as before.
 `.pre-commit-config.yaml` is YAML. A mistake of indentation there breaks the hook, and with it every `git commit`. yamllint
 checks YAML files, for their syntax and for their style. It goes in the group `lint`.
 
+[yamllint](https://yamllint.readthedocs.io/) checks YAML files, such as the configuration of pre-commit. It finds syntax errors, keys given twice, and a layout that differs from file to file.
+
 This change came from running `uv add --group lint yamllint`.
 
 `uv add` prints `Resolved 29 packages`, and installs yamllint and `pathspec`, which it needs.
@@ -309,7 +313,7 @@ It prints the version of yamllint that uv installed.
 `yamllint --strict .` checks every YAML file under the folder. `--strict` makes a warning fail, as an error does. It is the fourth check of `lint-config`. yamllint has no settings yet, and it fails on its defaults. The next
 moves give it settings.
 
-A patch to [`justfile`](#tut-12.7-justfile-424f0b).
+[± See the change to `justfile`](#tut-12.7-justfile-424f0b){.btn .btn-sm .btn-secondary}
 
 In the `justfile`, `uv run yamllint --strict .` is line 58, the last check of `lint-config`.
 
@@ -366,7 +370,7 @@ yamllint reads its settings from a file `.yamllint`. `extends: default` keeps it
 `ignore-from-file: .gitignore` skips each file that git ignores, `.venv` among them. The file is new, and comes
 whole, as a patch.
 
-A patch to [`.yamllint`](#tut-12.8-.yamllint-dfe50a).
+[± See the new file `.yamllint`](#tut-12.8-.yamllint-dfe50a){.btn .btn-sm .btn-secondary}
 
 The new file `.yamllint` has 3 lines. Line 3 is `ignore-from-file: .gitignore`, with a comment.
 
@@ -401,7 +405,7 @@ findings of `.pre-commit-config.yaml` stay. `.yamllint` is YAML too, and yamllin
 A line `---` marks the start of a document, in a YAML file that holds several. Our files hold one each, and pre-commit
 does not ask for the line. The rule `document-start` goes off.
 
-A patch to [`.yamllint`](#tut-12.9-.yamllint-dfe50a).
+[± See the change to `.yamllint`](#tut-12.9-.yamllint-dfe50a){.btn .btn-sm .btn-secondary}
 
 In `.yamllint`, `rules:` is on line 4, and line 5 is `document-start: disable`, with a comment.
 
@@ -437,7 +441,7 @@ yamllint finds four problems, and ends with exit code 1. The four are the lines 
 The Python of the project has lines of up to 100 characters, and the comments of the YAML files follow it. The rule
 `line-length` lets a line have 100 characters, as `line-length = 100` in `[tool.ruff]` does for ruff.
 
-A patch to [`.yamllint`](#tut-12.10-.yamllint-dfe50a).
+[± See the change to `.yamllint`](#tut-12.10-.yamllint-dfe50a){.btn .btn-sm .btn-secondary}
 
 In `.yamllint`, line 6 is `line-length: {max: 100}`, with a comment.
 
@@ -472,7 +476,7 @@ yamllint prints nothing, and `just lint-config` passes. It prints `Valid file: p
 `just lint-config` passes, but only when a person runs it. As the last line of `check`, it runs before each
 `git commit`, through the hook.
 
-A patch to [`justfile`](#tut-12.11-justfile-424f0b).
+[± See the change to `justfile`](#tut-12.11-justfile-424f0b){.btn .btn-sm .btn-secondary}
 
 In the `justfile`, `just lint-config` is line 76, the last line of `check`. The comment on line 66 names the config
 files.
@@ -517,7 +521,7 @@ the tests, as before, then `Valid file: pyproject.toml` and `Resolved 29 package
 
 The table of the README names every config file of the project. `.yamllint` gets a row.
 
-A patch to [`README.md`](#tut-12.12-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-12.12-README.md-8ec9a0){.btn .btn-sm .btn-secondary}
 
 In `README.md`, the row of `.yamllint` is on line 80, the last row of the table.
 

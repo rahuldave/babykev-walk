@@ -26,6 +26,8 @@ The command that sets up the project is `uv sync --locked`, and nobody should ha
 each task of the project once. `just` reads the file. Each task is a recipe, a name and then the commands to run,
 indented. Before the justfile comes in, we run the command of the recipe `setup` by hand.
 
+[just](https://just.systems/) runs commands by name. A file called `justfile` lists recipes. Each has a name, a comment that says what it does, and the commands it runs. `just setup` runs the recipe `setup`, and `just` alone lists every recipe. So the justfile is the one place that says how to work on the project, for a person and for a machine.
+
 ```bash
 uv sync --locked
 ```

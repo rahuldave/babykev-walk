@@ -31,6 +31,8 @@ pytest comes into the group `test`, and the command that runs it gets a recipe.
 
 Nothing runs tests yet. pytest finds the tests and runs them. It goes into the group `test`.
 
+[pytest](https://docs.pytest.org/) is the test runner of most Python projects. It finds every file `test_*.py`, runs each function whose name starts with `test_`, and reports each failure with the values that made it fail. A test is a plain function with `assert` in it.
+
 This change came from running `uv add --group test pytest`.
 
 `uv add --group test` writes the group `test` in `pyproject.toml`, under `[dependency-groups]`. It prints
@@ -76,7 +78,7 @@ code 5. pytest uses exit code 5 to say that it found no test.
 The command that runs the tests is `uv run pytest`, and every task of the project has a recipe. A recipe `test` gives
 the command a short name.
 
-A patch to [`justfile`](#tut-02.3-justfile-424f0b).
+[± See the change to `justfile`](#tut-02.3-justfile-424f0b){.btn .btn-sm .btn-secondary}
 
 At the end of `justfile`, the recipe `test` runs `uv run pytest "$@"`. It sits under a new heading, `quality`.
 

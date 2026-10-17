@@ -32,10 +32,12 @@ stage `build` installs the environment into `/opt/venv`, with no group of the de
 come first, and the code after. Docker keeps each instruction of a build in its cache, so a change to the code installs one
 package again, and not torch.
 
+[Docker](https://www.docker.com/) builds an image, a file system with an operating system, Python and the project in it, from a `Dockerfile`. A container runs the image the same way on any machine, so the project does not depend on what a laptop has installed.
+
 The stage `run` starts from a fresh Python, and takes only the finished environment and the sample data. uv stays in
 the stage `build`.
 
-A patch to [`Dockerfile`](#tut-25.1-Dockerfile-6651dd).
+[± See the new file `Dockerfile`](#tut-25.1-Dockerfile-6651dd){.btn .btn-sm .btn-secondary}
 
 In the new file `Dockerfile`, the stage `uv` is on line 9, and the stage `build` on lines 13 to 25. The stage `run`
 is on lines 28 to 36.

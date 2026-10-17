@@ -35,6 +35,8 @@ This tutorial has eight sections:
 7. **The config files, checked**
 8. **The type checker**
 
+Two tools run everything here. [uv](https://docs.astral.sh/uv/) manages the project. It installs Python and the packages, keeps them in `.venv`, and pins their versions in `uv.lock`. [just](https://just.systems/) runs the tasks of the project by name, from the recipes of its `justfile`. `just setup`, for example, runs `uv sync`.
+
 ## Get the project
 
 You build the project in a clone of your own, on a branch `mine` that starts where this walk starts. Run the commands of these pages in its top folder.
@@ -767,6 +769,8 @@ looks, and never what it does. The linter comes in the next part of the tutorial
 and a user of the package does not need it. So it goes in a second dependency group, `lint`, next to the group
 `test`.
 
+[ruff](https://docs.astral.sh/ruff/) is a formatter and a linter for Python, written in Rust by the makers of uv. As a formatter, it rewrites code into one layout. As a linter, it reads code for mistakes and bad habits, each rule with a code such as `F401`. It takes the place of black, isort, flake8 and many plugins, and it is fast.
+
 ```bash
 uv add --group lint ruff
 ```
@@ -878,7 +882,7 @@ path.write_text(tomlkit.dumps(doc), encoding='utf-8')
 PY
 ```
 
-The patch adds the table `[tool.ruff]` at the end of `pyproject.toml`, with a comment and `line-length = 100`.
+The patch adds the table `[tool.ruff]` to `pyproject.toml`, with a comment and `line-length = 100`.
 
 ```bash
 uv run ruff format --check
@@ -978,7 +982,7 @@ path.write_text(tomlkit.dumps(doc), encoding='utf-8')
 PY
 ```
 
-The patch adds the table `[tool.ruff.format]` at the end of `pyproject.toml`. Read the comment beside each setting.
+The patch adds the table `[tool.ruff.format]` to `pyproject.toml`. Read the comment beside each setting.
 
 `skip-magic-trailing-comma = false` is the one that a reader meets most. A list that ends with a comma keeps one item
 on each line, even when it would fit on one line. The group `lint`, on lines 26 to 28, is such a list.
@@ -1293,7 +1297,7 @@ path.write_text(tomlkit.dumps(doc), encoding='utf-8')
 PY
 ```
 
-The patch adds the table `[tool.ruff.lint]` at the end of `pyproject.toml`. Read the comment beside each family.
+The patch adds the table `[tool.ruff.lint]` to `pyproject.toml`. Read the comment beside each family.
 
 ```bash
 uv run ruff check --statistics
@@ -1402,7 +1406,7 @@ path.write_text(tomlkit.dumps(doc), encoding='utf-8')
 PY
 ```
 
-The patch adds the table `[tool.ruff.lint.per-file-ignores]` at the end of `pyproject.toml`.
+The patch adds the table `[tool.ruff.lint.per-file-ignores]` to `pyproject.toml`.
 
 ```bash
 uv run ruff check --statistics
@@ -3172,6 +3176,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-10 --staged --
 hook. If the program fails, `git commit` records nothing. pre-commit installs such a hook, and runs the checks that a
 file of settings names. It is for working on babykev, so it goes in the group `lint`.
 
+[pre-commit](https://pre-commit.com/) runs checks each time you run `git commit`, before git records the change. The file `.pre-commit-config.yaml` lists hooks. `pre-commit install` puts a script into `.git/hooks`, so `git commit` runs them first, and stops when one fails.
+
 ```bash
 uv add --group lint pre-commit
 ```
@@ -3739,6 +3745,8 @@ fails on its defaults, for real, and its settings fix it. Then the gate runs `li
 `pyproject.toml` has a standard, which says which tables it has, which keys each table may hold, and what each value
 is. validate-pyproject checks the file against the standard. It goes in the group `lint`.
 
+[validate-pyproject](https://github.com/abravalheri/validate-pyproject) checks `pyproject.toml` against the published schemas of its tables. It finds a misspelt key or a value of the wrong type, which most tools ignore without a word.
+
 ```bash
 uv add --group lint validate-pyproject
 ```
@@ -4057,6 +4065,8 @@ git restore --source 9f70971667e9 --staged -- :/ && git restore --source 284e4b7
 
 `.pre-commit-config.yaml` is YAML. A mistake of indentation there breaks the hook, and with it every `git commit`. yamllint
 checks YAML files, for their syntax and for their style. It goes in the group `lint`.
+
+[yamllint](https://yamllint.readthedocs.io/) checks YAML files, such as the configuration of pre-commit. It finds syntax errors, keys given twice, and a layout that differs from file to file.
 
 ```bash
 uv add --group lint yamllint
@@ -4494,6 +4504,8 @@ value with the types that the code and its libraries declare.
 ### 17.1 ty, in the group lint
 
 ty is for working on babykev, so it goes in the group `lint`.
+
+[ty](https://docs.astral.sh/ty/) is a type checker for Python, from the makers of uv and ruff. It reads the type hints and finds the places where a value cannot have the type that the code expects, without running the code.
 
 ```bash
 uv add --group lint ty

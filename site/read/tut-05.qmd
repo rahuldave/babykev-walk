@@ -30,7 +30,7 @@ turns probabilities into answers. Each test checks one of their rules.
 The model reads text, and the state of a request is JSON. `render` writes JSON as text. One test gives `render` nine
 values, from `None` to a list of objects, and checks the text of each.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.1-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.1-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the parametrized test lists nine pairs, each a value and its text.
 
@@ -96,7 +96,7 @@ pytest prints `9 passed`, one for each value.
 An option is its name, followed by its description when it has one. `option_text` writes it. The test gives it no
 description, an empty one, and a real one.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.2-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.2-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test gives `option_text` three cases.
 
@@ -150,7 +150,7 @@ pytest prints `3 passed`.
 `to_record` turns a request into a record, the text and options that the model reads, and the metadata that maps
 them back. The test checks that the state is rendered once, and that the questions keep their order.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.3-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.3-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test reads `record["state"]` and the order of the questions.
 
@@ -198,7 +198,7 @@ pytest prints `1 passed`.
 A noul has two options, `no` first and `yes` second. The code counts the options from 0, so `yes` is option 1. The
 answer to a noul is the probability of option 1.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.4-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.4-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test checks the options `["no", "yes"]`.
 
@@ -237,7 +237,7 @@ pytest prints `1 passed`.
 
 A noul can say what yes and no mean, under `true` and `false`. They become the descriptions of the two options.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.5-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.5-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test expects `"no: It has none"` and `"yes: It has blue veins"`.
 
@@ -278,7 +278,7 @@ pytest prints `1 passed`.
 
 A choice has one option for each criterion, in order, and the metadata keeps their names.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.6-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.6-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test expects four options, the last with its description.
 
@@ -322,7 +322,7 @@ pytest prints `1 passed`.
 
 A score has one option for each level, in order. Its legend maps the number of each level to its name.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.7-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.7-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test checks the options and the legend of `firmness`.
 
@@ -362,7 +362,7 @@ pytest prints `1 passed`.
 `to_answers` turns the probabilities of the model into answers. The answer to a noul is one number, the probability of
 yes.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.8-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.8-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test gives `to_answers` the probabilities `[0.25, 0.75]`, and expects
 `0.75`.
@@ -412,7 +412,7 @@ just test
 
 The answer to a choice has its most likely option, a probability for each option, and a confidence.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.9-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.9-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test gives `[0.1, 0.7, 0.2]`, and expects `goat`.
 
@@ -454,7 +454,7 @@ just test
 The answer to a score is the expected level, the mean of the levels weighted by their probabilities. For
 `[0.1, 0.2, 0.7]` it is 0 × 0.1 + 1 × 0.2 + 2 × 0.7 = 1.6.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.10-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.10-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test expects the score `1.6`.
 
@@ -498,7 +498,7 @@ just test
 A request of three questions must get three answers, each under the id of its question, each of its type. The test
 runs `to_record` and `to_answers` one after the other.
 
-A patch to [`tests/unit/test_api.py`](#tut-05.11-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-05.11-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test checks the type of the answer to each of the three questions.
 

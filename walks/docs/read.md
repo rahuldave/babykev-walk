@@ -46,6 +46,8 @@ The table gives each kind of documentation, and the sections where it appears.
 | A written page | What babykev is, on the front page of the site, and why the model is built as it is, in the guide | Sections 5 and 6 |
 | A published site | The site, on GitHub Pages, built again after every push to `main` | Section 7 |
 
+Two tools run everything here. [uv](https://docs.astral.sh/uv/) manages the project. It installs Python and the packages, keeps them in `.venv`, and pins their versions in `uv.lock`. [just](https://just.systems/) runs the tasks of the project by name, from the recipes of its `justfile`. `just setup`, for example, runs `uv sync`.
+
 <a id="tut-00"></a>
 
 ## 0 The README, before any code
@@ -648,7 +650,7 @@ how to begin, and what each file is.
 A reader of the README cannot yet tell how to start. A section, "Start", says to run `just setup` first, and names
 `just`, `just help VERB` and the help of the program.
 
-A patch to [`README.md`](#tut-01.13-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-01.13-README.md-8ec9a0)
 
 In `README.md`, "Start" says to run `just setup` first, and then names `just`, `just help VERB` and
 `uv run babykev help`.
@@ -693,7 +695,7 @@ grep -n '^## ' README.md
 A reader still cannot tell what each file of the project is. A section, "What is here", has a table, with a row for
 each file.
 
-A patch to [`README.md`](#tut-01.14-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-01.14-README.md-8ec9a0)
 
 In `README.md`, "What is here" is a table of the files of the project, from `pyproject.toml` to `.gitignore`.
 
@@ -778,7 +780,7 @@ Nothing asks for docstrings yet. The rules `D1` of the family `D`, pydocstyle, j
 part of the family that asks whether a docstring is there. The rest of the family checks how a docstring is written,
 and stays off.
 
-A patch to [`pyproject.toml`](#tut-10.1-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-10.1-pyproject.toml-5d07e7)
 
 In `pyproject.toml`, the line of `"D1"` is now line 64, the last of the list `select`.
 
@@ -820,7 +822,7 @@ is private, so it needs none.
 `D104`: `src/babykev/__init__.py` is the package `babykev` itself, and it is empty. Its docstring says what babykev
 is, as the first line of the help of the command does.
 
-A patch to [`src/babykev/__init__.py`](#tut-10.2-src-babykev-__init__.py-a40393).
+[± See the change to `src/babykev/__init__.py`](#tut-10.2-src-babykev-__init__.py-a40393)
 
 `src/babykev/__init__.py` now has one line, the docstring of the package.
 
@@ -856,7 +858,7 @@ count a docstring.
 `D101`: `Noul`, `Choice`, `Score` and `SystemOneRequest` are the classes of a request, and none has a docstring.
 Each gets one line, under its `class` line, that says what it is.
 
-A patch to [`src/babykev/api.py`](#tut-10.3-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-10.3-src-babykev-api.py-2ea65f)
 
 In `src/babykev/api.py`, the docstrings of the classes are on lines 17, 25, 39 and 50, under the lines of `Noul`,
 `Choice`, `Score` and `SystemOneRequest`.
@@ -926,7 +928,7 @@ the levels in order.` `just lint --statistics` prints 3 problems, all `D103`.
 line, that says what it does. The docstring of `choice_confidence` gives the two ends of its scale, as the docstring
 of `score_confidence` does.
 
-A patch to [`src/babykev/api.py`](#tut-10.4-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-10.4-src-babykev-api.py-2ea65f)
 
 In `src/babykev/api.py`, the docstrings of the functions are on lines 74, 104 and 131, under the lines of
 `option_text`, `choice_confidence` and `to_answers`.
@@ -1014,6 +1016,8 @@ time. A long docment then shows what the formatter can do to one, and the gate r
 Nothing reads the documentation of the code yet. smalldocs is a Python package, so uv installs it like any other. It
 is for the documentation, so it goes in a third dependency group, `docs`.
 
+[smalldocs](https://github.com/rahuldave/smalldocs) makes documentation from the code. It reads docstrings and docments, the comments beside each parameter. It prints them in a terminal, checks that every function has them, and builds a website from them. Its own documentation is at [docs.smallish.dev](https://docs.smallish.dev/).
+
 This change came from running `uv add --group docs smalldocs`.
 
 `uv add` prints `Resolved 34 packages`, and installs smalldocs and four packages that it needs, among them
@@ -1067,7 +1071,7 @@ has one section, `api`, the reference. It names the package and the address of i
 the files of the tests, which smalldocs holds to the same rule as the package. The file is new, and comes whole, as a
 patch.
 
-A patch to [`docs/_smalldocs.yml`](#tut-13.2-docs-_smalldocs.yml-4b0b48).
+[± See the new file `docs/_smalldocs.yml`](#tut-13.2-docs-_smalldocs.yml-4b0b48)
 
 The new file `docs/_smalldocs.yml` has 5 lines. Line 3 names the package, `babykev`, and line 5 names the tests,
 `tests/**/*.py`.
@@ -1122,7 +1126,7 @@ method, which the linter does not ask for.
 
 The command that lists the gaps is long. The recipe `docs` gives its words to `smalldocs api`, and adds `--dir docs`.
 
-A patch to [`justfile`](#tut-13.3-justfile-424f0b).
+[± See the change to `justfile`](#tut-13.3-justfile-424f0b)
 
 At the end of the `justfile`, the recipe `docs` is on lines 78 to 82. Line 82 runs `uv run smalldocs api "$@" --dir
 docs`.
@@ -1168,7 +1172,7 @@ just help docs
 parameter on a line, with its docment beside it, and a docment on its return type, after `-> TYPE:`. The type says
 `int`, and the docment says what the number means.
 
-A patch to [`src/babykev/api.py`](#tut-13.4-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-13.4-src-babykev-api.py-2ea65f)
 
 In `src/babykev/api.py`, the signature of `render` is on lines 56 to 59. `indent: int = 0,  # How deeply the value is
 nested. Each level indents by two spaces` is line 58, and `) -> str:  # The text that the model sees` is line 59. The
@@ -1281,7 +1285,7 @@ The reference of `render` has its signature, its docstring, and a table with a r
 reference leaves it out. smalldocs checks it still, because a reader of the code needs to know what it does. It gets
 a docstring, and a docment on its return, the choice itself.
 
-A patch to [`src/babykev/api.py`](#tut-13.5-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-13.5-src-babykev-api.py-2ea65f)
 
 In `src/babykev/api.py`, line 32 is now `def _check(self) -> Self:  # The choice itself, unchanged`, and line 33 is its
 docstring.
@@ -1324,7 +1328,7 @@ The four classes of a request have no signature to put a docment on. Each field 
 `type: Literal["noul"]`. pydantic takes a description of a field in `Field(description="...")`. It keeps the
 description in the schema of the model, which other programs read, and smalldocs puts it in the reference.
 
-A patch to [`src/babykev/api.py`](#tut-13.6-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-13.6-src-babykev-api.py-2ea65f)
 
 In `src/babykev/api.py`, the fields of `Noul` are on lines 19 to 24, and the fields of `SystemOneRequest` on lines 62
 to 65. The `criteria` of `Score`, on lines 49 to 53, keep their limits, `min_length=2` and `max_length=MAX_OPTIONS`,
@@ -1422,7 +1426,7 @@ The tests are documentation too. A reader learns from them what the code must do
 tests to the same rule as the package. In `test_cli.py`, `run` and the two tests have parameters with no docment.
 Each now has one parameter on a line, with its docment.
 
-A patch to [`tests/unit/test_cli.py`](#tut-13.7-tests-unit-test_cli.py-44d4a0).
+[± See the change to `tests/unit/test_cli.py`](#tut-13.7-tests-unit-test_cli.py-44d4a0)
 
 In `tests/unit/test_cli.py`, the signature of `run` is on lines 8 to 11. The parameters of the two tests are on lines
 19 to 21 and 29 to 30.
@@ -1494,7 +1498,7 @@ prints `tests/unit/test_cli.py 3 of 3`, and `39 of 45`.
 In `test_api.py`, the helper `cheese_request` has no docment on its return. Five tests take parameters from
 `@pytest.mark.parametrize`, with no docment. Each gets its docments.
 
-A patch to [`tests/unit/test_api.py`](#tut-13.8-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-13.8-tests-unit-test_api.py-58d97c)
 
 In `tests/unit/test_api.py`, line 32 is `def cheese_request() -> SystemOneRequest:  # A noul, a choice and a score about
 one cheese`. The test of `option_text` is on lines 155 to 169, with its three parameters on lines 164 to 166.
@@ -1597,7 +1601,7 @@ A docment is on the line of its parameter or of its return type, and a line has 
 makes a mistake on purpose. The docment of the return of `to_record` says more, and its line grows to 119
 characters. The next moves show what the formatter makes of it.
 
-A patch to [`src/babykev/api.py`](#tut-13.9-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-13.9-src-babykev-api.py-2ea65f)
 
 In `src/babykev/api.py`, line 98 now ends with `# The record that the model reads, and the metadata of each question`.
 
@@ -1692,7 +1696,7 @@ the formatter are happy, and only the docs check sees the lost docment. `just ch
 The fix is a docment that fits on the line of the return type, with the type on one line again. The docment of
 before, `The record, and the metadata of each question`, fits, at 98 characters.
 
-A patch to [`src/babykev/api.py`](#tut-13.11-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-13.11-src-babykev-api.py-2ea65f)
 
 In `src/babykev/api.py`, line 98 is `) -> tuple[dict[str, Any], list[dict[str, Any]]]:  # The record, and the metadata of
 each question`, as it was before the mistake.
@@ -1736,7 +1740,7 @@ just docs check
 `just check` passed with a docment lost. As a line of `check`, `just docs check` runs before each `git commit`,
 through the hook. It goes after the tests, and before the config files.
 
-A patch to [`justfile`](#tut-13.12-justfile-424f0b).
+[± See the change to `justfile`](#tut-13.12-justfile-424f0b)
 
 In the `justfile`, `just docs check` is line 76, between `just test -q` and `just lint-config`. The comment on line 66
 names the docs.
@@ -1813,7 +1817,7 @@ to. A build makes all three again from the code, so they do not belong in git. `
 does not track, and three lines at its end name these, before the first build. A `/` at the start of a line means
 the root of the repository, so `/docs/api/` is only that folder.
 
-A patch to [`.gitignore`](#tut-14.1-.gitignore-a5cc29).
+[± See the change to `.gitignore`](#tut-14.1-.gitignore-a5cc29)
 
 At the end of `.gitignore`, the comment is on line 222, and `/docs/_site/`, `/docs/api/` and `/docs/_symbols.json` on
 lines 223 to 225.
@@ -1855,7 +1859,7 @@ tail -n 4 .gitignore
 the HTML of every page into `docs/_site`. With no words, the recipe `docs` now runs it. With words, it runs
 `smalldocs api` as before. So the body of the recipe is a script of `sh`.
 
-A patch to [`justfile`](#tut-14.2-justfile-424f0b).
+[± See the change to `justfile`](#tut-14.2-justfile-424f0b)
 
 In the `justfile`, the recipe `docs` starts at line 79, with its comment. Line 85,
 `if [ "$#" -eq 0 ]; then exec uv run smalldocs render docs; fi`, is the case with no words.
@@ -1911,7 +1915,7 @@ section `api`, which stays as it is. They are the type of the project, its outpu
 theme and a table of contents on each page. With them, a name in backticks, such as `Score`, becomes a link to its
 entry in the reference.
 
-A patch to [`docs/_smalldocs.yml`](#tut-14.3-docs-_smalldocs.yml-4b0b48).
+[± See the change to `docs/_smalldocs.yml`](#tut-14.3-docs-_smalldocs.yml-4b0b48)
 
 In `docs/_smalldocs.yml`, the sidebar is on lines 8 to 12. It lists the front page, `index.qmd`, then the reference
 pages, `contents: api/*`, under the title Reference. The section `api` is on lines 18 to 21, as before.
@@ -1969,7 +1973,7 @@ The front page, `docs/index.qmd`, says what babykev is, what a request holds, an
 file is Markdown, with a header between two lines `---` that gives the title of the page. The file is new, and comes
 whole, as a patch.
 
-A patch to [`docs/index.qmd`](#tut-14.4-docs-index.qmd-d6d880).
+[± See the new file `docs/index.qmd`](#tut-14.4-docs-index.qmd-d6d880)
 
 The new file `docs/index.qmd` has 29 lines. Lines 1 to 3 are the header, with `title: babykev`. The list of modules is
 on lines 17 to 19.
@@ -2035,7 +2039,7 @@ the reference of `api.py`, seven of them. `SystemOneRequest`, `Noul`, `Choice` a
 The table of the README says where each part of the project is, and it does not list the docs. `docs/` gets a row,
 under the tests.
 
-A patch to [`README.md`](#tut-14.5-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-14.5-README.md-8ec9a0)
 
 In `README.md`, the row of `docs/` is on line 74.
 
@@ -2109,7 +2113,7 @@ and the second draws the mask as a grid. smalldocs runs no code, so a page holds
 The page explains packing, the mask, the positions that restart, and pointing, and then what trains. A name in
 backticks, such as `encode()`, links to its entry in the reference, as on the front page.
 
-A patch to [`docs/guide/model.qmd`](#tut-24.1-docs-guide-model.qmd-3d8904).
+[± See the new file `docs/guide/model.qmd`](#tut-24.1-docs-guide-model.qmd-3d8904)
 
 The new file `docs/guide/model.qmd` has five parts. Packing starts on line 9, the mask on line 33, the positions on
 line 43, pointing on line 48, and what trains on line 57.
@@ -2205,7 +2209,7 @@ the eight links of the page into the reference of `model.py`, `encode` twice. Th
 The page draws the mask of the small request of `test_mask.py`, then the grid of a plain causal mask for the same
 request. The first grid is the picture of the test, so `just test` keeps it true.
 
-A patch to [`docs/guide/mask.qmd`](#tut-24.2-docs-guide-mask.qmd-5cd81a).
+[± See the new file `docs/guide/mask.qmd`](#tut-24.2-docs-guide-mask.qmd-5cd81a)
 
 The new file `docs/guide/mask.qmd` has the grid of the mask on lines 13 to 21. The grid of a plain causal mask is on
 lines 33 to 41.
@@ -2291,7 +2295,7 @@ The sidebar of the site gets a section, Guide, between the front page and the re
 by one, so that the model comes before the mask. A pattern such as `guide/*` would list them in the order of their
 names.
 
-A patch to [`docs/_smalldocs.yml`](#tut-24.3-docs-_smalldocs.yml-4b0b48).
+[± See the change to `docs/_smalldocs.yml`](#tut-24.3-docs-_smalldocs.yml-4b0b48)
 
 In `docs/_smalldocs.yml`, the section `Guide` is on lines 11 to 14.
 
@@ -2334,7 +2338,7 @@ grep -o 'href="guide/[^"]*"' docs/_site/index.html
 
 A paragraph of the front page links to the two pages.
 
-A patch to [`docs/index.qmd`](#tut-24.4-docs-index.qmd-d6d880).
+[± See the change to `docs/index.qmd`](#tut-24.4-docs-index.qmd-d6d880)
 
 In `docs/index.qmd`, the new paragraph is on lines 25 and 26.
 
@@ -2376,7 +2380,7 @@ paragraph.
 
 The row of `docs/` in the table of the README names the two pages.
 
-A patch to [`README.md`](#tut-24.5-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-24.5-README.md-8ec9a0)
 
 In `README.md`, the row of `docs/` is on line 91.
 
@@ -2442,7 +2446,7 @@ The workflow `docs.yaml` has two jobs. The job `build` installs the package and 
 It runs `smalldocs render docs`, the command behind `just docs`, and gives the folder `docs/_site` to Pages. The job
 `deploy` publishes it. The workflow runs after a push to `main`, and a person can also run it from the tab Actions.
 
-A patch to [`.github/workflows/docs.yaml`](#tut-26.5-.github-workflows-docs.yaml-ce7835).
+[± See the new file `.github/workflows/docs.yaml`](#tut-26.5-.github-workflows-docs.yaml-ce7835)
 
 In the new file `.github/workflows/docs.yaml`, `on` is on lines 6 to 9, and `permissions` on lines 11 to 14. Line 26
 renders the site with the group `docs` alone.
@@ -2522,7 +2526,7 @@ workflows on, on the tab **Actions**. Pages publishes from a workflow when **Set
 The README gets a section on GitHub, with the two settings that a fork needs. The table gets a row for
 `.github/workflows/`.
 
-A patch to [`README.md`](#tut-26.6-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-26.6-README.md-8ec9a0)
 
 In `README.md`, the section is on lines 100 to 112, and the row on line 135.
 

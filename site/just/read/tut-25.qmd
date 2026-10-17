@@ -48,10 +48,12 @@ stage `build` installs the environment into `/opt/venv`, with no group of the de
 come first, and the code after. Docker keeps each instruction of a build in its cache, so a change to the code installs one
 package again, and not torch.
 
+[Docker](https://www.docker.com/) builds an image, a file system with an operating system, Python and the project in it, from a `Dockerfile`. A container runs the image the same way on any machine, so the project does not depend on what a laptop has installed.
+
 The stage `run` starts from a fresh Python, and takes only the finished environment and the sample data. uv stays in
 the stage `build`.
 
-A patch to [`Dockerfile`](#tut-25.1-Dockerfile-6651dd).
+[± See the new file `Dockerfile`](#tut-25.1-Dockerfile-6651dd){.btn .btn-sm .btn-secondary}
 
 In the new file `Dockerfile`, the stage `uv` is on line 9, and the stage `build` on lines 13 to 25. The stage `run`
 is on lines 28 to 36.
@@ -141,7 +143,7 @@ The stage `dev` builds the image to work in. It installs git with `apt-get`, and
 as a wheel from PyPI. Then it installs the whole project with every group, into `/opt/venv`. The folder of this
 machine can then be mounted at `/work`, and the image runs it with its own environment.
 
-A patch to [`Dockerfile`](#tut-25.2-Dockerfile-6651dd).
+[± See the change to `Dockerfile`](#tut-25.2-Dockerfile-6651dd){.btn .btn-sm .btn-secondary}
 
 In `Dockerfile`, the comment names the dev image on lines 5 and 6, and the stage `dev` is on lines 41 to 66. Line 64,
 `COPY . .`, copies the folder of the project.
@@ -225,7 +227,7 @@ docker image ls babykev-dev:latest
 git never tracks. They are the history of git, the environment and the settings of this machine, and what a run or a
 tool writes.
 
-A patch to [`.dockerignore`](#tut-25.3-.dockerignore-05a721).
+[± See the new file `.dockerignore`](#tut-25.3-.dockerignore-05a721){.btn .btn-sm .btn-secondary}
 
 The new file `.dockerignore` names `.git` on line 3 and `.venv` on line 4, and twelve more paths.
 
@@ -283,7 +285,7 @@ the test then fails, by chance, with `DeadlineExceeded`. A run of the dev image 
 same test passed at the next run. A test that fails by chance cannot be a reason to refuse a `git commit`. The tests of the mask check a
 rule, and not a speed, so a profile of hypothesis turns the deadline off for every test.
 
-A patch to [`tests/conftest.py`](#tut-25.4-tests-conftest.py-626af3).
+[± See the change to `tests/conftest.py`](#tut-25.4-tests-conftest.py-626af3){.btn .btn-sm .btn-secondary}
 
 In `tests/conftest.py`, the import is on line 10, the comment on lines 16 to 18, and the profile on lines 19 and 20.
 
@@ -339,7 +341,7 @@ The recipe `image` runs the commands of the last moves. It has three words:
 
 `shell` and `run` mount the cache of the Hub at `/hf`.
 
-A patch to [`justfile`](#tut-25.5-justfile-424f0b).
+[± See the change to `justfile`](#tut-25.5-justfile-424f0b){.btn .btn-sm .btn-secondary}
 
 In the `justfile`, the recipe `image` is on lines 36 to 67. `build` is on lines 47 to 52, `shell` on lines 53 to 61,
 and `run` on lines 62 to 65.
@@ -416,6 +418,8 @@ shell` starts a shell in the image, where `exit` ends it.
 
 hadolint is a linter for a `Dockerfile`. The package `hadolint-bin` holds its program, built for each system.
 
+[hadolint](https://github.com/hadolint/hadolint) is a linter for Dockerfiles. It finds mistakes such as an `apt-get install` with no pinned versions, and it checks the shell commands of each `RUN`.
+
 This change came from running `uv add --group lint hadolint-bin`.
 
 `uv add` prints `Resolved 70 packages`, and installs hadolint-bin.
@@ -456,7 +460,7 @@ It prints `Haskell Dockerfile Linter` and its version.
 `just lint-config` checks the config files, and the `Dockerfile` is one of them. The command behind the new line comes
 first.
 
-A patch to [`justfile`](#tut-25.7-justfile-424f0b).
+[± See the change to `justfile`](#tut-25.7-justfile-424f0b){.btn .btn-sm .btn-secondary}
 
 In the `justfile`, the comment on line 81 names the `Dockerfile`, and line 92 is `uv run hadolint Dockerfile`.
 
@@ -508,7 +512,7 @@ the old version leaves the archive. So a pinned version stops building within we
 
 A comment says so, and a line tells hadolint to ignore DL3008 on the next instruction.
 
-A patch to [`Dockerfile`](#tut-25.8-Dockerfile-6651dd).
+[± See the change to `Dockerfile`](#tut-25.8-Dockerfile-6651dd){.btn .btn-sm .btn-secondary}
 
 In `Dockerfile`, the reason is on lines 44 to 46, and `# hadolint ignore=DL3008` on line 47.
 
@@ -548,7 +552,7 @@ just lint-config
 The README gets a section on the images, with a table and the commands of the recipe. The table of the files gets a
 row for the `Dockerfile` and `.dockerignore`.
 
-A patch to [`README.md`](#tut-25.9-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-25.9-README.md-8ec9a0){.btn .btn-sm .btn-secondary}
 
 In `README.md`, the section is on lines 77 to 99, and the row on line 118.
 

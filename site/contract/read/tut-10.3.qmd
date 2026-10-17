@@ -36,7 +36,7 @@ got its docstring first.
 `D101`: `Noul`, `Choice`, `Score` and `SystemOneRequest` are the classes of a request, and none has a docstring.
 Each gets one line, under its `class` line, that says what it is.
 
-A patch to [`src/babykev/api.py`](#tut-10.3-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-10.3-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/api.py`, the docstrings of the classes are on lines 17, 25, 39 and 50, under the lines of `Noul`,
 `Choice`, `Score` and `SystemOneRequest`.

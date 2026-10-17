@@ -107,6 +107,8 @@ same line as the command.
 `git status --short --ignored docs` lists the three paths that the build made, each marked `!!`, ignored. The lines
 of `.gitignore` from the move before keep them out of git.
 
+Your copy also lists `?? docs/` first. git does not know the folder yet, because nothing in it is staged.
+
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
 ```bash

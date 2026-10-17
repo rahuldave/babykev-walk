@@ -35,6 +35,8 @@ stage `build` installs the environment into `/opt/venv`, with no group of the de
 come first, and the code after. Docker keeps each instruction of a build in its cache, so a change to the code installs one
 package again, and not torch.
 
+[Docker](https://www.docker.com/) builds an image, a file system with an operating system, Python and the project in it, from a `Dockerfile`. A container runs the image the same way on any machine, so the project does not depend on what a laptop has installed.
+
 The stage `run` starts from a fresh Python, and takes only the finished environment and the sample data. uv stays in
 the stage `build`.
 
@@ -480,6 +482,8 @@ git restore --source 3043d160e0d6 --staged -- :/ && git restore --source a2cd7c0
 ## 25.6 hadolint, in the group lint {#tut-25.6}
 
 hadolint is a linter for a `Dockerfile`. The package `hadolint-bin` holds its program, built for each system.
+
+[hadolint](https://github.com/hadolint/hadolint) is a linter for Dockerfiles. It finds mistakes such as an `apt-get install` with no pinned versions, and it checks the shell commands of each `RUN`.
 
 ```bash
 uv add --group lint hadolint-bin

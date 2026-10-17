@@ -111,6 +111,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-21 --staged --
 A picture checks one size of request. The mask must hold for every size, and nobody can draw them all. hypothesis is
 a library for tests. A test states a rule, and hypothesis draws many inputs and runs the test on each.
 
+[hypothesis](https://hypothesis.readthedocs.io/) writes test inputs. A test says what kind of input it takes, such as a list of up to five numbers. hypothesis then tries many of them, and when one fails, it shrinks it to the smallest input that still fails.
+
 ```bash
 uv add --group test hypothesis
 ```

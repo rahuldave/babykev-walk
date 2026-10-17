@@ -137,6 +137,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-14 --staged --
 for every package. It would take other packages from there, older than on PyPI. `--frozen` writes `pyproject.toml`
 and leaves `uv.lock` alone, so uv resolves nothing yet.
 
+[PyTorch](https://pytorch.org/), the package `torch`, holds tensors, the arrays of numbers that a model computes with, and the layers of neural networks. It runs on a CPU, on an NVIDIA GPU, and on the GPU of a Mac.
+
 ```bash
 uv add torch --index pytorch-cpu --frozen
 ```
@@ -253,6 +255,8 @@ git restore --source a263314ef270 --staged -- :/ && git restore --source 92e8147
 
 The base model of kev, and its tokenizer, are on the Hugging Face Hub. transformers loads them.
 
+[transformers](https://huggingface.co/docs/transformers), from Hugging Face, loads trained language models and their tokenizers by name, such as `Qwen/Qwen2.5-0.5B`, and downloads their weights once.
+
 ```bash
 uv add transformers
 ```
@@ -304,6 +308,8 @@ git restore --source 92e81476ed9c --staged -- :/ && git restore --source 92f659c
 ## 15.5 peft {#tut-15.5}
 
 The base model stays as it is, and a small adapter, LoRA, learns the task. peft adds the adapter.
+
+[peft](https://huggingface.co/docs/peft), also from Hugging Face, trains a small adapter beside a large model, such as LoRA, in place of all its weights. Training then changes a few million numbers, not hundreds of millions.
 
 ```bash
 uv add peft
@@ -362,6 +368,8 @@ git restore --source 92f659c4e742 --staged -- :/ && git restore --source 4b43f5a
 safetensors is the format of the weights on the Hub. transformers installed it already. babykev names it too,
 because babykev saves the weights that it trains to the Hub in this format. A package that only comes with another
 can go when that package stops needing it.
+
+[safetensors](https://huggingface.co/docs/safetensors) stores the weights of a model in a file that loads fast and runs no code when it loads. It is the format that Hugging Face uses to share models.
 
 ```bash
 uv add safetensors

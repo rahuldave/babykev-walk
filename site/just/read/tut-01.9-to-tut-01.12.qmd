@@ -29,6 +29,8 @@ The command that sets up the project is `uv sync --locked`, and nobody should ha
 each task of the project once. `just` reads the file. Each task is a recipe, a name and then the commands to run,
 indented. Before the justfile comes in, we run the command of the recipe `setup` by hand.
 
+[just](https://just.systems/) runs commands by name. A file called `justfile` lists recipes. Each has a name, a comment that says what it does, and the commands it runs. `just setup` runs the recipe `setup`, and `just` alone lists every recipe. So the justfile is the one place that says how to work on the project, for a person and for a machine.
+
 ```bash
 uv sync --locked
 ```
@@ -37,7 +39,7 @@ uv sync --locked
 `pyproject.toml`. It prints `Resolved 1 package`. When `.venv` is already right, it then prints `Checked 1 package`, and changes
 nothing. In a new clone, it first prints `Creating virtual environment at: .venv`, and then installs babykev.
 
-A patch to [`justfile`](#tut-01.9-justfile-424f0b).
+[± See the new file `justfile`](#tut-01.9-justfile-424f0b){.btn .btn-sm .btn-secondary}
 
 `justfile` is new, with two recipes. `default` lists the others, and `setup` runs `uv sync --locked`.
 
@@ -87,7 +89,7 @@ the recipe `setup`, and `just help` alone prints the list.
 `set positional-arguments` passes such words to the commands of a recipe. The first word becomes `"$1"` and the
 second `"$2"`, and a word with spaces in it stays one word. So `help` finds the name `setup` in `"$1"`.
 
-A patch to [`justfile`](#tut-01.10-justfile-424f0b).
+[± See the change to `justfile`](#tut-01.10-justfile-424f0b){.btn .btn-sm .btn-secondary}
 
 In `justfile`, `set positional-arguments` now stands near the top, and the recipe `help` comes after `default`. The
 first line of the file now names `just help VERB`.
@@ -147,7 +149,7 @@ A person who types `just setup help` gets `uv sync --locked`, and no help. The r
 answers the word `help` with `just help setup`. The `@` at the start of its line stops `just` from printing the
 command before it runs it.
 
-A patch to [`justfile`](#tut-01.11-justfile-424f0b).
+[± See the change to `justfile`](#tut-01.11-justfile-424f0b){.btn .btn-sm .btn-secondary}
 
 In `justfile`, `setup` takes `*args`. Its one line runs `just help setup` for the word `help`, and
 `uv sync --locked` for anything else.
@@ -188,7 +190,7 @@ Later recipes run the program, as `uv run babykev VERB`. Their help should also 
 variable, `program`, names the command once. `help` looks for `uv run {{ program }} VERB` in a recipe, and then runs
 the program's own help too.
 
-A patch to [`justfile`](#tut-01.12-justfile-424f0b).
+[± See the change to `justfile`](#tut-01.12-justfile-424f0b){.btn .btn-sm .btn-secondary}
 
 In `justfile`, `program := "babykev"` stands near the top. `help` now ends with an `if` that runs
 `uv run {{ program }} "$1" help`.

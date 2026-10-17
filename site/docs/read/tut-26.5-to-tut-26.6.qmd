@@ -39,7 +39,7 @@ The workflow `docs.yaml` has two jobs. The job `build` installs the package and 
 It runs `smalldocs render docs`, the command behind `just docs`, and gives the folder `docs/_site` to Pages. The job
 `deploy` publishes it. The workflow runs after a push to `main`, and a person can also run it from the tab Actions.
 
-A patch to [`.github/workflows/docs.yaml`](#tut-26.5-.github-workflows-docs.yaml-ce7835).
+[± See the new file `.github/workflows/docs.yaml`](#tut-26.5-.github-workflows-docs.yaml-ce7835){.btn .btn-sm .btn-secondary}
 
 In the new file `.github/workflows/docs.yaml`, `on` is on lines 6 to 9, and `permissions` on lines 11 to 14. Line 26
 renders the site with the group `docs` alone.
@@ -117,7 +117,7 @@ workflows on, on the tab **Actions**. Pages publishes from a workflow when **Set
 The README gets a section on GitHub, with the two settings that a fork needs. The table gets a row for
 `.github/workflows/`.
 
-A patch to [`README.md`](#tut-26.6-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-26.6-README.md-8ec9a0){.btn .btn-sm .btn-secondary}
 
 In `README.md`, the section is on lines 100 to 112, and the row on line 135.
 

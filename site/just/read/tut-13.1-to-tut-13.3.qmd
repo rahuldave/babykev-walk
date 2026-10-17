@@ -29,6 +29,8 @@ documentation. The words after `docs` go to `smalldocs api`.
 Nothing reads the documentation of the code yet. smalldocs is a Python package, so uv installs it like any other. It
 is for the documentation, so it goes in a third dependency group, `docs`.
 
+[smalldocs](https://github.com/rahuldave/smalldocs) makes documentation from the code. It reads docstrings and docments, the comments beside each parameter. It prints them in a terminal, checks that every function has them, and builds a website from them. Its own documentation is at [docs.smallish.dev](https://docs.smallish.dev/).
+
 This change came from running `uv add --group docs smalldocs`.
 
 `uv add` prints `Resolved 34 packages`, and installs smalldocs and four packages that it needs, among them
@@ -80,7 +82,7 @@ has one section, `api`, the reference. It names the package and the address of i
 the files of the tests, which smalldocs holds to the same rule as the package. The file is new, and comes whole, as a
 patch.
 
-A patch to [`docs/_smalldocs.yml`](#tut-13.2-docs-_smalldocs.yml-4b0b48).
+[± See the new file `docs/_smalldocs.yml`](#tut-13.2-docs-_smalldocs.yml-4b0b48){.btn .btn-sm .btn-secondary}
 
 The new file `docs/_smalldocs.yml` has 5 lines. Line 3 names the package, `babykev`, and line 5 names the tests,
 `tests/**/*.py`.
@@ -133,7 +135,7 @@ method, which the linter does not ask for.
 
 The command that lists the gaps is long. The recipe `docs` gives its words to `smalldocs api`, and adds `--dir docs`.
 
-A patch to [`justfile`](#tut-13.3-justfile-424f0b).
+[± See the change to `justfile`](#tut-13.3-justfile-424f0b){.btn .btn-sm .btn-secondary}
 
 At the end of the `justfile`, the recipe `docs` is on lines 78 to 82. Line 82 runs `uv run smalldocs api "$@" --dir
 docs`.

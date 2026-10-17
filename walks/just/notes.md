@@ -31,6 +31,8 @@ section that changes what it runs.
 | `just image` | `just lint-config` checks the `Dockerfile` too |
 | GitHub runs `just check` | `just lint-config` checks the workflows too |
 
+The project is managed by [uv](https://docs.astral.sh/uv/), which installs Python and the packages, keeps them in `.venv`, and pins their versions in `uv.lock`. `just setup` runs `uv sync`.
+
 ## The project, and its justfile
 
 The project already has its words and its command. `uv init` made it a Python package, and `uv lock` wrote its lockfile

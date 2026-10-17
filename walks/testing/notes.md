@@ -20,6 +20,8 @@ The tests come in four kinds. Each kind comes in where the table says, and no te
 Some changes of the whole tutorial are not in this one. After such a gap, the next section says what those changes
 did, and starts from the code that they left. It first runs `just setup`, which installs the packages of that code.
 
+Two tools run everything here. [uv](https://docs.astral.sh/uv/) manages the project. It installs Python and the packages, keeps them in `.venv`, and pins their versions in `uv.lock`. [just](https://just.systems/) runs the tasks of the project by name, from the recipes of its `justfile`. `just setup`, for example, runs `uv sync`.
+
 ## pytest, the first tests and coverage
 
 babykev has one piece of code, the command `babykev`, in `src/babykev/cli.py`. The first tests are of the command.

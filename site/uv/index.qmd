@@ -20,6 +20,8 @@ We make the project in moves. A move is one small change, made by one patch or b
 Some changes of the whole tutorial are not in this one. After such a gap, the next section says what those changes
 did, and begins from the code that they left. It first runs `just setup`, which installs the packages of that code.
 
+The tasks of the project run through [just](https://just.systems/), which runs a command by name from the recipes of the `justfile`. `just setup`, for example, runs `uv sync`.
+
 Each page is one part. A part is one or more changes to the project, each a section of its page. The code where a part starts and where it ends has a tag on GitHub, such as `tut-15`, or is a commit between two tags. The top of each page says where its part starts, and the bottom says where it ends, each with a link to that code.
 
 There are two ways to read this tutorial. Both have the same parts, in the same order.

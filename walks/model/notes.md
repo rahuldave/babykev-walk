@@ -28,6 +28,8 @@ decoder, and changes four things around them:
 the same code as the real one. The walk uses one small request all along, a state `ab` and a question `x?` with the
 options `n` and `y`. It packs the question twice, so that the two copies can be compared.
 
+Two tools run everything here. [uv](https://docs.astral.sh/uv/) manages the project. It installs Python and the packages, keeps them in `.venv`, and pins their versions in `uv.lock`. [just](https://just.systems/) runs the tasks of the project by name, from the recipes of its `justfile`. `just setup`, for example, runs `uv sync`.
+
 ## The model, and the decoder under it
 
 $ just setup

@@ -33,6 +33,8 @@ This tutorial has eight sections:
 7. **The config files, checked**
 8. **The type checker**
 
+Two tools run everything here. [uv](https://docs.astral.sh/uv/) manages the project. It installs Python and the packages, keeps them in `.venv`, and pins their versions in `uv.lock`. [just](https://just.systems/) runs the tasks of the project by name, from the recipes of its `justfile`. `just setup`, for example, runs `uv sync`.
+
 <a id="tut-00"></a>
 
 ## 0 Where we start
@@ -636,6 +638,8 @@ looks, and never what it does. The linter comes in the next part of the tutorial
 and a user of the package does not need it. So it goes in a second dependency group, `lint`, next to the group
 `test`.
 
+[ruff](https://docs.astral.sh/ruff/) is a formatter and a linter for Python, written in Rust by the makers of uv. As a formatter, it rewrites code into one layout. As a linter, it reads code for mistakes and bad habits, each rule with a code such as `F401`. It takes the place of black, isort, flake8 and many plugins, and it is fast.
+
 This change came from running `uv add --group lint ruff`.
 
 `uv add` prints `Resolved 15 packages`, and installs ruff. ruff is one program, and needs no other
@@ -687,7 +691,7 @@ At 88 characters, the formatter would split lines of `cli.py` and of the tests t
 setting `line-length` in the table `[tool.ruff]` lets a line run to 100 characters. The formatter and the linter
 both read the table.
 
-A patch to [`pyproject.toml`](#tut-07.2-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-07.2-pyproject.toml-5d07e7)
 
 At the end of `pyproject.toml`, the new table `[tool.ruff]` is on lines 39 to 41, with `line-length = 100`.
 
@@ -731,7 +735,7 @@ The formatter has almost no options, and its defaults are its style. A reader of
 The table `[tool.ruff.format]` writes out five of them, each with a comment. They are the defaults, so the output of
 the formatter does not change.
 
-A patch to [`pyproject.toml`](#tut-07.3-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-07.3-pyproject.toml-5d07e7)
 
 At the end of `pyproject.toml`, the new table `[tool.ruff.format]` is on lines 43 to 49. It sets double quotes, four
 spaces, and three more defaults, each with a comment.
@@ -780,7 +784,7 @@ The command that formats the code is `uv run ruff format`, and every task of the
 `fmt` runs it, and gives it every word after `fmt`. The check fails, because `api.py` is not formatted yet. The
 next part formats it.
 
-A patch to [`justfile`](#tut-07.4-justfile-424f0b).
+[± See the change to `justfile`](#tut-07.4-justfile-424f0b)
 
 In `justfile`, the recipe `fmt` is on lines 28 to 32, above `test`, in the group `quality`. It runs
 `uv run ruff format "$@"`.
@@ -970,7 +974,7 @@ ruff has more than 900 rules. The table `[tool.ruff.lint]` chooses which to chec
 rules has a prefix, such as `E` or `B`. The list has one family on each line, with a comment that says what it
 finds.
 
-A patch to [`pyproject.toml`](#tut-08.1-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-08.1-pyproject.toml-5d07e7)
 
 At the end of `pyproject.toml`, the new table `[tool.ruff.lint]` starts at line 51. `select = [` on line 53 lists
 nine families of rules, from `E` to `N`.
@@ -1024,7 +1028,7 @@ The 44 `S101` hide the 8 problems of `api.py`. A test is written with `assert`, 
 `python -O`. The table `[tool.ruff.lint.per-file-ignores]` lets the files under `tests/` break `S101`. The package
 still may not use `assert`.
 
-A patch to [`pyproject.toml`](#tut-08.2-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-08.2-pyproject.toml-5d07e7)
 
 At the end of `pyproject.toml`, the new table `[tool.ruff.lint.per-file-ignores]` is on lines 65 to 67. It names
 `S101` for `"tests/**"`.
@@ -1065,7 +1069,7 @@ once each. The last line says that `--fix` can fix one, and that 2 unsafe fixes 
 The command that runs the linter is `uv run ruff check`. The recipe `lint` runs it, and gives it every word after
 `lint`, as `fmt` does.
 
-A patch to [`justfile`](#tut-08.3-justfile-424f0b).
+[± See the change to `justfile`](#tut-08.3-justfile-424f0b)
 
 In `justfile`, the recipe `lint` is on lines 34 to 38, between `fmt` and `test`. It runs `uv run ruff check "$@"`.
 
@@ -1126,7 +1130,7 @@ lines 3 to 5, and `answer =` lined up in one column. Line 5 is the longest, and 
 order" takes the place of "ordered level descriptions", and says the same in fewer characters. The three lines
 line up again, at column 43.
 
-A patch to [`src/babykev/api.py`](#tut-08.4-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-08.4-src-babykev-api.py-2ea65f)
 
 In `src/babykev/api.py`, lines 3 to 5 now have `answer =` at column 43. Line 5 has 97 characters.
 
@@ -1172,7 +1176,7 @@ The formatter leaves the text of a docstring as it is.
 babykev needs Python 3.13. `JSONContent` on line 11 and `Question` on line 39 become `X | Y`. ruff has no fix for
 these two lines, so a person writes them.
 
-A patch to [`src/babykev/api.py`](#tut-08.5-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-08.5-src-babykev-api.py-2ea65f)
 
 In `src/babykev/api.py`, line 11 is now `JSONContent = str | dict | list | int | float | bool | None`, and line 39
 is `Question = Noul | Choice | Score`.
@@ -1228,7 +1232,7 @@ pydantic reads `X | Y` as it read `Union`.
 `choice_confidence` is the number of options, and becomes `k`. `L` in `score_confidence` is the number of levels.
 `l` would break another rule, `E741`, because `l` looks like `1` and `I` in many fonts. So `L` becomes `n`.
 
-A patch to [`src/babykev/api.py`](#tut-08.6-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-08.6-src-babykev-api.py-2ea65f)
 
 In `src/babykev/api.py`, `k = len(p)` is on line 94, and `n = len(p)` on line 104. Each use of the two names
 changes with them.
@@ -1295,7 +1299,7 @@ stop the program.
 ruff's own fix writes `strict=False`, which keeps the silent drop and says so. ruff calls it unsafe, and leaves the
 choice to a person. `strict=True` makes `zip` raise a `ValueError` when the lengths differ.
 
-A patch to [`src/babykev/api.py`](#tut-08.7-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-08.7-src-babykev-api.py-2ea65f)
 
 In `src/babykev/api.py`, line 121 is now `for p, m in zip(probs, meta, strict=True):`, and line 125 ends with
 `zip(m["keys"], p, strict=True)}`.
@@ -1411,7 +1415,7 @@ person writes each type that ruff cannot guess, and ruff writes the rest.
 
 Nothing asks for types yet. The family `ANN` joins the list `select`, on a line of its own, with its comment.
 
-A patch to [`pyproject.toml`](#tut-09.1-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-09.1-pyproject.toml-5d07e7)
 
 In `pyproject.toml`, the line `"ANN", # annotations: every parameter and every return value has a type` is now line
 63, the last of the list `select`.
@@ -1460,7 +1464,7 @@ nothing.
 `ANN202`: `_check` is the validator of `Choice`, and returns the choice itself, `self`. `Self`, from `typing`, is
 the type of the class that the method belongs to.
 
-A patch to [`src/babykev/api.py`](#tut-09.2-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-09.2-src-babykev-api.py-2ea65f)
 
 In `src/babykev/api.py`, line 8 imports `Self` from `typing`, and line 28 is now `def _check(self) -> Self:`.
 
@@ -1513,9 +1517,9 @@ type is `None`. The other two return something, and a person names the type. `to
 things, the record and the metadata of its questions. The record is a dictionary, and the metadata is a list of
 dictionaries. `cheese_request` in the tests returns a `SystemOneRequest`.
 
-A patch to [`src/babykev/api.py`](#tut-09.3-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-09.3-src-babykev-api.py-2ea65f)
 
-A patch to [`tests/unit/test_api.py`](#tut-09.3-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-09.3-tests-unit-test_api.py-58d97c)
 
 In `src/babykev/api.py`, line 69 now ends with `-> tuple[dict[str, Any], list[dict[str, Any]]]:`. In
 `tests/unit/test_api.py`, line 30 is now `def cheese_request() -> SystemOneRequest:`.
@@ -1576,7 +1580,7 @@ in by their names. `monkeypatch` is a `pytest.MonkeyPatch`, and `capsys` is a `p
 catches text. With the types, the two signatures of the tests pass 100 characters, so each is split over three
 lines, as the formatter splits it.
 
-A patch to [`tests/unit/test_cli.py`](#tut-09.4-tests-unit-test_cli.py-44d4a0).
+[± See the change to `tests/unit/test_cli.py`](#tut-09.4-tests-unit-test_cli.py-44d4a0)
 
 In `tests/unit/test_cli.py`, line 8 is now `def run(monkeypatch: pytest.MonkeyPatch, *words):`. The parameters of the two
 tests are on lines 16 and 24, each between the line of the name and the line `):`.
@@ -1648,9 +1652,9 @@ values in its list.
   `babykev.api`.
 - `text` and `name` are strings, and `level` is an `int`.
 
-A patch to [`tests/unit/test_api.py`](#tut-09.5-tests-unit-test_api.py-58d97c).
+[± See the change to `tests/unit/test_api.py`](#tut-09.5-tests-unit-test_api.py-58d97c)
 
-A patch to [`tests/unit/test_cli.py`](#tut-09.5-tests-unit-test_cli.py-44d4a0).
+[± See the change to `tests/unit/test_cli.py`](#tut-09.5-tests-unit-test_cli.py-44d4a0)
 
 In `tests/unit/test_api.py`, `from typing import Any` is on line 5, and `JSONContent` on line 13. The five tests with
 parameters now give their types, for example `def test_score_confidence_is_one_when_certain(level: int):` on line
@@ -1766,7 +1770,7 @@ just test
 `ANN002`: `*words` in `run` gathers any number of words into a tuple. Its annotation is the type of each word, `str`,
 and not of the tuple.
 
-A patch to [`tests/unit/test_cli.py`](#tut-09.6-tests-unit-test_cli.py-44d4a0).
+[± See the change to `tests/unit/test_cli.py`](#tut-09.6-tests-unit-test_cli.py-44d4a0)
 
 In `tests/unit/test_cli.py`, line 8 is now `def run(monkeypatch: pytest.MonkeyPatch, *words: str):`.
 
@@ -2128,7 +2132,7 @@ Nothing asks for docstrings yet. The rules `D1` of the family `D`, pydocstyle, j
 part of the family that asks whether a docstring is there. The rest of the family checks how a docstring is written,
 and stays off.
 
-A patch to [`pyproject.toml`](#tut-10.1-pyproject.toml-5d07e7).
+[± See the change to `pyproject.toml`](#tut-10.1-pyproject.toml-5d07e7)
 
 In `pyproject.toml`, the line of `"D1"` is now line 64, the last of the list `select`.
 
@@ -2170,7 +2174,7 @@ is private, so it needs none.
 `D104`: `src/babykev/__init__.py` is the package `babykev` itself, and it is empty. Its docstring says what babykev
 is, as the first line of the help of the command does.
 
-A patch to [`src/babykev/__init__.py`](#tut-10.2-src-babykev-__init__.py-a40393).
+[± See the change to `src/babykev/__init__.py`](#tut-10.2-src-babykev-__init__.py-a40393)
 
 `src/babykev/__init__.py` now has one line, the docstring of the package.
 
@@ -2206,7 +2210,7 @@ count a docstring.
 `D101`: `Noul`, `Choice`, `Score` and `SystemOneRequest` are the classes of a request, and none has a docstring.
 Each gets one line, under its `class` line, that says what it is.
 
-A patch to [`src/babykev/api.py`](#tut-10.3-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-10.3-src-babykev-api.py-2ea65f)
 
 In `src/babykev/api.py`, the docstrings of the classes are on lines 17, 25, 39 and 50, under the lines of `Noul`,
 `Choice`, `Score` and `SystemOneRequest`.
@@ -2276,7 +2280,7 @@ the levels in order.` `just lint --statistics` prints 3 problems, all `D103`.
 line, that says what it does. The docstring of `choice_confidence` gives the two ends of its scale, as the docstring
 of `score_confidence` does.
 
-A patch to [`src/babykev/api.py`](#tut-10.4-src-babykev-api.py-2ea65f).
+[± See the change to `src/babykev/api.py`](#tut-10.4-src-babykev-api.py-2ea65f)
 
 In `src/babykev/api.py`, the docstrings of the functions are on lines 74, 104 and 131, under the lines of
 `option_text`, `choice_confidence` and `to_answers`.
@@ -2359,7 +2363,7 @@ shows the gate at work.
 The three checks are three commands, and a person can forget one. The recipe `check` runs them one after another.
 `set -e` stops it at the first that fails, so the last line that it prints names the check that failed.
 
-A patch to [`justfile`](#tut-11.1-justfile-424f0b).
+[± See the change to `justfile`](#tut-11.1-justfile-424f0b)
 
 At the end of the `justfile`, the recipe `check` is on lines 46 to 55, in the group `quality`. Its body is a script
 of `sh`. `set -e` is on line 51, and the three checks are on lines 53 to 55.
@@ -2424,6 +2428,8 @@ and ends with exit code 0. `just help check` prints the line of the recipe.
 hook. If the program fails, `git commit` records nothing. pre-commit installs such a hook, and runs the checks that a
 file of settings names. It is for working on babykev, so it goes in the group `lint`.
 
+[pre-commit](https://pre-commit.com/) runs checks each time you run `git commit`, before git records the change. The file `.pre-commit-config.yaml` lists hooks. `pre-commit install` puts a script into `.git/hooks`, so `git commit` runs them first, and stops when one fails.
+
 This change came from running `uv add --group lint pre-commit`.
 
 `uv add` prints `Resolved 25 packages`, and installs pre-commit and the 9 packages that it needs, such as
@@ -2469,7 +2475,7 @@ pre-commit reads its hooks from a file, `.pre-commit-config.yaml`. The first hoo
 a command of the project itself, `just check`. So the hook and the terminal run the same checks. The file is new,
 and comes whole, as a patch.
 
-A patch to [`.pre-commit-config.yaml`](#tut-11.3-.pre-commit-config.yaml-e7d14d).
+[± See the new file `.pre-commit-config.yaml`](#tut-11.3-.pre-commit-config.yaml-e7d14d)
 
 The new file `.pre-commit-config.yaml` has 14 lines. The hook is on lines 9 to 14. `entry: just check`, on line 11,
 is the command. `pass_filenames: false` gives `just check` no file names, and `always_run: true` runs it for any
@@ -2522,7 +2528,7 @@ line for the hook, `just check....Passed`. A hook that passes prints nothing mor
 that folder, so each clone installs its own hook, once. The recipe `hook` runs the command. It is a recipe of its own,
 because `just setup` runs often, and never touches git.
 
-A patch to [`justfile`](#tut-11.4-justfile-424f0b).
+[± See the change to `justfile`](#tut-11.4-justfile-424f0b)
 
 In the `justfile`, the recipe `hook` is on lines 28 to 31, under `setup`. It runs `uv run pre-commit install`.
 
@@ -2574,7 +2580,7 @@ A model's weights or a large file of data does not belong in git. Once git recor
 and every clone downloads it. pre-commit-hooks is pre-commit's own collection of hooks, and its hook
 `check-added-large-files` refuses a file over a size. `--maxkb=1000` sets the size, 1000 KB.
 
-A patch to [`.pre-commit-config.yaml`](#tut-11.5-.pre-commit-config.yaml-e7d14d).
+[± See the change to `.pre-commit-config.yaml`](#tut-11.5-.pre-commit-config.yaml-e7d14d)
 
 In `.pre-commit-config.yaml`, the new repository is on lines 7 to 11, above `repo: local`. `rev: v6.0.0` is the tag
 of the collection that pre-commit uses.
@@ -2620,7 +2626,7 @@ When git cannot merge two changes to the same lines, it writes both into the fil
 `=======` and `>>>>>>>`. A person must choose, and remove the markers. The hook `check-merge-conflict` refuses a file
 that still has them.
 
-A patch to [`.pre-commit-config.yaml`](#tut-11.6-.pre-commit-config.yaml-e7d14d).
+[± See the change to `.pre-commit-config.yaml`](#tut-11.6-.pre-commit-config.yaml-e7d14d)
 
 In `.pre-commit-config.yaml`, line 12 is the new hook, `- id: check-merge-conflict`.
 
@@ -2660,7 +2666,7 @@ A `.env` file holds the settings and secrets of one machine, such as a token. `.
 `git add -f .env` would still add it. A local hook with `language: fail` fails for every file that it is given, and
 prints its `entry` as the reason. `files:` gives it only the files named `.env`.
 
-A patch to [`.pre-commit-config.yaml`](#tut-11.7-.pre-commit-config.yaml-e7d14d).
+[± See the change to `.pre-commit-config.yaml`](#tut-11.7-.pre-commit-config.yaml-e7d14d)
 
 In `.pre-commit-config.yaml`, the hook `no-env-file` is on lines 15 to 19. `files: (^|/)\.env$`, on line 19, matches
 a file named `.env` in any folder.
@@ -2705,7 +2711,7 @@ other three pass.
 The hook works only if it fails on a mistake. This move makes one on purpose. `cli.py` imports `os`, and never uses
 it. The next move removes it.
 
-A patch to [`src/babykev/cli.py`](#tut-11.8-src-babykev-cli.py-a9e184).
+[± See the change to `src/babykev/cli.py`](#tut-11.8-src-babykev-cli.py-a9e184)
 
 In `src/babykev/cli.py`, line 3 is now `import os`, and nothing in the file uses `os`.
 
@@ -2747,7 +2753,7 @@ stop here, and record nothing.
 
 The linter said what is wrong, and that `--fix` can remove the line. The move removes it by hand.
 
-A patch to [`src/babykev/cli.py`](#tut-11.9-src-babykev-cli.py-a9e184).
+[± See the change to `src/babykev/cli.py`](#tut-11.9-src-babykev-cli.py-a9e184)
 
 In `src/babykev/cli.py`, `import sys` is on line 3 again.
 
@@ -2785,7 +2791,7 @@ The four hooks pass or skip, and pre-commit ends with exit code 0. A `git commit
 A new clone has no hook until someone runs `just hook`. The README says so, under "Start", and its table names the
 file of the hooks.
 
-A patch to [`README.md`](#tut-11.10-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-11.10-README.md-8ec9a0)
 
 In `README.md`, the new paragraph is on lines 61 to 63, and the row of `.pre-commit-config.yaml` is on line 79.
 
@@ -2854,6 +2860,8 @@ fails on its defaults, for real, and its settings fix it. Then the gate runs `li
 `pyproject.toml` has a standard, which says which tables it has, which keys each table may hold, and what each value
 is. validate-pyproject checks the file against the standard. It goes in the group `lint`.
 
+[validate-pyproject](https://github.com/abravalheri/validate-pyproject) checks `pyproject.toml` against the published schemas of its tables. It finds a misspelt key or a value of the wrong type, which most tools ignore without a word.
+
 This change came from running `uv add --group lint validate-pyproject`.
 
 `uv add` prints `Resolved 27 packages`, and installs validate-pyproject and `fastjsonschema`, which it needs.
@@ -2898,7 +2906,7 @@ A recipe `lint-config` will run a check for each kind of config file. Its first 
 `pyproject.toml`. Its body is a script, with `set -e`, as in `check`, so that the next checks can come one line at a
 time.
 
-A patch to [`justfile`](#tut-12.2-justfile-424f0b).
+[± See the change to `justfile`](#tut-12.2-justfile-424f0b)
 
 In the `justfile`, the recipe `lint-config` is on lines 45 to 52, between `lint` and `test`. Line 52 runs
 `uv run validate-pyproject pyproject.toml`.
@@ -2953,7 +2961,7 @@ just help lint-config
 `uv lock`, they disagree. `uv lock --check` resolves the dependencies again, compares the result with `uv.lock`, and
 fails if they differ. It changes no file.
 
-A patch to [`justfile`](#tut-12.3-justfile-424f0b).
+[± See the change to `justfile`](#tut-12.3-justfile-424f0b)
 
 In the `justfile`, `uv lock --check` is line 53, the second check of `lint-config`. The comment on line 45 now names
 the lockfile too.
@@ -3006,7 +3014,7 @@ recipe can then change the lockfile, and the person who ran it does not see the 
 every `uv run` refuse a lockfile that is out of date, in place of writing it. The `justfile` exports it to every
 recipe.
 
-A patch to [`justfile`](#tut-12.4-justfile-424f0b).
+[± See the change to `justfile`](#tut-12.4-justfile-424f0b)
 
 Near the top of the `justfile`, `export UV_LOCKED := "1"` is on line 9, under its comment.
 
@@ -3048,7 +3056,7 @@ recipe sees it.
 The `justfile` is a config file too. just has a formatter of its own, `just --fmt`. With `--check`, it writes nothing,
 and fails if the file is not in its format. just still calls the formatter unstable, so it needs `--unstable`.
 
-A patch to [`justfile`](#tut-12.5-justfile-424f0b).
+[± See the change to `justfile`](#tut-12.5-justfile-424f0b)
 
 In the `justfile`, `just --fmt --check --unstable` is line 57, the third check of `lint-config`. The comment on line
 48 names the `justfile`.
@@ -3099,6 +3107,8 @@ in the format of just. `just lint-config` prints the same two lines as before.
 `.pre-commit-config.yaml` is YAML. A mistake of indentation there breaks the hook, and with it every `git commit`. yamllint
 checks YAML files, for their syntax and for their style. It goes in the group `lint`.
 
+[yamllint](https://yamllint.readthedocs.io/) checks YAML files, such as the configuration of pre-commit. It finds syntax errors, keys given twice, and a layout that differs from file to file.
+
 This change came from running `uv add --group lint yamllint`.
 
 `uv add` prints `Resolved 29 packages`, and installs yamllint and `pathspec`, which it needs.
@@ -3142,7 +3152,7 @@ It prints the version of yamllint that uv installed.
 `yamllint --strict .` checks every YAML file under the folder. `--strict` makes a warning fail, as an error does. It is the fourth check of `lint-config`. yamllint has no settings yet, and it fails on its defaults. The next
 moves give it settings.
 
-A patch to [`justfile`](#tut-12.7-justfile-424f0b).
+[± See the change to `justfile`](#tut-12.7-justfile-424f0b)
 
 In the `justfile`, `uv run yamllint --strict .` is line 58, the last check of `lint-config`.
 
@@ -3201,7 +3211,7 @@ yamllint reads its settings from a file `.yamllint`. `extends: default` keeps it
 `ignore-from-file: .gitignore` skips each file that git ignores, `.venv` among them. The file is new, and comes
 whole, as a patch.
 
-A patch to [`.yamllint`](#tut-12.8-.yamllint-dfe50a).
+[± See the new file `.yamllint`](#tut-12.8-.yamllint-dfe50a)
 
 The new file `.yamllint` has 3 lines. Line 3 is `ignore-from-file: .gitignore`, with a comment.
 
@@ -3238,7 +3248,7 @@ findings of `.pre-commit-config.yaml` stay. `.yamllint` is YAML too, and yamllin
 A line `---` marks the start of a document, in a YAML file that holds several. Our files hold one each, and pre-commit
 does not ask for the line. The rule `document-start` goes off.
 
-A patch to [`.yamllint`](#tut-12.9-.yamllint-dfe50a).
+[± See the change to `.yamllint`](#tut-12.9-.yamllint-dfe50a)
 
 In `.yamllint`, `rules:` is on line 4, and line 5 is `document-start: disable`, with a comment.
 
@@ -3276,7 +3286,7 @@ yamllint finds four problems, and ends with exit code 1. The four are the lines 
 The Python of the project has lines of up to 100 characters, and the comments of the YAML files follow it. The rule
 `line-length` lets a line have 100 characters, as `line-length = 100` in `[tool.ruff]` does for ruff.
 
-A patch to [`.yamllint`](#tut-12.10-.yamllint-dfe50a).
+[± See the change to `.yamllint`](#tut-12.10-.yamllint-dfe50a)
 
 In `.yamllint`, line 6 is `line-length: {max: 100}`, with a comment.
 
@@ -3313,7 +3323,7 @@ yamllint prints nothing, and `just lint-config` passes. It prints `Valid file: p
 `just lint-config` passes, but only when a person runs it. As the last line of `check`, it runs before each
 `git commit`, through the hook.
 
-A patch to [`justfile`](#tut-12.11-justfile-424f0b).
+[± See the change to `justfile`](#tut-12.11-justfile-424f0b)
 
 In the `justfile`, `just lint-config` is line 76, the last line of `check`. The comment on line 66 names the config
 files.
@@ -3360,7 +3370,7 @@ the tests, as before, then `Valid file: pyproject.toml` and `Resolved 29 package
 
 The table of the README names every config file of the project. `.yamllint` gets a row.
 
-A patch to [`README.md`](#tut-12.12-README.md-8ec9a0).
+[± See the change to `README.md`](#tut-12.12-README.md-8ec9a0)
 
 In `README.md`, the row of `.yamllint` is on line 80, the last row of the table.
 
@@ -3422,6 +3432,8 @@ value with the types that the code and its libraries declare.
 
 ty is for working on babykev, so it goes in the group `lint`.
 
+[ty](https://docs.astral.sh/ty/) is a type checker for Python, from the makers of uv and ruff. It reads the type hints and finds the places where a value cannot have the type that the code expects, without running the code.
+
 This change came from running `uv add --group lint ty`.
 
 `uv add` prints `Resolved 67 packages`, and installs ty, which needs no other package.
@@ -3463,7 +3475,7 @@ It prints the version of ty that uv installed. A newer ty can find more, or less
 
 `ty check` checks every Python file of the project. The recipe `types` runs it, and gives it any extra words.
 
-A patch to [`justfile`](#tut-17.2-justfile-424f0b).
+[± See the change to `justfile`](#tut-17.2-justfile-424f0b)
 
 In the `justfile`, the recipe `types` is on lines 60 to 64. Line 64 runs `uv run ty check "$@"`.
 
@@ -3543,7 +3555,7 @@ rule is right in general, and does not fit here.
 A comment `# ty: ignore[invalid-mutable-override]` on the line of a diagnostic turns off that one rule on that one
 line. Each other rule still checks the line. A comment above the method says why.
 
-A patch to [`src/babykev/model.py`](#tut-17.3-src-babykev-model.py-a86a0b).
+[± See the change to `src/babykev/model.py`](#tut-17.3-src-babykev-model.py-a86a0b)
 
 In `src/babykev/model.py`, the reason is on lines 178 and 179, and line 180 is
 `def forward(  # ty: ignore[invalid-mutable-override]`.
@@ -3590,7 +3602,7 @@ or of the return type.
 The `forward` of `DecisionModel` is the same case. It gets the same comment, and one line of reason that points to
 the first.
 
-A patch to [`src/babykev/model.py`](#tut-17.4-src-babykev-model.py-a86a0b).
+[± See the change to `src/babykev/model.py`](#tut-17.4-src-babykev-model.py-a86a0b)
 
 In `src/babykev/model.py`, the reason is on line 259, and line 260 is
 `def forward(  # ty: ignore[invalid-mutable-override]`.
@@ -3632,7 +3644,7 @@ just types
 `just types` passes, and nothing runs it before `git commit`. As a line of `check`, it runs before each `git commit`,
 through the hook. It goes after the linter, and before the tests.
 
-A patch to [`justfile`](#tut-17.5-justfile-424f0b).
+[± See the change to `justfile`](#tut-17.5-justfile-424f0b)
 
 In the `justfile`, `just types` is line 81, between `just lint` and `just test -q`. The comment on line 72 names the
 types.

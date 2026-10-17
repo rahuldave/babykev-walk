@@ -12,6 +12,8 @@ We make the project in moves. A move is one small change, made by one patch or b
 Some changes of the whole tutorial are not in this one. After such a gap, the next section says what those changes
 did, and begins from the code that they left. It first runs `just setup`, which installs the packages of that code.
 
+The tasks of the project run through [just](https://just.systems/), which runs a command by name from the recipes of the `justfile`. `just setup`, for example, runs `uv sync`.
+
 ## The project, and its lockfile
 
 The folder has a README, a licence and `.gitignore`, and nothing that Python can build or run. `uv init` makes the

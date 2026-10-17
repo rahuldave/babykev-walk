@@ -38,6 +38,8 @@ The table gives each kind of documentation, and the sections where it appears.
 | A written page | What babykev is, on the front page of the site, and why the model is built as it is, in the guide | Sections 5 and 6 |
 | A published site | The site, on GitHub Pages, built again after every push to `main` | Section 7 |
 
+Two tools run everything here. [uv](https://docs.astral.sh/uv/) manages the project. It installs Python and the packages, keeps them in `.venv`, and pins their versions in `uv.lock`. [just](https://just.systems/) runs the tasks of the project by name, from the recipes of its `justfile`. `just setup`, for example, runs `uv sync`.
+
 ## The README, before any code
 
 The first documentation of a project is its README. Here babykev is only words. There is the README, the licence, the

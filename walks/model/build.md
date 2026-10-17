@@ -38,6 +38,8 @@ decoder, and changes four things around them:
 the same code as the real one. The walk uses one small request all along, a state `ab` and a question `x?` with the
 options `n` and `y`. It packs the question twice, so that the two copies can be compared.
 
+Two tools run everything here. [uv](https://docs.astral.sh/uv/) manages the project. It installs Python and the packages, keeps them in `.venv`, and pins their versions in `uv.lock`. [just](https://just.systems/) runs the tasks of the project by name, from the recipes of its `justfile`. `just setup`, for example, runs `uv sync`.
+
 ## Get the project
 
 You build the project in a clone of your own, on a branch `mine` that starts where this walk starts. Run the commands of these pages in its top folder.
@@ -1595,6 +1597,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-21 --staged --
 
 A picture checks one size of request. The mask must hold for every size, and nobody can draw them all. hypothesis is
 a library for tests. A test states a rule, and hypothesis draws many inputs and runs the test on each.
+
+[hypothesis](https://hypothesis.readthedocs.io/) writes test inputs. A test says what kind of input it takes, such as a list of up to five numbers. hypothesis then tries many of them, and when one fails, it shrinks it to the smallest input that still fails.
 
 ```bash
 uv add --group test hypothesis

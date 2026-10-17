@@ -39,6 +39,8 @@ section that changes what it runs.
 | `just image` | `just lint-config` checks the `Dockerfile` too |
 | GitHub runs `just check` | `just lint-config` checks the workflows too |
 
+The project is managed by [uv](https://docs.astral.sh/uv/), which installs Python and the packages, keeps them in `.venv`, and pins their versions in `uv.lock`. `just setup` runs `uv sync`.
+
 Each page is one part. A part is one or more changes to the project, each a section of its page. The code where a part starts and where it ends has a tag on GitHub, such as `tut-07`, or is a commit between two tags. The top of each page says where its part starts, and the bottom says where it ends, each with a link to that code.
 
 There are two ways to read this tutorial. Both have the same parts, in the same order.

@@ -49,7 +49,7 @@ A caller writes the state, the instructions and the options. A tokenizer turns t
 decide token, wherever it is. So text could close an option early, or make a question of its own. This test shows the
 danger, before the next test shows the defence.
 
-A patch to [`tests/unit/test_model.py`](#tut-20.5-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-20.5-tests-unit-test_model.py-583145){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_model.py`, the new test is on lines 68 to 73.
 
@@ -101,7 +101,7 @@ tokens. pytest prints `1 passed`. The danger is real.
 `user_tokens` rewrites `<|name|>` to `<¦name¦>` before it tokenizes, so the text of a delimiter is ordinary text. The
 test runs once for each of the five delimiters.
 
-A patch to [`tests/unit/test_model.py`](#tut-20.6-tests-unit-test_model.py-583145).
+[± See the change to `tests/unit/test_model.py`](#tut-20.6-tests-unit-test_model.py-583145){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_model.py`, the new test is on lines 76 to 83.
 

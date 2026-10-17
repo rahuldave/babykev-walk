@@ -16,6 +16,8 @@ on the same branch, builds the same project one move at a time.
 
 This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-00`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-00)
 
+Two tools run everything in this lecture. [uv](https://docs.astral.sh/uv/) manages the project. It installs Python and the packages, keeps them in `.venv`, and pins their versions in `uv.lock`. [just](https://just.systems/) runs the tasks of the project by name, from the recipes of its `justfile`.
+
 **Init.** uv makes the environment, before any recipe exists. `uv sync --locked` reads `pyproject.toml` and `uv.lock`, and makes `.venv` with exactly what the lockfile names. In a new clone it prints `Using CPython 3.13.3`, `Creating virtual environment at: .venv` and `Resolved 1 package`. Then it installs one package, babykev itself, as `+ babykev==0.1.0`. `--locked` makes uv refuse a lockfile that no longer matches `pyproject.toml`, so uv never writes a new lockfile on the quiet.
 
 ```bash
@@ -207,7 +209,7 @@ This part ends at the code at `tut-01`. [The code after this part](https://githu
 
 This walk goes through [rahuldave/babykev](https://github.com/rahuldave/babykev) on GitHub. This part starts from the code at `tut-04`. [The code before this part](https://github.com/rahuldave/babykev/tree/tut-04)
 
-**Init.** `just setup` installs 12 packages and builds babykev again. They are pydantic and pydantic-core, pytest, pytest-cov and coverage, and the packages that they need. Coming back to `tut-01` and running `just setup` there removes them again.
+**Init.** `just setup` installs 12 packages and builds babykev again. They are pydantic and pydantic-core, pytest, pytest-cov and coverage, and the packages that they need.
 
 ```bash
 just setup
@@ -1709,7 +1711,7 @@ just test -k forge
 sed -n '78,93p' tests/unit/test_model.py
 ```
 
-**What trains.** `test_with_an_adapter_only_the_adapter_and_the_head_train`, lines 112 to 130, is an integration test. It runs one backward pass on a tiny model with an adapter. Every parameter that gets a gradient belongs to the adapter or to the head, and `trainable_parameters` lists exactly those. The backbone never moves, and about nine million parameters do. One test passes.
+**What trains.** `test_with_an_adapter_only_the_adapter_and_the_head_train`, lines 112 to 130, is an integration test. It runs one backward pass on a tiny model with an adapter. Every parameter that gets a gradient belongs to the adapter or to the head, and `trainable_parameters` lists exactly those. The backbone never moves; only the adapter and the head train. One test passes.
 
 ```bash
 sed -n '112,130p' tests/unit/test_model.py
@@ -2227,7 +2229,7 @@ docker image ls babykev-run:latest --format '{{.Repository}}:{{.Tag}}  {{.Size}}
 docker run --rm -v ~/.cache/huggingface:/hf babykev-run smoke
 ```
 
-**The dev image.** Lines 41 to 70 are the image to work in. It has git from Debian on lines 48 to 50, uv on line 51 and just on line 63. Lines 66 to 69 install the whole project, with every group. The environment is in `/opt/venv`, on line 52, outside the folder of the project, and the image starts a shell. `docker build --target dev` builds it, and the image is 1.45 GB.
+**The dev image.** Lines 41 to 70 are the image to work in. It has git from Debian on lines 48 to 50, uv on line 51 and just on line 63. Lines 66 to 69 install the whole project, with every group. The environment is in `/opt/venv`, on line 52, outside the folder of the project, and the image starts a shell. `docker build --target dev` builds it.
 
 ```bash
 sed -n '41,70p' Dockerfile
@@ -2248,7 +2250,7 @@ just image build dev
 just image build run
 ```
 
-**Working inside it.** `just image shell -- COMMAND` runs a command in a new container of the dev image, and `--rm` removes the container after it. `which` shows where each tool is. Python and just come from `/opt/venv/bin`, and uv from `/usr/local/bin`. `just image shell` with no command gives a shell, and `exit` ends it.
+**Working inside it.** `just image shell -- COMMAND` runs a command in a new container of the dev image, and `--rm` removes the container after it. `which` shows where each tool is. Python comes from `/opt/venv/bin`, and just and uv from `/usr/local/bin`. `just image shell` with no command gives a shell, and `exit` ends it.
 
 ```bash
 just image shell -- which python just uv

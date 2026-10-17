@@ -46,6 +46,8 @@ The table gives each kind of documentation, and the sections where it appears.
 | A written page | What babykev is, on the front page of the site, and why the model is built as it is, in the guide | Sections 5 and 6 |
 | A published site | The site, on GitHub Pages, built again after every push to `main` | Section 7 |
 
+Two tools run everything here. [uv](https://docs.astral.sh/uv/) manages the project. It installs Python and the packages, keeps them in `.venv`, and pins their versions in `uv.lock`. [just](https://just.systems/) runs the tasks of the project by name, from the recipes of its `justfile`. `just setup`, for example, runs `uv sync`.
+
 Each page is one part. A part is one or more changes to the project, each a section of its page. The code where a part starts and where it ends has a tag on GitHub, such as `tut-00`, or is a commit between two tags. The top of each page says where its part starts, and the bottom says where it ends, each with a link to that code.
 
 There are two ways to read this tutorial. Both have the same parts, in the same order.
