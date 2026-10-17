@@ -34,7 +34,7 @@ out of a request, and remove the count of tokens.
 kev served the model over HTTP, and babykev has no server. The first line of `api.py` names the address of kev's
 server, `POST /v1/systemone`.
 
-[± See the change to `src/babykev/api.py`](#tut-03.3-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
+[± See the change to `src/babykev/api.py`](#tut-03.3-src-babykev-api.py-2ea65f-diff){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/api.py`, the docstring no longer names `POST /v1/systemone`.
 
@@ -48,6 +48,8 @@ It prints the new first line.
 
 - <a id="tut-03.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the docstring. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/93618951b784e928af3d3547f077bb49bff4d5da/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `"""The contract: request and answer shapes, mapped onto the single pointer primitive.`
+
+<a id="tut-03.3-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -68,7 +70,7 @@ It prints the new first line.
 
 The field `model` named the model for kev's server to run. babykev has one model, so a request names none.
 
-[± See the change to `src/babykev/api.py`](#tut-03.4-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
+[± See the change to `src/babykev/api.py`](#tut-03.4-src-babykev-api.py-2ea65f-diff){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/api.py`, `SystemOneRequest` ends with the line `questions`.
 
@@ -82,6 +84,8 @@ uv run python -c "from babykev.api import SystemOneRequest; print(sorted(SystemO
 
 - <a id="tut-03.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a request has two fields, `state` and `questions`. 0 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/5cce9c9e5025336d501298d244389b64c696737c/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `    questions: dict[str, Question] = Field(min_length=1)`
+
+<a id="tut-03.4-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -104,7 +108,7 @@ uv run python -c "from babykev.api import SystemOneRequest; print(sorted(SystemO
 
 `output_tokens` counted the tokens of an answer for a bill, and needs the tokenizer of a model. babykev bills nothing.
 
-[± See the change to `src/babykev/api.py`](#tut-03.5-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
+[± See the change to `src/babykev/api.py`](#tut-03.5-src-babykev-api.py-2ea65f-diff){.btn .btn-sm .btn-secondary}
 
 `src/babykev/api.py` now ends with `to_answers`.
 
@@ -118,6 +122,8 @@ just test
 ### What changed {#tut-03.5-what-changed-182c57}
 
 - <a id="tut-03.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the function goes. 0 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/43b7ea4eda990f90abd605920e2fb1d9b376378d/src/babykev/api.py){.btn .btn-sm .btn-secondary}
+
+<a id="tut-03.5-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 

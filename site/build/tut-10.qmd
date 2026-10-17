@@ -105,6 +105,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-09 --staged --
 - <a id="tut-10.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the rules `D1`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/09ad56d2e465ac5b485ba5d1b077c540fd7c45ef/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `    "D1",  # pydocstyle: every public module, class and function has a docstring`
 
+<a id="tut-10.1-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -161,6 +163,8 @@ git restore --source 09ad56d2e465 --staged -- :/ && git restore --source 7943e58
 - <a id="tut-10.2-src-babykev-__init__.py-a40393"></a>`src/babykev/__init__.py`: the docstring of the package. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/7943e585faa81e4c0400f5e2e9ca7b42ce4bf286/src/babykev/__init__.py){.btn .btn-sm .btn-secondary}
   - look at `"""babykev: a small decision model. A state, typed questions, and a probability for every answer."""`
 
+<a id="tut-10.2-src-babykev-__init__.py-a40393-diff"></a>
+
 <details open><summary>The patch to <code>src/babykev/__init__.py</code></summary>
 
 ```diff
@@ -209,6 +213,8 @@ git restore --source 7943e585faa8 --staged -- :/ && git restore --source 9a769c7
 
 - <a id="tut-10.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring on each class of a request. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/9a769c7d9551fb181bf7c36d989f94f35f836c2d/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `    """A question answered by a level of a scale, whose criteria are the levels in order."""`
+
+<a id="tut-10.3-src-babykev-api.py-2ea65f-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
@@ -295,6 +301,8 @@ git fetch --quiet --tags --force origin; git restore --source 9a769c7d9551 --sta
 
 - <a id="tut-10.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring on each of the three functions. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/ebd0888f135c00e29b583f6fad0575c290fd4876/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `    """Measure how far the most likely option stands above a guess: 1 if certain, 0 for a guess."""`
+
+<a id="tut-10.4-src-babykev-api.py-2ea65f-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 

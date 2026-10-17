@@ -31,7 +31,7 @@ pydantic. The moves of this section add the tests that show it.
 The model reads text, and the state of a request is JSON. `render` writes JSON as text. One test gives `render` nine
 values, from `None` to a list of objects, and checks the text of each.
 
-[± See the change to `tests/unit/test_api.py`](#tut-05.1-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/unit/test_api.py`](#tut-05.1-tests-unit-test_api.py-58d97c-diff){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the parametrized test lists nine pairs, each a value and its text.
 
@@ -45,6 +45,8 @@ pytest prints `9 passed`, one for each value.
 
 - <a id="tut-05.1-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: nine values, and their text. 26 lines added. [The file](https://github.com/rahuldave/babykev/blob/9f861048b50c3705e7e1195ccbd90a7b01e60180/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_render_flattens_json_into_text(value, text):`
+
+<a id="tut-05.1-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
 
@@ -97,7 +99,7 @@ pytest prints `9 passed`, one for each value.
 An option is its name, followed by its description when it has one. `option_text` writes it. The test gives it no
 description, an empty one, and a real one.
 
-[± See the change to `tests/unit/test_api.py`](#tut-05.2-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/unit/test_api.py`](#tut-05.2-tests-unit-test_api.py-58d97c-diff){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test gives `option_text` three cases.
 
@@ -111,6 +113,8 @@ pytest prints `3 passed`.
 
 - <a id="tut-05.2-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: three cases of an option. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/e6270727deb4467393c6c7b73cfaf0908392387f/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_option_text_adds_a_description_only_when_there_is_one(name, description, text):`
+
+<a id="tut-05.2-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
 
@@ -151,7 +155,7 @@ pytest prints `3 passed`.
 `to_record` turns a request into a record, the text and options that the model reads, and the metadata that maps
 them back. The test checks that the state is rendered once, and that the questions keep their order.
 
-[± See the change to `tests/unit/test_api.py`](#tut-05.3-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/unit/test_api.py`](#tut-05.3-tests-unit-test_api.py-58d97c-diff){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test reads `record["state"]` and the order of the questions.
 
@@ -165,6 +169,8 @@ pytest prints `1 passed`.
 
 - <a id="tut-05.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the state, and the order. 15 lines added. [The file](https://github.com/rahuldave/babykev/blob/3d272bd2edaf22b970b8888429dd23940ffd3f17/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert [m["id"] for m in meta] == ["blue", "milk", "firmness"]`
+
+<a id="tut-05.3-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
 
@@ -199,7 +205,7 @@ pytest prints `1 passed`.
 A noul has two options, `no` first and `yes` second. The code counts the options from 0, so `yes` is option 1. The
 answer to a noul is the probability of option 1.
 
-[± See the change to `tests/unit/test_api.py`](#tut-05.4-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/unit/test_api.py`](#tut-05.4-tests-unit-test_api.py-58d97c-diff){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test checks the options `["no", "yes"]`.
 
@@ -213,6 +219,8 @@ pytest prints `1 passed`.
 
 - <a id="tut-05.4-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the two options of a noul. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/7dee26abd961a5a85d897f82332ae46e556e2f80/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert record["questions"][0]["options"] == ["no", "yes"]`
+
+<a id="tut-05.4-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
 
@@ -238,7 +246,7 @@ pytest prints `1 passed`.
 
 A noul can say what yes and no mean, under `true` and `false`. They become the descriptions of the two options.
 
-[± See the change to `tests/unit/test_api.py`](#tut-05.5-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/unit/test_api.py`](#tut-05.5-tests-unit-test_api.py-58d97c-diff){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test expects `"no: It has none"` and `"yes: It has blue veins"`.
 
@@ -252,6 +260,8 @@ pytest prints `1 passed`.
 
 - <a id="tut-05.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the descriptions of no and yes. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/f9b390d64cc717326b28f9c7a6adbb88de59363f/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_noul_criteria_describe_no_and_yes():`
+
+<a id="tut-05.5-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
 
@@ -279,7 +289,7 @@ pytest prints `1 passed`.
 
 A choice has one option for each criterion, in order, and the metadata keeps their names.
 
-[± See the change to `tests/unit/test_api.py`](#tut-05.6-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/unit/test_api.py`](#tut-05.6-tests-unit-test_api.py-58d97c-diff){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test expects four options, the last with its description.
 
@@ -293,6 +303,8 @@ pytest prints `1 passed`.
 
 - <a id="tut-05.6-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the options of a choice. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/0930c8de69e9710470eb60380b99cae5c3e82558/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_choice_becomes_one_option_per_criterion_in_order():`
+
+<a id="tut-05.6-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
 
@@ -323,7 +335,7 @@ pytest prints `1 passed`.
 
 A score has one option for each level, in order. Its legend maps the number of each level to its name.
 
-[± See the change to `tests/unit/test_api.py`](#tut-05.7-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/unit/test_api.py`](#tut-05.7-tests-unit-test_api.py-58d97c-diff){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test checks the options and the legend of `firmness`.
 
@@ -337,6 +349,8 @@ pytest prints `1 passed`.
 
 - <a id="tut-05.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the levels, and the legend. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/8368a8202dab8159f95043310e2bf22a24c1e474/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_score_becomes_one_option_per_level_with_a_legend():`
+
+<a id="tut-05.7-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
 

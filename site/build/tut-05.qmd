@@ -58,6 +58,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-04 --staged --
 - <a id="tut-05.1-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: nine values, and their text. 26 lines added. [The file](https://github.com/rahuldave/babykev/blob/9f861048b50c3705e7e1195ccbd90a7b01e60180/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_render_flattens_json_into_text(value, text):`
 
+<a id="tut-05.1-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -140,6 +142,8 @@ git restore --source 9f861048b50c --staged -- :/ && git restore --source e627072
 - <a id="tut-05.2-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: three cases of an option. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/e6270727deb4467393c6c7b73cfaf0908392387f/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_option_text_adds_a_description_only_when_there_is_one(name, description, text):`
 
+<a id="tut-05.2-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -210,6 +214,8 @@ git restore --source e6270727deb4 --staged -- :/ && git restore --source 3d272bd
 - <a id="tut-05.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the state, and the order. 15 lines added. [The file](https://github.com/rahuldave/babykev/blob/3d272bd2edaf22b970b8888429dd23940ffd3f17/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert [m["id"] for m in meta] == ["blue", "milk", "firmness"]`
 
+<a id="tut-05.3-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -274,6 +280,8 @@ git restore --source 3d272bd2edaf --staged -- :/ && git restore --source 7dee26a
 - <a id="tut-05.4-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the two options of a noul. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/7dee26abd961a5a85d897f82332ae46e556e2f80/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert record["questions"][0]["options"] == ["no", "yes"]`
 
+<a id="tut-05.4-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -328,6 +336,8 @@ git restore --source 7dee26abd961 --staged -- :/ && git restore --source f9b390d
 
 - <a id="tut-05.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the descriptions of no and yes. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/f9b390d64cc717326b28f9c7a6adbb88de59363f/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_noul_criteria_describe_no_and_yes():`
+
+<a id="tut-05.5-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
@@ -385,6 +395,8 @@ git restore --source f9b390d64cc7 --staged -- :/ && git restore --source 0930c8d
 
 - <a id="tut-05.6-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the options of a choice. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/0930c8de69e9710470eb60380b99cae5c3e82558/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_choice_becomes_one_option_per_criterion_in_order():`
+
+<a id="tut-05.6-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
@@ -446,6 +458,8 @@ git restore --source 0930c8de69e9 --staged -- :/ && git restore --source 8368a82
 - <a id="tut-05.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the levels, and the legend. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/8368a8202dab8159f95043310e2bf22a24c1e474/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_score_becomes_one_option_per_level_with_a_legend():`
 
+<a id="tut-05.7-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -502,6 +516,8 @@ git restore --source 8368a8202dab --staged -- :/ && git restore --source 0740c2c
 
 - <a id="tut-05.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the answer of a noul. 10 lines added. [The file](https://github.com/rahuldave/babykev/blob/0740c2c246273e99e34494512152d5b97ea4f7b9/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert answers == {"blue": {"type": "noul", "noul": 0.75}}`
+
+<a id="tut-05.8-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
@@ -568,6 +584,8 @@ git restore --source 0740c2c24627 --staged -- :/ && git restore --source a27b71f
 - <a id="tut-05.9-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the answer of a choice. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/a27b71f6a341bb12029a2d3471d6b3bc19d0d94c/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert answer["choice"] == "goat"`
 
+<a id="tut-05.9-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -625,6 +643,8 @@ git restore --source a27b71f6a341 --staged -- :/ && git restore --source be8c681
 
 - <a id="tut-05.10-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the answer of a score. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/be8c681092973e7ac1e12bbd1817da81bea45e7e/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert answer["score"] == pytest.approx(1.6)`
+
+<a id="tut-05.10-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
@@ -686,6 +706,8 @@ git fetch --quiet --tags --force origin; git restore --source be8c68109297 --sta
 
 - <a id="tut-05.11-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: one answer for each question. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_every_question_gets_an_answer_of_its_own_type():`
+
+<a id="tut-05.11-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 

@@ -32,7 +32,7 @@ and the second draws the mask as a grid. smalldocs runs no code, so a page holds
 The page explains packing, the mask, the positions that restart, and pointing, and then what trains. A name in
 backticks, such as `encode()`, links to its entry in the reference, as on the front page.
 
-[± See the new file `docs/guide/model.qmd`](#tut-24.1-docs-guide-model.qmd-3d8904){.btn .btn-sm .btn-secondary}
+[± See the new file `docs/guide/model.qmd`](#tut-24.1-docs-guide-model.qmd-3d8904-diff){.btn .btn-sm .btn-secondary}
 
 The new file `docs/guide/model.qmd` has five parts. Packing starts on line 9, the mask on line 33, the positions on
 line 43, pointing on line 48, and what trains on line 57.
@@ -49,6 +49,8 @@ the eight links of the page into the reference of `model.py`, `encode` twice. Th
 
 - <a id="tut-24.1-docs-guide-model.qmd-3d8904"></a>`docs/guide/model.qmd`: the four ideas of the model. New, 61 lines. [The file](https://github.com/rahuldave/babykev/blob/b23fa492cea947fd91a783a6ef8c19ee1d4f38eb/docs/guide/model.qmd){.btn .btn-sm .btn-secondary}
   - look at `## Packing`
+
+<a id="tut-24.1-docs-guide-model.qmd-3d8904-diff"></a>
 
 <details><summary>The diff of <code>docs/guide/model.qmd</code></summary>
 
@@ -126,7 +128,7 @@ the eight links of the page into the reference of `model.py`, `encode` twice. Th
 The page draws the mask of the small request of `test_mask.py`, then the grid of a plain causal mask for the same
 request. The first grid is the picture of the test, so `just test` keeps it true.
 
-[± See the new file `docs/guide/mask.qmd`](#tut-24.2-docs-guide-mask.qmd-5cd81a){.btn .btn-sm .btn-secondary}
+[± See the new file `docs/guide/mask.qmd`](#tut-24.2-docs-guide-mask.qmd-5cd81a-diff){.btn .btn-sm .btn-secondary}
 
 The new file `docs/guide/mask.qmd` has the grid of the mask on lines 13 to 21. The grid of a plain causal mask is on
 lines 33 to 41.
@@ -141,6 +143,8 @@ just docs
 
 - <a id="tut-24.2-docs-guide-mask.qmd-5cd81a"></a>`docs/guide/mask.qmd`: the mask, as a grid. New, 52 lines. [The file](https://github.com/rahuldave/babykev/blob/872a008d4a67bfd58f67b5db28198f4293cc34f5/docs/guide/mask.qmd){.btn .btn-sm .btn-secondary}
   - look at `## A plain causal mask`
+
+<a id="tut-24.2-docs-guide-mask.qmd-5cd81a-diff"></a>
 
 <details><summary>The diff of <code>docs/guide/mask.qmd</code></summary>
 
@@ -210,7 +214,7 @@ The sidebar of the site gets a section, Guide, between the front page and the re
 by one, so that the model comes before the mask. A pattern such as `guide/*` would list them in the order of their
 names.
 
-[± See the change to `docs/_smalldocs.yml`](#tut-24.3-docs-_smalldocs.yml-4b0b48){.btn .btn-sm .btn-secondary}
+[± See the change to `docs/_smalldocs.yml`](#tut-24.3-docs-_smalldocs.yml-4b0b48-diff){.btn .btn-sm .btn-secondary}
 
 In `docs/_smalldocs.yml`, the section `Guide` is on lines 11 to 14.
 
@@ -226,6 +230,8 @@ grep -o 'href="guide/[^"]*"' docs/_site/index.html
 
 - <a id="tut-24.3-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the section `Guide`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/f19e99afaa9f11778658710d44ef1785dbc40ed0/docs/_smalldocs.yml){.btn .btn-sm .btn-secondary}
   - look at `      - section: Guide`
+
+<a id="tut-24.3-docs-_smalldocs.yml-4b0b48-diff"></a>
 
 <details><summary>The diff of <code>docs/_smalldocs.yml</code></summary>
 
@@ -251,7 +257,7 @@ grep -o 'href="guide/[^"]*"' docs/_site/index.html
 
 A paragraph of the front page links to the two pages.
 
-[± See the change to `docs/index.qmd`](#tut-24.4-docs-index.qmd-d6d880){.btn .btn-sm .btn-secondary}
+[± See the change to `docs/index.qmd`](#tut-24.4-docs-index.qmd-d6d880-diff){.btn .btn-sm .btn-secondary}
 
 In `docs/index.qmd`, the new paragraph is on lines 25 and 26.
 
@@ -267,6 +273,8 @@ paragraph.
 
 - <a id="tut-24.4-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the links to the guide. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/62f48f0b9de6c97825153cd50a7f131a5c07b0c7/docs/index.qmd){.btn .btn-sm .btn-secondary}
   - look at ``The pages under Guide explain the model. [The model](guide/model.qmd) gives the four ideas of `model.py`, and``
+
+<a id="tut-24.4-docs-index.qmd-d6d880-diff"></a>
 
 <details><summary>The diff of <code>docs/index.qmd</code></summary>
 
@@ -291,7 +299,7 @@ paragraph.
 
 The row of `docs/` in the table of the README names the two pages.
 
-[± See the change to `README.md`](#tut-24.5-README.md-8ec9a0){.btn .btn-sm .btn-secondary}
+[± See the change to `README.md`](#tut-24.5-README.md-8ec9a0-diff){.btn .btn-sm .btn-secondary}
 
 In `README.md`, the row of `docs/` is on line 91.
 
@@ -306,6 +314,8 @@ just check
 
 - <a id="tut-24.5-README.md-8ec9a0"></a>`README.md`: the guide, in the row of `docs/`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/41d24729682119b9bbb828187c5e9684a2921308/README.md){.btn .btn-sm .btn-secondary}
   - look at ``The two pages of `docs/guide/` explain the model and its mask |``
+
+<a id="tut-24.5-README.md-8ec9a0-diff"></a>
 
 <details><summary>The diff of <code>README.md</code></summary>
 

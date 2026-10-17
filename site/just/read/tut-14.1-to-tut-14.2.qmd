@@ -32,7 +32,7 @@ to. A build makes all three again from the code, so they do not belong in git. `
 does not track, and three lines at its end name these, before the first build. A `/` at the start of a line means
 the root of the repository, so `/docs/api/` is only that folder.
 
-[± See the change to `.gitignore`](#tut-14.1-.gitignore-a5cc29){.btn .btn-sm .btn-secondary}
+[± See the change to `.gitignore`](#tut-14.1-.gitignore-a5cc29-diff){.btn .btn-sm .btn-secondary}
 
 At the end of `.gitignore`, the comment is on line 222, and `/docs/_site/`, `/docs/api/` and `/docs/_symbols.json` on
 lines 223 to 225.
@@ -47,6 +47,8 @@ tail -n 4 .gitignore
 
 - <a id="tut-14.1-.gitignore-a5cc29"></a>`.gitignore`: the files that a build of the docs makes. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/3593f61e4e221b04f00f360fe96e6dc4243b02dd/.gitignore){.btn .btn-sm .btn-secondary}
   - look at `/docs/_site/`
+
+<a id="tut-14.1-.gitignore-a5cc29-diff"></a>
 
 <details><summary>The diff of <code>.gitignore</code></summary>
 
@@ -72,7 +74,7 @@ tail -n 4 .gitignore
 the HTML of every page into `docs/_site`. With no words, the recipe `docs` now runs it. With words, it runs
 `smalldocs api` as before. So the body of the recipe is a script of `sh`.
 
-[± See the change to `justfile`](#tut-14.2-justfile-424f0b){.btn .btn-sm .btn-secondary}
+[± See the change to `justfile`](#tut-14.2-justfile-424f0b-diff){.btn .btn-sm .btn-secondary}
 
 In the `justfile`, the recipe `docs` starts at line 79, with its comment. Line 85,
 `if [ "$#" -eq 0 ]; then exec uv run smalldocs render docs; fi`, is the case with no words.
@@ -95,6 +97,8 @@ of `.gitignore` from the move before keep them out of git.
 
 - <a id="tut-14.2-justfile-424f0b"></a>`justfile`: with no words, `docs` builds the site. 5 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/64de40516df5aa215bfac1c0198e898ac0960061/justfile){.btn .btn-sm .btn-secondary}
   - look at `    if [ "$#" -eq 0 ]; then exec uv run smalldocs render docs; fi`
+
+<a id="tut-14.2-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 

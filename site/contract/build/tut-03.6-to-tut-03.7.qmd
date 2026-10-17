@@ -57,6 +57,8 @@ git restore --source 43b7ea4eda99 --staged -- :/ && git restore --source abb4ece
 
 - <a id="tut-03.6-data-cheese-sample.jsonl-79f982"></a>`data/cheese/sample.jsonl`: each line is a request with a `state` and its `questions`. New, 5 lines. [The file](https://github.com/rahuldave/babykev/blob/abb4ece53e114b331e9e32d67309e1f54f9f964e/data/cheese/sample.jsonl){.btn .btn-sm .btn-secondary}
 
+<a id="tut-03.6-data-cheese-sample.jsonl-79f982-diff"></a>
+
 <details open><summary>The patch to <code>data/cheese/sample.jsonl</code></summary>
 
 ```diff
@@ -107,6 +109,8 @@ git fetch --quiet --tags --force origin; git restore --source abb4ece53e11 --sta
 
 - <a id="tut-03.7-README.md-8ec9a0"></a>`README.md`: the rows of the contract and the data. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/56606771fb23f7a0a01825f477050d2980a47736/README.md){.btn .btn-sm .btn-secondary}
   - look at ``| `data/cheese/sample.jsonl` | Five requests about cheese, one on each line. Every question has a `label`, the right answer |``
+
+<a id="tut-03.7-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 

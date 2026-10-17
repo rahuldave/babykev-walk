@@ -167,6 +167,8 @@ git rm --cached -q .env && rm .env
 - <a id="step-03-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: changes `run`, `test_an_unknown_command_is_refused_with_exit_code_2`, `test_help_is_printed_for_help_and_for_no_words`. 7 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/651cd62cf2d09d53225ed11c9befd7c2316ec1aa/tests/unit/test_cli.py){.btn .btn-sm .btn-secondary}
 - <a id="step-03-uv.lock-8356d8"></a>`uv.lock`: 192 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/651cd62cf2d09d53225ed11c9befd7c2316ec1aa/uv.lock){.btn .btn-sm .btn-secondary}
 
+<a id="step-03-.pre-commit-config.yaml-e7d14d-diff"></a>
+
 <details><summary>The diff of <code>.pre-commit-config.yaml</code></summary>
 
 ```diff
@@ -199,6 +201,8 @@ git rm --cached -q .env && rm .env
 
 </details>
 
+<a id="step-03-.yamllint-dfe50a-diff"></a>
+
 <details><summary>The diff of <code>.yamllint</code></summary>
 
 ```diff
@@ -212,6 +216,8 @@ git rm --cached -q .env && rm .env
 ```
 
 </details>
+
+<a id="step-03-README.md-8ec9a0-diff"></a>
 
 <details><summary>The diff of <code>README.md</code></summary>
 
@@ -237,6 +243,8 @@ git rm --cached -q .env && rm .env
 ```
 
 </details>
+
+<a id="step-03-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -291,6 +299,8 @@ git rm --cached -q .env && rm .env
 
 </details>
 
+<a id="step-03-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
 ```diff
@@ -309,6 +319,8 @@ git rm --cached -q .env && rm .env
 
 </details>
 
+<a id="step-03-src-babykev-__init__.py-a40393-diff"></a>
+
 <details><summary>The diff of <code>src/babykev/__init__.py</code></summary>
 
 ```diff
@@ -317,6 +329,8 @@ git rm --cached -q .env && rm .env
 ```
 
 </details>
+
+<a id="step-03-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -505,6 +519,8 @@ git rm --cached -q .env && rm .env
 ```
 
 </details>
+
+<a id="step-03-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
 
@@ -770,6 +786,8 @@ git rm --cached -q .env && rm .env
 ```
 
 </details>
+
+<a id="step-03-tests-unit-test_cli.py-44d4a0-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
 

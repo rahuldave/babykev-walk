@@ -47,7 +47,7 @@ Nothing asks for docstrings yet. The rules `D1` of the family `D`, pydocstyle, j
 part of the family that asks whether a docstring is there. The rest of the family checks how a docstring is written,
 and stays off.
 
-[± See the change to `pyproject.toml`](#tut-10.1-pyproject.toml-5d07e7){.btn .btn-sm .btn-secondary}
+[± See the change to `pyproject.toml`](#tut-10.1-pyproject.toml-5d07e7-diff){.btn .btn-sm .btn-secondary}
 
 In `pyproject.toml`, the line of `"D1"` is now line 64, the last of the list `select`.
 
@@ -64,6 +64,8 @@ is private, so it needs none.
 
 - <a id="tut-10.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the rules `D1`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/09ad56d2e465ac5b485ba5d1b077c540fd7c45ef/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `    "D1",  # pydocstyle: every public module, class and function has a docstring`
+
+<a id="tut-10.1-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -87,7 +89,7 @@ is private, so it needs none.
 `D104`: `src/babykev/__init__.py` is the package `babykev` itself, and it is empty. Its docstring says what babykev
 is, as the first line of the help of the command does.
 
-[± See the change to `src/babykev/__init__.py`](#tut-10.2-src-babykev-__init__.py-a40393){.btn .btn-sm .btn-secondary}
+[± See the change to `src/babykev/__init__.py`](#tut-10.2-src-babykev-__init__.py-a40393-diff){.btn .btn-sm .btn-secondary}
 
 `src/babykev/__init__.py` now has one line, the docstring of the package.
 
@@ -105,6 +107,8 @@ count a docstring.
 - <a id="tut-10.2-src-babykev-__init__.py-a40393"></a>`src/babykev/__init__.py`: the docstring of the package. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/7943e585faa81e4c0400f5e2e9ca7b42ce4bf286/src/babykev/__init__.py){.btn .btn-sm .btn-secondary}
   - look at `"""babykev: a small decision model. A state, typed questions, and a probability for every answer."""`
 
+<a id="tut-10.2-src-babykev-__init__.py-a40393-diff"></a>
+
 <details><summary>The diff of <code>src/babykev/__init__.py</code></summary>
 
 ```diff
@@ -121,7 +125,7 @@ count a docstring.
 `D101`: `Noul`, `Choice`, `Score` and `SystemOneRequest` are the classes of a request, and none has a docstring.
 Each gets one line, under its `class` line, that says what it is.
 
-[± See the change to `src/babykev/api.py`](#tut-10.3-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
+[± See the change to `src/babykev/api.py`](#tut-10.3-src-babykev-api.py-2ea65f-diff){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/api.py`, the docstrings of the classes are on lines 17, 25, 39 and 50, under the lines of `Noul`,
 `Choice`, `Score` and `SystemOneRequest`.
@@ -138,6 +142,8 @@ the levels in order.` `just lint --statistics` prints 3 problems, all `D103`.
 
 - <a id="tut-10.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring on each class of a request. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/9a769c7d9551fb181bf7c36d989f94f35f836c2d/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `    """A question answered by a level of a scale, whose criteria are the levels in order."""`
+
+<a id="tut-10.3-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -189,7 +195,7 @@ the levels in order.` `just lint --statistics` prints 3 problems, all `D103`.
 line, that says what it does. The docstring of `choice_confidence` gives the two ends of its scale, as the docstring
 of `score_confidence` does.
 
-[± See the change to `src/babykev/api.py`](#tut-10.4-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
+[± See the change to `src/babykev/api.py`](#tut-10.4-src-babykev-api.py-2ea65f-diff){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/api.py`, the docstrings of the functions are on lines 74, 104 and 131, under the lines of
 `option_text`, `choice_confidence` and `to_answers`.
@@ -209,6 +215,8 @@ test` prints `53 passed`, and the total is 100%, 83 of 83 statements.
 
 - <a id="tut-10.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring on each of the three functions. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/ebd0888f135c00e29b583f6fad0575c290fd4876/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `    """Measure how far the most likely option stands above a guess: 1 if certain, 0 for a guess."""`
+
+<a id="tut-10.4-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 

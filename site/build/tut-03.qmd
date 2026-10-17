@@ -66,6 +66,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-02 --staged --
   - look at `"pydantic>=2.14.1",`
 - <a id="tut-03.1-uv.lock-8356d8"></a>`uv.lock`: pydantic and the four packages it needs, each with its exact version. 136 lines added. It comes from `uv add pydantic`. [The file](https://github.com/rahuldave/babykev/blob/96502df0a92f6f7090d6f624cda901a271dac9a7/uv.lock){.btn .btn-sm .btn-secondary}
 
+<a id="tut-03.1-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff that <code>uv add pydantic</code> makes in <code>pyproject.toml</code></summary>
 
 ```diff
@@ -130,6 +132,8 @@ git restore --source 96502df0a92f --staged -- :/ && git restore --source e8e2e72
 
 - <a id="tut-03.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a request has a state and its questions by name. Each question is a `Noul`, a `Choice` or a `Score`, and its field `type` says which. New, 111 lines. [The file](https://github.com/rahuldave/babykev/blob/e8e2e72adad9364a58be21dadf6d757e84436b97/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `class SystemOneRequest(BaseModel):`
+
+<a id="tut-03.2-src-babykev-api.py-2ea65f-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
@@ -288,6 +292,8 @@ git restore --source e8e2e72adad9 --staged -- :/ && git restore --source 9361895
 - <a id="tut-03.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the docstring. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/93618951b784e928af3d3547f077bb49bff4d5da/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `"""The contract: request and answer shapes, mapped onto the single pointer primitive.`
 
+<a id="tut-03.3-src-babykev-api.py-2ea65f-diff"></a>
+
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
 ```diff
@@ -337,6 +343,8 @@ git restore --source 93618951b784 --staged -- :/ && git restore --source 5cce9c9
 
 - <a id="tut-03.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a request has two fields, `state` and `questions`. 0 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/5cce9c9e5025336d501298d244389b64c696737c/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `    questions: dict[str, Question] = Field(min_length=1)`
+
+<a id="tut-03.4-src-babykev-api.py-2ea65f-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
@@ -389,6 +397,8 @@ git restore --source 5cce9c9e5025 --staged -- :/ && git restore --source 43b7ea4
 ### What changed {#tut-03.5-what-changed-182c57}
 
 - <a id="tut-03.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the function goes. 0 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/43b7ea4eda990f90abd605920e2fb1d9b376378d/src/babykev/api.py){.btn .btn-sm .btn-secondary}
+
+<a id="tut-03.5-src-babykev-api.py-2ea65f-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
@@ -446,6 +456,8 @@ git restore --source 43b7ea4eda99 --staged -- :/ && git restore --source abb4ece
 
 - <a id="tut-03.6-data-cheese-sample.jsonl-79f982"></a>`data/cheese/sample.jsonl`: each line is a request with a `state` and its `questions`. New, 5 lines. [The file](https://github.com/rahuldave/babykev/blob/abb4ece53e114b331e9e32d67309e1f54f9f964e/data/cheese/sample.jsonl){.btn .btn-sm .btn-secondary}
 
+<a id="tut-03.6-data-cheese-sample.jsonl-79f982-diff"></a>
+
 <details open><summary>The patch to <code>data/cheese/sample.jsonl</code></summary>
 
 ```diff
@@ -496,6 +508,8 @@ git fetch --quiet --tags --force origin; git restore --source abb4ece53e11 --sta
 
 - <a id="tut-03.7-README.md-8ec9a0"></a>`README.md`: the rows of the contract and the data. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/56606771fb23f7a0a01825f477050d2980a47736/README.md){.btn .btn-sm .btn-secondary}
   - look at ``| `data/cheese/sample.jsonl` | Five requests about cheese, one on each line. Every question has a `label`, the right answer |``
+
+<a id="tut-03.7-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 

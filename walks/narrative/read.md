@@ -69,6 +69,8 @@ cat pyproject.toml
 - <a id="step-00-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: adds `main`. New, 21 lines. [The file](https://github.com/rahuldave/babykev/blob/ee96429002cd04cb95e86e9a77e9c3d02a0e9497/src/babykev/cli.py).
 - <a id="step-00-uv.lock-8356d8"></a>`uv.lock`: New, 8 lines. [The file](https://github.com/rahuldave/babykev/blob/ee96429002cd04cb95e86e9a77e9c3d02a0e9497/uv.lock).
 
+<a id="step-00-.gitignore-a5cc29-diff"></a>
+
 <details><summary>The diff of <code>.gitignore</code></summary>
 
 ```diff
@@ -134,6 +136,8 @@ cat pyproject.toml
 
 </details>
 
+<a id="step-00-.python-version-7696e9-diff"></a>
+
 <details><summary>The diff of <code>.python-version</code></summary>
 
 ```diff
@@ -142,6 +146,8 @@ cat pyproject.toml
 ```
 
 </details>
+
+<a id="step-00-LICENSE-0398cc-diff"></a>
 
 <details><summary>The diff of <code>LICENSE</code></summary>
 
@@ -353,6 +359,8 @@ cat pyproject.toml
 
 </details>
 
+<a id="step-00-NOTICE-fe7187-diff"></a>
+
 <details><summary>The diff of <code>NOTICE</code></summary>
 
 ```diff
@@ -368,6 +376,8 @@ cat pyproject.toml
 ```
 
 </details>
+
+<a id="step-00-README.md-8ec9a0-diff"></a>
 
 <details><summary>The diff of <code>README.md</code></summary>
 
@@ -457,6 +467,8 @@ cat pyproject.toml
 
 </details>
 
+<a id="step-00-justfile-424f0b-diff"></a>
+
 <details><summary>The diff of <code>justfile</code></summary>
 
 ```diff
@@ -491,6 +503,8 @@ cat pyproject.toml
 
 </details>
 
+<a id="step-00-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
 ```diff
@@ -515,6 +529,8 @@ cat pyproject.toml
 ```
 
 </details>
+
+<a id="step-00-src-babykev-cli.py-a9e184-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/cli.py</code></summary>
 
@@ -641,6 +657,8 @@ sed -i '' 's/option_text("no", c.get("false"))/option_text("NO", c.get("false"))
 - <a id="step-01-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: adds `run`, `test_an_unknown_command_is_refused_with_exit_code_2`, `test_help_is_printed_for_help_and_for_no_words`. New, 28 lines. [The file](https://github.com/rahuldave/babykev/blob/9cc0343527b93a817207a11a2866752807f0013d/tests/unit/test_cli.py).
 - <a id="step-01-uv.lock-8356d8"></a>`uv.lock`: 286 lines added. [The file](https://github.com/rahuldave/babykev/blob/9cc0343527b93a817207a11a2866752807f0013d/uv.lock).
 
+<a id="step-01-README.md-8ec9a0-diff"></a>
+
 <details><summary>The diff of <code>README.md</code></summary>
 
 ```diff
@@ -680,6 +698,8 @@ sed -i '' 's/option_text("no", c.get("false"))/option_text("NO", c.get("false"))
 
 </details>
 
+<a id="step-01-data-cheese-sample.jsonl-79f982-diff"></a>
+
 <details><summary>The diff of <code>data/cheese/sample.jsonl</code></summary>
 
 ```diff
@@ -692,6 +712,8 @@ sed -i '' 's/option_text("no", c.get("false"))/option_text("NO", c.get("false"))
 ```
 
 </details>
+
+<a id="step-01-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -711,6 +733,8 @@ sed -i '' 's/option_text("no", c.get("false"))/option_text("NO", c.get("false"))
 ```
 
 </details>
+
+<a id="step-01-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -745,6 +769,8 @@ sed -i '' 's/option_text("no", c.get("false"))/option_text("NO", c.get("false"))
 ```
 
 </details>
+
+<a id="step-01-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -857,6 +883,8 @@ sed -i '' 's/option_text("no", c.get("false"))/option_text("NO", c.get("false"))
 ```
 
 </details>
+
+<a id="step-01-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
 
@@ -1159,6 +1187,8 @@ sed -i '' 's/option_text("no", c.get("false"))/option_text("NO", c.get("false"))
 
 </details>
 
+<a id="step-01-tests-unit-test_cli.py-44d4a0-diff"></a>
+
 <details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
 
 ```diff
@@ -1341,6 +1371,8 @@ just lint --statistics
 - <a id="step-02-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: adds `round_prob`; changes `score_confidence`, `to_answers`; removes `r2`. 20 lines added, 10 removed. [The file](https://github.com/rahuldave/babykev/blob/4681f251318456e721cb4a7dcecbb9f73d3589cf/src/babykev/api.py).
 - <a id="step-02-uv.lock-8356d8"></a>`uv.lock`: 31 lines added. [The file](https://github.com/rahuldave/babykev/blob/4681f251318456e721cb4a7dcecbb9f73d3589cf/uv.lock).
 
+<a id="step-02-README.md-8ec9a0-diff"></a>
+
 <details><summary>The diff of <code>README.md</code></summary>
 
 ```diff
@@ -1366,6 +1398,8 @@ just lint --statistics
 ```
 
 </details>
+
+<a id="step-02-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -1402,6 +1436,8 @@ just lint --statistics
 ```
 
 </details>
+
+<a id="step-02-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -1458,6 +1494,8 @@ just lint --statistics
 ```
 
 </details>
+
+<a id="step-02-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -1674,6 +1712,8 @@ git rm --cached -q .env && rm .env
 - <a id="step-03-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: changes `run`, `test_an_unknown_command_is_refused_with_exit_code_2`, `test_help_is_printed_for_help_and_for_no_words`. 7 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/651cd62cf2d09d53225ed11c9befd7c2316ec1aa/tests/unit/test_cli.py).
 - <a id="step-03-uv.lock-8356d8"></a>`uv.lock`: 192 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/651cd62cf2d09d53225ed11c9befd7c2316ec1aa/uv.lock).
 
+<a id="step-03-.pre-commit-config.yaml-e7d14d-diff"></a>
+
 <details><summary>The diff of <code>.pre-commit-config.yaml</code></summary>
 
 ```diff
@@ -1706,6 +1746,8 @@ git rm --cached -q .env && rm .env
 
 </details>
 
+<a id="step-03-.yamllint-dfe50a-diff"></a>
+
 <details><summary>The diff of <code>.yamllint</code></summary>
 
 ```diff
@@ -1719,6 +1761,8 @@ git rm --cached -q .env && rm .env
 ```
 
 </details>
+
+<a id="step-03-README.md-8ec9a0-diff"></a>
 
 <details><summary>The diff of <code>README.md</code></summary>
 
@@ -1744,6 +1788,8 @@ git rm --cached -q .env && rm .env
 ```
 
 </details>
+
+<a id="step-03-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -1798,6 +1844,8 @@ git rm --cached -q .env && rm .env
 
 </details>
 
+<a id="step-03-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
 ```diff
@@ -1816,6 +1864,8 @@ git rm --cached -q .env && rm .env
 
 </details>
 
+<a id="step-03-src-babykev-__init__.py-a40393-diff"></a>
+
 <details><summary>The diff of <code>src/babykev/__init__.py</code></summary>
 
 ```diff
@@ -1824,6 +1874,8 @@ git rm --cached -q .env && rm .env
 ```
 
 </details>
+
+<a id="step-03-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -2012,6 +2064,8 @@ git rm --cached -q .env && rm .env
 ```
 
 </details>
+
+<a id="step-03-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
 
@@ -2278,6 +2332,8 @@ git rm --cached -q .env && rm .env
 
 </details>
 
+<a id="step-03-tests-unit-test_cli.py-44d4a0-diff"></a>
+
 <details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
 
 ```diff
@@ -2471,6 +2527,8 @@ just check
 - <a id="step-04-tests-unit-test_docs.py-31dd08"></a>`tests/unit/test_docs.py`: adds `_hidden`, `bare`, `class Box`, `class Thing`, `example`, `greet`, `size`, `span`, `test_a_return_that_is_not_none_needs_a_docment`, `test_an_unknown_module_is_a_lookup_error`, `test_check_holds_the_tests_to_the_convention_too`, `test_check_prints_a_count_per_module_then_every_gap_and_fails`, `test_gaps_names_what_each_symbol_is_missing`, `test_help_and_a_bad_word`, `test_inventory_knows_the_line_of_each_symbol`, `test_inventory_lists_the_public_symbols_in_source_order`, `test_list_prints_one_line_per_symbol`, `test_markdown_has_a_heading_a_signature_a_docstring_and_a_table_per_function`, `test_markdown_has_no_links_and_no_ids`, `test_markdown_shows_a_class_and_its_public_methods_only`, `test_markdown_shows_a_pydantic_model_as_a_table_of_fields`, `test_markdown_writes_a_type_alias_by_its_name`, `test_module_prints_the_markdown_and_an_unknown_name_is_refused`. New, 265 lines. [The file](https://github.com/rahuldave/babykev/blob/d27a7f152ade46e9024f0b97481b85fcce07a16c/tests/unit/test_docs.py).
 - <a id="step-04-uv.lock-8356d8"></a>`uv.lock`: 14 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/d27a7f152ade46e9024f0b97481b85fcce07a16c/uv.lock).
 
+<a id="step-04-README.md-8ec9a0-diff"></a>
+
 <details><summary>The diff of <code>README.md</code></summary>
 
 ```diff
@@ -2514,6 +2572,8 @@ just check
 
 </details>
 
+<a id="step-04-docs-.gitignore-402aec-diff"></a>
+
 <details><summary>The diff of <code>docs/.gitignore</code></summary>
 
 ```diff
@@ -2523,6 +2583,8 @@ just check
 ```
 
 </details>
+
+<a id="step-04-docs-_quarto.yml-ee884f-diff"></a>
 
 <details><summary>The diff of <code>docs/_quarto.yml</code></summary>
 
@@ -2551,6 +2613,8 @@ just check
 ```
 
 </details>
+
+<a id="step-04-docs-apidocs.py-e63616-diff"></a>
 
 <details><summary>The diff of <code>docs/apidocs.py</code></summary>
 
@@ -2646,6 +2710,8 @@ just check
 
 </details>
 
+<a id="step-04-docs-index.qmd-d6d880-diff"></a>
+
 <details><summary>The diff of <code>docs/index.qmd</code></summary>
 
 ```diff
@@ -2675,6 +2741,8 @@ just check
 
 </details>
 
+<a id="step-04-docs-linkify.lua-9e5197-diff"></a>
+
 <details><summary>The diff of <code>docs/linkify.lua</code></summary>
 
 ```diff
@@ -2701,6 +2769,8 @@ just check
 ```
 
 </details>
+
+<a id="step-04-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -2740,6 +2810,8 @@ just check
 
 </details>
 
+<a id="step-04-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
 ```diff
@@ -2766,6 +2838,8 @@ just check
 ```
 
 </details>
+
+<a id="step-04-src-babykev-cli.py-a9e184-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/cli.py</code></summary>
 
@@ -2806,6 +2880,8 @@ just check
 ```
 
 </details>
+
+<a id="step-04-src-babykev-docs.py-267fa4-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/docs.py</code></summary>
 
@@ -3222,6 +3298,8 @@ just check
 
 </details>
 
+<a id="step-04-tests-unit-test_cli.py-44d4a0-diff"></a>
+
 <details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
 
 ```diff
@@ -3248,6 +3326,8 @@ just check
 ```
 
 </details>
+
+<a id="step-04-tests-unit-test_docs.py-31dd08-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_docs.py</code></summary>
 
@@ -3606,6 +3686,8 @@ just check
 - <a id="step-04b-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: changes `run`, `test_an_unknown_command_is_refused_with_exit_code_2`, `test_docs_is_passed_to_the_docs_command`, `test_help_is_printed_for_help_and_for_no_words`. 11 lines added, 4 removed. [The file](https://github.com/rahuldave/babykev/blob/a9a391de1f271392a948cdd16afe2f3b1cfdd437/tests/unit/test_cli.py).
 - <a id="step-04b-tests-unit-test_docs.py-31dd08"></a>`tests/unit/test_docs.py`: changes `example`, `test_a_return_that_is_not_none_needs_a_docment`, `test_an_unknown_module_is_a_lookup_error`, `test_check_holds_the_tests_to_the_convention_too`, `test_check_prints_a_count_per_module_then_every_gap_and_fails`, `test_gaps_names_what_each_symbol_is_missing`, `test_help_and_a_bad_word`, `test_inventory_knows_the_line_of_each_symbol`, `test_inventory_lists_the_public_symbols_in_source_order`, `test_list_prints_one_line_per_symbol`, `test_markdown_has_a_heading_a_signature_a_docstring_and_a_table_per_function`, `test_markdown_has_no_links_and_no_ids`, `test_markdown_shows_a_class_and_its_public_methods_only`, `test_markdown_shows_a_pydantic_model_as_a_table_of_fields`, `test_markdown_writes_a_type_alias_by_its_name`, `test_module_prints_the_markdown_and_an_unknown_name_is_refused`. 41 lines added, 16 removed. [The file](https://github.com/rahuldave/babykev/blob/a9a391de1f271392a948cdd16afe2f3b1cfdd437/tests/unit/test_docs.py).
 
+<a id="step-04b-README.md-8ec9a0-diff"></a>
+
 <details><summary>The diff of <code>README.md</code></summary>
 
 ```diff
@@ -3622,6 +3704,8 @@ just check
 ```
 
 </details>
+
+<a id="step-04b-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -3646,6 +3730,8 @@ just check
 ```
 
 </details>
+
+<a id="step-04b-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -3788,6 +3874,8 @@ just check
 
 </details>
 
+<a id="step-04b-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -3860,6 +3948,8 @@ just check
 
 </details>
 
+<a id="step-04b-tests-unit-test_cli.py-44d4a0-diff"></a>
+
 <details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
 
 ```diff
@@ -3909,6 +3999,8 @@ just check
 ```
 
 </details>
+
+<a id="step-04b-tests-unit-test_docs.py-31dd08-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_docs.py</code></summary>
 
@@ -4311,6 +4403,8 @@ EOF
 - <a id="step-05-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: adds `test_smoke_reports_on_every_question_of_the_sample`, `test_verdict_agrees_when_the_answer_is_the_label`, `test_verdict_reads_a_noul_answer_as_yes_from_one_half`, `test_verdict_reads_a_score_answer_as_its_most_likely_level`. New, 44 lines. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/tests/unit/test_smoke.py).
 - <a id="step-05-uv.lock-8356d8"></a>`uv.lock`: 766 lines added, 13 removed. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/uv.lock).
 
+<a id="step-05-README.md-8ec9a0-diff"></a>
+
 <details><summary>The diff of <code>README.md</code></summary>
 
 ```diff
@@ -4363,6 +4457,8 @@ EOF
 
 </details>
 
+<a id="step-05-justfile-424f0b-diff"></a>
+
 <details><summary>The diff of <code>justfile</code></summary>
 
 ```diff
@@ -4397,6 +4493,8 @@ EOF
 ```
 
 </details>
+
+<a id="step-05-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -4459,6 +4557,8 @@ EOF
 
 </details>
 
+<a id="step-05-src-babykev-cli.py-a9e184-diff"></a>
+
 <details><summary>The diff of <code>src/babykev/cli.py</code></summary>
 
 ```diff
@@ -4483,6 +4583,8 @@ EOF
 ```
 
 </details>
+
+<a id="step-05-src-babykev-docs.py-267fa4-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/docs.py</code></summary>
 
@@ -4654,6 +4756,8 @@ EOF
 ```
 
 </details>
+
+<a id="step-05-src-babykev-model.py-a86a0b-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/model.py</code></summary>
 
@@ -4895,6 +4999,8 @@ EOF
 
 </details>
 
+<a id="step-05-src-babykev-smoke.py-76d2ec-diff"></a>
+
 <details><summary>The diff of <code>src/babykev/smoke.py</code></summary>
 
 ```diff
@@ -5025,6 +5131,8 @@ EOF
 
 </details>
 
+<a id="step-05-tests-conftest.py-626af3-diff"></a>
+
 <details><summary>The diff of <code>tests/conftest.py</code></summary>
 
 ```diff
@@ -5072,6 +5180,8 @@ EOF
 ```
 
 </details>
+
+<a id="step-05-tests-tiny.py-70c1c9-diff"></a>
 
 <details><summary>The diff of <code>tests/tiny.py</code></summary>
 
@@ -5127,6 +5237,8 @@ EOF
 
 </details>
 
+<a id="step-05-tests-unit-test_cli.py-44d4a0-diff"></a>
+
 <details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
 
 ```diff
@@ -5149,6 +5261,8 @@ EOF
 ```
 
 </details>
+
+<a id="step-05-tests-unit-test_docs.py-31dd08-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_docs.py</code></summary>
 
@@ -5308,6 +5422,8 @@ EOF
 ````
 
 </details>
+
+<a id="step-05-tests-unit-test_model.py-583145-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
 
@@ -5507,6 +5623,8 @@ EOF
 
 </details>
 
+<a id="step-05-tests-unit-test_smoke.py-89db04-diff"></a>
+
 <details><summary>The diff of <code>tests/unit/test_smoke.py</code></summary>
 
 ```diff
@@ -5702,6 +5820,8 @@ just test -k notebook
 - <a id="step-05a-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: adds `test_a_question_cannot_see_its_sibling`, `test_packed_equals_separate_for_any_record`, `test_packed_questions_answer_as_they_would_alone`, `test_the_order_of_questions_does_not_matter`; changes `test_a_packed_record_has_exactly_the_delimiters_its_shape_needs`, `test_a_tokenizer_alone_would_let_text_forge_a_delimiter`, `test_packing_marks_every_part_with_its_delimiter`, `test_user_text_cannot_forge_a_delimiter`. 69 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/tests/unit/test_model.py).
 - <a id="step-05a-tests-unit-test_notebooks.py-057539"></a>`tests/unit/test_notebooks.py`: adds `printed`, `test_notebook_prints_what_its_stored_outputs_show`, `test_there_is_a_notebook_to_check`. New, 42 lines. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/tests/unit/test_notebooks.py).
 
+<a id="step-05a-README.md-8ec9a0-diff"></a>
+
 <details><summary>The diff of <code>README.md</code></summary>
 
 ```diff
@@ -5740,6 +5860,8 @@ just test -k notebook
 
 </details>
 
+<a id="step-05a-docs-_quarto.yml-ee884f-diff"></a>
+
 <details><summary>The diff of <code>docs/_quarto.yml</code></summary>
 
 ```diff
@@ -5755,6 +5877,8 @@ just test -k notebook
 ```
 
 </details>
+
+<a id="step-05a-docs-guide-00_model.qmd-42835e-diff"></a>
 
 <details><summary>The diff of <code>docs/guide/00_model.qmd</code></summary>
 
@@ -5818,6 +5942,8 @@ just test -k notebook
 ```
 
 </details>
+
+<a id="step-05a-docs-guide-01_mask.ipynb-f6e9ba-diff"></a>
 
 <details><summary>The diff of <code>docs/guide/01_mask.ipynb</code></summary>
 
@@ -6092,6 +6218,8 @@ just test -k notebook
 
 </details>
 
+<a id="step-05a-justfile-424f0b-diff"></a>
+
 <details><summary>The diff of <code>justfile</code></summary>
 
 ```diff
@@ -6116,6 +6244,8 @@ just test -k notebook
 
 </details>
 
+<a id="step-05a-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
 ```diff
@@ -6132,6 +6262,8 @@ just test -k notebook
 ```
 
 </details>
+
+<a id="step-05a-src-babykev-model.py-a86a0b-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/model.py</code></summary>
 
@@ -6178,6 +6310,8 @@ just test -k notebook
 
 </details>
 
+<a id="step-05a-tests-conftest.py-626af3-diff"></a>
+
 <details><summary>The diff of <code>tests/conftest.py</code></summary>
 
 ```diff
@@ -6199,6 +6333,8 @@ just test -k notebook
 ```
 
 </details>
+
+<a id="step-05a-tests-unit-test_mask.py-aeb55a-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_mask.py</code></summary>
 
@@ -6285,6 +6421,8 @@ just test -k notebook
 ```
 
 </details>
+
+<a id="step-05a-tests-unit-test_model.py-583145-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
 
@@ -6412,6 +6550,8 @@ just test -k notebook
 ```
 
 </details>
+
+<a id="step-05a-tests-unit-test_notebooks.py-057539-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_notebooks.py</code></summary>
 
@@ -6675,6 +6815,8 @@ just docs publish
 - <a id="step-05b-tests-system-test_real_model.py-df0b9d"></a>`tests/system/test_real_model.py`: adds `test_the_real_model_answers_every_sample_question`. New, 27 lines. [The file](https://github.com/rahuldave/babykev/blob/47b43c0916ac186e3efdf42e15dbcf1f04edb1a0/tests/system/test_real_model.py).
 - <a id="step-05b-uv.lock-8356d8"></a>`uv.lock`: 158 lines added, 108 removed. [The file](https://github.com/rahuldave/babykev/blob/47b43c0916ac186e3efdf42e15dbcf1f04edb1a0/uv.lock).
 
+<a id="step-05b-.dockerignore-05a721-diff"></a>
+
 <details><summary>The diff of <code>.dockerignore</code></summary>
 
 ```diff
@@ -6708,6 +6850,8 @@ just docs publish
 ```
 
 </details>
+
+<a id="step-05b-Dockerfile-6651dd-diff"></a>
 
 <details><summary>The diff of <code>Dockerfile</code></summary>
 
@@ -6794,6 +6938,8 @@ just docs publish
 
 </details>
 
+<a id="step-05b-README.md-8ec9a0-diff"></a>
+
 <details><summary>The diff of <code>README.md</code></summary>
 
 ````diff
@@ -6874,6 +7020,8 @@ just docs publish
 ````
 
 </details>
+
+<a id="step-05b-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -7006,6 +7154,8 @@ just docs publish
 
 </details>
 
+<a id="step-05b-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
 ```diff
@@ -7034,6 +7184,8 @@ just docs publish
 ```
 
 </details>
+
+<a id="step-05b-tests-system-test_real_model.py-df0b9d-diff"></a>
 
 <details><summary>The diff of <code>tests/system/test_real_model.py</code></summary>
 

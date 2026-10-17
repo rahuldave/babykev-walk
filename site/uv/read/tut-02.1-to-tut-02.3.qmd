@@ -36,7 +36,7 @@ uv installs only the group `dev` by default. The setting `default-groups = "all"
 install every group. So each later `uv add --group` needs no other change to `pyproject.toml`. A patch adds the
 table `[tool.uv]` with this setting.
 
-[± See the change to `pyproject.toml`](#tut-02.1-pyproject.toml-5d07e7){.btn .btn-sm .btn-secondary}
+[± See the change to `pyproject.toml`](#tut-02.1-pyproject.toml-5d07e7-diff){.btn .btn-sm .btn-secondary}
 
 At the end of `pyproject.toml`, the new table `[tool.uv]` has the line `default-groups = "all"`, with a comment above
 it.
@@ -54,6 +54,8 @@ later move adds one.
 
 - <a id="tut-02.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the table `[tool.uv]`, so uv installs every dependency group. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/ad616a5cc1fcdf5b7c1672b79d0d2b267b72bd59/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `default-groups = "all"`
+
+<a id="tut-02.1-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -100,6 +102,8 @@ code 5. pytest uses exit code 5 to say that it found no test.
   - look at `"pytest>=9.1.1",`
 - <a id="tut-02.2-uv.lock-8356d8"></a>`uv.lock`: pytest and the five packages it needs. 71 lines added. It comes from `uv add --group test pytest`. [The file](https://github.com/rahuldave/babykev/blob/966956d738b58505e23586af60f05cd5daceb12f/uv.lock){.btn .btn-sm .btn-secondary}
 
+<a id="tut-02.2-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
 ```diff
@@ -123,7 +127,7 @@ code 5. pytest uses exit code 5 to say that it found no test.
 The command that runs the tests is `uv run pytest`, and every task of the project has a recipe. A recipe `test` gives
 the command a short name.
 
-[± See the change to `justfile`](#tut-02.3-justfile-424f0b){.btn .btn-sm .btn-secondary}
+[± See the change to `justfile`](#tut-02.3-justfile-424f0b-diff){.btn .btn-sm .btn-secondary}
 
 At the end of `justfile`, the recipe `test` runs `uv run pytest "$@"`. It sits under a new heading, `quality`.
 
@@ -144,6 +148,8 @@ exit code 5. `just` prints no line of its own about the error. `just help test` 
 
 - <a id="tut-02.3-justfile-424f0b"></a>`justfile`: the recipe `test`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/b0840709e371a548d4b922c57c679ba040dd2c1a/justfile){.btn .btn-sm .btn-secondary}
   - look at `test *args:`
+
+<a id="tut-02.3-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 

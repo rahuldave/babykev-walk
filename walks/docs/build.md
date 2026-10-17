@@ -210,6 +210,8 @@ git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch --
 - <a id="tut-00-README.md-8ec9a0"></a>`README.md`: what babykev is, and the request it reads. The table gives the three types of question. New, 74 lines. [The file](https://github.com/rahuldave/babykev/blob/70ac5b0a0a1d927dfc4da6f8b7b92344917e4a33/README.md).
   - look at ``| `noul` | Yes or no | The probability of yes |``
 
+<a id="tut-00-.gitignore-a5cc29-diff"></a>
+
 <details><summary>The diff of <code>.gitignore</code></summary>
 
 ```diff
@@ -438,6 +440,8 @@ git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch --
 
 </details>
 
+<a id="tut-00-LICENSE-0398cc-diff"></a>
+
 <details><summary>The diff of <code>LICENSE</code></summary>
 
 ```diff
@@ -648,6 +652,8 @@ git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch --
 
 </details>
 
+<a id="tut-00-NOTICE-fe7187-diff"></a>
+
 <details><summary>The diff of <code>NOTICE</code></summary>
 
 ```diff
@@ -663,6 +669,8 @@ git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch --
 ```
 
 </details>
+
+<a id="tut-00-README.md-8ec9a0-diff"></a>
 
 <details><summary>The diff of <code>README.md</code></summary>
 
@@ -812,6 +820,8 @@ git restore --source 9218f21a7842 --staged -- :/ && git restore --source 0d2e163
 - <a id="tut-01.13-README.md-8ec9a0"></a>`README.md`: how to start. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/0d2e163cca5d3eeb9fc8f7223fddd8d7da735fde/README.md).
   - look at ``Run `just setup` first. It installs Python and every dependency into `.venv`, exactly as `uv.lock` says.``
 
+<a id="tut-01.13-README.md-8ec9a0-diff"></a>
+
 <details open><summary>The patch to <code>README.md</code></summary>
 
 ```diff
@@ -873,6 +883,8 @@ git fetch --quiet --tags --force origin; git restore --source 0d2e163cca5d --sta
 
 - <a id="tut-01.14-README.md-8ec9a0"></a>`README.md`: a table of the files. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/7ad3a06605fadc9f34b5e2d8180145a3e53389a9/README.md).
   - look at ``| `justfile` | Every task of the project, one recipe each. `just help` explains them |``
+
+<a id="tut-01.14-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 
@@ -1022,6 +1034,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-09 --staged --
 - <a id="tut-10.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the rules `D1`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/09ad56d2e465ac5b485ba5d1b077c540fd7c45ef/pyproject.toml).
   - look at `    "D1",  # pydocstyle: every public module, class and function has a docstring`
 
+<a id="tut-10.1-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -1080,6 +1094,8 @@ git restore --source 09ad56d2e465 --staged -- :/ && git restore --source 7943e58
 - <a id="tut-10.2-src-babykev-__init__.py-a40393"></a>`src/babykev/__init__.py`: the docstring of the package. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/7943e585faa81e4c0400f5e2e9ca7b42ce4bf286/src/babykev/__init__.py).
   - look at `"""babykev: a small decision model. A state, typed questions, and a probability for every answer."""`
 
+<a id="tut-10.2-src-babykev-__init__.py-a40393-diff"></a>
+
 <details open><summary>The patch to <code>src/babykev/__init__.py</code></summary>
 
 ```diff
@@ -1130,6 +1146,8 @@ git restore --source 7943e585faa8 --staged -- :/ && git restore --source 9a769c7
 
 - <a id="tut-10.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring on each class of a request. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/9a769c7d9551fb181bf7c36d989f94f35f836c2d/src/babykev/api.py).
   - look at `    """A question answered by a level of a scale, whose criteria are the levels in order."""`
+
+<a id="tut-10.3-src-babykev-api.py-2ea65f-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
@@ -1218,6 +1236,8 @@ git fetch --quiet --tags --force origin; git restore --source 9a769c7d9551 --sta
 
 - <a id="tut-10.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring on each of the three functions. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/ebd0888f135c00e29b583f6fad0575c290fd4876/src/babykev/api.py).
   - look at `    """Measure how far the most likely option stands above a guess: 1 if certain, 0 for a guess."""`
+
+<a id="tut-10.4-src-babykev-api.py-2ea65f-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
@@ -1330,6 +1350,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-12 --staged --
   - look at `"smalldocs>=0.1.5",`
 - <a id="tut-13.1-uv.lock-8356d8"></a>`uv.lock`: the exact version of smalldocs, and of the packages that it needs. 62 lines added. It comes from `uv add --group docs smalldocs`. [The file](https://github.com/rahuldave/babykev/blob/609d58ce5f8c0fb8e7b60548c8ee097766446ff5/uv.lock).
 
+<a id="tut-13.1-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff that <code>uv add --group docs smalldocs</code> makes in <code>pyproject.toml</code></summary>
 
 ```diff
@@ -1407,6 +1429,8 @@ git restore --source 609d58ce5f8c --staged -- :/ && git restore --source 4444b1e
 - <a id="tut-13.2-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the package to document, and the tests to check. New, 5 lines. [The file](https://github.com/rahuldave/babykev/blob/4444b1e809427e92a5dc08a9e9fdbbddab7de830/docs/_smalldocs.yml).
   - look at `  packages: [babykev]`
 
+<a id="tut-13.2-docs-_smalldocs.yml-4b0b48-diff"></a>
+
 <details open><summary>The patch to <code>docs/_smalldocs.yml</code></summary>
 
 ```diff
@@ -1461,6 +1485,8 @@ git restore --source 4444b1e80942 --staged -- :/ && git restore --source a582ad3
 
 - <a id="tut-13.3-justfile-424f0b"></a>`justfile`: the recipe `docs`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/a582ad38e75bb188174b75a5e80405cebcd1259d/justfile).
   - look at `docs *args:`
+
+<a id="tut-13.3-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -1526,6 +1552,8 @@ git restore --source a582ad38e75b --staged -- :/ && git restore --source ae28dff
 
 - <a id="tut-13.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docment on each parameter and each return of seven functions. 24 lines added, 7 removed. [The file](https://github.com/rahuldave/babykev/blob/ae28dff704c768a862e416a894ac42443ab3468c/src/babykev/api.py).
   - look at `) -> str:  # The text that the model sees`
+
+<a id="tut-13.4-src-babykev-api.py-2ea65f-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
@@ -1649,6 +1677,8 @@ git restore --source ae28dff704c7 --staged -- :/ && git restore --source a064e34
 - <a id="tut-13.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring and a docment for `_check`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a064e34557be7fc006863c995c8cd39e85491b31/src/babykev/api.py).
   - look at `    def _check(self) -> Self:  # The choice itself, unchanged`
 
+<a id="tut-13.5-src-babykev-api.py-2ea65f-diff"></a>
+
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
 ```diff
@@ -1712,6 +1742,8 @@ git restore --source a064e34557be --staged -- :/ && git restore --source 6ad6c02
 
 - <a id="tut-13.6-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a description on every field of the four classes. 22 lines added, 11 removed. [The file](https://github.com/rahuldave/babykev/blob/6ad6c02267070b7c260934e3165ea40aeb49a035/src/babykev/api.py).
   - look at `    type: Literal["noul"] = Field(description="Marks the question as one of yes or no")`
+
+<a id="tut-13.6-src-babykev-api.py-2ea65f-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
@@ -1828,6 +1860,8 @@ git restore --source 6ad6c0226707 --staged -- :/ && git restore --source 28caad3
 - <a id="tut-13.7-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: a docment on each parameter. 9 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/28caad31e7a7fbab5acefd39c2b2b9e153f096b0/tests/unit/test_cli.py).
   - look at `    capsys: pytest.CaptureFixture[str],  # Catches the message of the refusal`
 
+<a id="tut-13.7-tests-unit-test_cli.py-44d4a0-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_cli.py</code></summary>
 
 ```diff
@@ -1913,6 +1947,8 @@ git restore --source 28caad31e7a7 --staged -- :/ && git restore --source 4bd145b
 
 - <a id="tut-13.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a docment on each parameter, and on the return of `cheese_request`. 17 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/4bd145b7895a9e6f7841a997995efcd343d0049c/tests/unit/test_api.py).
   - look at `    description: JSONContent,  # Its description, or None or "" for none`
+
+<a id="tut-13.8-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
@@ -2031,6 +2067,8 @@ git restore --source 4bd145b7895a --staged -- :/ && git restore --source 95ebd81
 - <a id="tut-13.9-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docment longer than its line, on purpose. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/95ebd81a9d15158c39a8adf35237da700e9334b2/src/babykev/api.py).
   - look at `) -> tuple[dict[str, Any], list[dict[str, Any]]]:  # The record that the model reads, and the metadata of each question`
 
+<a id="tut-13.9-src-babykev-api.py-2ea65f-diff"></a>
+
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
 ```diff
@@ -2091,6 +2129,8 @@ git restore --source 95ebd81a9d15 --staged -- :/ && git restore --source 54535b1
 - <a id="tut-13.10-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the return type of `to_record`, over three lines. 3 lines added, 1 removed. It comes from `just fmt`. [The file](https://github.com/rahuldave/babykev/blob/54535b100f054ffd8b787c50cac1d3a828770ec9/src/babykev/api.py).
   - look at `]:  # The record that the model reads, and the metadata of each question`
 
+<a id="tut-13.10-src-babykev-api.py-2ea65f-diff"></a>
+
 <details><summary>The diff that <code>just fmt</code> makes in <code>src/babykev/api.py</code></summary>
 
 ```diff
@@ -2150,6 +2190,8 @@ git restore --source 54535b100f05 --staged -- :/ && git restore --source 861142a
 
 - <a id="tut-13.11-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the return type on one line, with its short docment. 1 line added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/861142a50356963bb5e371fe8226ba73b87eef93/src/babykev/api.py).
   - look at `) -> tuple[dict[str, Any], list[dict[str, Any]]]:  # The record, and the metadata of each question`
+
+<a id="tut-13.11-src-babykev-api.py-2ea65f-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
@@ -2212,6 +2254,8 @@ git fetch --quiet --tags --force origin; git restore --source 861142a50356 --sta
 
 - <a id="tut-13.12-justfile-424f0b"></a>`justfile`: the docs check, in the gate. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/005b87bdfa2e70c6ceca52dc07197c69702f00be/justfile).
   - look at `    just docs check`
+
+<a id="tut-13.12-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -2302,6 +2346,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-13 --staged --
 - <a id="tut-14.1-.gitignore-a5cc29"></a>`.gitignore`: the files that a build of the docs makes. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/3593f61e4e221b04f00f360fe96e6dc4243b02dd/.gitignore).
   - look at `/docs/_site/`
 
+<a id="tut-14.1-.gitignore-a5cc29-diff"></a>
+
 <details open><summary>The patch to <code>.gitignore</code></summary>
 
 ```diff
@@ -2351,7 +2397,7 @@ same line as the command.
 `git status --short --ignored docs` lists the three paths that the build made, each marked `!!`, ignored. The lines
 of `.gitignore` from the move before keep them out of git.
 
-Your copy also lists `?? docs/` first. git does not know the folder yet, because nothing in it is staged.
+Your copy can also list `docs/` itself, or `docs/_smalldocs.yml`, first. That depends on whether you staged the settings of the site.
 
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
@@ -2369,6 +2415,8 @@ git restore --source 3593f61e4e22 --staged -- :/ && git restore --source 64de405
 
 - <a id="tut-14.2-justfile-424f0b"></a>`justfile`: with no words, `docs` builds the site. 5 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/64de40516df5aa215bfac1c0198e898ac0960061/justfile).
   - look at `    if [ "$#" -eq 0 ]; then exec uv run smalldocs render docs; fi`
+
+<a id="tut-14.2-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -2436,6 +2484,8 @@ git restore --source 64de40516df5 --staged -- :/ && git restore --source aee2a9f
 
 - <a id="tut-14.3-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the settings of the site, above the reference. 17 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/aee2a9faf7fe05e5d8780c8cf42e82c3d4145330/docs/_smalldocs.yml).
   - look at `        contents: api/*  # the reference pages, which each build makes from the code`
+
+<a id="tut-14.3-docs-_smalldocs.yml-4b0b48-diff"></a>
 
 <details open><summary>The patch to <code>docs/_smalldocs.yml</code></summary>
 
@@ -2510,6 +2560,8 @@ git restore --source aee2a9faf7fe --staged -- :/ && git restore --source e849099
 
 - <a id="tut-14.4-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the front page, written by hand. New, 29 lines. [The file](https://github.com/rahuldave/babykev/blob/e849099979801bc865c5a466d2b098b5ac9aa2e6/docs/index.qmd).
   - look at ``A name in backticks, such as `to_answers`, links to its entry.``
+
+<a id="tut-14.4-docs-index.qmd-d6d880-diff"></a>
 
 <details open><summary>The patch to <code>docs/index.qmd</code></summary>
 
@@ -2587,6 +2639,8 @@ git fetch --quiet --tags --force origin; git restore --source e84909997980 --sta
 
 - <a id="tut-14.5-README.md-8ec9a0"></a>`README.md`: a row for `docs/`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/e1efb48492d7223fd0442906d2e55a83e0db481e/README.md).
   - look at ``| `docs/` | The docs site. `just docs` builds it into `docs/_site`, with the reference made from the code |``
+
+<a id="tut-14.5-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 
@@ -2685,6 +2739,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-23 --staged --
 
 - <a id="tut-24.1-docs-guide-model.qmd-3d8904"></a>`docs/guide/model.qmd`: the four ideas of the model. New, 61 lines. [The file](https://github.com/rahuldave/babykev/blob/b23fa492cea947fd91a783a6ef8c19ee1d4f38eb/docs/guide/model.qmd).
   - look at `## Packing`
+
+<a id="tut-24.1-docs-guide-model.qmd-3d8904-diff"></a>
 
 <details open><summary>The patch to <code>docs/guide/model.qmd</code></summary>
 
@@ -2795,6 +2851,8 @@ git restore --source b23fa492cea9 --staged -- :/ && git restore --source 872a008
 - <a id="tut-24.2-docs-guide-mask.qmd-5cd81a"></a>`docs/guide/mask.qmd`: the mask, as a grid. New, 52 lines. [The file](https://github.com/rahuldave/babykev/blob/872a008d4a67bfd58f67b5db28198f4293cc34f5/docs/guide/mask.qmd).
   - look at `## A plain causal mask`
 
+<a id="tut-24.2-docs-guide-mask.qmd-5cd81a-diff"></a>
+
 <details open><summary>The patch to <code>docs/guide/mask.qmd</code></summary>
 
 ````diff
@@ -2898,6 +2956,8 @@ git restore --source 872a008d4a67 --staged -- :/ && git restore --source f19e99a
 - <a id="tut-24.3-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the section `Guide`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/f19e99afaa9f11778658710d44ef1785dbc40ed0/docs/_smalldocs.yml).
   - look at `      - section: Guide`
 
+<a id="tut-24.3-docs-_smalldocs.yml-4b0b48-diff"></a>
+
 <details open><summary>The patch to <code>docs/_smalldocs.yml</code></summary>
 
 ```diff
@@ -2957,6 +3017,8 @@ git restore --source f19e99afaa9f --staged -- :/ && git restore --source 62f48f0
 - <a id="tut-24.4-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the links to the guide. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/62f48f0b9de6c97825153cd50a7f131a5c07b0c7/docs/index.qmd).
   - look at ``The pages under Guide explain the model. [The model](guide/model.qmd) gives the four ideas of `model.py`, and``
 
+<a id="tut-24.4-docs-index.qmd-d6d880-diff"></a>
+
 <details open><summary>The patch to <code>docs/index.qmd</code></summary>
 
 ```diff
@@ -3013,6 +3075,8 @@ git fetch --quiet --tags --force origin; git restore --source 62f48f0b9de6 --sta
 
 - <a id="tut-24.5-README.md-8ec9a0"></a>`README.md`: the guide, in the row of `docs/`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/41d24729682119b9bbb828187c5e9684a2921308/README.md).
   - look at ``The two pages of `docs/guide/` explain the model and its mask |``
+
+<a id="tut-24.5-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 
@@ -3108,6 +3172,8 @@ git restore --source eb0acd148867 --staged -- :/ && git restore --source 606da22
 - <a id="tut-26.5-.github-workflows-docs.yaml-ce7835"></a>`.github/workflows/docs.yaml`: the docs site, built with the group `docs` alone, then published. New, 40 lines. [The file](https://github.com/rahuldave/babykev/blob/606da22657c965404206b25f8fbcccffbe3f2756/.github/workflows/docs.yaml).
   - look at `      - run: uv run --locked --no-default-groups --group docs smalldocs render docs`
 
+<a id="tut-26.5-.github-workflows-docs.yaml-ce7835-diff"></a>
+
 <details open><summary>The patch to <code>.github/workflows/docs.yaml</code></summary>
 
 ```diff
@@ -3199,6 +3265,8 @@ git fetch --quiet --tags --force origin; git restore --source 606da22657c9 --sta
 
 - <a id="tut-26.6-README.md-8ec9a0"></a>`README.md`: the section on GitHub, and the row of the workflows. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/88854e32ebcb4647672742cc4ef709eefc5fde0c/README.md).
   - look at `## On GitHub`
+
+<a id="tut-26.6-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 

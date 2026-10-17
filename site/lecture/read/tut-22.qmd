@@ -29,12 +29,12 @@ just setup
 just test
 ```
 
-**The mask of the last stop, under the new tests.** The `git restore` line takes `model.py` from `tut-21`, with line 159 as it came in. `just test` then fails 6 tests and passes 76. Three are tests of the mask, the picture and two rules. Three are the tests on the tiny model that keep questions apart.
+**The mask of the last stop, under the new tests.** The `git checkout` line takes `model.py` from `tut-21`, with line 159 as it came in. `just test` then fails 6 tests and passes 76. Three are tests of the mask, the picture and two rules. Three are the tests on the tiny model that keep questions apart.
 
 The rule that no token sees a later token still passes, because the old mask was causal. The hook runs `just check`, and `just check` runs these tests, so git would refuse this code now.
 
 ```bash
-git restore --source tut-21 src/babykev/model.py
+git checkout tut-21 -- src/babykev/model.py
 just test
 git restore src/babykev/model.py
 ```
@@ -45,10 +45,10 @@ git restore src/babykev/model.py
 sed -n '28,39p' tests/unit/test_mask.py
 ```
 
-Suppose someone fixed the mask in another way, so that a question cannot see the question just before it, and sees the others. The `git restore` line takes such a fix from the history, two changes before `tut-22`, and `git diff` shows its line 159. The here document of the last stop then prints `ok` six times. Its picture has only two questions, so it cannot tell the fix from the right one.
+Suppose someone fixed the mask in another way, so that a question cannot see the question just before it, and sees the others. The `git checkout` line takes such a fix from the history, two changes before `tut-22`, and `git diff` shows its line 159. The here document of the last stop then prints `ok` six times. Its picture has only two questions, so it cannot tell the fix from the right one.
 
 ```bash
-git restore --source tut-22~2 src/babykev/model.py
+git checkout tut-22~2 -- src/babykev/model.py
 git diff src/babykev/model.py
 uv run python - <<'EOF'
 from babykev.model import branch_mask
@@ -91,7 +91,7 @@ git restore src/babykev/model.py
 
 ```bash
 sed -n '149,160p' tests/unit/test_model.py
-git restore --source tut-21 src/babykev/model.py
+git checkout tut-21 -- src/babykev/model.py
 just test -k a_question_cannot_see_its_sibling
 git restore src/babykev/model.py
 ```
@@ -118,6 +118,8 @@ uv run python -c "import json; print(sum(1 / (2 if q['type'] == 'noul' else len(
 - <a id="tut-22-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: adds `test_a_question_cannot_see_its_sibling`, `test_packed_questions_answer_as_they_would_alone`, `test_the_order_of_questions_does_not_matter`. 38 lines added. [The file](https://github.com/rahuldave/babykev/blob/9bfadf5448a5951580b313a781b277f343aa6e30/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
 - <a id="tut-22-uv.lock-8356d8"></a>`uv.lock`: 80 lines added. [The file](https://github.com/rahuldave/babykev/blob/9bfadf5448a5951580b313a781b277f343aa6e30/uv.lock){.btn .btn-sm .btn-secondary}
 
+<a id="tut-22-README.md-8ec9a0-diff"></a>
+
 <details><summary>The diff of <code>README.md</code></summary>
 
 ```diff
@@ -134,6 +136,8 @@ uv run python -c "import json; print(sum(1 / (2 if q['type'] == 'noul' else len(
 
 </details>
 
+<a id="tut-22-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
 ```diff
@@ -148,6 +152,8 @@ uv run python -c "import json; print(sum(1 / (2 if q['type'] == 'noul' else len(
 ```
 
 </details>
+
+<a id="tut-22-src-babykev-model.py-a86a0b-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/model.py</code></summary>
 
@@ -164,6 +170,8 @@ uv run python -c "import json; print(sum(1 / (2 if q['type'] == 'noul' else len(
 ```
 
 </details>
+
+<a id="tut-22-tests-unit-test_mask.py-aeb55a-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_mask.py</code></summary>
 
@@ -242,6 +250,8 @@ uv run python -c "import json; print(sum(1 / (2 if q['type'] == 'noul' else len(
 ```
 
 </details>
+
+<a id="tut-22-tests-unit-test_model.py-583145-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
 

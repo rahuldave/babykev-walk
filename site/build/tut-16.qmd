@@ -110,6 +110,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-15 --staged --
 - <a id="tut-16.1-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the model. It packs a request into tokens, masks it, and points at the options. New, 274 lines. [The file](https://github.com/rahuldave/babykev/blob/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93/src/babykev/model.py){.btn .btn-sm .btn-secondary}
   - look at `class DecisionModel(nn.Module):`
 
+<a id="tut-16.1-src-babykev-model.py-a86a0b-diff"></a>
+
 <details open><summary>The patch to <code>src/babykev/model.py</code></summary>
 
 ```diff
@@ -434,6 +436,8 @@ git restore --source c4c288ccc7e4 --staged -- :/ && git restore --source bc2df6d
 - <a id="tut-16.2-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the module `babykev.model`, in the list. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/bc2df6d99386f11f4e193e0b530fa87128a3acd7/docs/index.qmd){.btn .btn-sm .btn-secondary}
   - look at ``- `babykev.model` is the model. `encode()` packs a record into one sequence of tokens, and a``
 
+<a id="tut-16.2-docs-index.qmd-d6d880-diff"></a>
+
 <details open><summary>The patch to <code>docs/index.qmd</code></summary>
 
 ```diff
@@ -492,6 +496,8 @@ git fetch --quiet --tags --force origin; git restore --source bc2df6d99386 --sta
 
 - <a id="tut-16.3-README.md-8ec9a0"></a>`README.md`: a row for `src/babykev/model.py`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/056fe2ced73ff8568dfc329555795524c2465eb1/README.md){.btn .btn-sm .btn-secondary}
   - look at ``| `src/babykev/model.py` | The model, a language model with a head that points at the options |``
+
+<a id="tut-16.3-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 

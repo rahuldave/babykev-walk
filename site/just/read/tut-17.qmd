@@ -60,6 +60,8 @@ It prints the version of ty that uv installed. A newer ty can find more, or less
   - look at `"ty>=0.0.88",`
 - <a id="tut-17.1-uv.lock-8356d8"></a>`uv.lock`: the exact version of ty. 27 lines added. It comes from `uv add --group lint ty`. [The file](https://github.com/rahuldave/babykev/blob/aaa8fe6d7d1dfbca863fe23dc0d660dd10d36c2b/uv.lock){.btn .btn-sm .btn-secondary}
 
+<a id="tut-17.1-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
 ```diff
@@ -81,7 +83,7 @@ It prints the version of ty that uv installed. A newer ty can find more, or less
 
 `ty check` checks every Python file of the project. The recipe `types` runs it, and gives it any extra words.
 
-[± See the change to `justfile`](#tut-17.2-justfile-424f0b){.btn .btn-sm .btn-secondary}
+[± See the change to `justfile`](#tut-17.2-justfile-424f0b-diff){.btn .btn-sm .btn-secondary}
 
 In the `justfile`, the recipe `types` is on lines 60 to 64. Line 64 runs `uv run ty check "$@"`.
 
@@ -117,6 +119,8 @@ into an attribute. Its example has a `value: int` in a base class and a `value: 
 
 - <a id="tut-17.2-justfile-424f0b"></a>`justfile`: the recipe `types`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/7866ef7f88d528e2e7ee04d55c68e56ce461cff1/justfile){.btn .btn-sm .btn-secondary}
   - look at `types *args:`
+
+<a id="tut-17.2-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -159,7 +163,7 @@ rule is right in general, and does not fit here.
 A comment `# ty: ignore[invalid-mutable-override]` on the line of a diagnostic turns off that one rule on that one
 line. Each other rule still checks the line. A comment above the method says why.
 
-[± See the change to `src/babykev/model.py`](#tut-17.3-src-babykev-model.py-a86a0b){.btn .btn-sm .btn-secondary}
+[± See the change to `src/babykev/model.py`](#tut-17.3-src-babykev-model.py-a86a0b-diff){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/model.py`, the reason is on lines 178 and 179, and line 180 is
 `def forward(  # ty: ignore[invalid-mutable-override]`.
@@ -178,6 +182,8 @@ or of the return type.
 
 - <a id="tut-17.3-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the rule off on the `forward` of `PointerHead`, with the reason. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/d5312a3ec2ed265ca4dbf5c7dd2492c686024696/src/babykev/model.py){.btn .btn-sm .btn-secondary}
   - look at `    # tensors accepts fewer calls, so ty refuses it. torch only calls forward, and never sets it`
+
+<a id="tut-17.3-src-babykev-model.py-a86a0b-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/model.py</code></summary>
 
@@ -204,7 +210,7 @@ or of the return type.
 The `forward` of `DecisionModel` is the same case. It gets the same comment, and one line of reason that points to
 the first.
 
-[± See the change to `src/babykev/model.py`](#tut-17.4-src-babykev-model.py-a86a0b){.btn .btn-sm .btn-secondary}
+[± See the change to `src/babykev/model.py`](#tut-17.4-src-babykev-model.py-a86a0b-diff){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/model.py`, the reason is on line 259, and line 260 is
 `def forward(  # ty: ignore[invalid-mutable-override]`.
@@ -219,6 +225,8 @@ just types
 
 - <a id="tut-17.4-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the rule off on the `forward` of `DecisionModel`, with the reason. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/f14349138824af0b107742451814b1234e72b34a/src/babykev/model.py){.btn .btn-sm .btn-secondary}
   - look at `    # As in PointerHead, nn.Module declares forward as an attribute, and torch never sets it`
+
+<a id="tut-17.4-src-babykev-model.py-a86a0b-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/model.py</code></summary>
 
@@ -244,7 +252,7 @@ just types
 `just types` passes, and nothing runs it before `git commit`. As a line of `check`, it runs before each `git commit`,
 through the hook. It goes after the linter, and before the tests.
 
-[± See the change to `justfile`](#tut-17.5-justfile-424f0b){.btn .btn-sm .btn-secondary}
+[± See the change to `justfile`](#tut-17.5-justfile-424f0b-diff){.btn .btn-sm .btn-secondary}
 
 In the `justfile`, `just types` is line 81, between `just lint` and `just test -q`. The comment on line 72 names the
 types.
@@ -262,6 +270,8 @@ exit code 0. A call that does not match the types now stops `git commit`.
 
 - <a id="tut-17.5-justfile-424f0b"></a>`justfile`: ty, in the gate. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9/justfile){.btn .btn-sm .btn-secondary}
   - look at `    just types`
+
+<a id="tut-17.5-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 

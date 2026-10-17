@@ -39,7 +39,7 @@ uv sync --locked
 `pyproject.toml`. It prints `Resolved 1 package`. When `.venv` is already right, it then prints `Checked 1 package`, and changes
 nothing. In a new clone, it first prints `Creating virtual environment at: .venv`, and then installs babykev.
 
-[± See the new file `justfile`](#tut-01.9-justfile-424f0b){.btn .btn-sm .btn-secondary}
+[± See the new file `justfile`](#tut-01.9-justfile-424f0b-diff){.btn .btn-sm .btn-secondary}
 
 `justfile` is new, with two recipes. `default` lists the others, and `setup` runs `uv sync --locked`.
 
@@ -59,6 +59,8 @@ the one recipe, under `[setup]`.
 
 - <a id="tut-01.9-justfile-424f0b"></a>`justfile`: the recipe `setup` and its line. New, 10 lines. [The file](https://github.com/rahuldave/babykev/blob/e14dffa877a2d24a53d67d8dd3d54b17204885b1/justfile){.btn .btn-sm .btn-secondary}
   - look at `setup:`
+
+<a id="tut-01.9-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -89,7 +91,7 @@ the recipe `setup`, and `just help` alone prints the list.
 `set positional-arguments` passes such words to the commands of a recipe. The first word becomes `"$1"` and the
 second `"$2"`, and a word with spaces in it stays one word. So `help` finds the name `setup` in `"$1"`.
 
-[± See the change to `justfile`](#tut-01.10-justfile-424f0b){.btn .btn-sm .btn-secondary}
+[± See the change to `justfile`](#tut-01.10-justfile-424f0b-diff){.btn .btn-sm .btn-secondary}
 
 In `justfile`, `set positional-arguments` now stands near the top, and the recipe `help` comes after `default`. The
 first line of the file now names `just help VERB`.
@@ -111,6 +113,8 @@ just help
 
 - <a id="tut-01.10-justfile-424f0b"></a>`justfile`: the recipe `help`. 12 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a55c90355687e4bf94dfad2277262548ba4ea682/justfile){.btn .btn-sm .btn-secondary}
   - look at `help *verb:`
+
+<a id="tut-01.10-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -149,7 +153,7 @@ A person who types `just setup help` gets `uv sync --locked`, and no help. The r
 answers the word `help` with `just help setup`. The `@` at the start of its line stops `just` from printing the
 command before it runs it.
 
-[± See the change to `justfile`](#tut-01.11-justfile-424f0b){.btn .btn-sm .btn-secondary}
+[± See the change to `justfile`](#tut-01.11-justfile-424f0b-diff){.btn .btn-sm .btn-secondary}
 
 In `justfile`, `setup` takes `*args`. Its one line runs `just help setup` for the word `help`, and
 `uv sync --locked` for anything else.
@@ -166,6 +170,8 @@ longer prints `uv sync --locked` first, because of the `@`.
 
 - <a id="tut-01.11-justfile-424f0b"></a>`justfile`: `setup` answers `help`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/3016e7ee53854d719456c12a48c8c8e620614bde/justfile){.btn .btn-sm .btn-secondary}
   - look at `@{{ if args == "help" { "just help setup" } else { "uv sync --locked" } }}`
+
+<a id="tut-01.11-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -190,7 +196,7 @@ Later recipes run the program, as `uv run babykev VERB`. Their help should also 
 variable, `program`, names the command once. `help` looks for `uv run {{ program }} VERB` in a recipe, and then runs
 the program's own help too.
 
-[± See the change to `justfile`](#tut-01.12-justfile-424f0b){.btn .btn-sm .btn-secondary}
+[± See the change to `justfile`](#tut-01.12-justfile-424f0b-diff){.btn .btn-sm .btn-secondary}
 
 In `justfile`, `program := "babykev"` stands near the top. `help` now ends with an `if` that runs
 `uv run {{ program }} "$1" help`.
@@ -210,6 +216,8 @@ just help setup
 
 - <a id="tut-01.12-justfile-424f0b"></a>`justfile`: the variable `program`, and the branch of `help` that runs the program's help. 6 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/9218f21a784277593cf6930e10389b04e41bf9d0/justfile){.btn .btn-sm .btn-secondary}
   - look at `program := "babykev"`
+
+<a id="tut-01.12-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 

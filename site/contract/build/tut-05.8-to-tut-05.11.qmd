@@ -58,6 +58,8 @@ git restore --source 8368a8202dab --staged -- :/ && git restore --source 0740c2c
 - <a id="tut-05.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the answer of a noul. 10 lines added. [The file](https://github.com/rahuldave/babykev/blob/0740c2c246273e99e34494512152d5b97ea4f7b9/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert answers == {"blue": {"type": "noul", "noul": 0.75}}`
 
+<a id="tut-05.8-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -123,6 +125,8 @@ git restore --source 0740c2c24627 --staged -- :/ && git restore --source a27b71f
 - <a id="tut-05.9-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the answer of a choice. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/a27b71f6a341bb12029a2d3471d6b3bc19d0d94c/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert answer["choice"] == "goat"`
 
+<a id="tut-05.9-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -180,6 +184,8 @@ git restore --source a27b71f6a341 --staged -- :/ && git restore --source be8c681
 
 - <a id="tut-05.10-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the answer of a score. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/be8c681092973e7ac1e12bbd1817da81bea45e7e/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert answer["score"] == pytest.approx(1.6)`
+
+<a id="tut-05.10-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
@@ -241,6 +247,8 @@ git fetch --quiet --tags --force origin; git restore --source be8c68109297 --sta
 
 - <a id="tut-05.11-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: one answer for each question. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_every_question_gets_an_answer_of_its_own_type():`
+
+<a id="tut-05.11-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 

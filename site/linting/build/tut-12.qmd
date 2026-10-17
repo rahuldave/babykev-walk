@@ -62,6 +62,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-11 --staged --
   - look at `"validate-pyproject>=0.26",`
 - <a id="tut-12.1-uv.lock-8356d8"></a>`uv.lock`: the exact version of validate-pyproject, and of `fastjsonschema`. 23 lines added. It comes from `uv add --group lint validate-pyproject`. [The file](https://github.com/rahuldave/babykev/blob/7506fb7a39f80397361a8e97ceb816f4b6931cd1/uv.lock){.btn .btn-sm .btn-secondary}
 
+<a id="tut-12.1-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff that <code>uv add --group lint validate-pyproject</code> makes in <code>pyproject.toml</code></summary>
 
 ```diff
@@ -121,6 +123,8 @@ git restore --source 7506fb7a39f8 --staged -- :/ && git restore --source 64b71c6
 
 - <a id="tut-12.2-justfile-424f0b"></a>`justfile`: the recipe `lint-config`, with its first check. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/64b71c6c0bdb792769aeef413b2ccead2be00ac4/justfile){.btn .btn-sm .btn-secondary}
   - look at `lint-config *args:`
+
+<a id="tut-12.2-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -187,6 +191,8 @@ git restore --source 64b71c6c0bdb --staged -- :/ && git restore --source 4308e46
 - <a id="tut-12.3-justfile-424f0b"></a>`justfile`: the check of the lockfile. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/4308e46ddc44bbe18fb2ec528e4573e956219a16/justfile){.btn .btn-sm .btn-secondary}
   - look at `    uv lock --check`
 
+<a id="tut-12.3-justfile-424f0b-diff"></a>
+
 <details open><summary>The patch to <code>justfile</code></summary>
 
 ```diff
@@ -252,6 +258,8 @@ git restore --source 4308e46ddc44 --staged -- :/ && git restore --source 9f70971
 - <a id="tut-12.4-justfile-424f0b"></a>`justfile`: one line, which exports `UV_LOCKED` to every recipe. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/9f70971667e9a2fc6cbc1767fe58061ad9f26e22/justfile){.btn .btn-sm .btn-secondary}
   - look at `export UV_LOCKED := "1"`
 
+<a id="tut-12.4-justfile-424f0b-diff"></a>
+
 <details open><summary>The patch to <code>justfile</code></summary>
 
 ```diff
@@ -309,6 +317,8 @@ git restore --source 9f70971667e9 --staged -- :/ && git restore --source 284e4b7
 
 - <a id="tut-12.5-justfile-424f0b"></a>`justfile`: the check of the `justfile`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/284e4b7e241387e68463cb96fde80f81603f99c3/justfile){.btn .btn-sm .btn-secondary}
   - look at `    just --fmt --check --unstable`
+
+<a id="tut-12.5-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -373,6 +383,8 @@ git restore --source 284e4b7e2413 --staged -- :/ && git restore --source 304e0a2
   - look at `"yamllint>=1.38.0",`
 - <a id="tut-12.6-uv.lock-8356d8"></a>`uv.lock`: the exact version of yamllint, and of `pathspec`. 24 lines added. It comes from `uv add --group lint yamllint`. [The file](https://github.com/rahuldave/babykev/blob/304e0a2564ddf8d95a9b3964d6b5b8536032d79d/uv.lock){.btn .btn-sm .btn-secondary}
 
+<a id="tut-12.6-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff that <code>uv add --group lint yamllint</code> makes in <code>pyproject.toml</code></summary>
 
 ```diff
@@ -436,6 +448,8 @@ git restore --source 304e0a2564dd --staged -- :/ && git restore --source 8786cb9
 
 - <a id="tut-12.7-justfile-424f0b"></a>`justfile`: yamllint, the fourth check. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/8786cb9f3dd685412d3c315e4b25d7023dc0ad15/justfile){.btn .btn-sm .btn-secondary}
   - look at `    uv run yamllint --strict .`
+
+<a id="tut-12.7-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -502,6 +516,8 @@ git restore --source 8786cb9f3dd6 --staged -- :/ && git restore --source aee8ff7
 - <a id="tut-12.8-.yamllint-dfe50a"></a>`.yamllint`: the settings of yamllint. New, 3 lines. [The file](https://github.com/rahuldave/babykev/blob/aee8ff779a7d2889f24a61ab979558405a9c3007/.yamllint){.btn .btn-sm .btn-secondary}
   - look at `ignore-from-file: .gitignore  # the files that git ignores, such as everything in .venv`
 
+<a id="tut-12.8-.yamllint-dfe50a-diff"></a>
+
 <details open><summary>The patch to <code>.yamllint</code></summary>
 
 ```diff
@@ -551,6 +567,8 @@ git restore --source aee8ff779a7d --staged -- :/ && git restore --source 44f6865
 
 - <a id="tut-12.9-.yamllint-dfe50a"></a>`.yamllint`: the rule `document-start`, off. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/44f6865153ebeff1c321b4da65ace21285161796/.yamllint){.btn .btn-sm .btn-secondary}
   - look at `  document-start: disable  # a file need not start with a line of three dashes`
+
+<a id="tut-12.9-.yamllint-dfe50a-diff"></a>
 
 <details open><summary>The patch to <code>.yamllint</code></summary>
 
@@ -604,6 +622,8 @@ git restore --source 44f6865153eb --staged -- :/ && git restore --source 063c1a9
 - <a id="tut-12.10-.yamllint-dfe50a"></a>`.yamllint`: lines of up to 100 characters. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/063c1a9ec17bea160da66c14711bb87eb1f54ddb/.yamllint){.btn .btn-sm .btn-secondary}
   - look at `  line-length: {max: 100}  # as long as a line of the Python code`
 
+<a id="tut-12.10-.yamllint-dfe50a-diff"></a>
+
 <details open><summary>The patch to <code>.yamllint</code></summary>
 
 ```diff
@@ -656,6 +676,8 @@ git restore --source 063c1a9ec17b --staged -- :/ && git restore --source a7699bd
 
 - <a id="tut-12.11-justfile-424f0b"></a>`justfile`: `lint-config`, the last check of the gate. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a7699bdb248aa3ff3816137433e5d4482424f3ed/justfile){.btn .btn-sm .btn-secondary}
   - look at `    just lint-config`
+
+<a id="tut-12.11-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -714,6 +736,8 @@ git fetch --quiet --tags --force origin; git restore --source a7699bdb248a --sta
 
 - <a id="tut-12.12-README.md-8ec9a0"></a>`README.md`: a row for `.yamllint`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac/README.md){.btn .btn-sm .btn-secondary}
   - look at ``| `.yamllint` | The settings of yamllint, which `just lint-config` runs on every YAML file |``
+
+<a id="tut-12.12-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 

@@ -273,6 +273,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-15 --staged --
 - <a id="tut-16.1-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the model. It packs a request into tokens, masks it, and points at the options. New, 274 lines. [The file](https://github.com/rahuldave/babykev/blob/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93/src/babykev/model.py).
   - look at `class DecisionModel(nn.Module):`
 
+<a id="tut-16.1-src-babykev-model.py-a86a0b-diff"></a>
+
 <details open><summary>The patch to <code>src/babykev/model.py</code></summary>
 
 ```diff
@@ -664,6 +666,8 @@ git restore --source b4bf2491e850 --staged -- :/ && git restore --source 321a8df
 - <a id="tut-19.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the first test of the model, on the tiny model. New, 20 lines. [The file](https://github.com/rahuldave/babykev/blob/321a8df2c597e0c46d06c9b36c711f0fe270900a/tests/unit/test_model.py).
   - look at `def test_probabilities_sum_to_one_for_every_question(`
 
+<a id="tut-19.8-tests-unit-test_model.py-583145-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
 ```diff
@@ -806,6 +810,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-19 --staged --
 - <a id="tut-20.1-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the tokens of a packed record. 16 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/6d2401817f1bc2d56de4f3021cfceaa80d5b80f9/tests/unit/test_model.py).
   - look at `def test_packing_marks_every_part_with_its_delimiter(`
 
+<a id="tut-20.1-tests-unit-test_model.py-583145-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
 ```diff
@@ -911,6 +917,8 @@ git restore --source 6d2401817f1b --staged -- :/ && git restore --source e947449
 
 - <a id="tut-20.2-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the positions of each question. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/e947449de17438d3aa5ee006bfc98db3944d4457/tests/unit/test_model.py).
   - look at `def test_positions_restart_after_the_state(`
+
+<a id="tut-20.2-tests-unit-test_model.py-583145-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
@@ -1018,6 +1026,8 @@ git restore --source e3b3ab01357c --staged -- :/ && git restore --source 1782e1e
 - <a id="tut-20.5-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the danger, a forged delimiter. 9 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/1782e1e6803efd49be04e682f3453e39c1c2fc23/tests/unit/test_model.py).
   - look at `def test_a_tokenizer_alone_would_let_text_forge_a_delimiter(`
 
+<a id="tut-20.5-tests-unit-test_model.py-583145-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
 ```diff
@@ -1100,6 +1110,8 @@ git restore --source 1782e1e6803e --staged -- :/ && git restore --source e30ea2e
 
 - <a id="tut-20.6-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the defence, for each of the five delimiters. 11 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/e30ea2eb52ae23815152f60b09d07d9d0dd1fd3a/tests/unit/test_model.py).
   - look at `def test_user_text_cannot_forge_a_delimiter(`
+
+<a id="tut-20.6-tests-unit-test_model.py-583145-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
@@ -1205,6 +1217,8 @@ git restore --source e30ea2eb52ae --staged -- :/ && git restore --source 455b6a8
 
 - <a id="tut-20.7-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: five options in, five logits out. 8 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/455b6a8ae64dae7e79fea6dd6b8434d11eb8f542/tests/unit/test_model.py).
   - look at `def test_pointer_head_gives_one_logit_per_option() -> None:`
+
+<a id="tut-20.7-tests-unit-test_model.py-583145-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
@@ -1339,6 +1353,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-20 --staged --
 - <a id="tut-21.1-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: one backward pass with an adapter. 22 lines added. [The file](https://github.com/rahuldave/babykev/blob/0be44c1de17b8acb4e18a964a782584eb26fee97/tests/unit/test_model.py).
   - look at `def test_with_an_adapter_only_the_adapter_and_the_head_train(`
 
+<a id="tut-21.1-tests-unit-test_model.py-583145-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
 ```diff
@@ -1429,6 +1445,8 @@ git restore --source 0be44c1de17b --staged -- :/ && git restore --source e6248c7
 
 - <a id="tut-21.2-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a padded pass. 16 lines added. [The file](https://github.com/rahuldave/babykev/blob/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac/tests/unit/test_model.py).
   - look at `def test_records_of_different_lengths_answer_in_one_pass_as_alone(`
+
+<a id="tut-21.2-tests-unit-test_model.py-583145-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
@@ -1555,6 +1573,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-21 --staged --
 - <a id="tut-22.1-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the picture of a small request. New, 26 lines. [The file](https://github.com/rahuldave/babykev/blob/e7db07241985b2cc80908d108e4229cfb512646b/tests/unit/test_mask.py).
   - look at `def test_mask_of_a_small_request() -> None:`
 
+<a id="tut-22.1-tests-unit-test_mask.py-aeb55a-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_mask.py</code></summary>
 
 ```diff
@@ -1631,6 +1651,8 @@ git restore --source e7db07241985 --staged -- :/ && git restore --source aa4f870
   - look at `"hypothesis>=6.170.0",`
 - <a id="tut-22.2-uv.lock-8356d8"></a>`uv.lock`: the exact versions of hypothesis and sortedcontainers. 80 lines added. It comes from `uv add --group test hypothesis`. [The file](https://github.com/rahuldave/babykev/blob/aa4f870deb9ec19ee18484e187f5d850399fa554/uv.lock).
 
+<a id="tut-22.2-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff that <code>uv add --group test hypothesis</code> makes in <code>pyproject.toml</code></summary>
 
 ```diff
@@ -1698,6 +1720,8 @@ git restore --source aa4f870deb9e --staged -- :/ && git restore --source 857445d
 
 - <a id="tut-22.3-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the shapes, and the first rule. 23 lines added. [The file](https://github.com/rahuldave/babykev/blob/857445da99027d423543017a9face7f2cd41ea19/tests/unit/test_mask.py).
   - look at `def test_no_question_sees_another_question(`
+
+<a id="tut-22.3-tests-unit-test_mask.py-aeb55a-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_mask.py</code></summary>
 
@@ -1783,6 +1807,8 @@ git restore --source 857445da9902 --staged -- :/ && git restore --source 55034fc
 - <a id="tut-22.4-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the causal rule. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/55034fc9085b7ba3a5ac86f3cd40b955a698b642/tests/unit/test_mask.py).
   - look at `def test_no_token_sees_a_later_token(`
 
+<a id="tut-22.4-tests-unit-test_mask.py-aeb55a-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_mask.py</code></summary>
 
 ```diff
@@ -1844,6 +1870,8 @@ git restore --source 55034fc9085b --staged -- :/ && git restore --source 41b4f5f
 
 - <a id="tut-22.5-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the whole rule. 13 lines added. [The file](https://github.com/rahuldave/babykev/blob/41b4f5f236a25a9e8438ba2a00682b5125868a50/tests/unit/test_mask.py).
   - look at `def test_what_is_allowed_is_exactly_the_rule(`
+
+<a id="tut-22.5-tests-unit-test_mask.py-aeb55a-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_mask.py</code></summary>
 
@@ -1914,6 +1942,8 @@ git restore --source 41b4f5f236a2 --staged -- :/ && git restore --source 12e9fb1
 - <a id="tut-22.6-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: rewrite question 2, and questions 1 and 3 keep their answers. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/12e9fb18c4c86cbd1291da858fd6ad39af01929b/tests/unit/test_model.py).
   - look at `def test_a_question_cannot_see_its_sibling(`
 
+<a id="tut-22.6-tests-unit-test_model.py-583145-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
 ```diff
@@ -1979,6 +2009,8 @@ git restore --source 12e9fb18c4c8 --staged -- :/ && git restore --source d3e4a6a
 
 - <a id="tut-22.7-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: three questions in one pass, and each alone. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/d3e4a6a067cd7f481a1bd327af08cb2358429e9c/tests/unit/test_model.py).
   - look at `def test_packed_questions_answer_as_they_would_alone(`
+
+<a id="tut-22.7-tests-unit-test_model.py-583145-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
@@ -2056,6 +2088,8 @@ git restore --source d3e4a6a067cd --staged -- :/ && git restore --source c3e2706
 - <a id="tut-22.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the questions in the reverse order. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/c3e2706e2b1fbc58bda631e173e26145256bc47e/tests/unit/test_model.py).
   - look at `def test_the_order_of_questions_does_not_matter(`
 
+<a id="tut-22.8-tests-unit-test_model.py-583145-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
 ```diff
@@ -2127,6 +2161,8 @@ git restore --source c3e2706e2b1f --staged -- :/ && git restore --source 18bdfee
 - <a id="tut-22.9-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: a mask that blocks only the question just before, on purpose. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/18bdfee89d950245956448ab8377cfc8b90e8595/src/babykev/model.py).
   - look at `    same = (s[None, :] == s[:, None]) | (s[None, :] == 0) | (s[None, :] < s[:, None] - 1)`
 
+<a id="tut-22.9-src-babykev-model.py-a86a0b-diff"></a>
+
 <details open><summary>The patch to <code>src/babykev/model.py</code></summary>
 
 ```diff
@@ -2188,7 +2224,7 @@ comes first and saw only the state with either mask. Question 2 now gets exactly
 
 The smoke went from `6 of 15 right` with the old mask to `4 of 15 right` with the fix, and every test says that the
 fix is right. The first question of each request kept its answer, with the same two decimals. It comes first, so it
-saw only the state with either mask. Nine of the ten other answers changed.
+saw only the state with either mask. Most of the ten other answers changed.
 
 The milk of Coquetdale went from `buffalo` to `cow`, which is right. The milk and the firmness of Amou, and the
 intensity of Loma Alta, were right with the old mask, and are wrong now. The count fell, and the fix is still right.
@@ -2242,6 +2278,8 @@ git restore --source 18bdfee89d95 --staged -- :/ && git restore --source 5f63fb4
 
 - <a id="tut-22.10-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the state, or the same question. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/5f63fb463f94ae6c82a647db8a4b86d4a3d6caa1/src/babykev/model.py).
   - look at `    same = (s[None, :] == s[:, None]) | (s[None, :] == 0)`
+
+<a id="tut-22.10-src-babykev-model.py-a86a0b-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/model.py</code></summary>
 

@@ -113,6 +113,8 @@ git restore --source b4bf2491e850 --staged -- :/ && git restore --source 321a8df
 - <a id="tut-19.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the first test of the model, on the tiny model. New, 20 lines. [The file](https://github.com/rahuldave/babykev/blob/321a8df2c597e0c46d06c9b36c711f0fe270900a/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_probabilities_sum_to_one_for_every_question(`
 
+<a id="tut-19.8-tests-unit-test_model.py-583145-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
 ```diff

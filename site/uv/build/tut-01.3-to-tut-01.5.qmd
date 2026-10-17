@@ -93,6 +93,8 @@ git restore --source 489f27fad816 --staged -- :/ && git restore --source 0497c0d
 - <a id="tut-01.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: the description. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/0497c0dc9d3772df47e79361aa4165e5de8e227d/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `description = "A small decision model: one state, typed questions, a probability for every answer"`
 
+<a id="tut-01.3-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -189,6 +191,8 @@ git restore --source 0497c0dc9d37 --staged -- :/ && git restore --source 4148744
 - <a id="tut-01.4-pyproject.toml-5d07e7"></a>`pyproject.toml`: the licence, and the files a package carries. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/414874463b887dedf65c5c74caeac8a064b0e876/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `license-files = ["LICENSE", "NOTICE"]`
 
+<a id="tut-01.4-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -282,6 +286,8 @@ git restore --source 414874463b88 --staged -- :/ && git restore --source 7f38877
 
 - <a id="tut-01.5-pyproject.toml-5d07e7"></a>`pyproject.toml`: the author. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/7f38877e597f5404208fdca2eabb176077d95a8e/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `authors = [{ name = "Rahul Dave" }]`
+
+<a id="tut-01.5-pyproject.toml-5d07e7-diff"></a>
 
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 

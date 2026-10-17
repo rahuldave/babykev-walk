@@ -230,6 +230,8 @@ EOF
 - <a id="step-05-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: adds `test_smoke_reports_on_every_question_of_the_sample`, `test_verdict_agrees_when_the_answer_is_the_label`, `test_verdict_reads_a_noul_answer_as_yes_from_one_half`, `test_verdict_reads_a_score_answer_as_its_most_likely_level`. New, 44 lines. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/tests/unit/test_smoke.py){.btn .btn-sm .btn-secondary}
 - <a id="step-05-uv.lock-8356d8"></a>`uv.lock`: 766 lines added, 13 removed. [The file](https://github.com/rahuldave/babykev/blob/46cf8625a031e10049355df4c37abcb7af58d847/uv.lock){.btn .btn-sm .btn-secondary}
 
+<a id="step-05-README.md-8ec9a0-diff"></a>
+
 <details><summary>The diff of <code>README.md</code></summary>
 
 ```diff
@@ -282,6 +284,8 @@ EOF
 
 </details>
 
+<a id="step-05-justfile-424f0b-diff"></a>
+
 <details><summary>The diff of <code>justfile</code></summary>
 
 ```diff
@@ -316,6 +320,8 @@ EOF
 ```
 
 </details>
+
+<a id="step-05-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -378,6 +384,8 @@ EOF
 
 </details>
 
+<a id="step-05-src-babykev-cli.py-a9e184-diff"></a>
+
 <details><summary>The diff of <code>src/babykev/cli.py</code></summary>
 
 ```diff
@@ -402,6 +410,8 @@ EOF
 ```
 
 </details>
+
+<a id="step-05-src-babykev-docs.py-267fa4-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/docs.py</code></summary>
 
@@ -573,6 +583,8 @@ EOF
 ```
 
 </details>
+
+<a id="step-05-src-babykev-model.py-a86a0b-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/model.py</code></summary>
 
@@ -814,6 +826,8 @@ EOF
 
 </details>
 
+<a id="step-05-src-babykev-smoke.py-76d2ec-diff"></a>
+
 <details><summary>The diff of <code>src/babykev/smoke.py</code></summary>
 
 ```diff
@@ -944,6 +958,8 @@ EOF
 
 </details>
 
+<a id="step-05-tests-conftest.py-626af3-diff"></a>
+
 <details><summary>The diff of <code>tests/conftest.py</code></summary>
 
 ```diff
@@ -991,6 +1007,8 @@ EOF
 ```
 
 </details>
+
+<a id="step-05-tests-tiny.py-70c1c9-diff"></a>
 
 <details><summary>The diff of <code>tests/tiny.py</code></summary>
 
@@ -1046,6 +1064,8 @@ EOF
 
 </details>
 
+<a id="step-05-tests-unit-test_cli.py-44d4a0-diff"></a>
+
 <details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
 
 ```diff
@@ -1068,6 +1088,8 @@ EOF
 ```
 
 </details>
+
+<a id="step-05-tests-unit-test_docs.py-31dd08-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_docs.py</code></summary>
 
@@ -1227,6 +1249,8 @@ EOF
 ````
 
 </details>
+
+<a id="step-05-tests-unit-test_model.py-583145-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
 
@@ -1425,6 +1449,8 @@ EOF
 ```
 
 </details>
+
+<a id="step-05-tests-unit-test_smoke.py-89db04-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_smoke.py</code></summary>
 

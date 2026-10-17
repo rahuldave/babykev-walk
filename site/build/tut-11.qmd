@@ -81,6 +81,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-10 --staged --
 - <a id="tut-11.1-justfile-424f0b"></a>`justfile`: the recipe `check`, with three checks. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/dbfc285a2adeb4900fc68c863c4850b84004a04e/justfile){.btn .btn-sm .btn-secondary}
   - look at `    just test -q`
 
+<a id="tut-11.1-justfile-424f0b-diff"></a>
+
 <details open><summary>The patch to <code>justfile</code></summary>
 
 ```diff
@@ -144,6 +146,8 @@ git restore --source dbfc285a2ade --staged -- :/ && git restore --source 56dee30
   - look at `"pre-commit>=4.7.0",`
 - <a id="tut-11.2-uv.lock-8356d8"></a>`uv.lock`: the exact version of pre-commit, and of the packages that it needs. 139 lines added, 1 removed. It comes from `uv add --group lint pre-commit`. [The file](https://github.com/rahuldave/babykev/blob/56dee300cda2e0f34bfb18be026897e83bf6981a/uv.lock){.btn .btn-sm .btn-secondary}
 
+<a id="tut-11.2-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff that <code>uv add --group lint pre-commit</code> makes in <code>pyproject.toml</code></summary>
 
 ```diff
@@ -201,6 +205,8 @@ git restore --source 56dee300cda2 --staged -- :/ && git restore --source 0c645eb
 
 - <a id="tut-11.3-.pre-commit-config.yaml-e7d14d"></a>`.pre-commit-config.yaml`: one hook, which runs `just check`. New, 14 lines. [The file](https://github.com/rahuldave/babykev/blob/0c645eb0a770a34bf7fe3f055dfc9ab4c19aa6fe/.pre-commit-config.yaml){.btn .btn-sm .btn-secondary}
   - look at `        entry: just check`
+
+<a id="tut-11.3-.pre-commit-config.yaml-e7d14d-diff"></a>
 
 <details open><summary>The patch to <code>.pre-commit-config.yaml</code></summary>
 
@@ -271,6 +277,8 @@ git restore --source 0c645eb0a770 --staged -- :/ && git restore --source fbe4cca
 - <a id="tut-11.4-justfile-424f0b"></a>`justfile`: the recipe `hook`. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/fbe4cca80366ec49c7fa9c23a11af8b4e1a2bde3/justfile){.btn .btn-sm .btn-secondary}
   - look at `hook *args:`
 
+<a id="tut-11.4-justfile-424f0b-diff"></a>
+
 <details open><summary>The patch to <code>justfile</code></summary>
 
 ```diff
@@ -331,6 +339,8 @@ git restore --source fbe4cca80366 --staged -- :/ && git restore --source 352e33d
 - <a id="tut-11.5-.pre-commit-config.yaml-e7d14d"></a>`.pre-commit-config.yaml`: the hook of large files. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/352e33d87006028ec33ed46ba0e53d48255b3d66/.pre-commit-config.yaml){.btn .btn-sm .btn-secondary}
   - look at `        args: [--maxkb=1000]`
 
+<a id="tut-11.5-.pre-commit-config.yaml-e7d14d-diff"></a>
+
 <details open><summary>The patch to <code>.pre-commit-config.yaml</code></summary>
 
 ```diff
@@ -389,6 +399,8 @@ git restore --source 352e33d87006 --staged -- :/ && git restore --source 64d0f4f
 - <a id="tut-11.6-.pre-commit-config.yaml-e7d14d"></a>`.pre-commit-config.yaml`: the hook of merge conflicts. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/64d0f4f781da1a8520315f899c4231645623280c/.pre-commit-config.yaml){.btn .btn-sm .btn-secondary}
   - look at `      - id: check-merge-conflict`
 
+<a id="tut-11.6-.pre-commit-config.yaml-e7d14d-diff"></a>
+
 <details open><summary>The patch to <code>.pre-commit-config.yaml</code></summary>
 
 ```diff
@@ -443,6 +455,8 @@ git restore --source 64d0f4f781da --staged -- :/ && git restore --source 2d080c9
 
 - <a id="tut-11.7-.pre-commit-config.yaml-e7d14d"></a>`.pre-commit-config.yaml`: the hook that refuses a `.env` file. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/2d080c9e228f2f9959f4eeed801726ea402e66a3/.pre-commit-config.yaml){.btn .btn-sm .btn-secondary}
   - look at `        language: fail`
+
+<a id="tut-11.7-.pre-commit-config.yaml-e7d14d-diff"></a>
 
 <details open><summary>The patch to <code>.pre-commit-config.yaml</code></summary>
 
@@ -506,6 +520,8 @@ git restore --source 2d080c9e228f --staged -- :/ && git restore --source f4fabd3
 - <a id="tut-11.8-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: an import that nothing uses, on purpose. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/f4fabd3272713cb5ac1c26021e4c23fa33ab15e6/src/babykev/cli.py){.btn .btn-sm .btn-secondary}
   - look at `import os`
 
+<a id="tut-11.8-src-babykev-cli.py-a9e184-diff"></a>
+
 <details open><summary>The patch to <code>src/babykev/cli.py</code></summary>
 
 ```diff
@@ -556,6 +572,8 @@ git restore --source f4fabd327271 --staged -- :/ && git restore --source 054c40b
 
 - <a id="tut-11.9-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: the import of `os` goes. 0 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/054c40b6cc1839f8b35dfab81f9f2ae7c9f1aaf0/src/babykev/cli.py){.btn .btn-sm .btn-secondary}
   - look at `import os`
+
+<a id="tut-11.9-src-babykev-cli.py-a9e184-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/cli.py</code></summary>
 
@@ -609,6 +627,8 @@ git fetch --quiet --tags --force origin; git restore --source 054c40b6cc18 --sta
 
 - <a id="tut-11.10-README.md-8ec9a0"></a>`README.md`: a paragraph on `just hook`, and a row of the table. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/cab87c139ebd3b72771ed6db08b02dd7646c7d02/README.md){.btn .btn-sm .btn-secondary}
   - look at ``Run `just hook` once in each clone. It installs a git hook, which runs `just check` before each commit.``
+
+<a id="tut-11.10-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 

@@ -69,6 +69,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-00 --staged --
 - <a id="tut-01.1-src-babykev-__init__.py-a40393"></a>`src/babykev/__init__.py`: the function that the command runs. It prints a greeting. New, 2 lines. It comes from `uv init --package --name babykev --python 3.13`. [The file](https://github.com/rahuldave/babykev/blob/eac75e0becc78c9a872e734ea715ac3903947844/src/babykev/__init__.py){.btn .btn-sm .btn-secondary}
   - look at `print("Hello from babykev!")`
 
+<a id="tut-01.1-.python-version-7696e9-diff"></a>
+
 <details><summary>The diff that <code>uv init --package --name babykev --python 3.13</code> makes in <code>.python-version</code></summary>
 
 ```diff
@@ -77,6 +79,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-00 --staged --
 ```
 
 </details>
+
+<a id="tut-01.1-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff that <code>uv init --package --name babykev --python 3.13</code> makes in <code>pyproject.toml</code></summary>
 
@@ -99,6 +103,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-00 --staged --
 ```
 
 </details>
+
+<a id="tut-01.1-src-babykev-__init__.py-a40393-diff"></a>
 
 <details><summary>The diff that <code>uv init --package --name babykev --python 3.13</code> makes in <code>src/babykev/__init__.py</code></summary>
 

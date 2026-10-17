@@ -118,6 +118,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-19 --staged --
 - <a id="tut-20.1-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the tokens of a packed record. 16 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/6d2401817f1bc2d56de4f3021cfceaa80d5b80f9/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_packing_marks_every_part_with_its_delimiter(`
 
+<a id="tut-20.1-tests-unit-test_model.py-583145-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
 ```diff

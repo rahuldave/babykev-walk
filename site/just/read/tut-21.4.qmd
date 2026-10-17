@@ -31,7 +31,7 @@ of the model and the smoke run on it. The total coverage is 91.76%.
 `just check` runs the tests with `--cov-fail-under=90`. A change that brings the total under 90% then fails the gate, and the hook refuses it.
 `just test` alone has no floor, so a run of a few tests, with `-k`, does not fail on the total.
 
-[± See the change to `justfile`](#tut-21.4-justfile-424f0b){.btn .btn-sm .btn-secondary}
+[± See the change to `justfile`](#tut-21.4-justfile-424f0b-diff){.btn .btn-sm .btn-secondary}
 
 In the `justfile`, line 82 is `just test -q --cov-fail-under=90`, and the comment on line 72 names the coverage.
 
@@ -47,6 +47,8 @@ exit code 0.
 
 - <a id="tut-21.4-justfile-424f0b"></a>`justfile`: the floor, in the gate. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/57604134d9590c16b1c4db0b1d1a11509a65345b/justfile){.btn .btn-sm .btn-secondary}
   - look at `    just test -q --cov-fail-under=90`
+
+<a id="tut-21.4-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 

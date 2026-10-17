@@ -121,9 +121,9 @@ $ sed -n '250,256p' tests/unit/test_api.py
 $ sed -n '291,293p' tests/unit/test_api.py
 $ git show tut-05:src/babykev/api.py | sed -n '82,90p'
 
-**The tests find the bugs.** The `git restore` line puts the file of kev back, from `tut-05`, under the tests of today. `just test -k` then runs the seven tests of the confidences and of rounding, and 3 fail. pytest prints `assert 0.77 == 1 ± 0.02` for the sum of the 77 probabilities, and prints `assert 0.5 == 0 ± 1.0e-12` for the confidence of a guess. A scale of one level stops with `ZeroDivisionError` at line 86, and the last line puts today's file back.
+**The tests find the bugs.** The `git checkout` line puts the file of kev back, from `tut-05`, under the tests of today. `just test -k` then runs the seven tests of the confidences and of rounding, and 3 fail. pytest prints `assert 0.77 == 1 ± 0.02` for the sum of the 77 probabilities, and prints `assert 0.5 == 0 ± 1.0e-12` for the confidence of a guess. A scale of one level stops with `ZeroDivisionError` at line 86, and the last line puts today's file back.
 
-$ git restore --source tut-05 src/babykev/api.py
+$ git checkout tut-05 -- src/babykev/api.py
 $ just test -k "rounded_probabilities or score_confidence"
 $ git restore src/babykev/api.py
 
@@ -150,9 +150,9 @@ The function is public, and a list of one probability is a legal input. Without 
 $ sed -n '296,298p' tests/unit/test_api.py
 $ just test -k single_level
 
-**The formatter, on the file before it.** The `git restore` line takes `api.py` as it was at the end of the fixes, before the formatter and the linter, from `tut-06`. `uv run ruff check --statistics` runs the linter on it first, so that we can count again after the formatter. It prints one line for each code with its count, and then `Found 17 errors.`, which is the total. The codes are `E501`, a line over 100 characters, 6 of them, and `E701`, two statements on one line, 4 of them. The others are `N806`, `UP007` and `B905`, 2 each, and `I001`, 1.
+**The formatter, on the file before it.** The `git checkout` line takes `api.py` as it was at the end of the fixes, before the formatter and the linter, from `tut-06`. `uv run ruff check --statistics` runs the linter on it first, so that we can count again after the formatter. It prints one line for each code with its count, and then `Found 17 errors.`, which is the total. The codes are `E501`, a line over 100 characters, 6 of them, and `E701`, two statements on one line, 4 of them. The others are `N806`, `UP007` and `B905`, 2 each, and `I001`, 1.
 
-$ git restore --source tut-06 src/babykev/api.py
+$ git checkout tut-06 -- src/babykev/api.py
 $ uv run ruff check --statistics
 
 `uv run ruff format --check` asks the formatter what it would change, and changes nothing. It prints `1 file would be reformatted, 5 files already formatted`, and above it the changes to `api.py`. The formatter puts a blank line after the docstring of the module, before line 7. It splits the four lines with two statements, at lines 27, 48, 49 and 50. It spreads the long lines 51, 72, 110 and 113 over several lines, one item to a line. Its settings are on lines 43 to 49 of `pyproject.toml`, each with a comment.
@@ -208,7 +208,7 @@ $ just setup
 **Types and docstrings.** Line 66 of `pyproject.toml` turns on `ANN`, a type on every parameter and every return value. Line 67 turns on `D1`, a docstring on every public module, class and function. The `git restore` line takes the code and the tests as they were at `tut-08`, and `just lint --statistics` then finds 57 problems. There are 33 of `ANN201`, a public function with no return type. There are 14 of `ANN001`, a parameter with no type, all in the tests.
 
 $ sed -n '66,67p' pyproject.toml
-$ git restore --source tut-08 src tests
+$ git checkout tut-08 -- src tests
 $ just lint --statistics
 
 `just lint --fix --unsafe-fixes` prints `Found 57 errors (31 fixed, 26 remaining).` The 31 are `-> None` on the functions that return nothing, because ruff can be sure of `None` and of no other type. `just lint --statistics` shows the 26 that need a person. They are 14 types of parameters in the tests, eight docstrings, two return types that ruff cannot guess, `-> Self` on `_check`, and `*words: str`.
@@ -348,7 +348,7 @@ $ just test -k help_is_printed
 
 **The gaps, as they were.** `just docs check` holds every function, method and class to one rule. A parameter and a return value need a type and a docment, a function needs a docstring, and a field needs a description. A return of `None` needs no docment. The `git restore` line takes the code and the tests of `tut-12`, and `just docs check` then prints `24 of 45 functions, methods and classes are typed and documented`, with exit code 1. Above that line it prints the count for each file, `babykev.api 0 of 12` to `tests/unit/test_cli.py 0 of 3`, and 46 gaps, one to a line.
 
-$ git restore --source tut-12 src tests
+$ git checkout tut-12 -- src tests
 $ just docs check
 
 The linter already asked for every type and every public docstring, so 45 of the 46 gaps are docments and descriptions. The other is the docstring of `_check`, a private method, which the linter does not ask for. The `git restore` line puts the files of `tut-13` back, and `just docs check` prints `45 of 45`.
@@ -565,11 +565,11 @@ $ just setup
 
 $ just test
 
-**The mask of the last stop, under the new tests.** The `git restore` line takes `model.py` from `tut-21`, with line 159 as it came in. `just test` then fails 6 tests and passes 76. Three are tests of the mask, the picture and two rules. Three are the tests on the tiny model that keep questions apart.
+**The mask of the last stop, under the new tests.** The `git checkout` line takes `model.py` from `tut-21`, with line 159 as it came in. `just test` then fails 6 tests and passes 76. Three are tests of the mask, the picture and two rules. Three are the tests on the tiny model that keep questions apart.
 
 The rule that no token sees a later token still passes, because the old mask was causal. The hook runs `just check`, and `just check` runs these tests, so git would refuse this code now.
 
-$ git restore --source tut-21 src/babykev/model.py
+$ git checkout tut-21 -- src/babykev/model.py
 $ just test
 $ git restore src/babykev/model.py
 
@@ -577,9 +577,9 @@ $ git restore src/babykev/model.py
 
 $ sed -n '28,39p' tests/unit/test_mask.py
 
-Suppose someone fixed the mask in another way, so that a question cannot see the question just before it, and sees the others. The `git restore` line takes such a fix from the history, two changes before `tut-22`, and `git diff` shows its line 159. The here document of the last stop then prints `ok` six times. Its picture has only two questions, so it cannot tell the fix from the right one.
+Suppose someone fixed the mask in another way, so that a question cannot see the question just before it, and sees the others. The `git checkout` line takes such a fix from the history, two changes before `tut-22`, and `git diff` shows its line 159. The here document of the last stop then prints `ok` six times. Its picture has only two questions, so it cannot tell the fix from the right one.
 
-$ git restore --source tut-22~2 src/babykev/model.py
+$ git checkout tut-22~2 -- src/babykev/model.py
 $ git diff src/babykev/model.py
 $ uv run python - <<'EOF'
 $ from babykev.model import branch_mask
@@ -614,7 +614,7 @@ $ git restore src/babykev/model.py
 **How we tested isolation.** `test_a_question_cannot_see_its_sibling`, lines 149 to 160 of `test_model.py`, is an integration test on the tiny model. It takes the fixtures `model`, `tok` and `record`. It answers the request, rewrites question 2, and answers again. Questions 1 and 3 must get exactly the same probabilities, by `torch.equal`. With the mask of `tut-21`, the line for question 3 fails, `tensor([0.3341, 0.3331, 0.3328])` before and `tensor([0.3343, 0.3330, 0.3327])` after.
 
 $ sed -n '149,160p' tests/unit/test_model.py
-$ git restore --source tut-21 src/babykev/model.py
+$ git checkout tut-21 -- src/babykev/model.py
 $ just test -k a_question_cannot_see_its_sibling
 $ git restore src/babykev/model.py
 

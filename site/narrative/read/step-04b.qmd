@@ -89,6 +89,8 @@ just check
 - <a id="step-04b-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: changes `run`, `test_an_unknown_command_is_refused_with_exit_code_2`, `test_docs_is_passed_to_the_docs_command`, `test_help_is_printed_for_help_and_for_no_words`. 11 lines added, 4 removed. [The file](https://github.com/rahuldave/babykev/blob/a9a391de1f271392a948cdd16afe2f3b1cfdd437/tests/unit/test_cli.py){.btn .btn-sm .btn-secondary}
 - <a id="step-04b-tests-unit-test_docs.py-31dd08"></a>`tests/unit/test_docs.py`: changes `example`, `test_a_return_that_is_not_none_needs_a_docment`, `test_an_unknown_module_is_a_lookup_error`, `test_check_holds_the_tests_to_the_convention_too`, `test_check_prints_a_count_per_module_then_every_gap_and_fails`, `test_gaps_names_what_each_symbol_is_missing`, `test_help_and_a_bad_word`, `test_inventory_knows_the_line_of_each_symbol`, `test_inventory_lists_the_public_symbols_in_source_order`, `test_list_prints_one_line_per_symbol`, `test_markdown_has_a_heading_a_signature_a_docstring_and_a_table_per_function`, `test_markdown_has_no_links_and_no_ids`, `test_markdown_shows_a_class_and_its_public_methods_only`, `test_markdown_shows_a_pydantic_model_as_a_table_of_fields`, `test_markdown_writes_a_type_alias_by_its_name`, `test_module_prints_the_markdown_and_an_unknown_name_is_refused`. 41 lines added, 16 removed. [The file](https://github.com/rahuldave/babykev/blob/a9a391de1f271392a948cdd16afe2f3b1cfdd437/tests/unit/test_docs.py){.btn .btn-sm .btn-secondary}
 
+<a id="step-04b-README.md-8ec9a0-diff"></a>
+
 <details><summary>The diff of <code>README.md</code></summary>
 
 ```diff
@@ -105,6 +107,8 @@ just check
 ```
 
 </details>
+
+<a id="step-04b-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -129,6 +133,8 @@ just check
 ```
 
 </details>
+
+<a id="step-04b-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -271,6 +277,8 @@ just check
 
 </details>
 
+<a id="step-04b-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -343,6 +351,8 @@ just check
 
 </details>
 
+<a id="step-04b-tests-unit-test_cli.py-44d4a0-diff"></a>
+
 <details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
 
 ```diff
@@ -392,6 +402,8 @@ just check
 ```
 
 </details>
+
+<a id="step-04b-tests-unit-test_docs.py-31dd08-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_docs.py</code></summary>
 

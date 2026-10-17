@@ -96,6 +96,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-24 --staged --
 - <a id="tut-25.1-Dockerfile-6651dd"></a>`Dockerfile`: the stages `uv`, `build` and `run`. New, 36 lines. [The file](https://github.com/rahuldave/babykev/blob/570bb2134f032a64a34d14852c82fa1a199f69f6/Dockerfile){.btn .btn-sm .btn-secondary}
   - look at `FROM python:3.13-slim-trixie AS run`
 
+<a id="tut-25.1-Dockerfile-6651dd-diff"></a>
+
 <details open><summary>The patch to <code>Dockerfile</code></summary>
 
 ```diff

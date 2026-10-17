@@ -55,6 +55,8 @@ pydantic and its version, and the group `test` with pytest and pytest-cov.
   - look at `"pydantic>=2.14.1",`
 - <a id="tut-03.1-uv.lock-8356d8"></a>`uv.lock`: pydantic and the four packages it needs, each with its exact version. 136 lines added. It comes from `uv add pydantic`. [The file](https://github.com/rahuldave/babykev/blob/96502df0a92f6f7090d6f624cda901a271dac9a7/uv.lock){.btn .btn-sm .btn-secondary}
 
+<a id="tut-03.1-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
 ```diff
@@ -80,7 +82,7 @@ pydantic and its version, and the group `test` with pytest and pytest-cov.
 babykev has no contract yet. `api.py`, from kev, says what a request is and what an answer is. It comes in whole,
 all 111 lines, and we read it before we change it.
 
-[± See the new file `src/babykev/api.py`](#tut-03.2-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
+[± See the new file `src/babykev/api.py`](#tut-03.2-src-babykev-api.py-2ea65f-diff){.btn .btn-sm .btn-secondary}
 
 `src/babykev/api.py` is new. Lines 14 to 43 are the classes of a request. The functions after them turn a request into
 options, and probabilities into answers.
@@ -104,6 +106,8 @@ The 5 tests pass, and coverage falls. `api.py` has 70 statements, and no test ru
 
 - <a id="tut-03.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a request has a state and its questions by name. Each question is a `Noul`, a `Choice` or a `Score`, and its field `type` says which. New, 111 lines. [The file](https://github.com/rahuldave/babykev/blob/e8e2e72adad9364a58be21dadf6d757e84436b97/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `class SystemOneRequest(BaseModel):`
+
+<a id="tut-03.2-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -231,7 +235,7 @@ The 5 tests pass, and coverage falls. `api.py` has 70 statements, and no test ru
 kev served the model over HTTP, and babykev has no server. The first line of `api.py` names the address of kev's
 server, `POST /v1/systemone`.
 
-[± See the change to `src/babykev/api.py`](#tut-03.3-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
+[± See the change to `src/babykev/api.py`](#tut-03.3-src-babykev-api.py-2ea65f-diff){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/api.py`, the docstring no longer names `POST /v1/systemone`.
 
@@ -245,6 +249,8 @@ It prints the new first line.
 
 - <a id="tut-03.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the docstring. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/93618951b784e928af3d3547f077bb49bff4d5da/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `"""The contract: request and answer shapes, mapped onto the single pointer primitive.`
+
+<a id="tut-03.3-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -265,7 +271,7 @@ It prints the new first line.
 
 The field `model` named the model for kev's server to run. babykev has one model, so a request names none.
 
-[± See the change to `src/babykev/api.py`](#tut-03.4-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
+[± See the change to `src/babykev/api.py`](#tut-03.4-src-babykev-api.py-2ea65f-diff){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/api.py`, `SystemOneRequest` ends with the line `questions`.
 
@@ -279,6 +285,8 @@ uv run python -c "from babykev.api import SystemOneRequest; print(sorted(SystemO
 
 - <a id="tut-03.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a request has two fields, `state` and `questions`. 0 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/5cce9c9e5025336d501298d244389b64c696737c/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `    questions: dict[str, Question] = Field(min_length=1)`
+
+<a id="tut-03.4-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -301,7 +309,7 @@ uv run python -c "from babykev.api import SystemOneRequest; print(sorted(SystemO
 
 `output_tokens` counted the tokens of an answer for a bill, and needs the tokenizer of a model. babykev bills nothing.
 
-[± See the change to `src/babykev/api.py`](#tut-03.5-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
+[± See the change to `src/babykev/api.py`](#tut-03.5-src-babykev-api.py-2ea65f-diff){.btn .btn-sm .btn-secondary}
 
 `src/babykev/api.py` now ends with `to_answers`.
 
@@ -315,6 +323,8 @@ just test
 ### What changed {#tut-03.5-what-changed-182c57}
 
 - <a id="tut-03.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the function goes. 0 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/43b7ea4eda990f90abd605920e2fb1d9b376378d/src/babykev/api.py){.btn .btn-sm .btn-secondary}
+
+<a id="tut-03.5-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -340,7 +350,7 @@ just test
 The tests of the contract need requests to check, and the project has none. Five requests about cheese come in a file
 of their own. Each line of the file is one request, in JSON. Each question has a `label`, the right answer.
 
-[± See the new file `data/cheese/sample.jsonl`](#tut-03.6-data-cheese-sample.jsonl-79f982){.btn .btn-sm .btn-secondary}
+[± See the new file `data/cheese/sample.jsonl`](#tut-03.6-data-cheese-sample.jsonl-79f982-diff){.btn .btn-sm .btn-secondary}
 
 `data/cheese/sample.jsonl` is new, with one request on each line.
 
@@ -355,6 +365,8 @@ label `1`, the second level. `milk` is a `choice` of five options with the label
 ### What changed {#tut-03.6-what-changed-182c57}
 
 - <a id="tut-03.6-data-cheese-sample.jsonl-79f982"></a>`data/cheese/sample.jsonl`: each line is a request with a `state` and its `questions`. New, 5 lines. [The file](https://github.com/rahuldave/babykev/blob/abb4ece53e114b331e9e32d67309e1f54f9f964e/data/cheese/sample.jsonl){.btn .btn-sm .btn-secondary}
+
+<a id="tut-03.6-data-cheese-sample.jsonl-79f982-diff"></a>
 
 <details><summary>The diff of <code>data/cheese/sample.jsonl</code></summary>
 
@@ -376,7 +388,7 @@ label `1`, the second level. `milk` is a `choice` of five options with the label
 The table of the README names neither the contract nor the data. Rows for `api.py`, `cli.py` and the sample data take
 the place of the row of `src/babykev/`.
 
-[± See the change to `README.md`](#tut-03.7-README.md-8ec9a0){.btn .btn-sm .btn-secondary}
+[± See the change to `README.md`](#tut-03.7-README.md-8ec9a0-diff){.btn .btn-sm .btn-secondary}
 
 In the table of `README.md`, the rows of `src/babykev/api.py`, `src/babykev/cli.py` and `data/cheese/sample.jsonl`
 stand above the row of the tests.
@@ -391,6 +403,8 @@ grep -n -E 'api.py|sample.jsonl' README.md
 
 - <a id="tut-03.7-README.md-8ec9a0"></a>`README.md`: the rows of the contract and the data. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/56606771fb23f7a0a01825f477050d2980a47736/README.md){.btn .btn-sm .btn-secondary}
   - look at ``| `data/cheese/sample.jsonl` | Five requests about cheese, one on each line. Every question has a `label`, the right answer |``
+
+<a id="tut-03.7-README.md-8ec9a0-diff"></a>
 
 <details><summary>The diff of <code>README.md</code></summary>
 

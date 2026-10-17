@@ -114,6 +114,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-01 --staged --
 - <a id="tut-02.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the table `[tool.uv]`, so uv installs every dependency group. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/ad616a5cc1fcdf5b7c1672b79d0d2b267b72bd59/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `default-groups = "all"`
 
+<a id="tut-02.1-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -171,6 +173,8 @@ git restore --source ad616a5cc1fc --staged -- :/ && git restore --source 966956d
 - <a id="tut-02.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the group `test`, with pytest. 5 lines added. It comes from `uv add --group test pytest`. [The file](https://github.com/rahuldave/babykev/blob/966956d738b58505e23586af60f05cd5daceb12f/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `"pytest>=9.1.1",`
 - <a id="tut-02.2-uv.lock-8356d8"></a>`uv.lock`: pytest and the five packages it needs. 71 lines added. It comes from `uv add --group test pytest`. [The file](https://github.com/rahuldave/babykev/blob/966956d738b58505e23586af60f05cd5daceb12f/uv.lock){.btn .btn-sm .btn-secondary}
+
+<a id="tut-02.2-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff that <code>uv add --group test pytest</code> makes in <code>pyproject.toml</code></summary>
 
@@ -232,6 +236,8 @@ git restore --source 966956d738b5 --staged -- :/ && git restore --source b084070
 
 - <a id="tut-02.3-justfile-424f0b"></a>`justfile`: the recipe `test`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/b0840709e371a548d4b922c57c679ba040dd2c1a/justfile){.btn .btn-sm .btn-secondary}
   - look at `test *args:`
+
+<a id="tut-02.3-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -295,6 +301,8 @@ git restore --source b0840709e371 --staged -- :/ && git restore --source 72678bd
 
 - <a id="tut-02.4-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: one test, for four ways of asking for help. New, 18 lines. [The file](https://github.com/rahuldave/babykev/blob/72678bd1d656f5bc6e44f2d65b44a1e18b024661/tests/unit/test_cli.py){.btn .btn-sm .btn-secondary}
   - look at `@pytest.mark.parametrize("words", [(), ("help",), ("--help",), ("-h",)])`
+
+<a id="tut-02.4-tests-unit-test_cli.py-44d4a0-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_cli.py</code></summary>
 
@@ -364,6 +372,8 @@ git restore --source 72678bd1d656 --staged -- :/ && git restore --source 9a4100f
 
 - <a id="tut-02.5-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: the test of a word that is not a command. 10 lines added. [The file](https://github.com/rahuldave/babykev/blob/9a4100fd1962921bc11cf9f4b22c5326c7a51807/tests/unit/test_cli.py){.btn .btn-sm .btn-secondary}
   - look at `assert exit_info.value.code == 2`
+
+<a id="tut-02.5-tests-unit-test_cli.py-44d4a0-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_cli.py</code></summary>
 
@@ -464,6 +474,8 @@ git restore --source 9a4100fd1962 --staged -- :/ && git restore --source 348290a
 - <a id="tut-02.6-pyproject.toml-5d07e7"></a>`pyproject.toml`: the settings of pytest. pytest looks for tests in `tests/` alone. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/348290a934c2bd1da0a38f4c3336f66758f8523c/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `testpaths = ["tests"]`
 
+<a id="tut-02.6-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -518,6 +530,8 @@ git restore --source 348290a934c2 --staged -- :/ && git restore --source 326e444
 - <a id="tut-02.7-pyproject.toml-5d07e7"></a>`pyproject.toml`: pytest-cov in the group `test`. 1 line added. It comes from `uv add --group test pytest-cov`. [The file](https://github.com/rahuldave/babykev/blob/326e444b726a914d5f9d0138ca658ed89a979dcd/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `"pytest-cov>=7.1.0",`
 - <a id="tut-02.7-uv.lock-8356d8"></a>`uv.lock`: coverage and pytest-cov. 103 lines added, 1 removed. It comes from `uv add --group test pytest-cov`. [The file](https://github.com/rahuldave/babykev/blob/326e444b726a914d5f9d0138ca658ed89a979dcd/uv.lock){.btn .btn-sm .btn-secondary}
+
+<a id="tut-02.7-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff that <code>uv add --group test pytest-cov</code> makes in <code>pyproject.toml</code></summary>
 
@@ -612,6 +626,8 @@ git restore --source 326e444b726a --staged -- :/ && git restore --source f44cc53
 - <a id="tut-02.8-pyproject.toml-5d07e7"></a>`pyproject.toml`: the options of every run. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/f44cc53a91bc7db84283d6a9ded16d9a7bbedf90/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `addopts = "--cov=babykev --cov-report=term-missing"`
 
+<a id="tut-02.8-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -662,6 +678,8 @@ git restore --source f44cc53a91bc --staged -- :/ && git restore --source ab192e5
 
 - <a id="tut-02.9-README.md-8ec9a0"></a>`README.md`: `just test` in "Start". 3 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/ab192e5bd8ff3e3b8ad6c0ae5e17be31b7790557/README.md){.btn .btn-sm .btn-secondary}
   - look at `help of the program itself. A recipe gives its extra words to the tool behind it. For example,`
+
+<a id="tut-02.9-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 
@@ -721,6 +739,8 @@ git fetch --quiet --tags --force origin; git restore --source ab192e5bd8ff --sta
 
 - <a id="tut-02.10-README.md-8ec9a0"></a>`README.md`: the row of the tests. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/4640589d80e4f224a4b2c1fd9567e952f564f102/README.md){.btn .btn-sm .btn-secondary}
   - look at ``| `tests/unit/` | The unit tests. `test_cli.py` tests the command `babykev` |``
+
+<a id="tut-02.10-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 

@@ -130,6 +130,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-15 --staged --
 - <a id="tut-16.1-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the model. It packs a request into tokens, masks it, and points at the options. New, 274 lines. [The file](https://github.com/rahuldave/babykev/blob/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93/src/babykev/model.py){.btn .btn-sm .btn-secondary}
   - look at `class DecisionModel(nn.Module):`
 
+<a id="tut-16.1-src-babykev-model.py-a86a0b-diff"></a>
+
 <details open><summary>The patch to <code>src/babykev/model.py</code></summary>
 
 ```diff

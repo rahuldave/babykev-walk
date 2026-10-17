@@ -78,6 +78,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-05 --staged --
 - <a id="tut-06.1-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the sum of the rounded probabilities. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/9012b28ceacd0bcc3971154a5df2f822e551443d/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `    assert sum(answer["probabilities"].values()) == pytest.approx(1, abs=0.02)`
 
+<a id="tut-06.1-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -137,6 +139,8 @@ git restore --source 9012b28ceacd --staged -- :/ && git restore --source 27e93dd
 
 - <a id="tut-06.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: four decimals. 8 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/27e93dd7ee76e609084a1d8a1c1cfbb4f7811da4/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `    return round(float(x), 4)`
+
+<a id="tut-06.2-src-babykev-api.py-2ea65f-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
@@ -211,6 +215,8 @@ git restore --source 27e93dd7ee76 --staged -- :/ && git restore --source 27f1f23
 - <a id="tut-06.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a guess between four options. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/27f1f23cc392446dd80918636dfc7a3c52692aae/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert choice_confidence([0.25] * 4) == pytest.approx(0)`
 
+<a id="tut-06.3-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -275,6 +281,8 @@ git restore --source 27f1f23cc392 --staged -- :/ && git restore --source 9ded0b3
 - <a id="tut-06.4-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: certainty. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/9ded0b3177719bb849eda76972daa2f5368af069/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert choice_confidence([0, 1, 0]) == pytest.approx(1)`
 
+<a id="tut-06.4-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -330,6 +338,8 @@ git restore --source 9ded0b317771 --staged -- :/ && git restore --source 890fbe0
 - <a id="tut-06.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a confidence between 0 and 1. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/890fbe0900f6a0f59232ca9d94ce4cc439e21dde/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert choice_confidence([0.5, 0.25, 0.25]) == pytest.approx(0.25)`
 
+<a id="tut-06.5-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -383,6 +393,8 @@ git restore --source 890fbe0900f6 --staged -- :/ && git restore --source d2564e4
 
 - <a id="tut-06.6-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: certainty, on each level. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/d2564e48ae134802f1d48cc079cfe3b92db14639/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_score_confidence_is_one_when_certain(level):`
+
+<a id="tut-06.6-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
@@ -447,6 +459,8 @@ git restore --source d2564e48ae13 --staged -- :/ && git restore --source 795356b
 
 - <a id="tut-06.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: near is better than far. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/795356b136ab4b1b1c22c8e63b8175a1a6f6d6de/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert score_confidence([0.5, 0.5, 0, 0]) > score_confidence([0.5, 0, 0, 0.5])`
+
+<a id="tut-06.7-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
@@ -514,6 +528,8 @@ git restore --source 795356b136ab --staged -- :/ && git restore --source 72a00ec
 
 - <a id="tut-06.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a guess between three levels. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/72a00ec85ae4b6f3b591cf06fc65903a56f1f7fa/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert score_confidence([1 / 3] * 3) == pytest.approx(0)`
+
+<a id="tut-06.8-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
@@ -583,6 +599,8 @@ git restore --source 72a00ec85ae4 --staged -- :/ && git restore --source e973555
 - <a id="tut-06.9-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the spread of a guess, as the measure. 12 lines added, 4 removed. [The file](https://github.com/rahuldave/babykev/blob/e97355545c4001a361257c532330f8784aa51b79/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `    guess = sum(abs(i - (L - 1) / 2) for i in range(L)) / L`
 
+<a id="tut-06.9-src-babykev-api.py-2ea65f-diff"></a>
+
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
 ```diff
@@ -650,6 +668,8 @@ git fetch --quiet --tags --force origin; git restore --source e97355545c40 --sta
 
 - <a id="tut-06.10-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the test calls the function itself. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/910716f0cec79c3f31afb34cf3a2593f0cd51315/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `    assert score_confidence([1.0]) == 1.0`
+
+<a id="tut-06.10-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 

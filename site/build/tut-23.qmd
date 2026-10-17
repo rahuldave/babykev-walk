@@ -83,6 +83,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-22 --staged --
 - <a id="tut-23.1-tests-system-test_real_model.py-df0b9d"></a>`tests/system/test_real_model.py`: the smoke on the real model, as a test. New, 24 lines. [The file](https://github.com/rahuldave/babykev/blob/e8d250399661741adb430b0ab9020fb869279074/tests/system/test_real_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_the_real_model_answers_every_sample_question(`
 
+<a id="tut-23.1-tests-system-test_real_model.py-df0b9d-diff"></a>
+
 <details open><summary>The patch to <code>tests/system/test_real_model.py</code></summary>
 
 ```diff
@@ -154,6 +156,8 @@ git restore --source e8d250399661 --staged -- :/ && git restore --source 14e3ab7
 
 - <a id="tut-23.2-tests-system-test_real_model.py-df0b9d"></a>`tests/system/test_real_model.py`: the marker `system`. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/14e3ab70450cd154b85d49f1b9a694de35a18557/tests/system/test_real_model.py){.btn .btn-sm .btn-secondary}
   - look at `pytestmark = pytest.mark.system`
+
+<a id="tut-23.2-tests-system-test_real_model.py-df0b9d-diff"></a>
 
 <details open><summary>The patch to <code>tests/system/test_real_model.py</code></summary>
 
@@ -250,6 +254,8 @@ git restore --source 14e3ab70450c --staged -- :/ && git restore --source e194931
 
 - <a id="tut-23.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: the marker `system`, declared. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/e194931f1402c90fe5d4d59d5ac3e5c5846b8ac1/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `markers = ["system: needs the network, the real model or a device"]`
+
+<a id="tut-23.3-pyproject.toml-5d07e7-diff"></a>
 
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
@@ -348,6 +354,8 @@ git restore --source e194931f1402 --staged -- :/ && git restore --source 12e34ad
 - <a id="tut-23.4-pyproject.toml-5d07e7"></a>`pyproject.toml`: the tests marked `system` stay out of every run that does not ask for them. 3 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/12e34ad11cf268f667238c3362902c25b462225c/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `addopts = "--cov=babykev --cov-report=term-missing -m 'not system'"`
 
+<a id="tut-23.4-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -406,6 +414,8 @@ git fetch --quiet --tags --force origin; git restore --source 12e34ad11cf2 --sta
 
 - <a id="tut-23.5-README.md-8ec9a0"></a>`README.md`: `just test -m system`, and the row of `tests/system/`. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/d9df8f2a02ed7a7780325aebf281d6107317f9d9/README.md){.btn .btn-sm .btn-secondary}
   - look at ``| `tests/system/` | The test of the real model, marked `system`. `just test -m system` runs it |``
+
+<a id="tut-23.5-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 

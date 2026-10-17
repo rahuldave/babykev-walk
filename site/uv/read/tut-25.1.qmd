@@ -37,7 +37,7 @@ package again, and not torch.
 The stage `run` starts from a fresh Python, and takes only the finished environment and the sample data. uv stays in
 the stage `build`.
 
-[± See the new file `Dockerfile`](#tut-25.1-Dockerfile-6651dd){.btn .btn-sm .btn-secondary}
+[± See the new file `Dockerfile`](#tut-25.1-Dockerfile-6651dd-diff){.btn .btn-sm .btn-secondary}
 
 In the new file `Dockerfile`, the stage `uv` is on line 9, and the stage `build` on lines 13 to 25. The stage `run`
 is on lines 28 to 36.
@@ -77,6 +77,8 @@ The stage `build` runs `uv sync --locked --no-default-groups`. `--no-default-gro
 
 - <a id="tut-25.1-Dockerfile-6651dd"></a>`Dockerfile`: the stages `uv`, `build` and `run`. New, 36 lines. [The file](https://github.com/rahuldave/babykev/blob/570bb2134f032a64a34d14852c82fa1a199f69f6/Dockerfile){.btn .btn-sm .btn-secondary}
   - look at `FROM python:3.13-slim-trixie AS run`
+
+<a id="tut-25.1-Dockerfile-6651dd-diff"></a>
 
 <details><summary>The diff of <code>Dockerfile</code></summary>
 

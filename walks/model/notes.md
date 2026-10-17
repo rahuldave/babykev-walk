@@ -312,7 +312,7 @@ comes first and saw only the state with either mask. Question 2 now gets exactly
 
 The smoke went from `6 of 15 right` with the old mask to `4 of 15 right` with the fix, and every test says that the
 fix is right. The first question of each request kept its answer, with the same two decimals. It comes first, so it
-saw only the state with either mask. Nine of the ten other answers changed.
+saw only the state with either mask. Most of the ten other answers changed.
 
 The milk of Coquetdale went from `buffalo` to `cow`, which is right. The milk and the firmness of Amou, and the
 intensity of Loma Alta, were right with the old mask, and are wrong now. The count fell, and the fix is still right.

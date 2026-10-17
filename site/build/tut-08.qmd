@@ -105,6 +105,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-07 --staged --
 - <a id="tut-08.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: a family of rules on each line. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/1a067ec6d90256e2f0142390db307c537909c047/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `    "B",   # bugbear: code that is likely a bug, such as a zip that drops items silently`
 
+<a id="tut-08.1-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -210,6 +212,8 @@ git restore --source 1a067ec6d902 --staged -- :/ && git restore --source a6325da
 - <a id="tut-08.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the tests may use `assert`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/a6325da466f16c6379613b62554e1e4cf2144e7e/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `"tests/**" = ["S101"]`
 
+<a id="tut-08.2-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -278,6 +282,8 @@ git restore --source a6325da466f1 --staged -- :/ && git restore --source 58d6ece
 - <a id="tut-08.3-justfile-424f0b"></a>`justfile`: the recipe `lint`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/58d6ece95cf464e01996ad8dbed1d98e92bcc502/justfile){.btn .btn-sm .btn-secondary}
   - look at `lint *args:`
 
+<a id="tut-08.3-justfile-424f0b-diff"></a>
+
 <details open><summary>The patch to <code>justfile</code></summary>
 
 ```diff
@@ -340,6 +346,8 @@ git restore --source 58d6ece95cf4 --staged -- :/ && git restore --source 4a25204
 
 - <a id="tut-08.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the table of the docstring, in 97 characters. 3 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/4a25204449af75e24305189a1395c418ec0295d3/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `Score  -> options = the levels, in order; answer = expected level, legend, probabilities by index`
+
+<a id="tut-08.4-src-babykev-api.py-2ea65f-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
@@ -404,6 +412,8 @@ git restore --source 4a25204449af --staged -- :/ && git restore --source 01c4956
 
 - <a id="tut-08.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: two unions, written with `|`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/01c4956b31ad768bd11dc5da0c13128a7a3ab0fc/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `JSONContent = str | dict | list | int | float | bool | None`
+
+<a id="tut-08.5-src-babykev-api.py-2ea65f-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
@@ -471,6 +481,8 @@ git restore --source 01c4956b31ad --staged -- :/ && git restore --source 37fed4d
 
 - <a id="tut-08.6-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: two names, in lower case. 6 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/37fed4d2a9bff48f0a928851c8eb640736c7e313/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `    n = len(p)`
+
+<a id="tut-08.6-src-babykev-api.py-2ea65f-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
@@ -553,6 +565,8 @@ git restore --source 37fed4d2a9bf --staged -- :/ && git restore --source ca9cfc3
 - <a id="tut-08.7-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: two calls of `zip`, with `strict=True`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/ca9cfc3b70b7a0c926c9407336c217e3f04c73aa/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `    for p, m in zip(probs, meta, strict=True):`
 
+<a id="tut-08.7-src-babykev-api.py-2ea65f-diff"></a>
+
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
 ```diff
@@ -614,6 +628,8 @@ git fetch --quiet --tags --force origin; git restore --source ca9cfc3b70b7 --sta
 
 - <a id="tut-08.8-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the imports, sorted. 2 lines added, 1 removed. It comes from `just lint --fix`. [The file](https://github.com/rahuldave/babykev/blob/7cdb1ba696a32050cba1c335892fccb68bb4fd24/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `from typing import Any, Literal`
+
+<a id="tut-08.8-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff that <code>just lint --fix</code> makes in <code>src/babykev/api.py</code></summary>
 

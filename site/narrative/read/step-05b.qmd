@@ -217,6 +217,8 @@ just docs publish
 - <a id="step-05b-tests-system-test_real_model.py-df0b9d"></a>`tests/system/test_real_model.py`: adds `test_the_real_model_answers_every_sample_question`. New, 27 lines. [The file](https://github.com/rahuldave/babykev/blob/47b43c0916ac186e3efdf42e15dbcf1f04edb1a0/tests/system/test_real_model.py){.btn .btn-sm .btn-secondary}
 - <a id="step-05b-uv.lock-8356d8"></a>`uv.lock`: 158 lines added, 108 removed. [The file](https://github.com/rahuldave/babykev/blob/47b43c0916ac186e3efdf42e15dbcf1f04edb1a0/uv.lock){.btn .btn-sm .btn-secondary}
 
+<a id="step-05b-.dockerignore-05a721-diff"></a>
+
 <details><summary>The diff of <code>.dockerignore</code></summary>
 
 ```diff
@@ -250,6 +252,8 @@ just docs publish
 ```
 
 </details>
+
+<a id="step-05b-Dockerfile-6651dd-diff"></a>
 
 <details><summary>The diff of <code>Dockerfile</code></summary>
 
@@ -336,6 +340,8 @@ just docs publish
 
 </details>
 
+<a id="step-05b-README.md-8ec9a0-diff"></a>
+
 <details><summary>The diff of <code>README.md</code></summary>
 
 ````diff
@@ -416,6 +422,8 @@ just docs publish
 ````
 
 </details>
+
+<a id="step-05b-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -548,6 +556,8 @@ just docs publish
 
 </details>
 
+<a id="step-05b-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
 ```diff
@@ -576,6 +586,8 @@ just docs publish
 ```
 
 </details>
+
+<a id="step-05b-tests-system-test_real_model.py-df0b9d-diff"></a>
 
 <details><summary>The diff of <code>tests/system/test_real_model.py</code></summary>
 

@@ -33,7 +33,7 @@ Then coverage counts the lines of babykev that the tests run.
 
 The whole tutorial then adds the contract, `src/babykev/api.py`. It says what a request is and what an answer is,
 with pydantic, a library that checks the shape of data. Five sample requests about cheese go in
-`data/cheese/sample.jsonl`. No test reaches the contract, so the coverage falls to 11%.
+`data/cheese/sample.jsonl`. No test reaches the contract yet, so the coverage falls.
 
 The tests here check the sample requests against the contract, then each rule of the contract, one at a time.
 
@@ -57,7 +57,7 @@ records a change. smalldocs builds a docs site from the code.
 
 Then the model comes in, with torch and three more packages, as `src/babykev/model.py`. ty checks its types.
 `src/babykev/smoke.py` runs the real model on the sample requests, and `just smoke` runs it. No test calls the model
-or the smoke. `just test` prints `53 passed`, and the total coverage is 32%.
+or the smoke yet, so most of the new lines have no test.
 
 The tests of the model need a model, and the real one is a download of about 1 GB. Here the tests get a tiny model,
 with random weights, from fixtures.

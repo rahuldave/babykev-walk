@@ -44,7 +44,7 @@ into probabilities with a softmax.
 The head takes the hidden state of a decide token and those of the options, and gives one logit for each option. The
 test builds a head alone, with no model, and gives it five options.
 
-[± See the change to `tests/unit/test_model.py`](#tut-20.7-tests-unit-test_model.py-583145){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/unit/test_model.py`](#tut-20.7-tests-unit-test_model.py-583145-diff){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_model.py`, the new test is on lines 87 to 90.
 
@@ -65,6 +65,8 @@ The test builds a head alone, of width 32 and `dp` 8, and gives it the vector of
 
 - <a id="tut-20.7-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: five options in, five logits out. 8 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/455b6a8ae64dae7e79fea6dd6b8434d11eb8f542/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_pointer_head_gives_one_logit_per_option() -> None:`
+
+<a id="tut-20.7-tests-unit-test_model.py-583145-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
 

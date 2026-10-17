@@ -101,6 +101,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-07 --staged --
 - <a id="tut-08.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: a family of rules on each line. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/1a067ec6d90256e2f0142390db307c537909c047/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `    "B",   # bugbear: code that is likely a bug, such as a zip that drops items silently`
 
+<a id="tut-08.1-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -206,6 +208,8 @@ git restore --source 1a067ec6d902 --staged -- :/ && git restore --source a6325da
 - <a id="tut-08.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the tests may use `assert`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/a6325da466f16c6379613b62554e1e4cf2144e7e/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `"tests/**" = ["S101"]`
 
+<a id="tut-08.2-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -273,6 +277,8 @@ git restore --source a6325da466f1 --staged -- :/ && git restore --source 58d6ece
 
 - <a id="tut-08.3-justfile-424f0b"></a>`justfile`: the recipe `lint`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/58d6ece95cf464e01996ad8dbed1d98e92bcc502/justfile){.btn .btn-sm .btn-secondary}
   - look at `lint *args:`
+
+<a id="tut-08.3-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 

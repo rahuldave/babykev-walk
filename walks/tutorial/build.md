@@ -188,6 +188,8 @@ git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch --
 - <a id="tut-00-README.md-8ec9a0"></a>`README.md`: what babykev is, and the request it reads. The table gives the three types of question. New, 74 lines. [The file](https://github.com/rahuldave/babykev/blob/70ac5b0a0a1d927dfc4da6f8b7b92344917e4a33/README.md).
   - look at ``| `noul` | Yes or no | The probability of yes |``
 
+<a id="tut-00-.gitignore-a5cc29-diff"></a>
+
 <details><summary>The diff of <code>.gitignore</code></summary>
 
 ```diff
@@ -416,6 +418,8 @@ git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch --
 
 </details>
 
+<a id="tut-00-LICENSE-0398cc-diff"></a>
+
 <details><summary>The diff of <code>LICENSE</code></summary>
 
 ```diff
@@ -626,6 +630,8 @@ git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch --
 
 </details>
 
+<a id="tut-00-NOTICE-fe7187-diff"></a>
+
 <details><summary>The diff of <code>NOTICE</code></summary>
 
 ```diff
@@ -641,6 +647,8 @@ git fetch --quiet --tags --force origin; git rm -rq --cached --ignore-unmatch --
 ```
 
 </details>
+
+<a id="tut-00-README.md-8ec9a0-diff"></a>
 
 <details><summary>The diff of <code>README.md</code></summary>
 
@@ -791,6 +799,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-00 --staged --
 - <a id="tut-01.1-src-babykev-__init__.py-a40393"></a>`src/babykev/__init__.py`: the function that the command runs. It prints a greeting. New, 2 lines. It comes from `uv init --package --name babykev --python 3.13`. [The file](https://github.com/rahuldave/babykev/blob/eac75e0becc78c9a872e734ea715ac3903947844/src/babykev/__init__.py).
   - look at `print("Hello from babykev!")`
 
+<a id="tut-01.1-.python-version-7696e9-diff"></a>
+
 <details><summary>The diff that <code>uv init --package --name babykev --python 3.13</code> makes in <code>.python-version</code></summary>
 
 ```diff
@@ -799,6 +809,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-00 --staged --
 ```
 
 </details>
+
+<a id="tut-01.1-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff that <code>uv init --package --name babykev --python 3.13</code> makes in <code>pyproject.toml</code></summary>
 
@@ -821,6 +833,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-00 --staged --
 ```
 
 </details>
+
+<a id="tut-01.1-src-babykev-__init__.py-a40393-diff"></a>
 
 <details><summary>The diff that <code>uv init --package --name babykev --python 3.13</code> makes in <code>src/babykev/__init__.py</code></summary>
 
@@ -954,6 +968,8 @@ git restore --source 489f27fad816 --staged -- :/ && git restore --source 0497c0d
 - <a id="tut-01.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: the description. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/0497c0dc9d3772df47e79361aa4165e5de8e227d/pyproject.toml).
   - look at `description = "A small decision model: one state, typed questions, a probability for every answer"`
 
+<a id="tut-01.3-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -1052,6 +1068,8 @@ git restore --source 0497c0dc9d37 --staged -- :/ && git restore --source 4148744
 - <a id="tut-01.4-pyproject.toml-5d07e7"></a>`pyproject.toml`: the licence, and the files a package carries. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/414874463b887dedf65c5c74caeac8a064b0e876/pyproject.toml).
   - look at `license-files = ["LICENSE", "NOTICE"]`
 
+<a id="tut-01.4-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -1148,6 +1166,8 @@ git restore --source 414874463b88 --staged -- :/ && git restore --source 7f38877
 - <a id="tut-01.5-pyproject.toml-5d07e7"></a>`pyproject.toml`: the author. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/7f38877e597f5404208fdca2eabb176077d95a8e/pyproject.toml).
   - look at `authors = [{ name = "Rahul Dave" }]`
 
+<a id="tut-01.5-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -1207,6 +1227,8 @@ git restore --source 7f38877e597f --staged -- :/ && git restore --source 64a78cf
 
 - <a id="tut-01.6-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: `main` reads the words after `babykev`. A word other than `help`, `--help` or `-h` ends the command with exit code 2. New, 21 lines. [The file](https://github.com/rahuldave/babykev/blob/64a78cf48bc1b0f508dfd7b83c3a2b0572fb1912/src/babykev/cli.py).
   - look at `raise SystemExit(2)`
+
+<a id="tut-01.6-src-babykev-cli.py-a9e184-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/cli.py</code></summary>
 
@@ -1318,6 +1340,8 @@ git restore --source 64a78cf48bc1 --staged -- :/ && git restore --source 292ddcc
 - <a id="tut-01.7-pyproject.toml-5d07e7"></a>`pyproject.toml`: the command now runs `main` of the module `cli`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/292ddcc99a287378929f14e2082d40f0947a2880/pyproject.toml).
   - look at `babykev = "babykev.cli:main"`
 
+<a id="tut-01.7-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -1373,6 +1397,8 @@ git restore --source 292ddcc99a28 --staged -- :/ && git restore --source e32c7ba
 #### What changed
 
 - <a id="tut-01.8-src-babykev-__init__.py-a40393"></a>`src/babykev/__init__.py`: the greeting goes, and the file is empty. 0 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/e32c7ba9f7983fc03cc8d91411562b1eac1d38e9/src/babykev/__init__.py).
+
+<a id="tut-01.8-src-babykev-__init__.py-a40393-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/__init__.py</code></summary>
 
@@ -1440,6 +1466,8 @@ git restore --source e32c7ba9f798 --staged -- :/ && git restore --source e14dffa
 
 - <a id="tut-01.9-justfile-424f0b"></a>`justfile`: the recipe `setup` and its line. New, 10 lines. [The file](https://github.com/rahuldave/babykev/blob/e14dffa877a2d24a53d67d8dd3d54b17204885b1/justfile).
   - look at `setup:`
+
+<a id="tut-01.9-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -1509,6 +1537,8 @@ git restore --source e14dffa877a2 --staged -- :/ && git restore --source a55c903
 
 - <a id="tut-01.10-justfile-424f0b"></a>`justfile`: the recipe `help`. 12 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a55c90355687e4bf94dfad2277262548ba4ea682/justfile).
   - look at `help *verb:`
+
+<a id="tut-01.10-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -1582,6 +1612,8 @@ git restore --source a55c90355687 --staged -- :/ && git restore --source 3016e7e
 - <a id="tut-01.11-justfile-424f0b"></a>`justfile`: `setup` answers `help`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/3016e7ee53854d719456c12a48c8c8e620614bde/justfile).
   - look at `@{{ if args == "help" { "just help setup" } else { "uv sync --locked" } }}`
 
+<a id="tut-01.11-justfile-424f0b-diff"></a>
+
 <details open><summary>The patch to <code>justfile</code></summary>
 
 ```diff
@@ -1642,6 +1674,8 @@ git restore --source 3016e7ee5385 --staged -- :/ && git restore --source 9218f21
 
 - <a id="tut-01.12-justfile-424f0b"></a>`justfile`: the variable `program`, and the branch of `help` that runs the program's help. 6 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/9218f21a784277593cf6930e10389b04e41bf9d0/justfile).
   - look at `program := "babykev"`
+
+<a id="tut-01.12-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -1716,6 +1750,8 @@ git restore --source 9218f21a7842 --staged -- :/ && git restore --source 0d2e163
 - <a id="tut-01.13-README.md-8ec9a0"></a>`README.md`: how to start. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/0d2e163cca5d3eeb9fc8f7223fddd8d7da735fde/README.md).
   - look at ``Run `just setup` first. It installs Python and every dependency into `.venv`, exactly as `uv.lock` says.``
 
+<a id="tut-01.13-README.md-8ec9a0-diff"></a>
+
 <details open><summary>The patch to <code>README.md</code></summary>
 
 ```diff
@@ -1777,6 +1813,8 @@ git fetch --quiet --tags --force origin; git restore --source 0d2e163cca5d --sta
 
 - <a id="tut-01.14-README.md-8ec9a0"></a>`README.md`: a table of the files. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/7ad3a06605fadc9f34b5e2d8180145a3e53389a9/README.md).
   - look at ``| `justfile` | Every task of the project, one recipe each. `just help` explains them |``
+
+<a id="tut-01.14-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 
@@ -1913,6 +1951,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-01 --staged --
 - <a id="tut-02.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the table `[tool.uv]`, so uv installs every dependency group. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/ad616a5cc1fcdf5b7c1672b79d0d2b267b72bd59/pyproject.toml).
   - look at `default-groups = "all"`
 
+<a id="tut-02.1-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -1972,6 +2012,8 @@ git restore --source ad616a5cc1fc --staged -- :/ && git restore --source 966956d
 - <a id="tut-02.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the group `test`, with pytest. 5 lines added. It comes from `uv add --group test pytest`. [The file](https://github.com/rahuldave/babykev/blob/966956d738b58505e23586af60f05cd5daceb12f/pyproject.toml).
   - look at `"pytest>=9.1.1",`
 - <a id="tut-02.2-uv.lock-8356d8"></a>`uv.lock`: pytest and the five packages it needs. 71 lines added. It comes from `uv add --group test pytest`. [The file](https://github.com/rahuldave/babykev/blob/966956d738b58505e23586af60f05cd5daceb12f/uv.lock).
+
+<a id="tut-02.2-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff that <code>uv add --group test pytest</code> makes in <code>pyproject.toml</code></summary>
 
@@ -2035,6 +2077,8 @@ git restore --source 966956d738b5 --staged -- :/ && git restore --source b084070
 
 - <a id="tut-02.3-justfile-424f0b"></a>`justfile`: the recipe `test`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/b0840709e371a548d4b922c57c679ba040dd2c1a/justfile).
   - look at `test *args:`
+
+<a id="tut-02.3-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -2100,6 +2144,8 @@ git restore --source b0840709e371 --staged -- :/ && git restore --source 72678bd
 
 - <a id="tut-02.4-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: one test, for four ways of asking for help. New, 18 lines. [The file](https://github.com/rahuldave/babykev/blob/72678bd1d656f5bc6e44f2d65b44a1e18b024661/tests/unit/test_cli.py).
   - look at `@pytest.mark.parametrize("words", [(), ("help",), ("--help",), ("-h",)])`
+
+<a id="tut-02.4-tests-unit-test_cli.py-44d4a0-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_cli.py</code></summary>
 
@@ -2171,6 +2217,8 @@ git restore --source 72678bd1d656 --staged -- :/ && git restore --source 9a4100f
 
 - <a id="tut-02.5-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: the test of a word that is not a command. 10 lines added. [The file](https://github.com/rahuldave/babykev/blob/9a4100fd1962921bc11cf9f4b22c5326c7a51807/tests/unit/test_cli.py).
   - look at `assert exit_info.value.code == 2`
+
+<a id="tut-02.5-tests-unit-test_cli.py-44d4a0-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_cli.py</code></summary>
 
@@ -2273,6 +2321,8 @@ git restore --source 9a4100fd1962 --staged -- :/ && git restore --source 348290a
 - <a id="tut-02.6-pyproject.toml-5d07e7"></a>`pyproject.toml`: the settings of pytest. pytest looks for tests in `tests/` alone. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/348290a934c2bd1da0a38f4c3336f66758f8523c/pyproject.toml).
   - look at `testpaths = ["tests"]`
 
+<a id="tut-02.6-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -2329,6 +2379,8 @@ git restore --source 348290a934c2 --staged -- :/ && git restore --source 326e444
 - <a id="tut-02.7-pyproject.toml-5d07e7"></a>`pyproject.toml`: pytest-cov in the group `test`. 1 line added. It comes from `uv add --group test pytest-cov`. [The file](https://github.com/rahuldave/babykev/blob/326e444b726a914d5f9d0138ca658ed89a979dcd/pyproject.toml).
   - look at `"pytest-cov>=7.1.0",`
 - <a id="tut-02.7-uv.lock-8356d8"></a>`uv.lock`: coverage and pytest-cov. 103 lines added, 1 removed. It comes from `uv add --group test pytest-cov`. [The file](https://github.com/rahuldave/babykev/blob/326e444b726a914d5f9d0138ca658ed89a979dcd/uv.lock).
+
+<a id="tut-02.7-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff that <code>uv add --group test pytest-cov</code> makes in <code>pyproject.toml</code></summary>
 
@@ -2425,6 +2477,8 @@ git restore --source 326e444b726a --staged -- :/ && git restore --source f44cc53
 - <a id="tut-02.8-pyproject.toml-5d07e7"></a>`pyproject.toml`: the options of every run. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/f44cc53a91bc7db84283d6a9ded16d9a7bbedf90/pyproject.toml).
   - look at `addopts = "--cov=babykev --cov-report=term-missing"`
 
+<a id="tut-02.8-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -2477,6 +2531,8 @@ git restore --source f44cc53a91bc --staged -- :/ && git restore --source ab192e5
 
 - <a id="tut-02.9-README.md-8ec9a0"></a>`README.md`: `just test` in "Start". 3 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/ab192e5bd8ff3e3b8ad6c0ae5e17be31b7790557/README.md).
   - look at `help of the program itself. A recipe gives its extra words to the tool behind it. For example,`
+
+<a id="tut-02.9-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 
@@ -2538,6 +2594,8 @@ git fetch --quiet --tags --force origin; git restore --source ab192e5bd8ff --sta
 
 - <a id="tut-02.10-README.md-8ec9a0"></a>`README.md`: the row of the tests. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/4640589d80e4f224a4b2c1fd9567e952f564f102/README.md).
   - look at ``| `tests/unit/` | The unit tests. `test_cli.py` tests the command `babykev` |``
+
+<a id="tut-02.10-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 
@@ -2621,6 +2679,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-02 --staged --
   - look at `"pydantic>=2.14.1",`
 - <a id="tut-03.1-uv.lock-8356d8"></a>`uv.lock`: pydantic and the four packages it needs, each with its exact version. 136 lines added. It comes from `uv add pydantic`. [The file](https://github.com/rahuldave/babykev/blob/96502df0a92f6f7090d6f624cda901a271dac9a7/uv.lock).
 
+<a id="tut-03.1-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff that <code>uv add pydantic</code> makes in <code>pyproject.toml</code></summary>
 
 ```diff
@@ -2687,6 +2747,8 @@ git restore --source 96502df0a92f --staged -- :/ && git restore --source e8e2e72
 
 - <a id="tut-03.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a request has a state and its questions by name. Each question is a `Noul`, a `Choice` or a `Score`, and its field `type` says which. New, 111 lines. [The file](https://github.com/rahuldave/babykev/blob/e8e2e72adad9364a58be21dadf6d757e84436b97/src/babykev/api.py).
   - look at `class SystemOneRequest(BaseModel):`
+
+<a id="tut-03.2-src-babykev-api.py-2ea65f-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
@@ -2847,6 +2909,8 @@ git restore --source e8e2e72adad9 --staged -- :/ && git restore --source 9361895
 - <a id="tut-03.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the docstring. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/93618951b784e928af3d3547f077bb49bff4d5da/src/babykev/api.py).
   - look at `"""The contract: request and answer shapes, mapped onto the single pointer primitive.`
 
+<a id="tut-03.3-src-babykev-api.py-2ea65f-diff"></a>
+
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
 ```diff
@@ -2898,6 +2962,8 @@ git restore --source 93618951b784 --staged -- :/ && git restore --source 5cce9c9
 
 - <a id="tut-03.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a request has two fields, `state` and `questions`. 0 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/5cce9c9e5025336d501298d244389b64c696737c/src/babykev/api.py).
   - look at `    questions: dict[str, Question] = Field(min_length=1)`
+
+<a id="tut-03.4-src-babykev-api.py-2ea65f-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
@@ -2952,6 +3018,8 @@ git restore --source 5cce9c9e5025 --staged -- :/ && git restore --source 43b7ea4
 #### What changed
 
 - <a id="tut-03.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the function goes. 0 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/43b7ea4eda990f90abd605920e2fb1d9b376378d/src/babykev/api.py).
+
+<a id="tut-03.5-src-babykev-api.py-2ea65f-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
@@ -3011,6 +3079,8 @@ git restore --source 43b7ea4eda99 --staged -- :/ && git restore --source abb4ece
 
 - <a id="tut-03.6-data-cheese-sample.jsonl-79f982"></a>`data/cheese/sample.jsonl`: each line is a request with a `state` and its `questions`. New, 5 lines. [The file](https://github.com/rahuldave/babykev/blob/abb4ece53e114b331e9e32d67309e1f54f9f964e/data/cheese/sample.jsonl).
 
+<a id="tut-03.6-data-cheese-sample.jsonl-79f982-diff"></a>
+
 <details open><summary>The patch to <code>data/cheese/sample.jsonl</code></summary>
 
 ```diff
@@ -3063,6 +3133,8 @@ git fetch --quiet --tags --force origin; git restore --source abb4ece53e11 --sta
 
 - <a id="tut-03.7-README.md-8ec9a0"></a>`README.md`: the rows of the contract and the data. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/56606771fb23f7a0a01825f477050d2980a47736/README.md).
   - look at ``| `data/cheese/sample.jsonl` | Five requests about cheese, one on each line. Every question has a `label`, the right answer |``
+
+<a id="tut-03.7-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 
@@ -3140,6 +3212,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-03 --staged --
 - <a id="tut-04.1-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the sample data, and the test that checks each line. New, 27 lines. [The file](https://github.com/rahuldave/babykev/blob/5e134165b7e1feeded775bcfb2269aec951ad39f/tests/unit/test_api.py).
   - look at `def test_sample_line_fits_the_contract(line):`
 
+<a id="tut-04.1-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -3215,6 +3289,8 @@ git restore --source 5e134165b7e1 --staged -- :/ && git restore --source 1ca3952
 - <a id="tut-04.2-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the labels of the sample data. 13 lines added. [The file](https://github.com/rahuldave/babykev/blob/1ca39523b4fdf6c75c244b8c0e0f2371593cfbff/tests/unit/test_api.py).
   - look at `def test_sample_line_has_a_usable_label_on_every_question(line):`
 
+<a id="tut-04.2-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -3280,6 +3356,8 @@ git restore --source 1ca39523b4fd --staged -- :/ && git restore --source 847d160
 
 - <a id="tut-04.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the helper, and the test of the three types. 32 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/847d160f4a2f014bd58eb06030268ce762577cbc/tests/unit/test_api.py).
   - look at `def test_request_holds_one_model_per_question_type():`
+
+<a id="tut-04.3-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
@@ -3379,6 +3457,8 @@ git restore --source 847d160f4a2f --staged -- :/ && git restore --source c2af99c
 - <a id="tut-04.4-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a request with no questions. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/c2af99cdd8e0b6f40e33a1ebcf9aa602904a83ba/tests/unit/test_api.py).
   - look at `def test_request_without_questions_is_rejected():`
 
+<a id="tut-04.4-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -3443,6 +3523,8 @@ git restore --source c2af99cdd8e0 --staged -- :/ && git restore --source 6acc5e7
 - <a id="tut-04.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a type that does not exist. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/6acc5e7d6f228ce76a9083d915f238c3d6696c85/tests/unit/test_api.py).
   - look at `question = {"type": "essay", "instructions": "Describe this cheese."}`
 
+<a id="tut-04.5-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -3501,6 +3583,8 @@ git restore --source 6acc5e7d6f22 --staged -- :/ && git restore --source 3a99587
 - <a id="tut-04.6-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a noul without criteria. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/3a99587d325837f9104661b3d06d9630679dc8eb/tests/unit/test_api.py).
   - look at `assert Noul(type="noul", instructions="Is it blue?").criteria is None`
 
+<a id="tut-04.6-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -3555,6 +3639,8 @@ git restore --source 3a99587d3258 --staged -- :/ && git restore --source 4653d29
 
 - <a id="tut-04.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a choice of nothing. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/4653d298261d887195e59a2cf00593036151657c/tests/unit/test_api.py).
   - look at `def test_choice_without_options_is_rejected():`
+
+<a id="tut-04.7-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
@@ -3612,6 +3698,8 @@ git restore --source 4653d298261d --staged -- :/ && git restore --source 3addf0f
 
 - <a id="tut-04.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the limit, from both sides. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/3addf0f2bd69e0910ba506a41a240fec5218c77a/tests/unit/test_api.py).
   - look at `at_limit = {f"option{i}": None for i in range(MAX_OPTIONS)}`
+
+<a id="tut-04.8-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
@@ -3682,6 +3770,8 @@ git restore --source 3addf0f2bd69 --staged -- :/ && git restore --source b9a4861
 - <a id="tut-04.9-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a scale of one level. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/b9a4861a26a74623a6daf8c7c776cebe5f30a626/tests/unit/test_api.py).
   - look at `Score(type="score", instructions="How firm?", criteria=["Soft"])`
 
+<a id="tut-04.9-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -3737,6 +3827,8 @@ git fetch --quiet --tags --force origin; git restore --source b9a4861a26a7 --sta
 
 - <a id="tut-04.10-README.md-8ec9a0"></a>`README.md`: the row of the tests. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/1fef13ae49e24d280d05c250289c41d5636feff7/README.md).
   - look at ``| `tests/unit/` | The unit tests of the contract and of the command. One test checks every line of the sample data against the contract |``
+
+<a id="tut-04.10-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 
@@ -3809,6 +3901,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-04 --staged --
 
 - <a id="tut-05.1-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: nine values, and their text. 26 lines added. [The file](https://github.com/rahuldave/babykev/blob/9f861048b50c3705e7e1195ccbd90a7b01e60180/tests/unit/test_api.py).
   - look at `def test_render_flattens_json_into_text(value, text):`
+
+<a id="tut-05.1-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
@@ -3894,6 +3988,8 @@ git restore --source 9f861048b50c --staged -- :/ && git restore --source e627072
 - <a id="tut-05.2-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: three cases of an option. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/e6270727deb4467393c6c7b73cfaf0908392387f/tests/unit/test_api.py).
   - look at `def test_option_text_adds_a_description_only_when_there_is_one(name, description, text):`
 
+<a id="tut-05.2-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -3966,6 +4062,8 @@ git restore --source e6270727deb4 --staged -- :/ && git restore --source 3d272bd
 - <a id="tut-05.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the state, and the order. 15 lines added. [The file](https://github.com/rahuldave/babykev/blob/3d272bd2edaf22b970b8888429dd23940ffd3f17/tests/unit/test_api.py).
   - look at `assert [m["id"] for m in meta] == ["blue", "milk", "firmness"]`
 
+<a id="tut-05.3-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -4032,6 +4130,8 @@ git restore --source 3d272bd2edaf --staged -- :/ && git restore --source 7dee26a
 - <a id="tut-05.4-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the two options of a noul. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/7dee26abd961a5a85d897f82332ae46e556e2f80/tests/unit/test_api.py).
   - look at `assert record["questions"][0]["options"] == ["no", "yes"]`
 
+<a id="tut-05.4-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -4088,6 +4188,8 @@ git restore --source 7dee26abd961 --staged -- :/ && git restore --source f9b390d
 
 - <a id="tut-05.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the descriptions of no and yes. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/f9b390d64cc717326b28f9c7a6adbb88de59363f/tests/unit/test_api.py).
   - look at `def test_noul_criteria_describe_no_and_yes():`
+
+<a id="tut-05.5-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
@@ -4147,6 +4249,8 @@ git restore --source f9b390d64cc7 --staged -- :/ && git restore --source 0930c8d
 
 - <a id="tut-05.6-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the options of a choice. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/0930c8de69e9710470eb60380b99cae5c3e82558/tests/unit/test_api.py).
   - look at `def test_choice_becomes_one_option_per_criterion_in_order():`
+
+<a id="tut-05.6-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
@@ -4210,6 +4314,8 @@ git restore --source 0930c8de69e9 --staged -- :/ && git restore --source 8368a82
 - <a id="tut-05.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the levels, and the legend. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/8368a8202dab8159f95043310e2bf22a24c1e474/tests/unit/test_api.py).
   - look at `def test_score_becomes_one_option_per_level_with_a_legend():`
 
+<a id="tut-05.7-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -4268,6 +4374,8 @@ git restore --source 8368a8202dab --staged -- :/ && git restore --source 0740c2c
 
 - <a id="tut-05.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the answer of a noul. 10 lines added. [The file](https://github.com/rahuldave/babykev/blob/0740c2c246273e99e34494512152d5b97ea4f7b9/tests/unit/test_api.py).
   - look at `assert answers == {"blue": {"type": "noul", "noul": 0.75}}`
+
+<a id="tut-05.8-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
@@ -4336,6 +4444,8 @@ git restore --source 0740c2c24627 --staged -- :/ && git restore --source a27b71f
 - <a id="tut-05.9-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the answer of a choice. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/a27b71f6a341bb12029a2d3471d6b3bc19d0d94c/tests/unit/test_api.py).
   - look at `assert answer["choice"] == "goat"`
 
+<a id="tut-05.9-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -4395,6 +4505,8 @@ git restore --source a27b71f6a341 --staged -- :/ && git restore --source be8c681
 
 - <a id="tut-05.10-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the answer of a score. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/be8c681092973e7ac1e12bbd1817da81bea45e7e/tests/unit/test_api.py).
   - look at `assert answer["score"] == pytest.approx(1.6)`
+
+<a id="tut-05.10-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
@@ -4458,6 +4570,8 @@ git fetch --quiet --tags --force origin; git restore --source be8c68109297 --sta
 
 - <a id="tut-05.11-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: one answer for each question. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f/tests/unit/test_api.py).
   - look at `def test_every_question_gets_an_answer_of_its_own_type():`
+
+<a id="tut-05.11-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
@@ -4546,6 +4660,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-05 --staged --
 - <a id="tut-06.1-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the sum of the rounded probabilities. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/9012b28ceacd0bcc3971154a5df2f822e551443d/tests/unit/test_api.py).
   - look at `    assert sum(answer["probabilities"].values()) == pytest.approx(1, abs=0.02)`
 
+<a id="tut-06.1-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -4607,6 +4723,8 @@ git restore --source 9012b28ceacd --staged -- :/ && git restore --source 27e93dd
 
 - <a id="tut-06.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: four decimals. 8 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/27e93dd7ee76e609084a1d8a1c1cfbb4f7811da4/src/babykev/api.py).
   - look at `    return round(float(x), 4)`
+
+<a id="tut-06.2-src-babykev-api.py-2ea65f-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
@@ -4683,6 +4801,8 @@ git restore --source 27e93dd7ee76 --staged -- :/ && git restore --source 27f1f23
 - <a id="tut-06.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a guess between four options. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/27f1f23cc392446dd80918636dfc7a3c52692aae/tests/unit/test_api.py).
   - look at `assert choice_confidence([0.25] * 4) == pytest.approx(0)`
 
+<a id="tut-06.3-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -4749,6 +4869,8 @@ git restore --source 27f1f23cc392 --staged -- :/ && git restore --source 9ded0b3
 - <a id="tut-06.4-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: certainty. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/9ded0b3177719bb849eda76972daa2f5368af069/tests/unit/test_api.py).
   - look at `assert choice_confidence([0, 1, 0]) == pytest.approx(1)`
 
+<a id="tut-06.4-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -4806,6 +4928,8 @@ git restore --source 9ded0b317771 --staged -- :/ && git restore --source 890fbe0
 - <a id="tut-06.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a confidence between 0 and 1. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/890fbe0900f6a0f59232ca9d94ce4cc439e21dde/tests/unit/test_api.py).
   - look at `assert choice_confidence([0.5, 0.25, 0.25]) == pytest.approx(0.25)`
 
+<a id="tut-06.5-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -4861,6 +4985,8 @@ git restore --source 890fbe0900f6 --staged -- :/ && git restore --source d2564e4
 
 - <a id="tut-06.6-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: certainty, on each level. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/d2564e48ae134802f1d48cc079cfe3b92db14639/tests/unit/test_api.py).
   - look at `def test_score_confidence_is_one_when_certain(level):`
+
+<a id="tut-06.6-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
@@ -4927,6 +5053,8 @@ git restore --source d2564e48ae13 --staged -- :/ && git restore --source 795356b
 
 - <a id="tut-06.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: near is better than far. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/795356b136ab4b1b1c22c8e63b8175a1a6f6d6de/tests/unit/test_api.py).
   - look at `assert score_confidence([0.5, 0.5, 0, 0]) > score_confidence([0.5, 0, 0, 0.5])`
+
+<a id="tut-06.7-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
@@ -4996,6 +5124,8 @@ git restore --source 795356b136ab --staged -- :/ && git restore --source 72a00ec
 
 - <a id="tut-06.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a guess between three levels. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/72a00ec85ae4b6f3b591cf06fc65903a56f1f7fa/tests/unit/test_api.py).
   - look at `assert score_confidence([1 / 3] * 3) == pytest.approx(0)`
+
+<a id="tut-06.8-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
@@ -5067,6 +5197,8 @@ git restore --source 72a00ec85ae4 --staged -- :/ && git restore --source e973555
 - <a id="tut-06.9-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the spread of a guess, as the measure. 12 lines added, 4 removed. [The file](https://github.com/rahuldave/babykev/blob/e97355545c4001a361257c532330f8784aa51b79/src/babykev/api.py).
   - look at `    guess = sum(abs(i - (L - 1) / 2) for i in range(L)) / L`
 
+<a id="tut-06.9-src-babykev-api.py-2ea65f-diff"></a>
+
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
 ```diff
@@ -5136,6 +5268,8 @@ git fetch --quiet --tags --force origin; git restore --source e97355545c40 --sta
 
 - <a id="tut-06.10-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the test calls the function itself. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/910716f0cec79c3f31afb34cf3a2593f0cd51315/tests/unit/test_api.py).
   - look at `    assert score_confidence([1.0]) == 1.0`
+
+<a id="tut-06.10-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
@@ -5223,6 +5357,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-06 --staged --
 - <a id="tut-07.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the group `lint`, with ruff. 3 lines added. It comes from `uv add --group lint ruff`. [The file](https://github.com/rahuldave/babykev/blob/5085d2a6ae47a58d6259dfa06679bb2a9be692e1/pyproject.toml).
   - look at `"ruff>=0.17.1",`
 - <a id="tut-07.1-uv.lock-8356d8"></a>`uv.lock`: ruff, at its exact version. 29 lines added. It comes from `uv add --group lint ruff`. [The file](https://github.com/rahuldave/babykev/blob/5085d2a6ae47a58d6259dfa06679bb2a9be692e1/uv.lock).
+
+<a id="tut-07.1-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff that <code>uv add --group lint ruff</code> makes in <code>pyproject.toml</code></summary>
 
@@ -5326,6 +5462,8 @@ git restore --source 5085d2a6ae47 --staged -- :/ && git restore --source 58d9bdd
 - <a id="tut-07.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the table `[tool.ruff]`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/58d9bddfeea6344a159569664ac9f9ff489173a6/pyproject.toml).
   - look at `line-length = 100`
 
+<a id="tut-07.2-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -5426,6 +5564,8 @@ git restore --source 58d9bddfeea6 --staged -- :/ && git restore --source ff4c654
 - <a id="tut-07.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: the five settings of the formatter. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/ff4c6545868df1f51d5aa04277cd16b868550f14/pyproject.toml).
   - look at `quote-style = "double"            # "text", not 'text'`
 
+<a id="tut-07.3-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -5492,6 +5632,8 @@ git restore --source ff4c6545868d --staged -- :/ && git restore --source 03e6443
 - <a id="tut-07.4-justfile-424f0b"></a>`justfile`: the recipe `fmt`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/03e6443db4c837a51df4786117a33b1d20040c88/justfile).
   - look at `fmt *args:`
 
+<a id="tut-07.4-justfile-424f0b-diff"></a>
+
 <details open><summary>The patch to <code>justfile</code></summary>
 
 ```diff
@@ -5551,6 +5693,8 @@ git fetch --quiet --tags --force origin; git restore --source 03e6443db4c8 --sta
 
 - <a id="tut-07.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the same code, in the style of the formatter. 35 lines added, 8 removed. It comes from `just fmt`. [The file](https://github.com/rahuldave/babykev/blob/84b3ac0ce858d907d8d59ffdc9c9096ab8cb2ac4/src/babykev/api.py).
   - look at `        if not 1 <= len(self.criteria) <= MAX_OPTIONS:`
+
+<a id="tut-07.5-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff that <code>just fmt</code> makes in <code>src/babykev/api.py</code></summary>
 
@@ -5740,6 +5884,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-07 --staged --
 - <a id="tut-08.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: a family of rules on each line. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/1a067ec6d90256e2f0142390db307c537909c047/pyproject.toml).
   - look at `    "B",   # bugbear: code that is likely a bug, such as a zip that drops items silently`
 
+<a id="tut-08.1-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -5847,6 +5993,8 @@ git restore --source 1a067ec6d902 --staged -- :/ && git restore --source a6325da
 - <a id="tut-08.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the tests may use `assert`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/a6325da466f16c6379613b62554e1e4cf2144e7e/pyproject.toml).
   - look at `"tests/**" = ["S101"]`
 
+<a id="tut-08.2-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -5917,6 +6065,8 @@ git restore --source a6325da466f1 --staged -- :/ && git restore --source 58d6ece
 - <a id="tut-08.3-justfile-424f0b"></a>`justfile`: the recipe `lint`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/58d6ece95cf464e01996ad8dbed1d98e92bcc502/justfile).
   - look at `lint *args:`
 
+<a id="tut-08.3-justfile-424f0b-diff"></a>
+
 <details open><summary>The patch to <code>justfile</code></summary>
 
 ```diff
@@ -5981,6 +6131,8 @@ git restore --source 58d6ece95cf4 --staged -- :/ && git restore --source 4a25204
 
 - <a id="tut-08.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the table of the docstring, in 97 characters. 3 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/4a25204449af75e24305189a1395c418ec0295d3/src/babykev/api.py).
   - look at `Score  -> options = the levels, in order; answer = expected level, legend, probabilities by index`
+
+<a id="tut-08.4-src-babykev-api.py-2ea65f-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
@@ -6047,6 +6199,8 @@ git restore --source 4a25204449af --staged -- :/ && git restore --source 01c4956
 
 - <a id="tut-08.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: two unions, written with `|`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/01c4956b31ad768bd11dc5da0c13128a7a3ab0fc/src/babykev/api.py).
   - look at `JSONContent = str | dict | list | int | float | bool | None`
+
+<a id="tut-08.5-src-babykev-api.py-2ea65f-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
@@ -6116,6 +6270,8 @@ git restore --source 01c4956b31ad --staged -- :/ && git restore --source 37fed4d
 
 - <a id="tut-08.6-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: two names, in lower case. 6 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/37fed4d2a9bff48f0a928851c8eb640736c7e313/src/babykev/api.py).
   - look at `    n = len(p)`
+
+<a id="tut-08.6-src-babykev-api.py-2ea65f-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
@@ -6200,6 +6356,8 @@ git restore --source 37fed4d2a9bf --staged -- :/ && git restore --source ca9cfc3
 - <a id="tut-08.7-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: two calls of `zip`, with `strict=True`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/ca9cfc3b70b7a0c926c9407336c217e3f04c73aa/src/babykev/api.py).
   - look at `    for p, m in zip(probs, meta, strict=True):`
 
+<a id="tut-08.7-src-babykev-api.py-2ea65f-diff"></a>
+
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
 ```diff
@@ -6263,6 +6421,8 @@ git fetch --quiet --tags --force origin; git restore --source ca9cfc3b70b7 --sta
 
 - <a id="tut-08.8-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the imports, sorted. 2 lines added, 1 removed. It comes from `just lint --fix`. [The file](https://github.com/rahuldave/babykev/blob/7cdb1ba696a32050cba1c335892fccb68bb4fd24/src/babykev/api.py).
   - look at `from typing import Any, Literal`
+
+<a id="tut-08.8-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff that <code>just lint --fix</code> makes in <code>src/babykev/api.py</code></summary>
 
@@ -6388,6 +6548,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-08 --staged --
 - <a id="tut-09.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the family `ANN`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/902428993991b5ffbb8ce7630556d7524f04f4ce/pyproject.toml).
   - look at `    "ANN", # annotations: every parameter and every return value has a type`
 
+<a id="tut-09.1-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -6445,6 +6607,8 @@ git restore --source 902428993991 --staged -- :/ && git restore --source 620ea02
 
 - <a id="tut-09.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the return type of `_check`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/620ea02cd62d1dafd9014783e29d8fe85216175c/src/babykev/api.py).
   - look at `    def _check(self) -> Self:`
+
+<a id="tut-09.2-src-babykev-api.py-2ea65f-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
@@ -6522,6 +6686,8 @@ git restore --source 620ea02cd62d --staged -- :/ && git restore --source 36b5e61
 - <a id="tut-09.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the return type of `cheese_request`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/36b5e61136c9bad356ca74b2d790edf10076fdcb/tests/unit/test_api.py).
   - look at `def cheese_request() -> SystemOneRequest:`
 
+<a id="tut-09.3-src-babykev-api.py-2ea65f-diff"></a>
+
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
 ```diff
@@ -6537,6 +6703,8 @@ git restore --source 620ea02cd62d --staged -- :/ && git restore --source 36b5e61
 ```
 
 </details>
+
+<a id="tut-09.3-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
@@ -6602,6 +6770,8 @@ git restore --source 36b5e61136c9 --staged -- :/ && git restore --source ea931be
 
 - <a id="tut-09.4-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: the types of the fixtures. 7 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/ea931bef025598ffea0652a14e5051bffb491ef9/tests/unit/test_cli.py).
   - look at `    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]`
+
+<a id="tut-09.4-tests-unit-test_cli.py-44d4a0-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_cli.py</code></summary>
 
@@ -6695,6 +6865,8 @@ git restore --source ea931bef0255 --staged -- :/ && git restore --source e7648b1
 - <a id="tut-09.5-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: the type of `words`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/e7648b1239e17f96443a9477a85ed36d8b1e6cc6/tests/unit/test_cli.py).
   - look at `    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str], words: tuple[str, ...]`
 
+<a id="tut-09.5-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -6765,6 +6937,8 @@ git restore --source ea931bef0255 --staged -- :/ && git restore --source e7648b1
 
 </details>
 
+<a id="tut-09.5-tests-unit-test_cli.py-44d4a0-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_cli.py</code></summary>
 
 ```diff
@@ -6822,6 +6996,8 @@ git restore --source e7648b1239e1 --staged -- :/ && git restore --source e0ff9f8
 
 - <a id="tut-09.6-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: the type of `*words`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/e0ff9f81ef10ee224eefb9a706f2903aa540463a/tests/unit/test_cli.py).
   - look at `def run(monkeypatch: pytest.MonkeyPatch, *words: str):`
+
+<a id="tut-09.6-tests-unit-test_cli.py-44d4a0-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_cli.py</code></summary>
 
@@ -6881,6 +7057,8 @@ git fetch --quiet --tags --force origin; git restore --source e0ff9f81ef10 --sta
   - look at `def test_sample_line_fits_the_contract(line: dict[str, Any]) -> None:`
 - <a id="tut-09.7-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: `-> None` on `run` and the two tests. 3 lines added, 3 removed. It comes from `just lint --fix --unsafe-fixes`. [The file](https://github.com/rahuldave/babykev/blob/b0e8dd74539e4d3b210defc5e0169f53b1670393/tests/unit/test_cli.py).
   - look at `def run(monkeypatch: pytest.MonkeyPatch, *words: str) -> None:`
+
+<a id="tut-09.7-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details><summary>The diff that <code>just lint --fix --unsafe-fixes</code> makes in <code>tests/unit/test_api.py</code></summary>
 
@@ -7115,6 +7293,8 @@ git fetch --quiet --tags --force origin; git restore --source e0ff9f81ef10 --sta
 
 </details>
 
+<a id="tut-09.7-tests-unit-test_cli.py-44d4a0-diff"></a>
+
 <details><summary>The diff that <code>just lint --fix --unsafe-fixes</code> makes in <code>tests/unit/test_cli.py</code></summary>
 
 ```diff
@@ -7252,6 +7432,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-09 --staged --
 - <a id="tut-10.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the rules `D1`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/09ad56d2e465ac5b485ba5d1b077c540fd7c45ef/pyproject.toml).
   - look at `    "D1",  # pydocstyle: every public module, class and function has a docstring`
 
+<a id="tut-10.1-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -7310,6 +7492,8 @@ git restore --source 09ad56d2e465 --staged -- :/ && git restore --source 7943e58
 - <a id="tut-10.2-src-babykev-__init__.py-a40393"></a>`src/babykev/__init__.py`: the docstring of the package. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/7943e585faa81e4c0400f5e2e9ca7b42ce4bf286/src/babykev/__init__.py).
   - look at `"""babykev: a small decision model. A state, typed questions, and a probability for every answer."""`
 
+<a id="tut-10.2-src-babykev-__init__.py-a40393-diff"></a>
+
 <details open><summary>The patch to <code>src/babykev/__init__.py</code></summary>
 
 ```diff
@@ -7360,6 +7544,8 @@ git restore --source 7943e585faa8 --staged -- :/ && git restore --source 9a769c7
 
 - <a id="tut-10.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring on each class of a request. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/9a769c7d9551fb181bf7c36d989f94f35f836c2d/src/babykev/api.py).
   - look at `    """A question answered by a level of a scale, whose criteria are the levels in order."""`
+
+<a id="tut-10.3-src-babykev-api.py-2ea65f-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
@@ -7448,6 +7634,8 @@ git fetch --quiet --tags --force origin; git restore --source 9a769c7d9551 --sta
 
 - <a id="tut-10.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring on each of the three functions. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/ebd0888f135c00e29b583f6fad0575c290fd4876/src/babykev/api.py).
   - look at `    """Measure how far the most likely option stands above a guess: 1 if certain, 0 for a guess."""`
+
+<a id="tut-10.4-src-babykev-api.py-2ea65f-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
@@ -7559,6 +7747,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-10 --staged --
 - <a id="tut-11.1-justfile-424f0b"></a>`justfile`: the recipe `check`, with three checks. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/dbfc285a2adeb4900fc68c863c4850b84004a04e/justfile).
   - look at `    just test -q`
 
+<a id="tut-11.1-justfile-424f0b-diff"></a>
+
 <details open><summary>The patch to <code>justfile</code></summary>
 
 ```diff
@@ -7624,6 +7814,8 @@ git restore --source dbfc285a2ade --staged -- :/ && git restore --source 56dee30
   - look at `"pre-commit>=4.7.0",`
 - <a id="tut-11.2-uv.lock-8356d8"></a>`uv.lock`: the exact version of pre-commit, and of the packages that it needs. 139 lines added, 1 removed. It comes from `uv add --group lint pre-commit`. [The file](https://github.com/rahuldave/babykev/blob/56dee300cda2e0f34bfb18be026897e83bf6981a/uv.lock).
 
+<a id="tut-11.2-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff that <code>uv add --group lint pre-commit</code> makes in <code>pyproject.toml</code></summary>
 
 ```diff
@@ -7683,6 +7875,8 @@ git restore --source 56dee300cda2 --staged -- :/ && git restore --source 0c645eb
 
 - <a id="tut-11.3-.pre-commit-config.yaml-e7d14d"></a>`.pre-commit-config.yaml`: one hook, which runs `just check`. New, 14 lines. [The file](https://github.com/rahuldave/babykev/blob/0c645eb0a770a34bf7fe3f055dfc9ab4c19aa6fe/.pre-commit-config.yaml).
   - look at `        entry: just check`
+
+<a id="tut-11.3-.pre-commit-config.yaml-e7d14d-diff"></a>
 
 <details open><summary>The patch to <code>.pre-commit-config.yaml</code></summary>
 
@@ -7755,6 +7949,8 @@ git restore --source 0c645eb0a770 --staged -- :/ && git restore --source fbe4cca
 - <a id="tut-11.4-justfile-424f0b"></a>`justfile`: the recipe `hook`. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/fbe4cca80366ec49c7fa9c23a11af8b4e1a2bde3/justfile).
   - look at `hook *args:`
 
+<a id="tut-11.4-justfile-424f0b-diff"></a>
+
 <details open><summary>The patch to <code>justfile</code></summary>
 
 ```diff
@@ -7817,6 +8013,8 @@ git restore --source fbe4cca80366 --staged -- :/ && git restore --source 352e33d
 - <a id="tut-11.5-.pre-commit-config.yaml-e7d14d"></a>`.pre-commit-config.yaml`: the hook of large files. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/352e33d87006028ec33ed46ba0e53d48255b3d66/.pre-commit-config.yaml).
   - look at `        args: [--maxkb=1000]`
 
+<a id="tut-11.5-.pre-commit-config.yaml-e7d14d-diff"></a>
+
 <details open><summary>The patch to <code>.pre-commit-config.yaml</code></summary>
 
 ```diff
@@ -7877,6 +8075,8 @@ git restore --source 352e33d87006 --staged -- :/ && git restore --source 64d0f4f
 - <a id="tut-11.6-.pre-commit-config.yaml-e7d14d"></a>`.pre-commit-config.yaml`: the hook of merge conflicts. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/64d0f4f781da1a8520315f899c4231645623280c/.pre-commit-config.yaml).
   - look at `      - id: check-merge-conflict`
 
+<a id="tut-11.6-.pre-commit-config.yaml-e7d14d-diff"></a>
+
 <details open><summary>The patch to <code>.pre-commit-config.yaml</code></summary>
 
 ```diff
@@ -7933,6 +8133,8 @@ git restore --source 64d0f4f781da --staged -- :/ && git restore --source 2d080c9
 
 - <a id="tut-11.7-.pre-commit-config.yaml-e7d14d"></a>`.pre-commit-config.yaml`: the hook that refuses a `.env` file. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/2d080c9e228f2f9959f4eeed801726ea402e66a3/.pre-commit-config.yaml).
   - look at `        language: fail`
+
+<a id="tut-11.7-.pre-commit-config.yaml-e7d14d-diff"></a>
 
 <details open><summary>The patch to <code>.pre-commit-config.yaml</code></summary>
 
@@ -7998,6 +8200,8 @@ git restore --source 2d080c9e228f --staged -- :/ && git restore --source f4fabd3
 - <a id="tut-11.8-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: an import that nothing uses, on purpose. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/f4fabd3272713cb5ac1c26021e4c23fa33ab15e6/src/babykev/cli.py).
   - look at `import os`
 
+<a id="tut-11.8-src-babykev-cli.py-a9e184-diff"></a>
+
 <details open><summary>The patch to <code>src/babykev/cli.py</code></summary>
 
 ```diff
@@ -8050,6 +8254,8 @@ git restore --source f4fabd327271 --staged -- :/ && git restore --source 054c40b
 
 - <a id="tut-11.9-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: the import of `os` goes. 0 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/054c40b6cc1839f8b35dfab81f9f2ae7c9f1aaf0/src/babykev/cli.py).
   - look at `import os`
+
+<a id="tut-11.9-src-babykev-cli.py-a9e184-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/cli.py</code></summary>
 
@@ -8105,6 +8311,8 @@ git fetch --quiet --tags --force origin; git restore --source 054c40b6cc18 --sta
 
 - <a id="tut-11.10-README.md-8ec9a0"></a>`README.md`: a paragraph on `just hook`, and a row of the table. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/cab87c139ebd3b72771ed6db08b02dd7646c7d02/README.md).
   - look at ``Run `just hook` once in each clone. It installs a git hook, which runs `just check` before each commit.``
+
+<a id="tut-11.10-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 
@@ -8192,6 +8400,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-11 --staged --
   - look at `"validate-pyproject>=0.26",`
 - <a id="tut-12.1-uv.lock-8356d8"></a>`uv.lock`: the exact version of validate-pyproject, and of `fastjsonschema`. 23 lines added. It comes from `uv add --group lint validate-pyproject`. [The file](https://github.com/rahuldave/babykev/blob/7506fb7a39f80397361a8e97ceb816f4b6931cd1/uv.lock).
 
+<a id="tut-12.1-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff that <code>uv add --group lint validate-pyproject</code> makes in <code>pyproject.toml</code></summary>
 
 ```diff
@@ -8253,6 +8463,8 @@ git restore --source 7506fb7a39f8 --staged -- :/ && git restore --source 64b71c6
 
 - <a id="tut-12.2-justfile-424f0b"></a>`justfile`: the recipe `lint-config`, with its first check. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/64b71c6c0bdb792769aeef413b2ccead2be00ac4/justfile).
   - look at `lint-config *args:`
+
+<a id="tut-12.2-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -8321,6 +8533,8 @@ git restore --source 64b71c6c0bdb --staged -- :/ && git restore --source 4308e46
 - <a id="tut-12.3-justfile-424f0b"></a>`justfile`: the check of the lockfile. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/4308e46ddc44bbe18fb2ec528e4573e956219a16/justfile).
   - look at `    uv lock --check`
 
+<a id="tut-12.3-justfile-424f0b-diff"></a>
+
 <details open><summary>The patch to <code>justfile</code></summary>
 
 ```diff
@@ -8388,6 +8602,8 @@ git restore --source 4308e46ddc44 --staged -- :/ && git restore --source 9f70971
 - <a id="tut-12.4-justfile-424f0b"></a>`justfile`: one line, which exports `UV_LOCKED` to every recipe. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/9f70971667e9a2fc6cbc1767fe58061ad9f26e22/justfile).
   - look at `export UV_LOCKED := "1"`
 
+<a id="tut-12.4-justfile-424f0b-diff"></a>
+
 <details open><summary>The patch to <code>justfile</code></summary>
 
 ```diff
@@ -8447,6 +8663,8 @@ git restore --source 9f70971667e9 --staged -- :/ && git restore --source 284e4b7
 
 - <a id="tut-12.5-justfile-424f0b"></a>`justfile`: the check of the `justfile`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/284e4b7e241387e68463cb96fde80f81603f99c3/justfile).
   - look at `    just --fmt --check --unstable`
+
+<a id="tut-12.5-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -8513,6 +8731,8 @@ git restore --source 284e4b7e2413 --staged -- :/ && git restore --source 304e0a2
   - look at `"yamllint>=1.38.0",`
 - <a id="tut-12.6-uv.lock-8356d8"></a>`uv.lock`: the exact version of yamllint, and of `pathspec`. 24 lines added. It comes from `uv add --group lint yamllint`. [The file](https://github.com/rahuldave/babykev/blob/304e0a2564ddf8d95a9b3964d6b5b8536032d79d/uv.lock).
 
+<a id="tut-12.6-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff that <code>uv add --group lint yamllint</code> makes in <code>pyproject.toml</code></summary>
 
 ```diff
@@ -8578,6 +8798,8 @@ git restore --source 304e0a2564dd --staged -- :/ && git restore --source 8786cb9
 
 - <a id="tut-12.7-justfile-424f0b"></a>`justfile`: yamllint, the fourth check. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/8786cb9f3dd685412d3c315e4b25d7023dc0ad15/justfile).
   - look at `    uv run yamllint --strict .`
+
+<a id="tut-12.7-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -8646,6 +8868,8 @@ git restore --source 8786cb9f3dd6 --staged -- :/ && git restore --source aee8ff7
 - <a id="tut-12.8-.yamllint-dfe50a"></a>`.yamllint`: the settings of yamllint. New, 3 lines. [The file](https://github.com/rahuldave/babykev/blob/aee8ff779a7d2889f24a61ab979558405a9c3007/.yamllint).
   - look at `ignore-from-file: .gitignore  # the files that git ignores, such as everything in .venv`
 
+<a id="tut-12.8-.yamllint-dfe50a-diff"></a>
+
 <details open><summary>The patch to <code>.yamllint</code></summary>
 
 ```diff
@@ -8697,6 +8921,8 @@ git restore --source aee8ff779a7d --staged -- :/ && git restore --source 44f6865
 
 - <a id="tut-12.9-.yamllint-dfe50a"></a>`.yamllint`: the rule `document-start`, off. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/44f6865153ebeff1c321b4da65ace21285161796/.yamllint).
   - look at `  document-start: disable  # a file need not start with a line of three dashes`
+
+<a id="tut-12.9-.yamllint-dfe50a-diff"></a>
 
 <details open><summary>The patch to <code>.yamllint</code></summary>
 
@@ -8752,6 +8978,8 @@ git restore --source 44f6865153eb --staged -- :/ && git restore --source 063c1a9
 - <a id="tut-12.10-.yamllint-dfe50a"></a>`.yamllint`: lines of up to 100 characters. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/063c1a9ec17bea160da66c14711bb87eb1f54ddb/.yamllint).
   - look at `  line-length: {max: 100}  # as long as a line of the Python code`
 
+<a id="tut-12.10-.yamllint-dfe50a-diff"></a>
+
 <details open><summary>The patch to <code>.yamllint</code></summary>
 
 ```diff
@@ -8806,6 +9034,8 @@ git restore --source 063c1a9ec17b --staged -- :/ && git restore --source a7699bd
 
 - <a id="tut-12.11-justfile-424f0b"></a>`justfile`: `lint-config`, the last check of the gate. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a7699bdb248aa3ff3816137433e5d4482424f3ed/justfile).
   - look at `    just lint-config`
+
+<a id="tut-12.11-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -8866,6 +9096,8 @@ git fetch --quiet --tags --force origin; git restore --source a7699bdb248a --sta
 
 - <a id="tut-12.12-README.md-8ec9a0"></a>`README.md`: a row for `.yamllint`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac/README.md).
   - look at ``| `.yamllint` | The settings of yamllint, which `just lint-config` runs on every YAML file |``
+
+<a id="tut-12.12-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 
@@ -8951,6 +9183,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-12 --staged --
   - look at `"smalldocs>=0.1.5",`
 - <a id="tut-13.1-uv.lock-8356d8"></a>`uv.lock`: the exact version of smalldocs, and of the packages that it needs. 62 lines added. It comes from `uv add --group docs smalldocs`. [The file](https://github.com/rahuldave/babykev/blob/609d58ce5f8c0fb8e7b60548c8ee097766446ff5/uv.lock).
 
+<a id="tut-13.1-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff that <code>uv add --group docs smalldocs</code> makes in <code>pyproject.toml</code></summary>
 
 ```diff
@@ -9028,6 +9262,8 @@ git restore --source 609d58ce5f8c --staged -- :/ && git restore --source 4444b1e
 - <a id="tut-13.2-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the package to document, and the tests to check. New, 5 lines. [The file](https://github.com/rahuldave/babykev/blob/4444b1e809427e92a5dc08a9e9fdbbddab7de830/docs/_smalldocs.yml).
   - look at `  packages: [babykev]`
 
+<a id="tut-13.2-docs-_smalldocs.yml-4b0b48-diff"></a>
+
 <details open><summary>The patch to <code>docs/_smalldocs.yml</code></summary>
 
 ```diff
@@ -9082,6 +9318,8 @@ git restore --source 4444b1e80942 --staged -- :/ && git restore --source a582ad3
 
 - <a id="tut-13.3-justfile-424f0b"></a>`justfile`: the recipe `docs`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/a582ad38e75bb188174b75a5e80405cebcd1259d/justfile).
   - look at `docs *args:`
+
+<a id="tut-13.3-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -9147,6 +9385,8 @@ git restore --source a582ad38e75b --staged -- :/ && git restore --source ae28dff
 
 - <a id="tut-13.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docment on each parameter and each return of seven functions. 24 lines added, 7 removed. [The file](https://github.com/rahuldave/babykev/blob/ae28dff704c768a862e416a894ac42443ab3468c/src/babykev/api.py).
   - look at `) -> str:  # The text that the model sees`
+
+<a id="tut-13.4-src-babykev-api.py-2ea65f-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
@@ -9270,6 +9510,8 @@ git restore --source ae28dff704c7 --staged -- :/ && git restore --source a064e34
 - <a id="tut-13.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring and a docment for `_check`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a064e34557be7fc006863c995c8cd39e85491b31/src/babykev/api.py).
   - look at `    def _check(self) -> Self:  # The choice itself, unchanged`
 
+<a id="tut-13.5-src-babykev-api.py-2ea65f-diff"></a>
+
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
 ```diff
@@ -9333,6 +9575,8 @@ git restore --source a064e34557be --staged -- :/ && git restore --source 6ad6c02
 
 - <a id="tut-13.6-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a description on every field of the four classes. 22 lines added, 11 removed. [The file](https://github.com/rahuldave/babykev/blob/6ad6c02267070b7c260934e3165ea40aeb49a035/src/babykev/api.py).
   - look at `    type: Literal["noul"] = Field(description="Marks the question as one of yes or no")`
+
+<a id="tut-13.6-src-babykev-api.py-2ea65f-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
@@ -9449,6 +9693,8 @@ git restore --source 6ad6c0226707 --staged -- :/ && git restore --source 28caad3
 - <a id="tut-13.7-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: a docment on each parameter. 9 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/28caad31e7a7fbab5acefd39c2b2b9e153f096b0/tests/unit/test_cli.py).
   - look at `    capsys: pytest.CaptureFixture[str],  # Catches the message of the refusal`
 
+<a id="tut-13.7-tests-unit-test_cli.py-44d4a0-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_cli.py</code></summary>
 
 ```diff
@@ -9534,6 +9780,8 @@ git restore --source 28caad31e7a7 --staged -- :/ && git restore --source 4bd145b
 
 - <a id="tut-13.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a docment on each parameter, and on the return of `cheese_request`. 17 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/4bd145b7895a9e6f7841a997995efcd343d0049c/tests/unit/test_api.py).
   - look at `    description: JSONContent,  # Its description, or None or "" for none`
+
+<a id="tut-13.8-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
@@ -9652,6 +9900,8 @@ git restore --source 4bd145b7895a --staged -- :/ && git restore --source 95ebd81
 - <a id="tut-13.9-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docment longer than its line, on purpose. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/95ebd81a9d15158c39a8adf35237da700e9334b2/src/babykev/api.py).
   - look at `) -> tuple[dict[str, Any], list[dict[str, Any]]]:  # The record that the model reads, and the metadata of each question`
 
+<a id="tut-13.9-src-babykev-api.py-2ea65f-diff"></a>
+
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
 ```diff
@@ -9712,6 +9962,8 @@ git restore --source 95ebd81a9d15 --staged -- :/ && git restore --source 54535b1
 - <a id="tut-13.10-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the return type of `to_record`, over three lines. 3 lines added, 1 removed. It comes from `just fmt`. [The file](https://github.com/rahuldave/babykev/blob/54535b100f054ffd8b787c50cac1d3a828770ec9/src/babykev/api.py).
   - look at `]:  # The record that the model reads, and the metadata of each question`
 
+<a id="tut-13.10-src-babykev-api.py-2ea65f-diff"></a>
+
 <details><summary>The diff that <code>just fmt</code> makes in <code>src/babykev/api.py</code></summary>
 
 ```diff
@@ -9771,6 +10023,8 @@ git restore --source 54535b100f05 --staged -- :/ && git restore --source 861142a
 
 - <a id="tut-13.11-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the return type on one line, with its short docment. 1 line added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/861142a50356963bb5e371fe8226ba73b87eef93/src/babykev/api.py).
   - look at `) -> tuple[dict[str, Any], list[dict[str, Any]]]:  # The record, and the metadata of each question`
+
+<a id="tut-13.11-src-babykev-api.py-2ea65f-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 
@@ -9833,6 +10087,8 @@ git fetch --quiet --tags --force origin; git restore --source 861142a50356 --sta
 
 - <a id="tut-13.12-justfile-424f0b"></a>`justfile`: the docs check, in the gate. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/005b87bdfa2e70c6ceca52dc07197c69702f00be/justfile).
   - look at `    just docs check`
+
+<a id="tut-13.12-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -9920,6 +10176,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-13 --staged --
 - <a id="tut-14.1-.gitignore-a5cc29"></a>`.gitignore`: the files that a build of the docs makes. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/3593f61e4e221b04f00f360fe96e6dc4243b02dd/.gitignore).
   - look at `/docs/_site/`
 
+<a id="tut-14.1-.gitignore-a5cc29-diff"></a>
+
 <details open><summary>The patch to <code>.gitignore</code></summary>
 
 ```diff
@@ -9969,7 +10227,7 @@ same line as the command.
 `git status --short --ignored docs` lists the three paths that the build made, each marked `!!`, ignored. The lines
 of `.gitignore` from the move before keep them out of git.
 
-Your copy also lists `?? docs/` first. git does not know the folder yet, because nothing in it is staged.
+Your copy can also list `docs/` itself, or `docs/_smalldocs.yml`, first. That depends on whether you staged the settings of the site.
 
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
@@ -9987,6 +10245,8 @@ git restore --source 3593f61e4e22 --staged -- :/ && git restore --source 64de405
 
 - <a id="tut-14.2-justfile-424f0b"></a>`justfile`: with no words, `docs` builds the site. 5 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/64de40516df5aa215bfac1c0198e898ac0960061/justfile).
   - look at `    if [ "$#" -eq 0 ]; then exec uv run smalldocs render docs; fi`
+
+<a id="tut-14.2-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -10054,6 +10314,8 @@ git restore --source 64de40516df5 --staged -- :/ && git restore --source aee2a9f
 
 - <a id="tut-14.3-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the settings of the site, above the reference. 17 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/aee2a9faf7fe05e5d8780c8cf42e82c3d4145330/docs/_smalldocs.yml).
   - look at `        contents: api/*  # the reference pages, which each build makes from the code`
+
+<a id="tut-14.3-docs-_smalldocs.yml-4b0b48-diff"></a>
 
 <details open><summary>The patch to <code>docs/_smalldocs.yml</code></summary>
 
@@ -10128,6 +10390,8 @@ git restore --source aee2a9faf7fe --staged -- :/ && git restore --source e849099
 
 - <a id="tut-14.4-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the front page, written by hand. New, 29 lines. [The file](https://github.com/rahuldave/babykev/blob/e849099979801bc865c5a466d2b098b5ac9aa2e6/docs/index.qmd).
   - look at ``A name in backticks, such as `to_answers`, links to its entry.``
+
+<a id="tut-14.4-docs-index.qmd-d6d880-diff"></a>
 
 <details open><summary>The patch to <code>docs/index.qmd</code></summary>
 
@@ -10205,6 +10469,8 @@ git fetch --quiet --tags --force origin; git restore --source e84909997980 --sta
 
 - <a id="tut-14.5-README.md-8ec9a0"></a>`README.md`: a row for `docs/`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/e1efb48492d7223fd0442906d2e55a83e0db481e/README.md).
   - look at ``| `docs/` | The docs site. `just docs` builds it into `docs/_site`, with the reference made from the code |``
+
+<a id="tut-14.5-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 
@@ -10326,6 +10592,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-14 --staged --
 - <a id="tut-15.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the index of PyTorch. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/b44da7cc2f35c24f23c9f056eb9ec6681a3111e0/pyproject.toml).
   - look at `url = "https://download.pytorch.org/whl/cpu"`
 
+<a id="tut-15.1-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -10391,6 +10659,8 @@ git restore --source b44da7cc2f35 --staged -- :/ && git restore --source a263314
 
 - <a id="tut-15.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: torch, in the dependencies, and its source. 4 lines added. It comes from `uv add torch --index pytorch-cpu --frozen`. [The file](https://github.com/rahuldave/babykev/blob/a263314ef270d756122972876e80270ed4cde130/pyproject.toml).
   - look at `torch = { index = "pytorch-cpu" }`
+
+<a id="tut-15.2-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff that <code>uv add torch --index pytorch-cpu --frozen</code> makes in <code>pyproject.toml</code></summary>
 
@@ -10513,6 +10783,8 @@ git restore --source 92e81476ed9c --staged -- :/ && git restore --source 92f659c
   - look at `"transformers>=5.20.0",`
 - <a id="tut-15.4-uv.lock-8356d8"></a>`uv.lock`: the exact version of transformers, and of the packages that it needs. 419 lines added. It comes from `uv add transformers`. [The file](https://github.com/rahuldave/babykev/blob/92f659c4e74206cfb776c114d474c2be2501be81/uv.lock).
 
+<a id="tut-15.4-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff that <code>uv add transformers</code> makes in <code>pyproject.toml</code></summary>
 
 ```diff
@@ -10573,6 +10845,8 @@ git restore --source 92f659c4e742 --staged -- :/ && git restore --source 4b43f5a
   - look at `"peft>=0.21.2",`
 - <a id="tut-15.5-uv.lock-8356d8"></a>`uv.lock`: the exact version of peft, and of the packages that it needs. 71 lines added. It comes from `uv add peft`. [The file](https://github.com/rahuldave/babykev/blob/4b43f5a9f99a891891ac42cb03e3927957e9116c/uv.lock).
 
+<a id="tut-15.5-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff that <code>uv add peft</code> makes in <code>pyproject.toml</code></summary>
 
 ```diff
@@ -10632,6 +10906,8 @@ git restore --source 4b43f5a9f99a --staged -- :/ && git restore --source 8176ced
   - look at `"safetensors>=0.8.0",`
 - <a id="tut-15.6-uv.lock-8356d8"></a>`uv.lock`: safetensors, as a dependency of babykev. 2 lines added. It comes from `uv add safetensors`. [The file](https://github.com/rahuldave/babykev/blob/8176ced7157929f551e3722149016dbc31d42601/uv.lock).
 
+<a id="tut-15.6-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff that <code>uv add safetensors</code> makes in <code>pyproject.toml</code></summary>
 
 ```diff
@@ -10688,6 +10964,8 @@ git fetch --quiet --tags --force origin; git restore --source 8176ced71579 --sta
 
 - <a id="tut-15.7-README.md-8ec9a0"></a>`README.md`: a paragraph on the packages of the model. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/c7037ec460963acd41edf1f63a6a03d2e52e5bae/README.md).
   - look at `The model needs four packages, torch, transformers, peft and safetensors. torch is the build for the CPU,`
+
+<a id="tut-15.7-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 
@@ -10814,6 +11092,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-15 --staged --
 
 - <a id="tut-16.1-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the model. It packs a request into tokens, masks it, and points at the options. New, 274 lines. [The file](https://github.com/rahuldave/babykev/blob/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93/src/babykev/model.py).
   - look at `class DecisionModel(nn.Module):`
+
+<a id="tut-16.1-src-babykev-model.py-a86a0b-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/model.py</code></summary>
 
@@ -11141,6 +11421,8 @@ git restore --source c4c288ccc7e4 --staged -- :/ && git restore --source bc2df6d
 - <a id="tut-16.2-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the module `babykev.model`, in the list. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/bc2df6d99386f11f4e193e0b530fa87128a3acd7/docs/index.qmd).
   - look at ``- `babykev.model` is the model. `encode()` packs a record into one sequence of tokens, and a``
 
+<a id="tut-16.2-docs-index.qmd-d6d880-diff"></a>
+
 <details open><summary>The patch to <code>docs/index.qmd</code></summary>
 
 ```diff
@@ -11201,6 +11483,8 @@ git fetch --quiet --tags --force origin; git restore --source bc2df6d99386 --sta
 
 - <a id="tut-16.3-README.md-8ec9a0"></a>`README.md`: a row for `src/babykev/model.py`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/056fe2ced73ff8568dfc329555795524c2465eb1/README.md).
   - look at ``| `src/babykev/model.py` | The model, a language model with a head that points at the options |``
+
+<a id="tut-16.3-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 
@@ -11275,6 +11559,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-16 --staged --
 - <a id="tut-17.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: ty, in the group `lint`. 1 line added. It comes from `uv add --group lint ty`. [The file](https://github.com/rahuldave/babykev/blob/aaa8fe6d7d1dfbca863fe23dc0d660dd10d36c2b/pyproject.toml).
   - look at `"ty>=0.0.88",`
 - <a id="tut-17.1-uv.lock-8356d8"></a>`uv.lock`: the exact version of ty. 27 lines added. It comes from `uv add --group lint ty`. [The file](https://github.com/rahuldave/babykev/blob/aaa8fe6d7d1dfbca863fe23dc0d660dd10d36c2b/uv.lock).
+
+<a id="tut-17.1-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff that <code>uv add --group lint ty</code> makes in <code>pyproject.toml</code></summary>
 
@@ -11351,6 +11637,8 @@ git restore --source aaa8fe6d7d1d --staged -- :/ && git restore --source 7866ef7
 
 - <a id="tut-17.2-justfile-424f0b"></a>`justfile`: the recipe `types`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/7866ef7f88d528e2e7ee04d55c68e56ce461cff1/justfile).
   - look at `types *args:`
+
+<a id="tut-17.2-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -11431,6 +11719,8 @@ git restore --source 7866ef7f88d5 --staged -- :/ && git restore --source d5312a3
 - <a id="tut-17.3-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the rule off on the `forward` of `PointerHead`, with the reason. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/d5312a3ec2ed265ca4dbf5c7dd2492c686024696/src/babykev/model.py).
   - look at `    # tensors accepts fewer calls, so ty refuses it. torch only calls forward, and never sets it`
 
+<a id="tut-17.3-src-babykev-model.py-a86a0b-diff"></a>
+
 <details open><summary>The patch to <code>src/babykev/model.py</code></summary>
 
 ```diff
@@ -11489,6 +11779,8 @@ git restore --source d5312a3ec2ed --staged -- :/ && git restore --source f143491
 
 - <a id="tut-17.4-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the rule off on the `forward` of `DecisionModel`, with the reason. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/f14349138824af0b107742451814b1234e72b34a/src/babykev/model.py).
   - look at `    # As in PointerHead, nn.Module declares forward as an attribute, and torch never sets it`
+
+<a id="tut-17.4-src-babykev-model.py-a86a0b-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/model.py</code></summary>
 
@@ -11550,6 +11842,8 @@ git fetch --quiet --tags --force origin; git restore --source f14349138824 --sta
 
 - <a id="tut-17.5-justfile-424f0b"></a>`justfile`: ty, in the gate. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9/justfile).
   - look at `    just types`
+
+<a id="tut-17.5-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -11643,6 +11937,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-17 --staged --
 - <a id="tut-18.1-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: the docstring, and the function that reads the sample. New, 22 lines. [The file](https://github.com/rahuldave/babykev/blob/5ec6d4a73df947af8d705956fffa07c9787017de/src/babykev/smoke.py).
   - look at `def read_lines(`
 
+<a id="tut-18.1-src-babykev-smoke.py-76d2ec-diff"></a>
+
 <details open><summary>The patch to <code>src/babykev/smoke.py</code></summary>
 
 ```diff
@@ -11716,6 +12012,8 @@ git restore --source 5ec6d4a73df9 --staged -- :/ && git restore --source 0de1e2d
 
 - <a id="tut-18.2-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: one request, from the contract to the answers. 19 lines added. [The file](https://github.com/rahuldave/babykev/blob/0de1e2d0a2362ebd41d21b9146eae2961fb2366e/src/babykev/smoke.py).
   - look at `def answer(`
+
+<a id="tut-18.2-src-babykev-smoke.py-76d2ec-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/smoke.py</code></summary>
 
@@ -11799,6 +12097,8 @@ git restore --source 0de1e2d0a236 --staged -- :/ && git restore --source bd333d9
 - <a id="tut-18.3-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: one answer beside its label. 20 lines added. [The file](https://github.com/rahuldave/babykev/blob/bd333d90c32a516a97a443fa986f40932f691bad/src/babykev/smoke.py).
   - look at `def verdict(`
 
+<a id="tut-18.3-src-babykev-smoke.py-76d2ec-diff"></a>
+
 <details open><summary>The patch to <code>src/babykev/smoke.py</code></summary>
 
 ```diff
@@ -11871,6 +12171,8 @@ git restore --source bd333d90c32a --staged -- :/ && git restore --source 8490a58
 
 - <a id="tut-18.4-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: the report, a line at a time. 25 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/8490a58a1510d717ce32b48fa0def8498ceb51f9/src/babykev/smoke.py).
   - look at `def smoke(`
+
+<a id="tut-18.4-src-babykev-smoke.py-76d2ec-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/smoke.py</code></summary>
 
@@ -11980,6 +12282,8 @@ git restore --source 8490a58a1510 --staged -- :/ && git restore --source f1bfe99
 
 - <a id="tut-18.5-src-babykev-smoke.py-76d2ec"></a>`src/babykev/smoke.py`: the real model, loaded, and the report printed. 35 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/f1bfe993389643bda7f40c6f3b511827a3c9a9a0/src/babykev/smoke.py).
   - look at `def main(`
+
+<a id="tut-18.5-src-babykev-smoke.py-76d2ec-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/smoke.py</code></summary>
 
@@ -12100,6 +12404,8 @@ git restore --source f1bfe9933896 --staged -- :/ && git restore --source 117a59e
 - <a id="tut-18.6-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: the command `smoke`, in the help and in `main`. 12 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/117a59e9838e0fa2e28ad29d02d5aeba3a8622f9/src/babykev/cli.py).
   - look at `        raise SystemExit(smoke.main(words[1:]))`
 
+<a id="tut-18.6-src-babykev-cli.py-a9e184-diff"></a>
+
 <details open><summary>The patch to <code>src/babykev/cli.py</code></summary>
 
 ```diff
@@ -12186,6 +12492,8 @@ git restore --source 117a59e9838e --staged -- :/ && git restore --source 55844b2
 - <a id="tut-18.7-justfile-424f0b"></a>`justfile`: the recipe `smoke`. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/55844b2320b632b40dd3f34f0a6b5bb962551005/justfile).
   - look at `smoke *args:`
 
+<a id="tut-18.7-justfile-424f0b-diff"></a>
+
 <details open><summary>The patch to <code>justfile</code></summary>
 
 ```diff
@@ -12245,6 +12553,8 @@ git restore --source 55844b2320b6 --staged -- :/ && git restore --source aedd5e6
 
 - <a id="tut-18.8-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the module `babykev.smoke`, in the list. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/aedd5e6659581b7aa6f424e06ccfa12f6a07fff1/docs/index.qmd).
   - look at ``- `babykev.smoke` is the smoke run. `smoke()` asks the model every question of the sample data, and``
+
+<a id="tut-18.8-docs-index.qmd-d6d880-diff"></a>
 
 <details open><summary>The patch to <code>docs/index.qmd</code></summary>
 
@@ -12311,6 +12621,8 @@ git fetch --quiet --tags --force origin; git restore --source aedd5e665958 --sta
 
 - <a id="tut-18.9-README.md-8ec9a0"></a>`README.md`: `just smoke`, and the row of `smoke.py`. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/3edcb80f6814f9e0afe70942db6fce959799d9c5/README.md).
   - look at ``| `src/babykev/smoke.py` | The smoke run, which asks the real model the sample requests on this machine |``
+
+<a id="tut-18.9-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 
@@ -12414,6 +12726,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-18 --staged --
 
 - <a id="tut-19.1-tests-tiny.py-70c1c9"></a>`tests/tiny.py`: the tiny tokenizer. New, 23 lines. [The file](https://github.com/rahuldave/babykev/blob/b57593b2f1c324a6349f0f5b58a75754f7f261dc/tests/tiny.py).
   - look at `def tiny_tokenizer() -> PreTrainedTokenizerFast:  # A tokenizer with one token per character`
+
+<a id="tut-19.1-tests-tiny.py-70c1c9-diff"></a>
 
 <details open><summary>The patch to <code>tests/tiny.py</code></summary>
 
@@ -12527,6 +12841,8 @@ git restore --source b57593b2f1c3 --staged -- :/ && git restore --source 2daaf5f
 - <a id="tut-19.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the tests may break `S106`. 3 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/2daaf5f257514e391edb5ad5183c2d2288965de3/pyproject.toml).
   - look at `"tests/**" = ["S101", "S106"]`
 
+<a id="tut-19.2-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -12583,6 +12899,8 @@ git restore --source 2daaf5f25751 --staged -- :/ && git restore --source a6e3905
 
 - <a id="tut-19.3-tests-tiny.py-70c1c9"></a>`tests/tiny.py`: the tiny backbone. 20 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a6e3905ee0316fdd0b2e0d3baab9f4a65d0588b5/tests/tiny.py).
   - look at `def tiny_backbone(`
+
+<a id="tut-19.3-tests-tiny.py-70c1c9-diff"></a>
 
 <details open><summary>The patch to <code>tests/tiny.py</code></summary>
 
@@ -12667,6 +12985,8 @@ git restore --source a6e3905ee031 --staged -- :/ && git restore --source 14585bb
 
 - <a id="tut-19.4-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `tok`. New, 16 lines. [The file](https://github.com/rahuldave/babykev/blob/14585bbd144a55ac28ff0473f3d3f2c23c03d314/tests/conftest.py).
   - look at `@pytest.fixture(scope="session")`
+
+<a id="tut-19.4-tests-conftest.py-626af3-diff"></a>
 
 <details open><summary>The patch to <code>tests/conftest.py</code></summary>
 
@@ -12781,6 +13101,8 @@ git restore --source 14585bbd144a --staged -- :/ && git restore --source b458ae1
 - <a id="tut-19.5-pyproject.toml-5d07e7"></a>`pyproject.toml`: the root of the project, on the path of pytest. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/b458ae1df2239c8645f7a4eb35832fd2dddc1114/pyproject.toml).
   - look at `pythonpath = ["."]`
 
+<a id="tut-19.5-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -12838,6 +13160,8 @@ git restore --source b458ae1df223 --staged -- :/ && git restore --source 0806a21
 
 - <a id="tut-19.6-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `model`. 10 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/0806a218722ba7438f265928d3cfbc0b5f0e723e/tests/conftest.py).
   - look at `    return DecisionModel("tiny", "cpu", backbone=tiny_backbone(len(tok))).eval()`
+
+<a id="tut-19.6-tests-conftest.py-626af3-diff"></a>
 
 <details open><summary>The patch to <code>tests/conftest.py</code></summary>
 
@@ -12907,6 +13231,8 @@ git restore --source 0806a218722b --staged -- :/ && git restore --source b4bf249
 
 - <a id="tut-19.7-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `record`. 15 lines added. [The file](https://github.com/rahuldave/babykev/blob/b4bf2491e8505697eaa015738f93178c6bd7f3fc/tests/conftest.py).
   - look at `        "state": "Roquefort. A blue cheese from France, made from sheep's milk.",`
+
+<a id="tut-19.7-tests-conftest.py-626af3-diff"></a>
 
 <details open><summary>The patch to <code>tests/conftest.py</code></summary>
 
@@ -13000,6 +13326,8 @@ git restore --source b4bf2491e850 --staged -- :/ && git restore --source 321a8df
 - <a id="tut-19.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the first test of the model, on the tiny model. New, 20 lines. [The file](https://github.com/rahuldave/babykev/blob/321a8df2c597e0c46d06c9b36c711f0fe270900a/tests/unit/test_model.py).
   - look at `def test_probabilities_sum_to_one_for_every_question(`
 
+<a id="tut-19.8-tests-unit-test_model.py-583145-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
 ```diff
@@ -13068,6 +13396,8 @@ git fetch --quiet --tags --force origin; git restore --source 321a8df2c597 --sta
 
 - <a id="tut-19.9-README.md-8ec9a0"></a>`README.md`: the rows of the fixtures and of the tiny model. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/88b3a9e08db851ce891ecfcfcf26d18892beea90/README.md).
   - look at ``| `tests/tiny.py` | A small tokenizer and backbone, built in memory, in place of the real ones |``
+
+<a id="tut-19.9-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 
@@ -13158,6 +13488,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-19 --staged --
 - <a id="tut-20.1-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the tokens of a packed record. 16 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/6d2401817f1bc2d56de4f3021cfceaa80d5b80f9/tests/unit/test_model.py).
   - look at `def test_packing_marks_every_part_with_its_delimiter(`
 
+<a id="tut-20.1-tests-unit-test_model.py-583145-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
 ```diff
@@ -13232,6 +13564,8 @@ git restore --source 6d2401817f1b --staged -- :/ && git restore --source e947449
 - <a id="tut-20.2-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the positions of each question. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/e947449de17438d3aa5ee006bfc98db3944d4457/tests/unit/test_model.py).
   - look at `def test_positions_restart_after_the_state(`
 
+<a id="tut-20.2-tests-unit-test_model.py-583145-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
 ```diff
@@ -13295,6 +13629,8 @@ git restore --source e947449de174 --staged -- :/ && git restore --source ff09783
 
 - <a id="tut-20.3-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a question longer than the limit. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/ff097836c2f1b752bb4347f8e5ae59aeca648a05/tests/unit/test_model.py).
   - look at `def test_a_question_that_does_not_fit_is_refused(`
+
+<a id="tut-20.3-tests-unit-test_model.py-583145-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
@@ -13364,6 +13700,8 @@ git restore --source ff097836c2f1 --staged -- :/ && git restore --source e3b3ab0
 - <a id="tut-20.4-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a state longer than the limit. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/e3b3ab01357c19f3325d481c80e67ad1f13c1522/tests/unit/test_model.py).
   - look at `    with pytest.raises(ValueError, match="state too long: 62 tokens, the limit is 50"):`
 
+<a id="tut-20.4-tests-unit-test_model.py-583145-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
 ```diff
@@ -13426,6 +13764,8 @@ git restore --source e3b3ab01357c --staged -- :/ && git restore --source 1782e1e
 
 - <a id="tut-20.5-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the danger, a forged delimiter. 9 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/1782e1e6803efd49be04e682f3453e39c1c2fc23/tests/unit/test_model.py).
   - look at `def test_a_tokenizer_alone_would_let_text_forge_a_delimiter(`
+
+<a id="tut-20.5-tests-unit-test_model.py-583145-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
@@ -13503,6 +13843,8 @@ git restore --source 1782e1e6803e --staged -- :/ && git restore --source e30ea2e
 - <a id="tut-20.6-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the defence, for each of the five delimiters. 11 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/e30ea2eb52ae23815152f60b09d07d9d0dd1fd3a/tests/unit/test_model.py).
   - look at `def test_user_text_cannot_forge_a_delimiter(`
 
+<a id="tut-20.6-tests-unit-test_model.py-583145-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
 ```diff
@@ -13573,6 +13915,8 @@ git restore --source e30ea2eb52ae --staged -- :/ && git restore --source 455b6a8
 - <a id="tut-20.7-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: five options in, five logits out. 8 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/455b6a8ae64dae7e79fea6dd6b8434d11eb8f542/tests/unit/test_model.py).
   - look at `def test_pointer_head_gives_one_logit_per_option() -> None:`
 
+<a id="tut-20.7-tests-unit-test_model.py-583145-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
 ```diff
@@ -13641,6 +13985,8 @@ git restore --source 455b6a8ae64d --staged -- :/ && git restore --source 4e6dafd
 
 - <a id="tut-20.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a device asked for by name. 14 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/4e6dafdd492c6ca8c6ebe4935f7065e8434064da/tests/unit/test_model.py).
   - look at `def test_pick_device_takes_an_override() -> None:`
+
+<a id="tut-20.8-tests-unit-test_model.py-583145-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
@@ -13717,6 +14063,8 @@ git restore --source 4e6dafdd492c --staged -- :/ && git restore --source fe15072
 - <a id="tut-20.9-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a device, whatever the machine. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/fe15072f571cb54b810bf22b511cce5cc81920fa/tests/unit/test_model.py).
   - look at `def test_pick_device_finds_something_to_run_on() -> None:`
 
+<a id="tut-20.9-tests-unit-test_model.py-583145-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
 ```diff
@@ -13781,6 +14129,8 @@ git restore --source fe15072f571c --staged -- :/ && git restore --source 46f7e96
 - <a id="tut-20.10-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: the first test of `verdict`. New, 10 lines. [The file](https://github.com/rahuldave/babykev/blob/46f7e9637f1653265e237ae9676f543af062afc5/tests/unit/test_smoke.py).
   - look at `def test_verdict_agrees_when_the_answer_is_the_label() -> None:`
 
+<a id="tut-20.10-tests-unit-test_smoke.py-89db04-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_smoke.py</code></summary>
 
 ```diff
@@ -13837,6 +14187,8 @@ git restore --source 46f7e9637f16 --staged -- :/ && git restore --source ec3c03d
 
 - <a id="tut-20.11-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: a noul at the edge. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/ec3c03dc7b395c22a898f0c25e754daaa9ce1afa/tests/unit/test_smoke.py).
   - look at `def test_verdict_reads_a_noul_answer_as_yes_from_one_half() -> None:`
+
+<a id="tut-20.11-tests-unit-test_smoke.py-89db04-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_smoke.py</code></summary>
 
@@ -13896,6 +14248,8 @@ git restore --source ec3c03dc7b39 --staged -- :/ && git restore --source adb57ff
 
 - <a id="tut-20.12-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: a score, by its most likely level. 10 lines added. [The file](https://github.com/rahuldave/babykev/blob/adb57ffc75cd347933a0bebec13312802817faee/tests/unit/test_smoke.py).
   - look at `def test_verdict_reads_a_score_answer_as_its_most_likely_level() -> None:`
+
+<a id="tut-20.12-tests-unit-test_smoke.py-89db04-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_smoke.py</code></summary>
 
@@ -13966,6 +14320,8 @@ git restore --source adb57ffc75cd --staged -- :/ && git restore --source 4322906
 
 - <a id="tut-20.13-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: `babykev smoke help`. 13 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/4322906929f4c1b22be716cd4a341d80b8e75e25/tests/unit/test_cli.py).
   - look at `def test_smoke_help_prints_the_usage(`
+
+<a id="tut-20.13-tests-unit-test_cli.py-44d4a0-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_cli.py</code></summary>
 
@@ -14041,6 +14397,8 @@ git restore --source 4322906929f4 --staged -- :/ && git restore --source 13ba537
 - <a id="tut-20.14-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: a word that `babykev smoke` refuses. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/13ba53784ecd145301a1413d56e43938365bbf99/tests/unit/test_cli.py).
   - look at `def test_smoke_refuses_a_word_it_does_not_know(`
 
+<a id="tut-20.14-tests-unit-test_cli.py-44d4a0-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_cli.py</code></summary>
 
 ```diff
@@ -14101,6 +14459,8 @@ git fetch --quiet --tags --force origin; git restore --source 13ba53784ecd --sta
 
 - <a id="tut-20.15-README.md-8ec9a0"></a>`README.md`: the tests of the smoke, in the row of `tests/unit/`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/ebfa2a8cee251782b3709a379c35af77c80c6170/README.md).
   - look at ``| `tests/unit/` | The tests of the contract, of the command, of the model and of the smoke. One test checks every line of the sample data against the contract |``
+
+<a id="tut-20.15-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 
@@ -14186,6 +14546,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-20 --staged --
 
 - <a id="tut-21.1-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: one backward pass with an adapter. 22 lines added. [The file](https://github.com/rahuldave/babykev/blob/0be44c1de17b8acb4e18a964a782584eb26fee97/tests/unit/test_model.py).
   - look at `def test_with_an_adapter_only_the_adapter_and_the_head_train(`
+
+<a id="tut-21.1-tests-unit-test_model.py-583145-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
@@ -14275,6 +14637,8 @@ git restore --source 0be44c1de17b --staged -- :/ && git restore --source e6248c7
 - <a id="tut-21.2-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a padded pass. 16 lines added. [The file](https://github.com/rahuldave/babykev/blob/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac/tests/unit/test_model.py).
   - look at `def test_records_of_different_lengths_answer_in_one_pass_as_alone(`
 
+<a id="tut-21.2-tests-unit-test_model.py-583145-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
 ```diff
@@ -14351,6 +14715,8 @@ git restore --source e6248c7e2cf3 --staged -- :/ && git restore --source 08acf0a
 
 - <a id="tut-21.3-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: the whole smoke, on the tiny model. 17 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/08acf0a3770d58ab7fc3ac85eebf5cf9ed0bad0e/tests/unit/test_smoke.py).
   - look at `def test_smoke_reports_on_every_question_of_the_sample(`
+
+<a id="tut-21.3-tests-unit-test_smoke.py-89db04-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_smoke.py</code></summary>
 
@@ -14430,6 +14796,8 @@ git restore --source 08acf0a3770d --staged -- :/ && git restore --source 5760413
 - <a id="tut-21.4-justfile-424f0b"></a>`justfile`: the floor, in the gate. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/57604134d9590c16b1c4db0b1d1a11509a65345b/justfile).
   - look at `    just test -q --cov-fail-under=90`
 
+<a id="tut-21.4-justfile-424f0b-diff"></a>
+
 <details open><summary>The patch to <code>justfile</code></summary>
 
 ```diff
@@ -14493,6 +14861,8 @@ git fetch --quiet --tags --force origin; git restore --source 57604134d959 --sta
 
 - <a id="tut-21.5-README.md-8ec9a0"></a>`README.md`: the floor of 90%, in the lines on `just check`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/922d6ba2495756622ad215301da7c48f2ec33fa9/README.md).
   - look at ``The tests must run at least 90% of the code. You can run `just check` yourself at any time.``
+
+<a id="tut-21.5-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 
@@ -14580,6 +14950,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-21 --staged --
 - <a id="tut-22.1-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the picture of a small request. New, 26 lines. [The file](https://github.com/rahuldave/babykev/blob/e7db07241985b2cc80908d108e4229cfb512646b/tests/unit/test_mask.py).
   - look at `def test_mask_of_a_small_request() -> None:`
 
+<a id="tut-22.1-tests-unit-test_mask.py-aeb55a-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_mask.py</code></summary>
 
 ```diff
@@ -14656,6 +15028,8 @@ git restore --source e7db07241985 --staged -- :/ && git restore --source aa4f870
   - look at `"hypothesis>=6.170.0",`
 - <a id="tut-22.2-uv.lock-8356d8"></a>`uv.lock`: the exact versions of hypothesis and sortedcontainers. 80 lines added. It comes from `uv add --group test hypothesis`. [The file](https://github.com/rahuldave/babykev/blob/aa4f870deb9ec19ee18484e187f5d850399fa554/uv.lock).
 
+<a id="tut-22.2-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff that <code>uv add --group test hypothesis</code> makes in <code>pyproject.toml</code></summary>
 
 ```diff
@@ -14723,6 +15097,8 @@ git restore --source aa4f870deb9e --staged -- :/ && git restore --source 857445d
 
 - <a id="tut-22.3-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the shapes, and the first rule. 23 lines added. [The file](https://github.com/rahuldave/babykev/blob/857445da99027d423543017a9face7f2cd41ea19/tests/unit/test_mask.py).
   - look at `def test_no_question_sees_another_question(`
+
+<a id="tut-22.3-tests-unit-test_mask.py-aeb55a-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_mask.py</code></summary>
 
@@ -14808,6 +15184,8 @@ git restore --source 857445da9902 --staged -- :/ && git restore --source 55034fc
 - <a id="tut-22.4-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the causal rule. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/55034fc9085b7ba3a5ac86f3cd40b955a698b642/tests/unit/test_mask.py).
   - look at `def test_no_token_sees_a_later_token(`
 
+<a id="tut-22.4-tests-unit-test_mask.py-aeb55a-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_mask.py</code></summary>
 
 ```diff
@@ -14869,6 +15247,8 @@ git restore --source 55034fc9085b --staged -- :/ && git restore --source 41b4f5f
 
 - <a id="tut-22.5-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the whole rule. 13 lines added. [The file](https://github.com/rahuldave/babykev/blob/41b4f5f236a25a9e8438ba2a00682b5125868a50/tests/unit/test_mask.py).
   - look at `def test_what_is_allowed_is_exactly_the_rule(`
+
+<a id="tut-22.5-tests-unit-test_mask.py-aeb55a-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_mask.py</code></summary>
 
@@ -14939,6 +15319,8 @@ git restore --source 41b4f5f236a2 --staged -- :/ && git restore --source 12e9fb1
 - <a id="tut-22.6-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: rewrite question 2, and questions 1 and 3 keep their answers. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/12e9fb18c4c86cbd1291da858fd6ad39af01929b/tests/unit/test_model.py).
   - look at `def test_a_question_cannot_see_its_sibling(`
 
+<a id="tut-22.6-tests-unit-test_model.py-583145-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
 ```diff
@@ -15005,6 +15387,8 @@ git restore --source 12e9fb18c4c8 --staged -- :/ && git restore --source d3e4a6a
 - <a id="tut-22.7-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: three questions in one pass, and each alone. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/d3e4a6a067cd7f481a1bd327af08cb2358429e9c/tests/unit/test_model.py).
   - look at `def test_packed_questions_answer_as_they_would_alone(`
 
+<a id="tut-22.7-tests-unit-test_model.py-583145-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
 ```diff
@@ -15069,6 +15453,8 @@ git restore --source d3e4a6a067cd --staged -- :/ && git restore --source c3e2706
 
 - <a id="tut-22.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the questions in the reverse order. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/c3e2706e2b1fbc58bda631e173e26145256bc47e/tests/unit/test_model.py).
   - look at `def test_the_order_of_questions_does_not_matter(`
+
+<a id="tut-22.8-tests-unit-test_model.py-583145-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
@@ -15141,6 +15527,8 @@ git restore --source c3e2706e2b1f --staged -- :/ && git restore --source 18bdfee
 - <a id="tut-22.9-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: a mask that blocks only the question just before, on purpose. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/18bdfee89d950245956448ab8377cfc8b90e8595/src/babykev/model.py).
   - look at `    same = (s[None, :] == s[:, None]) | (s[None, :] == 0) | (s[None, :] < s[:, None] - 1)`
 
+<a id="tut-22.9-src-babykev-model.py-a86a0b-diff"></a>
+
 <details open><summary>The patch to <code>src/babykev/model.py</code></summary>
 
 ```diff
@@ -15208,6 +15596,8 @@ git restore --source 18bdfee89d95 --staged -- :/ && git restore --source 5f63fb4
 - <a id="tut-22.10-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the state, or the same question. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/5f63fb463f94ae6c82a647db8a4b86d4a3d6caa1/src/babykev/model.py).
   - look at `    same = (s[None, :] == s[:, None]) | (s[None, :] == 0)`
 
+<a id="tut-22.10-src-babykev-model.py-a86a0b-diff"></a>
+
 <details open><summary>The patch to <code>src/babykev/model.py</code></summary>
 
 ```diff
@@ -15263,6 +15653,8 @@ git fetch --quiet --tags --force origin; git restore --source 5f63fb463f94 --sta
 
 - <a id="tut-22.11-README.md-8ec9a0"></a>`README.md`: the tests of the mask, in the row of `tests/unit/`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/9bfadf5448a5951580b313a781b277f343aa6e30/README.md).
   - look at `hypothesis tries the rules of the mask on many shapes of request |`
+
+<a id="tut-22.11-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 
@@ -15361,6 +15753,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-22 --staged --
 - <a id="tut-23.1-tests-system-test_real_model.py-df0b9d"></a>`tests/system/test_real_model.py`: the smoke on the real model, as a test. New, 24 lines. [The file](https://github.com/rahuldave/babykev/blob/e8d250399661741adb430b0ab9020fb869279074/tests/system/test_real_model.py).
   - look at `def test_the_real_model_answers_every_sample_question(`
 
+<a id="tut-23.1-tests-system-test_real_model.py-df0b9d-diff"></a>
+
 <details open><summary>The patch to <code>tests/system/test_real_model.py</code></summary>
 
 ```diff
@@ -15434,6 +15828,8 @@ git restore --source e8d250399661 --staged -- :/ && git restore --source 14e3ab7
 
 - <a id="tut-23.2-tests-system-test_real_model.py-df0b9d"></a>`tests/system/test_real_model.py`: the marker `system`. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/14e3ab70450cd154b85d49f1b9a694de35a18557/tests/system/test_real_model.py).
   - look at `pytestmark = pytest.mark.system`
+
+<a id="tut-23.2-tests-system-test_real_model.py-df0b9d-diff"></a>
 
 <details open><summary>The patch to <code>tests/system/test_real_model.py</code></summary>
 
@@ -15532,6 +15928,8 @@ git restore --source 14e3ab70450c --staged -- :/ && git restore --source e194931
 
 - <a id="tut-23.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: the marker `system`, declared. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/e194931f1402c90fe5d4d59d5ac3e5c5846b8ac1/pyproject.toml).
   - look at `markers = ["system: needs the network, the real model or a device"]`
+
+<a id="tut-23.3-pyproject.toml-5d07e7-diff"></a>
 
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
@@ -15632,6 +16030,8 @@ git restore --source e194931f1402 --staged -- :/ && git restore --source 12e34ad
 - <a id="tut-23.4-pyproject.toml-5d07e7"></a>`pyproject.toml`: the tests marked `system` stay out of every run that does not ask for them. 3 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/12e34ad11cf268f667238c3362902c25b462225c/pyproject.toml).
   - look at `addopts = "--cov=babykev --cov-report=term-missing -m 'not system'"`
 
+<a id="tut-23.4-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -15692,6 +16092,8 @@ git fetch --quiet --tags --force origin; git restore --source 12e34ad11cf2 --sta
 
 - <a id="tut-23.5-README.md-8ec9a0"></a>`README.md`: `just test -m system`, and the row of `tests/system/`. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/d9df8f2a02ed7a7780325aebf281d6107317f9d9/README.md).
   - look at ``| `tests/system/` | The test of the real model, marked `system`. `just test -m system` runs it |``
+
+<a id="tut-23.5-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 
@@ -15778,6 +16180,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-23 --staged --
 
 - <a id="tut-24.1-docs-guide-model.qmd-3d8904"></a>`docs/guide/model.qmd`: the four ideas of the model. New, 61 lines. [The file](https://github.com/rahuldave/babykev/blob/b23fa492cea947fd91a783a6ef8c19ee1d4f38eb/docs/guide/model.qmd).
   - look at `## Packing`
+
+<a id="tut-24.1-docs-guide-model.qmd-3d8904-diff"></a>
 
 <details open><summary>The patch to <code>docs/guide/model.qmd</code></summary>
 
@@ -15888,6 +16292,8 @@ git restore --source b23fa492cea9 --staged -- :/ && git restore --source 872a008
 - <a id="tut-24.2-docs-guide-mask.qmd-5cd81a"></a>`docs/guide/mask.qmd`: the mask, as a grid. New, 52 lines. [The file](https://github.com/rahuldave/babykev/blob/872a008d4a67bfd58f67b5db28198f4293cc34f5/docs/guide/mask.qmd).
   - look at `## A plain causal mask`
 
+<a id="tut-24.2-docs-guide-mask.qmd-5cd81a-diff"></a>
+
 <details open><summary>The patch to <code>docs/guide/mask.qmd</code></summary>
 
 ````diff
@@ -15991,6 +16397,8 @@ git restore --source 872a008d4a67 --staged -- :/ && git restore --source f19e99a
 - <a id="tut-24.3-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the section `Guide`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/f19e99afaa9f11778658710d44ef1785dbc40ed0/docs/_smalldocs.yml).
   - look at `      - section: Guide`
 
+<a id="tut-24.3-docs-_smalldocs.yml-4b0b48-diff"></a>
+
 <details open><summary>The patch to <code>docs/_smalldocs.yml</code></summary>
 
 ```diff
@@ -16050,6 +16458,8 @@ git restore --source f19e99afaa9f --staged -- :/ && git restore --source 62f48f0
 - <a id="tut-24.4-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the links to the guide. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/62f48f0b9de6c97825153cd50a7f131a5c07b0c7/docs/index.qmd).
   - look at ``The pages under Guide explain the model. [The model](guide/model.qmd) gives the four ideas of `model.py`, and``
 
+<a id="tut-24.4-docs-index.qmd-d6d880-diff"></a>
+
 <details open><summary>The patch to <code>docs/index.qmd</code></summary>
 
 ```diff
@@ -16106,6 +16516,8 @@ git fetch --quiet --tags --force origin; git restore --source 62f48f0b9de6 --sta
 
 - <a id="tut-24.5-README.md-8ec9a0"></a>`README.md`: the guide, in the row of `docs/`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/41d24729682119b9bbb828187c5e9684a2921308/README.md).
   - look at ``The two pages of `docs/guide/` explain the model and its mask |``
+
+<a id="tut-24.5-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 
@@ -16214,6 +16626,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-24 --staged --
 - <a id="tut-25.1-Dockerfile-6651dd"></a>`Dockerfile`: the stages `uv`, `build` and `run`. New, 36 lines. [The file](https://github.com/rahuldave/babykev/blob/570bb2134f032a64a34d14852c82fa1a199f69f6/Dockerfile).
   - look at `FROM python:3.13-slim-trixie AS run`
 
+<a id="tut-25.1-Dockerfile-6651dd-diff"></a>
+
 <details open><summary>The patch to <code>Dockerfile</code></summary>
 
 ```diff
@@ -16307,6 +16721,8 @@ git restore --source 570bb2134f03 --staged -- :/ && git restore --source 40012bd
 
 - <a id="tut-25.2-Dockerfile-6651dd"></a>`Dockerfile`: the stage `dev`. 31 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/40012bdfeb76ad96615227e9772d387ee5e48495/Dockerfile).
   - look at `FROM python:3.13-slim-trixie AS dev`
+
+<a id="tut-25.2-Dockerfile-6651dd-diff"></a>
 
 <details open><summary>The patch to <code>Dockerfile</code></summary>
 
@@ -16410,6 +16826,8 @@ git restore --source 40012bdfeb76 --staged -- :/ && git restore --source f086240
 - <a id="tut-25.3-.dockerignore-05a721"></a>`.dockerignore`: what a build never copies. New, 16 lines. [The file](https://github.com/rahuldave/babykev/blob/f0862402733db839738f0b350a049b2ee5e2a2aa/.dockerignore).
   - look at `.venv`
 
+<a id="tut-25.3-.dockerignore-05a721-diff"></a>
+
 <details open><summary>The patch to <code>.dockerignore</code></summary>
 
 ```diff
@@ -16478,6 +16896,8 @@ git restore --source f0862402733d --staged -- :/ && git restore --source 3043d16
 
 - <a id="tut-25.4-tests-conftest.py-626af3"></a>`tests/conftest.py`: no deadline, for every test that hypothesis feeds. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/3043d160e0d6e424e7178bd6c86dfeb1aa17abb4/tests/conftest.py).
   - look at `settings.register_profile("babykev", deadline=None)`
+
+<a id="tut-25.4-tests-conftest.py-626af3-diff"></a>
 
 <details open><summary>The patch to <code>tests/conftest.py</code></summary>
 
@@ -16558,6 +16978,8 @@ git restore --source 3043d160e0d6 --staged -- :/ && git restore --source a2cd7c0
 
 - <a id="tut-25.5-justfile-424f0b"></a>`justfile`: the recipe `image`. 33 lines added. [The file](https://github.com/rahuldave/babykev/blob/a2cd7c083154e3f1161449592635e04b8f84cebe/justfile).
   - look at `image *args:`
+
+<a id="tut-25.5-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -16646,6 +17068,8 @@ git restore --source a2cd7c083154 --staged -- :/ && git restore --source ce3646d
   - look at `"hadolint-bin>=2.15.1",`
 - <a id="tut-25.6-uv.lock-8356d8"></a>`uv.lock`: the exact version of hadolint. 13 lines added. It comes from `uv add --group lint hadolint-bin`. [The file](https://github.com/rahuldave/babykev/blob/ce3646d2f0cdacf2177d9ba36355dd4ffc1b2f4a/uv.lock).
 
+<a id="tut-25.6-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff that <code>uv add --group lint hadolint-bin</code> makes in <code>pyproject.toml</code></summary>
 
 ```diff
@@ -16704,6 +17128,8 @@ git restore --source ce3646d2f0cd --staged -- :/ && git restore --source fe092b5
 
 - <a id="tut-25.7-justfile-424f0b"></a>`justfile`: hadolint, in `lint-config`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/fe092b54847ade1223f40297937fe59259096f68/justfile).
   - look at `    uv run hadolint Dockerfile`
+
+<a id="tut-25.7-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -16772,6 +17198,8 @@ git restore --source fe092b54847a --staged -- :/ && git restore --source fd4dc51
 - <a id="tut-25.8-Dockerfile-6651dd"></a>`Dockerfile`: the reason, and the line for hadolint. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/fd4dc51723462cdeaf072a4f2a18472a0cf6a645/Dockerfile).
   - look at `# hadolint ignore=DL3008`
 
+<a id="tut-25.8-Dockerfile-6651dd-diff"></a>
+
 <details open><summary>The patch to <code>Dockerfile</code></summary>
 
 ```diff
@@ -16815,7 +17243,7 @@ network at all.
 just image shell --network none -- just check
 ```
 
-It fails before any check runs. uv cannot download hadolint-bin, with `dns error`. The dev image was built
+It fails before any check runs, with an error from uv. The dev image was built
 before hadolint came into `uv.lock`, and `UV_LOCKED` makes uv install the packages of the lockfile first. An image
 holds the packages of the lockfile at the time of its build.
 
@@ -16842,6 +17270,8 @@ git fetch --quiet --tags --force origin; git restore --source fd4dc5172346 --sta
 
 - <a id="tut-25.9-README.md-8ec9a0"></a>`README.md`: the section on the images, and the row of the `Dockerfile`. 24 lines added. [The file](https://github.com/rahuldave/babykev/blob/6c85dd08f3cd441259b3749ac38cceaf7f2392e0/README.md).
   - look at `## The images`
+
+<a id="tut-25.9-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 
@@ -16954,6 +17384,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-25 --staged --
 - <a id="tut-26.1-.github-workflows-check.yaml-6ceb50"></a>`.github/workflows/check.yaml`: `just check`, after every push. New, 21 lines. [The file](https://github.com/rahuldave/babykev/blob/2f210829183a3c52bb22f1196d50000716a4beec/.github/workflows/check.yaml).
   - look at `      - run: just check`
 
+<a id="tut-26.1-.github-workflows-check.yaml-6ceb50-diff"></a>
+
 <details open><summary>The patch to <code>.github/workflows/check.yaml</code></summary>
 
 ```diff
@@ -17023,6 +17455,8 @@ git restore --source 2f210829183a --staged -- :/ && git restore --source 7b7e22f
 - <a id="tut-26.2-.yamllint-dfe50a"></a>`.yamllint`: the rule `truthy` checks no key. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/7b7e22f04247cefdd2d01adbe6dff64d88a6116c/.yamllint).
   - look at `  truthy: {check-keys: false}  # a key may be a word such as on, which YAML 1.1 reads as true`
 
+<a id="tut-26.2-.yamllint-dfe50a-diff"></a>
+
 <details open><summary>The patch to <code>.yamllint</code></summary>
 
 ```diff
@@ -17076,6 +17510,8 @@ git restore --source 7b7e22f04247 --staged -- :/ && git restore --source bb15f17
 - <a id="tut-26.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: actionlint, in the group `lint`. 1 line added. It comes from `uv add --group lint actionlint-py`. [The file](https://github.com/rahuldave/babykev/blob/bb15f17ccbb62cf1f8a61d67d67674bf9d445c86/pyproject.toml).
   - look at `"actionlint-py>=1.7.12.25",`
 - <a id="tut-26.3-uv.lock-8356d8"></a>`uv.lock`: the exact version of actionlint. 8 lines added. It comes from `uv add --group lint actionlint-py`. [The file](https://github.com/rahuldave/babykev/blob/bb15f17ccbb62cf1f8a61d67d67674bf9d445c86/uv.lock).
+
+<a id="tut-26.3-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff that <code>uv add --group lint actionlint-py</code> makes in <code>pyproject.toml</code></summary>
 
@@ -17133,6 +17569,8 @@ git restore --source bb15f17ccbb6 --staged -- :/ && git restore --source eb0acd1
 
 - <a id="tut-26.4-justfile-424f0b"></a>`justfile`: actionlint, in `lint-config`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/eb0acd148867bdbc6292660b7268b656074fb727/justfile).
   - look at `    uv run actionlint`
+
+<a id="tut-26.4-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -17205,6 +17643,8 @@ git restore --source eb0acd148867 --staged -- :/ && git restore --source 606da22
 
 - <a id="tut-26.5-.github-workflows-docs.yaml-ce7835"></a>`.github/workflows/docs.yaml`: the docs site, built with the group `docs` alone, then published. New, 40 lines. [The file](https://github.com/rahuldave/babykev/blob/606da22657c965404206b25f8fbcccffbe3f2756/.github/workflows/docs.yaml).
   - look at `      - run: uv run --locked --no-default-groups --group docs smalldocs render docs`
+
+<a id="tut-26.5-.github-workflows-docs.yaml-ce7835-diff"></a>
 
 <details open><summary>The patch to <code>.github/workflows/docs.yaml</code></summary>
 
@@ -17295,6 +17735,8 @@ git fetch --quiet --tags --force origin; git restore --source 606da22657c9 --sta
 
 - <a id="tut-26.6-README.md-8ec9a0"></a>`README.md`: the section on GitHub, and the row of the workflows. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/88854e32ebcb4647672742cc4ef709eefc5fde0c/README.md).
   - look at `## On GitHub`
+
+<a id="tut-26.6-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 

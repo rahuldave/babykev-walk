@@ -36,7 +36,7 @@ The first test draws the mask of one small request by hand. The request has a st
 of two tokens each, so its segments are `[0, 0, 1, 1, 2, 2]`. Row i of the picture is token i, and column j is token
 j. `#` means that token i may attend to token j, and `.` means that it may not.
 
-[± See the new file `tests/unit/test_mask.py`](#tut-22.1-tests-unit-test_mask.py-aeb55a){.btn .btn-sm .btn-secondary}
+[± See the new file `tests/unit/test_mask.py`](#tut-22.1-tests-unit-test_mask.py-aeb55a-diff){.btn .btn-sm .btn-secondary}
 
 The new file `tests/unit/test_mask.py` has `allowed` on lines 8 to 12, and the test on lines 15 to 26.
 
@@ -56,6 +56,8 @@ the picture has `##..#.` and `##..##`. Question 2 sees question 1.
 
 - <a id="tut-22.1-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the picture of a small request. New, 26 lines. [The file](https://github.com/rahuldave/babykev/blob/e7db07241985b2cc80908d108e4229cfb512646b/tests/unit/test_mask.py){.btn .btn-sm .btn-secondary}
   - look at `def test_mask_of_a_small_request() -> None:`
+
+<a id="tut-22.1-tests-unit-test_mask.py-aeb55a-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_mask.py</code></summary>
 
@@ -119,6 +121,8 @@ It prints the version of hypothesis that uv installed.
   - look at `"hypothesis>=6.170.0",`
 - <a id="tut-22.2-uv.lock-8356d8"></a>`uv.lock`: the exact versions of hypothesis and sortedcontainers. 80 lines added. It comes from `uv add --group test hypothesis`. [The file](https://github.com/rahuldave/babykev/blob/aa4f870deb9ec19ee18484e187f5d850399fa554/uv.lock){.btn .btn-sm .btn-secondary}
 
+<a id="tut-22.2-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
 ```diff
@@ -143,7 +147,7 @@ may be. `shapes` draws a state of 1 to 6 tokens, then up to 4 questions of 1 to 
 shape as `encode` does. The test states the rule that no token of a question attends to a token of another question.
 `@given(shapes)` runs it on up to 100 shapes.
 
-[± See the change to `tests/unit/test_mask.py`](#tut-22.3-tests-unit-test_mask.py-aeb55a){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/unit/test_mask.py`](#tut-22.3-tests-unit-test_mask.py-aeb55a-diff){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_mask.py`, `shapes` is on line 10, `segments` on lines 13 to 18, and the new test on lines 42 to
 49.
@@ -168,6 +172,8 @@ mask. hypothesis keeps the failing shape in the folder `.hypothesis`, and tries 
 
 - <a id="tut-22.3-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the shapes, and the first rule. 23 lines added. [The file](https://github.com/rahuldave/babykev/blob/857445da99027d423543017a9face7f2cd41ea19/tests/unit/test_mask.py){.btn .btn-sm .btn-secondary}
   - look at `def test_no_question_sees_another_question(`
+
+<a id="tut-22.3-tests-unit-test_mask.py-aeb55a-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_mask.py</code></summary>
 
@@ -220,7 +226,7 @@ mask. hypothesis keeps the failing shape in the folder `.hypothesis`, and tries 
 The second rule is the causal part of the mask. Nothing above the diagonal is allowed, so a token never attends to a
 token after it.
 
-[± See the change to `tests/unit/test_mask.py`](#tut-22.4-tests-unit-test_mask.py-aeb55a){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/unit/test_mask.py`](#tut-22.4-tests-unit-test_mask.py-aeb55a-diff){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_mask.py`, the new test is on lines 52 to 57.
 
@@ -234,6 +240,8 @@ pytest prints `1 passed`. The causal part of the mask was never wrong. Only the 
 
 - <a id="tut-22.4-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the causal rule. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/55034fc9085b7ba3a5ac86f3cd40b955a698b642/tests/unit/test_mask.py){.btn .btn-sm .btn-secondary}
   - look at `def test_no_token_sees_a_later_token(`
+
+<a id="tut-22.4-tests-unit-test_mask.py-aeb55a-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_mask.py</code></summary>
 
@@ -262,7 +270,7 @@ The last rule says the whole of it, in plain Python. Token i may attend to token
 in the state or in the question of i. The test builds that table for every pair of tokens, and compares it with the
 mask.
 
-[± See the change to `tests/unit/test_mask.py`](#tut-22.5-tests-unit-test_mask.py-aeb55a){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/unit/test_mask.py`](#tut-22.5-tests-unit-test_mask.py-aeb55a-diff){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_mask.py`, the new test is on lines 60 to 70.
 
@@ -278,6 +286,8 @@ alone, so they are unit tests.
 
 - <a id="tut-22.5-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the whole rule. 13 lines added. [The file](https://github.com/rahuldave/babykev/blob/41b4f5f236a25a9e8438ba2a00682b5125868a50/tests/unit/test_mask.py){.btn .btn-sm .btn-secondary}
   - look at `def test_what_is_allowed_is_exactly_the_rule(`
+
+<a id="tut-22.5-tests-unit-test_mask.py-aeb55a-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_mask.py</code></summary>
 
@@ -311,7 +321,7 @@ The rules check the mask alone. The next three tests check what the mask is for,
 must get the answer that it would get if it were the only question. The first test rewrites question 2 of the record,
 and the answers to questions 1 and 3 must not move, to the last bit.
 
-[± See the change to `tests/unit/test_model.py`](#tut-22.6-tests-unit-test_model.py-583145){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/unit/test_model.py`](#tut-22.6-tests-unit-test_model.py-583145-diff){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_model.py`, the new test is on lines 149 to 160.
 
@@ -329,6 +339,8 @@ question 1 comes first and sees only the state. The tiny model is untrained, so 
 
 - <a id="tut-22.6-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: rewrite question 2, and questions 1 and 3 keep their answers. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/12e9fb18c4c86cbd1291da858fd6ad39af01929b/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_a_question_cannot_see_its_sibling(`
+
+<a id="tut-22.6-tests-unit-test_model.py-583145-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
 
@@ -362,7 +374,7 @@ question 1 comes first and sees only the state. The tiny model is untrained, so 
 The second test of isolation packs the three questions of the record in one pass. Then it asks each question in a
 record of its own, with the same state. The answers must be the same, to within `1e-6`.
 
-[± See the change to `tests/unit/test_model.py`](#tut-22.7-tests-unit-test_model.py-583145){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/unit/test_model.py`](#tut-22.7-tests-unit-test_model.py-583145-diff){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_model.py`, the new test is on lines 163 to 172.
 
@@ -377,6 +389,8 @@ The test fails on question 2. Packed, it gets `[0.3321, 0.3346, 0.3333]`, and al
 
 - <a id="tut-22.7-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: three questions in one pass, and each alone. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/d3e4a6a067cd7f481a1bd327af08cb2358429e9c/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_packed_questions_answer_as_they_would_alone(`
+
+<a id="tut-22.7-tests-unit-test_model.py-583145-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
 
@@ -408,7 +422,7 @@ The test fails on question 2. Packed, it gets `[0.3321, 0.3346, 0.3333]`, and al
 The positions of every question restart after the state. So a question must get the same answer first or last. The
 third test of isolation asks the questions in the reverse order.
 
-[± See the change to `tests/unit/test_model.py`](#tut-22.8-tests-unit-test_model.py-583145){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/unit/test_model.py`](#tut-22.8-tests-unit-test_model.py-583145-diff){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_model.py`, the new test is on lines 175 to 184.
 
@@ -424,6 +438,8 @@ probabilities go from `[0.5016, 0.4984]` to `[0.5007, 0.4993]`. `-k order_of_que
 
 - <a id="tut-22.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the questions in the reverse order. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/c3e2706e2b1fbc58bda631e173e26145256bc47e/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_the_order_of_questions_does_not_matter(`
+
+<a id="tut-22.8-tests-unit-test_model.py-583145-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
 
@@ -456,7 +472,7 @@ The mistake of this move is on purpose. The picture failed on rows 5 and 6, wher
 fix blocks only the question just before a question. A token sees its own question, the state, and any question two
 or more before it. The fix makes the picture right.
 
-[± See the change to `src/babykev/model.py`](#tut-22.9-src-babykev-model.py-a86a0b){.btn .btn-sm .btn-secondary}
+[± See the change to `src/babykev/model.py`](#tut-22.9-src-babykev-model.py-a86a0b-diff){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/model.py`, line 159 now ends with `| (s[None, :] < s[:, None] - 1)`. A token may see a question
 whose number is less than its own minus one.
@@ -478,6 +494,8 @@ longer sees. A rule for every shape found the size with three questions.
 
 - <a id="tut-22.9-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: a mask that blocks only the question just before, on purpose. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/18bdfee89d950245956448ab8377cfc8b90e8595/src/babykev/model.py){.btn .btn-sm .btn-secondary}
   - look at `    same = (s[None, :] == s[:, None]) | (s[None, :] == 0) | (s[None, :] < s[:, None] - 1)`
+
+<a id="tut-22.9-src-babykev-model.py-a86a0b-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/model.py</code></summary>
 
@@ -503,7 +521,7 @@ The line of the mask becomes kev's line. A token may attend to a token of the st
 of its own question, `s[None, :] == s[:, None]`. `causal`, on line 158, keeps out every token after it, and line 160
 joins the two. The docstring of `branch_mask`, lines 150 to 154, has stated this rule from the start.
 
-[± See the change to `src/babykev/model.py`](#tut-22.10-src-babykev-model.py-a86a0b){.btn .btn-sm .btn-secondary}
+[± See the change to `src/babykev/model.py`](#tut-22.10-src-babykev-model.py-a86a0b-diff){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/model.py`, line 159 is `same = (s[None, :] == s[:, None]) | (s[None, :] == 0)`.
 
@@ -524,13 +542,15 @@ The smoke prints `4 of 15 right`. Questions 2 and 3 of each request now read onl
 the questions before them. The model is untrained, so the count is a guess, and a right answer is chance.
 
 In tut-18, with the old mask, the smoke printed `6 of 15 right`. The first question of each request keeps its answer,
-with the same two decimals. It comes first, so it saw only the state with either mask. Nine of the ten other answers
+with the same two decimals. It comes first, so it saw only the state with either mask. Most of the ten other answers
 changed. Both counts are guesses.
 
 ### What changed {#tut-22.10-what-changed-182c57}
 
 - <a id="tut-22.10-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the state, or the same question. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/5f63fb463f94ae6c82a647db8a4b86d4a3d6caa1/src/babykev/model.py){.btn .btn-sm .btn-secondary}
   - look at `    same = (s[None, :] == s[:, None]) | (s[None, :] == 0)`
+
+<a id="tut-22.10-src-babykev-model.py-a86a0b-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/model.py</code></summary>
 
@@ -554,7 +574,7 @@ changed. Both counts are guesses.
 
 The row of the README for `tests/unit/` names the tests of the mask, and hypothesis.
 
-[± See the change to `README.md`](#tut-22.11-README.md-8ec9a0){.btn .btn-sm .btn-secondary}
+[± See the change to `README.md`](#tut-22.11-README.md-8ec9a0-diff){.btn .btn-sm .btn-secondary}
 
 In `README.md`, the row of `tests/unit/` is on line 83.
 
@@ -569,6 +589,8 @@ with the six functions of `test_mask.py`.
 
 - <a id="tut-22.11-README.md-8ec9a0"></a>`README.md`: the tests of the mask, in the row of `tests/unit/`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/9bfadf5448a5951580b313a781b277f343aa6e30/README.md){.btn .btn-sm .btn-secondary}
   - look at `hypothesis tries the rules of the mask on many shapes of request |`
+
+<a id="tut-22.11-README.md-8ec9a0-diff"></a>
 
 <details><summary>The diff of <code>README.md</code></summary>
 

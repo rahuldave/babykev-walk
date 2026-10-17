@@ -70,6 +70,8 @@ git fetch --quiet --tags --force origin; git restore --source 861142a50356 --sta
 - <a id="tut-13.12-justfile-424f0b"></a>`justfile`: the docs check, in the gate. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/005b87bdfa2e70c6ceca52dc07197c69702f00be/justfile){.btn .btn-sm .btn-secondary}
   - look at `    just docs check`
 
+<a id="tut-13.12-justfile-424f0b-diff"></a>
+
 <details open><summary>The patch to <code>justfile</code></summary>
 
 ```diff

@@ -36,7 +36,7 @@ got its docstring first.
 `D101`: `Noul`, `Choice`, `Score` and `SystemOneRequest` are the classes of a request, and none has a docstring.
 Each gets one line, under its `class` line, that says what it is.
 
-[± See the change to `src/babykev/api.py`](#tut-10.3-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
+[± See the change to `src/babykev/api.py`](#tut-10.3-src-babykev-api.py-2ea65f-diff){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/api.py`, the docstrings of the classes are on lines 17, 25, 39 and 50, under the lines of `Noul`,
 `Choice`, `Score` and `SystemOneRequest`.
@@ -58,6 +58,8 @@ question.
 
 - <a id="tut-10.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring on each class of a request. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/9a769c7d9551fb181bf7c36d989f94f35f836c2d/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `    """A question answered by a level of a scale, whose criteria are the levels in order."""`
+
+<a id="tut-10.3-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 

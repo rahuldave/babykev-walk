@@ -73,6 +73,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-20 --staged --
 - <a id="tut-21.1-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: one backward pass with an adapter. 22 lines added. [The file](https://github.com/rahuldave/babykev/blob/0be44c1de17b8acb4e18a964a782584eb26fee97/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_with_an_adapter_only_the_adapter_and_the_head_train(`
 
+<a id="tut-21.1-tests-unit-test_model.py-583145-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
 ```diff
@@ -159,6 +161,8 @@ git restore --source 0be44c1de17b --staged -- :/ && git restore --source e6248c7
 - <a id="tut-21.2-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a padded pass. 16 lines added. [The file](https://github.com/rahuldave/babykev/blob/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_records_of_different_lengths_answer_in_one_pass_as_alone(`
 
+<a id="tut-21.2-tests-unit-test_model.py-583145-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
 ```diff
@@ -233,6 +237,8 @@ git restore --source e6248c7e2cf3 --staged -- :/ && git restore --source 08acf0a
 
 - <a id="tut-21.3-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: the whole smoke, on the tiny model. 17 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/08acf0a3770d58ab7fc3ac85eebf5cf9ed0bad0e/tests/unit/test_smoke.py){.btn .btn-sm .btn-secondary}
   - look at `def test_smoke_reports_on_every_question_of_the_sample(`
+
+<a id="tut-21.3-tests-unit-test_smoke.py-89db04-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_smoke.py</code></summary>
 
@@ -310,6 +316,8 @@ git restore --source 08acf0a3770d --staged -- :/ && git restore --source 5760413
 - <a id="tut-21.4-justfile-424f0b"></a>`justfile`: the floor, in the gate. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/57604134d9590c16b1c4db0b1d1a11509a65345b/justfile){.btn .btn-sm .btn-secondary}
   - look at `    just test -q --cov-fail-under=90`
 
+<a id="tut-21.4-justfile-424f0b-diff"></a>
+
 <details open><summary>The patch to <code>justfile</code></summary>
 
 ```diff
@@ -371,6 +379,8 @@ git fetch --quiet --tags --force origin; git restore --source 57604134d959 --sta
 
 - <a id="tut-21.5-README.md-8ec9a0"></a>`README.md`: the floor of 90%, in the lines on `just check`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/922d6ba2495756622ad215301da7c48f2ec33fa9/README.md){.btn .btn-sm .btn-secondary}
   - look at ``The tests must run at least 90% of the code. You can run `just check` yourself at any time.``
+
+<a id="tut-21.5-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 

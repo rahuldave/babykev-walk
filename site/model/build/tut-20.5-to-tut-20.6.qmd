@@ -85,6 +85,8 @@ git restore --source e3b3ab01357c --staged -- :/ && git restore --source 1782e1e
 - <a id="tut-20.5-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the danger, a forged delimiter. 9 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/1782e1e6803efd49be04e682f3453e39c1c2fc23/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_a_tokenizer_alone_would_let_text_forge_a_delimiter(`
 
+<a id="tut-20.5-tests-unit-test_model.py-583145-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
 ```diff
@@ -165,6 +167,8 @@ git restore --source 1782e1e6803e --staged -- :/ && git restore --source e30ea2e
 
 - <a id="tut-20.6-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the defence, for each of the five delimiters. 11 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/e30ea2eb52ae23815152f60b09d07d9d0dd1fd3a/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_user_text_cannot_forge_a_delimiter(`
+
+<a id="tut-20.6-tests-unit-test_model.py-583145-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 

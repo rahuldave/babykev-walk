@@ -3527,7 +3527,7 @@ same line as the command.
 of `.gitignore` from the move before keep them out of git.
 
 ::: do
-Your copy also lists `?? docs/` first. git does not know the folder yet, because nothing in it is staged.
+Your copy can also list `docs/` itself, or `docs/_smalldocs.yml`, first. That depends on whether you staged the settings of the site.
 :::
 
 files:
@@ -5516,7 +5516,7 @@ the questions before them. The model is untrained, so the count is a guess, and 
 
 ::: watch
 In tut-18, with the old mask, the smoke printed `6 of 15 right`. The first question of each request keeps its answer,
-with the same two decimals. It comes first, so it saw only the state with either mask. Nine of the ten other answers
+with the same two decimals. It comes first, so it saw only the state with either mask. Most of the ten other answers
 changed. Both counts are guesses.
 :::
 
@@ -6123,7 +6123,7 @@ network at all.
 
 $ just image shell --network none -- just check
 
-It fails before any check runs. uv cannot download hadolint-bin, with `dns error`. The dev image was built
+It fails before any check runs, with an error from uv. The dev image was built
 before hadolint came into `uv.lock`, and `UV_LOCKED` makes uv install the packages of the lockfile first. An image
 holds the packages of the lockfile at the time of its build.
 

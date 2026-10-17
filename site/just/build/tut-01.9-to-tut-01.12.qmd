@@ -73,6 +73,8 @@ git restore --source e32c7ba9f798 --staged -- :/ && git restore --source e14dffa
 - <a id="tut-01.9-justfile-424f0b"></a>`justfile`: the recipe `setup` and its line. New, 10 lines. [The file](https://github.com/rahuldave/babykev/blob/e14dffa877a2d24a53d67d8dd3d54b17204885b1/justfile){.btn .btn-sm .btn-secondary}
   - look at `setup:`
 
+<a id="tut-01.9-justfile-424f0b-diff"></a>
+
 <details open><summary>The patch to <code>justfile</code></summary>
 
 ```diff
@@ -139,6 +141,8 @@ git restore --source e14dffa877a2 --staged -- :/ && git restore --source a55c903
 
 - <a id="tut-01.10-justfile-424f0b"></a>`justfile`: the recipe `help`. 12 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a55c90355687e4bf94dfad2277262548ba4ea682/justfile){.btn .btn-sm .btn-secondary}
   - look at `help *verb:`
+
+<a id="tut-01.10-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -210,6 +214,8 @@ git restore --source a55c90355687 --staged -- :/ && git restore --source 3016e7e
 - <a id="tut-01.11-justfile-424f0b"></a>`justfile`: `setup` answers `help`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/3016e7ee53854d719456c12a48c8c8e620614bde/justfile){.btn .btn-sm .btn-secondary}
   - look at `@{{ if args == "help" { "just help setup" } else { "uv sync --locked" } }}`
 
+<a id="tut-01.11-justfile-424f0b-diff"></a>
+
 <details open><summary>The patch to <code>justfile</code></summary>
 
 ```diff
@@ -268,6 +274,8 @@ git restore --source 3016e7ee5385 --staged -- :/ && git restore --source 9218f21
 
 - <a id="tut-01.12-justfile-424f0b"></a>`justfile`: the variable `program`, and the branch of `help` that runs the program's help. 6 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/9218f21a784277593cf6930e10389b04e41bf9d0/justfile){.btn .btn-sm .btn-secondary}
   - look at `program := "babykev"`
+
+<a id="tut-01.12-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 

@@ -59,7 +59,7 @@ The first test asks for the three fixtures. It packs the record with the tiny to
 the head. Each question gets one probability per option, and they sum to 1. Nothing is trained, so the probabilities
 mean nothing. The test checks what is true of any probabilities.
 
-[± See the new file `tests/unit/test_model.py`](#tut-19.8-tests-unit-test_model.py-583145){.btn .btn-sm .btn-secondary}
+[± See the new file `tests/unit/test_model.py`](#tut-19.8-tests-unit-test_model.py-583145-diff){.btn .btn-sm .btn-secondary}
 
 The new file `tests/unit/test_model.py` has one test, on lines 11 to 20.
 
@@ -95,6 +95,8 @@ Every test in the rest of this walk asks for these fixtures, and runs on the tin
 
 - <a id="tut-19.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the first test of the model, on the tiny model. New, 20 lines. [The file](https://github.com/rahuldave/babykev/blob/321a8df2c597e0c46d06c9b36c711f0fe270900a/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_probabilities_sum_to_one_for_every_question(`
+
+<a id="tut-19.8-tests-unit-test_model.py-583145-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
 

@@ -79,6 +79,8 @@ git restore --source e30ea2eb52ae --staged -- :/ && git restore --source 455b6a8
 - <a id="tut-20.7-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: five options in, five logits out. 8 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/455b6a8ae64dae7e79fea6dd6b8434d11eb8f542/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_pointer_head_gives_one_logit_per_option() -> None:`
 
+<a id="tut-20.7-tests-unit-test_model.py-583145-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
 ```diff

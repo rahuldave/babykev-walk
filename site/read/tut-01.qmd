@@ -64,6 +64,8 @@ git status --short
 - <a id="tut-01.1-src-babykev-__init__.py-a40393"></a>`src/babykev/__init__.py`: the function that the command runs. It prints a greeting. New, 2 lines. It comes from `uv init --package --name babykev --python 3.13`. [The file](https://github.com/rahuldave/babykev/blob/eac75e0becc78c9a872e734ea715ac3903947844/src/babykev/__init__.py){.btn .btn-sm .btn-secondary}
   - look at `print("Hello from babykev!")`
 
+<a id="tut-01.1-.python-version-7696e9-diff"></a>
+
 <details><summary>The diff of <code>.python-version</code></summary>
 
 ```diff
@@ -72,6 +74,8 @@ git status --short
 ```
 
 </details>
+
+<a id="tut-01.1-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -94,6 +98,8 @@ git status --short
 ```
 
 </details>
+
+<a id="tut-01.1-src-babykev-__init__.py-a40393-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/__init__.py</code></summary>
 
@@ -140,7 +146,7 @@ then changes the packages of `.venv` to match, and does not print `Creating virt
 `pyproject.toml` still has the words of uv. Its description is a placeholder, `Add your description here`. The patch
 puts in what babykev is.
 
-[± See the change to `pyproject.toml`](#tut-01.3-pyproject.toml-5d07e7){.btn .btn-sm .btn-secondary}
+[± See the change to `pyproject.toml`](#tut-01.3-pyproject.toml-5d07e7-diff){.btn .btn-sm .btn-secondary}
 
 In `pyproject.toml`, the line `description` now says what babykev is.
 
@@ -154,6 +160,8 @@ grep -n description pyproject.toml
 
 - <a id="tut-01.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: the description. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/0497c0dc9d3772df47e79361aa4165e5de8e227d/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `description = "A small decision model: one state, typed questions, a probability for every answer"`
+
+<a id="tut-01.3-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -178,7 +186,7 @@ grep -n description pyproject.toml
 A package says under which licence others may use it. babykev's licence is kev's, the Apache License 2.0.
 `license` names it, and `license-files` names the two files that a package of babykev carries with it.
 
-[± See the change to `pyproject.toml`](#tut-01.4-pyproject.toml-5d07e7){.btn .btn-sm .btn-secondary}
+[± See the change to `pyproject.toml`](#tut-01.4-pyproject.toml-5d07e7-diff){.btn .btn-sm .btn-secondary}
 
 In `pyproject.toml`, `license` and `license-files` now stand under `readme`.
 
@@ -193,6 +201,8 @@ them at the end of `[project]`, so the numbers can differ.
 
 - <a id="tut-01.4-pyproject.toml-5d07e7"></a>`pyproject.toml`: the licence, and the files a package carries. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/414874463b887dedf65c5c74caeac8a064b0e876/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `license-files = ["LICENSE", "NOTICE"]`
+
+<a id="tut-01.4-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -216,7 +226,7 @@ them at the end of `[project]`, so the numbers can differ.
 
 A package names who wrote it. `authors` names Rahul Dave.
 
-[± See the change to `pyproject.toml`](#tut-01.5-pyproject.toml-5d07e7){.btn .btn-sm .btn-secondary}
+[± See the change to `pyproject.toml`](#tut-01.5-pyproject.toml-5d07e7-diff){.btn .btn-sm .btn-secondary}
 
 In `pyproject.toml`, `authors` now stands under `license-files`.
 
@@ -231,6 +241,8 @@ exit code 0. The words of the three moves change no dependency, so `uv.lock` sta
 
 - <a id="tut-01.5-pyproject.toml-5d07e7"></a>`pyproject.toml`: the author. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/7f38877e597f5404208fdca2eabb176077d95a8e/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `authors = [{ name = "Rahul Dave" }]`
+
+<a id="tut-01.5-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -255,7 +267,7 @@ exit code 0. The words of the three moves change no dependency, so `uv.lock` sta
 command gets a file of its own, `src/babykev/cli.py`. `main` there reads the words after `babykev`. With no word, or
 with `help`, `--help` or `-h`, it prints `HELP`. Any other word ends with a message and exit code 2.
 
-[± See the new file `src/babykev/cli.py`](#tut-01.6-src-babykev-cli.py-a9e184){.btn .btn-sm .btn-secondary}
+[± See the new file `src/babykev/cli.py`](#tut-01.6-src-babykev-cli.py-a9e184-diff){.btn .btn-sm .btn-secondary}
 
 The new file `src/babykev/cli.py` holds `HELP`, the text of the help, and `main` under it. The line
 `raise SystemExit(2)` ends the command on a word it does not know.
@@ -274,6 +286,8 @@ the `main` of `__init__.py`.
 
 - <a id="tut-01.6-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: `main` reads the words after `babykev`. A word other than `help`, `--help` or `-h` ends the command with exit code 2. New, 21 lines. [The file](https://github.com/rahuldave/babykev/blob/64a78cf48bc1b0f508dfd7b83c3a2b0572fb1912/src/babykev/cli.py){.btn .btn-sm .btn-secondary}
   - look at `raise SystemExit(2)`
+
+<a id="tut-01.6-src-babykev-cli.py-a9e184-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/cli.py</code></summary>
 
@@ -310,7 +324,7 @@ the `main` of `__init__.py`.
 
 The command still runs the greeting. One line of `pyproject.toml` points it at the new `main`.
 
-[± See the change to `pyproject.toml`](#tut-01.7-pyproject.toml-5d07e7){.btn .btn-sm .btn-secondary}
+[± See the change to `pyproject.toml`](#tut-01.7-pyproject.toml-5d07e7-diff){.btn .btn-sm .btn-secondary}
 
 In `pyproject.toml`, the command now runs `babykev.cli:main`.
 
@@ -326,6 +340,8 @@ uv run babykev train
 
 - <a id="tut-01.7-pyproject.toml-5d07e7"></a>`pyproject.toml`: the command now runs `main` of the module `cli`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/292ddcc99a287378929f14e2082d40f0947a2880/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `babykev = "babykev.cli:main"`
+
+<a id="tut-01.7-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -350,7 +366,7 @@ uv run babykev train
 Nothing runs the `main` of `src/babykev/__init__.py` any more. Code that nothing runs only misleads a reader. The
 patch takes its two lines out, and leaves the file empty, with not even a blank line.
 
-[± See the change to `src/babykev/__init__.py`](#tut-01.8-src-babykev-__init__.py-a40393){.btn .btn-sm .btn-secondary}
+[± See the change to `src/babykev/__init__.py`](#tut-01.8-src-babykev-__init__.py-a40393-diff){.btn .btn-sm .btn-secondary}
 
 `src/babykev/__init__.py` is empty. Python still needs the file, because it makes `src/babykev` a package.
 
@@ -364,6 +380,8 @@ uv run babykev
 ### What changed {#tut-01.8-what-changed-182c57}
 
 - <a id="tut-01.8-src-babykev-__init__.py-a40393"></a>`src/babykev/__init__.py`: the greeting goes, and the file is empty. 0 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/e32c7ba9f7983fc03cc8d91411562b1eac1d38e9/src/babykev/__init__.py){.btn .btn-sm .btn-secondary}
+
+<a id="tut-01.8-src-babykev-__init__.py-a40393-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/__init__.py</code></summary>
 
@@ -393,7 +411,7 @@ uv sync --locked
 `pyproject.toml`. It prints `Resolved 1 package`. When `.venv` is already right, it then prints `Checked 1 package`, and changes
 nothing. In a new clone, it first prints `Creating virtual environment at: .venv`, and then installs babykev.
 
-[± See the new file `justfile`](#tut-01.9-justfile-424f0b){.btn .btn-sm .btn-secondary}
+[± See the new file `justfile`](#tut-01.9-justfile-424f0b-diff){.btn .btn-sm .btn-secondary}
 
 `justfile` is new, with two recipes. `default` lists the others, and `setup` runs `uv sync --locked`.
 
@@ -413,6 +431,8 @@ the one recipe, under `[setup]`.
 
 - <a id="tut-01.9-justfile-424f0b"></a>`justfile`: the recipe `setup` and its line. New, 10 lines. [The file](https://github.com/rahuldave/babykev/blob/e14dffa877a2d24a53d67d8dd3d54b17204885b1/justfile){.btn .btn-sm .btn-secondary}
   - look at `setup:`
+
+<a id="tut-01.9-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -443,7 +463,7 @@ the recipe `setup`, and `just help` alone prints the list.
 `set positional-arguments` passes such words to the commands of a recipe. The first word becomes `"$1"` and the
 second `"$2"`, and a word with spaces in it stays one word. So `help` finds the name `setup` in `"$1"`.
 
-[± See the change to `justfile`](#tut-01.10-justfile-424f0b){.btn .btn-sm .btn-secondary}
+[± See the change to `justfile`](#tut-01.10-justfile-424f0b-diff){.btn .btn-sm .btn-secondary}
 
 In `justfile`, `set positional-arguments` now stands near the top, and the recipe `help` comes after `default`. The
 first line of the file now names `just help VERB`.
@@ -465,6 +485,8 @@ just help
 
 - <a id="tut-01.10-justfile-424f0b"></a>`justfile`: the recipe `help`. 12 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a55c90355687e4bf94dfad2277262548ba4ea682/justfile){.btn .btn-sm .btn-secondary}
   - look at `help *verb:`
+
+<a id="tut-01.10-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -503,7 +525,7 @@ A person who types `just setup help` gets `uv sync --locked`, and no help. The r
 answers the word `help` with `just help setup`. The `@` at the start of its line stops `just` from printing the
 command before it runs it.
 
-[± See the change to `justfile`](#tut-01.11-justfile-424f0b){.btn .btn-sm .btn-secondary}
+[± See the change to `justfile`](#tut-01.11-justfile-424f0b-diff){.btn .btn-sm .btn-secondary}
 
 In `justfile`, `setup` takes `*args`. Its one line runs `just help setup` for the word `help`, and
 `uv sync --locked` for anything else.
@@ -520,6 +542,8 @@ longer prints `uv sync --locked` first, because of the `@`.
 
 - <a id="tut-01.11-justfile-424f0b"></a>`justfile`: `setup` answers `help`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/3016e7ee53854d719456c12a48c8c8e620614bde/justfile){.btn .btn-sm .btn-secondary}
   - look at `@{{ if args == "help" { "just help setup" } else { "uv sync --locked" } }}`
+
+<a id="tut-01.11-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -544,7 +568,7 @@ Later recipes run the program, as `uv run babykev VERB`. Their help should also 
 variable, `program`, names the command once. `help` looks for `uv run {{ program }} VERB` in a recipe, and then runs
 the program's own help too.
 
-[± See the change to `justfile`](#tut-01.12-justfile-424f0b){.btn .btn-sm .btn-secondary}
+[± See the change to `justfile`](#tut-01.12-justfile-424f0b-diff){.btn .btn-sm .btn-secondary}
 
 In `justfile`, `program := "babykev"` stands near the top. `help` now ends with an `if` that runs
 `uv run {{ program }} "$1" help`.
@@ -564,6 +588,8 @@ just help setup
 
 - <a id="tut-01.12-justfile-424f0b"></a>`justfile`: the variable `program`, and the branch of `help` that runs the program's help. 6 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/9218f21a784277593cf6930e10389b04e41bf9d0/justfile){.btn .btn-sm .btn-secondary}
   - look at `program := "babykev"`
+
+<a id="tut-01.12-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -605,7 +631,7 @@ just help setup
 A reader of the README cannot yet tell how to start. A section, "Start", says to run `just setup` first, and names
 `just`, `just help VERB` and the help of the program.
 
-[± See the change to `README.md`](#tut-01.13-README.md-8ec9a0){.btn .btn-sm .btn-secondary}
+[± See the change to `README.md`](#tut-01.13-README.md-8ec9a0-diff){.btn .btn-sm .btn-secondary}
 
 In `README.md`, "Start" says to run `just setup` first, and then names `just`, `just help VERB` and
 `uv run babykev help`.
@@ -620,6 +646,8 @@ grep -n '^## ' README.md
 
 - <a id="tut-01.13-README.md-8ec9a0"></a>`README.md`: how to start. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/0d2e163cca5d3eeb9fc8f7223fddd8d7da735fde/README.md){.btn .btn-sm .btn-secondary}
   - look at ``Run `just setup` first. It installs Python and every dependency into `.venv`, exactly as `uv.lock` says.``
+
+<a id="tut-01.13-README.md-8ec9a0-diff"></a>
 
 <details><summary>The diff of <code>README.md</code></summary>
 
@@ -648,7 +676,7 @@ grep -n '^## ' README.md
 A reader still cannot tell what each file of the project is. A section, "What is here", has a table, with a row for
 each file.
 
-[± See the change to `README.md`](#tut-01.14-README.md-8ec9a0){.btn .btn-sm .btn-secondary}
+[± See the change to `README.md`](#tut-01.14-README.md-8ec9a0-diff){.btn .btn-sm .btn-secondary}
 
 In `README.md`, "What is here" is a table of the files of the project, from `pyproject.toml` to `.gitignore`.
 
@@ -664,6 +692,8 @@ Both commands of "Start" work. `just setup` prints `Resolved 1 package` and `Che
 
 - <a id="tut-01.14-README.md-8ec9a0"></a>`README.md`: a table of the files. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/7ad3a06605fadc9f34b5e2d8180145a3e53389a9/README.md){.btn .btn-sm .btn-secondary}
   - look at ``| `justfile` | Every task of the project, one recipe each. `just help` explains them |``
+
+<a id="tut-01.14-README.md-8ec9a0-diff"></a>
 
 <details><summary>The diff of <code>README.md</code></summary>
 

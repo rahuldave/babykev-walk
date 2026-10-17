@@ -85,6 +85,8 @@ git ignores each of them before it exists.
 - <a id="tut-00-README.md-8ec9a0"></a>`README.md`: what babykev is, and the request it reads. The table gives the three types of question. New, 74 lines. [The file](https://github.com/rahuldave/babykev/blob/70ac5b0a0a1d927dfc4da6f8b7b92344917e4a33/README.md).
   - look at ``| `noul` | Yes or no | The probability of yes |``
 
+<a id="tut-00-.gitignore-a5cc29-diff"></a>
+
 <details><summary>The diff of <code>.gitignore</code></summary>
 
 ```diff
@@ -313,6 +315,8 @@ git ignores each of them before it exists.
 
 </details>
 
+<a id="tut-00-LICENSE-0398cc-diff"></a>
+
 <details><summary>The diff of <code>LICENSE</code></summary>
 
 ```diff
@@ -523,6 +527,8 @@ git ignores each of them before it exists.
 
 </details>
 
+<a id="tut-00-NOTICE-fe7187-diff"></a>
+
 <details><summary>The diff of <code>NOTICE</code></summary>
 
 ```diff
@@ -538,6 +544,8 @@ git ignores each of them before it exists.
 ```
 
 </details>
+
+<a id="tut-00-README.md-8ec9a0-diff"></a>
 
 <details><summary>The diff of <code>README.md</code></summary>
 
@@ -650,7 +658,7 @@ how to begin, and what each file is.
 A reader of the README cannot yet tell how to start. A section, "Start", says to run `just setup` first, and names
 `just`, `just help VERB` and the help of the program.
 
-[± See the change to `README.md`](#tut-01.13-README.md-8ec9a0)
+[± See the change to `README.md`](#tut-01.13-README.md-8ec9a0-diff)
 
 In `README.md`, "Start" says to run `just setup` first, and then names `just`, `just help VERB` and
 `uv run babykev help`.
@@ -665,6 +673,8 @@ grep -n '^## ' README.md
 
 - <a id="tut-01.13-README.md-8ec9a0"></a>`README.md`: how to start. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/0d2e163cca5d3eeb9fc8f7223fddd8d7da735fde/README.md).
   - look at ``Run `just setup` first. It installs Python and every dependency into `.venv`, exactly as `uv.lock` says.``
+
+<a id="tut-01.13-README.md-8ec9a0-diff"></a>
 
 <details><summary>The diff of <code>README.md</code></summary>
 
@@ -695,7 +705,7 @@ grep -n '^## ' README.md
 A reader still cannot tell what each file of the project is. A section, "What is here", has a table, with a row for
 each file.
 
-[± See the change to `README.md`](#tut-01.14-README.md-8ec9a0)
+[± See the change to `README.md`](#tut-01.14-README.md-8ec9a0-diff)
 
 In `README.md`, "What is here" is a table of the files of the project, from `pyproject.toml` to `.gitignore`.
 
@@ -711,6 +721,8 @@ Both commands of "Start" work. `just setup` prints `Resolved 1 package` and `Che
 
 - <a id="tut-01.14-README.md-8ec9a0"></a>`README.md`: a table of the files. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/7ad3a06605fadc9f34b5e2d8180145a3e53389a9/README.md).
   - look at ``| `justfile` | Every task of the project, one recipe each. `just help` explains them |``
+
+<a id="tut-01.14-README.md-8ec9a0-diff"></a>
 
 <details><summary>The diff of <code>README.md</code></summary>
 
@@ -780,7 +792,7 @@ Nothing asks for docstrings yet. The rules `D1` of the family `D`, pydocstyle, j
 part of the family that asks whether a docstring is there. The rest of the family checks how a docstring is written,
 and stays off.
 
-[± See the change to `pyproject.toml`](#tut-10.1-pyproject.toml-5d07e7)
+[± See the change to `pyproject.toml`](#tut-10.1-pyproject.toml-5d07e7-diff)
 
 In `pyproject.toml`, the line of `"D1"` is now line 64, the last of the list `select`.
 
@@ -797,6 +809,8 @@ is private, so it needs none.
 
 - <a id="tut-10.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the rules `D1`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/09ad56d2e465ac5b485ba5d1b077c540fd7c45ef/pyproject.toml).
   - look at `    "D1",  # pydocstyle: every public module, class and function has a docstring`
+
+<a id="tut-10.1-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -822,7 +836,7 @@ is private, so it needs none.
 `D104`: `src/babykev/__init__.py` is the package `babykev` itself, and it is empty. Its docstring says what babykev
 is, as the first line of the help of the command does.
 
-[± See the change to `src/babykev/__init__.py`](#tut-10.2-src-babykev-__init__.py-a40393)
+[± See the change to `src/babykev/__init__.py`](#tut-10.2-src-babykev-__init__.py-a40393-diff)
 
 `src/babykev/__init__.py` now has one line, the docstring of the package.
 
@@ -839,6 +853,8 @@ count a docstring.
 
 - <a id="tut-10.2-src-babykev-__init__.py-a40393"></a>`src/babykev/__init__.py`: the docstring of the package. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/7943e585faa81e4c0400f5e2e9ca7b42ce4bf286/src/babykev/__init__.py).
   - look at `"""babykev: a small decision model. A state, typed questions, and a probability for every answer."""`
+
+<a id="tut-10.2-src-babykev-__init__.py-a40393-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/__init__.py</code></summary>
 
@@ -858,7 +874,7 @@ count a docstring.
 `D101`: `Noul`, `Choice`, `Score` and `SystemOneRequest` are the classes of a request, and none has a docstring.
 Each gets one line, under its `class` line, that says what it is.
 
-[± See the change to `src/babykev/api.py`](#tut-10.3-src-babykev-api.py-2ea65f)
+[± See the change to `src/babykev/api.py`](#tut-10.3-src-babykev-api.py-2ea65f-diff)
 
 In `src/babykev/api.py`, the docstrings of the classes are on lines 17, 25, 39 and 50, under the lines of `Noul`,
 `Choice`, `Score` and `SystemOneRequest`.
@@ -875,6 +891,8 @@ the levels in order.` `just lint --statistics` prints 3 problems, all `D103`.
 
 - <a id="tut-10.3-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring on each class of a request. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/9a769c7d9551fb181bf7c36d989f94f35f836c2d/src/babykev/api.py).
   - look at `    """A question answered by a level of a scale, whose criteria are the levels in order."""`
+
+<a id="tut-10.3-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -928,7 +946,7 @@ the levels in order.` `just lint --statistics` prints 3 problems, all `D103`.
 line, that says what it does. The docstring of `choice_confidence` gives the two ends of its scale, as the docstring
 of `score_confidence` does.
 
-[± See the change to `src/babykev/api.py`](#tut-10.4-src-babykev-api.py-2ea65f)
+[± See the change to `src/babykev/api.py`](#tut-10.4-src-babykev-api.py-2ea65f-diff)
 
 In `src/babykev/api.py`, the docstrings of the functions are on lines 74, 104 and 131, under the lines of
 `option_text`, `choice_confidence` and `to_answers`.
@@ -948,6 +966,8 @@ test` prints `53 passed`, and the total is 100%, 83 of 83 statements.
 
 - <a id="tut-10.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring on each of the three functions. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/ebd0888f135c00e29b583f6fad0575c290fd4876/src/babykev/api.py).
   - look at `    """Measure how far the most likely option stands above a guess: 1 if certain, 0 for a guess."""`
+
+<a id="tut-10.4-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -1043,6 +1063,8 @@ and under it fastcore, markdown-it-py, mdit-py-plugins, pygments and pyyaml. mdu
   - look at `"smalldocs>=0.1.5",`
 - <a id="tut-13.1-uv.lock-8356d8"></a>`uv.lock`: the exact version of smalldocs, and of the packages that it needs. 62 lines added. It comes from `uv add --group docs smalldocs`. [The file](https://github.com/rahuldave/babykev/blob/609d58ce5f8c0fb8e7b60548c8ee097766446ff5/uv.lock).
 
+<a id="tut-13.1-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
 ```diff
@@ -1071,7 +1093,7 @@ has one section, `api`, the reference. It names the package and the address of i
 the files of the tests, which smalldocs holds to the same rule as the package. The file is new, and comes whole, as a
 patch.
 
-[± See the new file `docs/_smalldocs.yml`](#tut-13.2-docs-_smalldocs.yml-4b0b48)
+[± See the new file `docs/_smalldocs.yml`](#tut-13.2-docs-_smalldocs.yml-4b0b48-diff)
 
 The new file `docs/_smalldocs.yml` has 5 lines. Line 3 names the package, `babykev`, and line 5 names the tests,
 `tests/**/*.py`.
@@ -1105,6 +1127,8 @@ method, which the linter does not ask for.
 - <a id="tut-13.2-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the package to document, and the tests to check. New, 5 lines. [The file](https://github.com/rahuldave/babykev/blob/4444b1e809427e92a5dc08a9e9fdbbddab7de830/docs/_smalldocs.yml).
   - look at `  packages: [babykev]`
 
+<a id="tut-13.2-docs-_smalldocs.yml-4b0b48-diff"></a>
+
 <details><summary>The diff of <code>docs/_smalldocs.yml</code></summary>
 
 ```diff
@@ -1126,7 +1150,7 @@ method, which the linter does not ask for.
 
 The command that lists the gaps is long. The recipe `docs` gives its words to `smalldocs api`, and adds `--dir docs`.
 
-[± See the change to `justfile`](#tut-13.3-justfile-424f0b)
+[± See the change to `justfile`](#tut-13.3-justfile-424f0b-diff)
 
 At the end of the `justfile`, the recipe `docs` is on lines 78 to 82. Line 82 runs `uv run smalldocs api "$@" --dir
 docs`.
@@ -1144,6 +1168,8 @@ just help docs
 
 - <a id="tut-13.3-justfile-424f0b"></a>`justfile`: the recipe `docs`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/a582ad38e75bb188174b75a5e80405cebcd1259d/justfile).
   - look at `docs *args:`
+
+<a id="tut-13.3-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -1172,7 +1198,7 @@ just help docs
 parameter on a line, with its docment beside it, and a docment on its return type, after `-> TYPE:`. The type says
 `int`, and the docment says what the number means.
 
-[± See the change to `src/babykev/api.py`](#tut-13.4-src-babykev-api.py-2ea65f)
+[± See the change to `src/babykev/api.py`](#tut-13.4-src-babykev-api.py-2ea65f-diff)
 
 In `src/babykev/api.py`, the signature of `render` is on lines 56 to 59. `indent: int = 0,  # How deeply the value is
 nested. Each level indents by two spaces` is line 58, and `) -> str:  # The text that the model sees` is line 59. The
@@ -1194,6 +1220,8 @@ The reference of `render` has its signature, its docstring, and a table with a r
 
 - <a id="tut-13.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docment on each parameter and each return of seven functions. 24 lines added, 7 removed. [The file](https://github.com/rahuldave/babykev/blob/ae28dff704c768a862e416a894ac42443ab3468c/src/babykev/api.py).
   - look at `) -> str:  # The text that the model sees`
+
+<a id="tut-13.4-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -1285,7 +1313,7 @@ The reference of `render` has its signature, its docstring, and a table with a r
 reference leaves it out. smalldocs checks it still, because a reader of the code needs to know what it does. It gets
 a docstring, and a docment on its return, the choice itself.
 
-[± See the change to `src/babykev/api.py`](#tut-13.5-src-babykev-api.py-2ea65f)
+[± See the change to `src/babykev/api.py`](#tut-13.5-src-babykev-api.py-2ea65f-diff)
 
 In `src/babykev/api.py`, line 32 is now `def _check(self) -> Self:  # The choice itself, unchanged`, and line 33 is its
 docstring.
@@ -1300,6 +1328,8 @@ just docs check
 
 - <a id="tut-13.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring and a docment for `_check`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a064e34557be7fc006863c995c8cd39e85491b31/src/babykev/api.py).
   - look at `    def _check(self) -> Self:  # The choice itself, unchanged`
+
+<a id="tut-13.5-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -1328,7 +1358,7 @@ The four classes of a request have no signature to put a docment on. Each field 
 `type: Literal["noul"]`. pydantic takes a description of a field in `Field(description="...")`. It keeps the
 description in the schema of the model, which other programs read, and smalldocs puts it in the reference.
 
-[± See the change to `src/babykev/api.py`](#tut-13.6-src-babykev-api.py-2ea65f)
+[± See the change to `src/babykev/api.py`](#tut-13.6-src-babykev-api.py-2ea65f-diff)
 
 In `src/babykev/api.py`, the fields of `Noul` are on lines 19 to 24, and the fields of `SystemOneRequest` on lines 62
 to 65. The `criteria` of `Score`, on lines 49 to 53, keep their limits, `min_length=2` and `max_length=MAX_OPTIONS`,
@@ -1349,6 +1379,8 @@ the contract.
 
 - <a id="tut-13.6-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a description on every field of the four classes. 22 lines added, 11 removed. [The file](https://github.com/rahuldave/babykev/blob/6ad6c02267070b7c260934e3165ea40aeb49a035/src/babykev/api.py).
   - look at `    type: Literal["noul"] = Field(description="Marks the question as one of yes or no")`
+
+<a id="tut-13.6-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -1426,7 +1458,7 @@ The tests are documentation too. A reader learns from them what the code must do
 tests to the same rule as the package. In `test_cli.py`, `run` and the two tests have parameters with no docment.
 Each now has one parameter on a line, with its docment.
 
-[± See the change to `tests/unit/test_cli.py`](#tut-13.7-tests-unit-test_cli.py-44d4a0)
+[± See the change to `tests/unit/test_cli.py`](#tut-13.7-tests-unit-test_cli.py-44d4a0-diff)
 
 In `tests/unit/test_cli.py`, the signature of `run` is on lines 8 to 11. The parameters of the two tests are on lines
 19 to 21 and 29 to 30.
@@ -1448,6 +1480,8 @@ prints `tests/unit/test_cli.py 3 of 3`, and `39 of 45`.
 
 - <a id="tut-13.7-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: a docment on each parameter. 9 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/28caad31e7a7fbab5acefd39c2b2b9e153f096b0/tests/unit/test_cli.py).
   - look at `    capsys: pytest.CaptureFixture[str],  # Catches the message of the refusal`
+
+<a id="tut-13.7-tests-unit-test_cli.py-44d4a0-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
 
@@ -1498,7 +1532,7 @@ prints `tests/unit/test_cli.py 3 of 3`, and `39 of 45`.
 In `test_api.py`, the helper `cheese_request` has no docment on its return. Five tests take parameters from
 `@pytest.mark.parametrize`, with no docment. Each gets its docments.
 
-[± See the change to `tests/unit/test_api.py`](#tut-13.8-tests-unit-test_api.py-58d97c)
+[± See the change to `tests/unit/test_api.py`](#tut-13.8-tests-unit-test_api.py-58d97c-diff)
 
 In `tests/unit/test_api.py`, line 32 is `def cheese_request() -> SystemOneRequest:  # A noul, a choice and a score about
 one cheese`. The test of `option_text` is on lines 155 to 169, with its three parameters on lines 164 to 166.
@@ -1518,6 +1552,8 @@ complete, and `45 of 45 functions, methods and classes are typed and documented`
 
 - <a id="tut-13.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a docment on each parameter, and on the return of `cheese_request`. 17 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/4bd145b7895a9e6f7841a997995efcd343d0049c/tests/unit/test_api.py).
   - look at `    description: JSONContent,  # Its description, or None or "" for none`
+
+<a id="tut-13.8-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
 
@@ -1601,7 +1637,7 @@ A docment is on the line of its parameter or of its return type, and a line has 
 makes a mistake on purpose. The docment of the return of `to_record` says more, and its line grows to 119
 characters. The next moves show what the formatter makes of it.
 
-[± See the change to `src/babykev/api.py`](#tut-13.9-src-babykev-api.py-2ea65f)
+[± See the change to `src/babykev/api.py`](#tut-13.9-src-babykev-api.py-2ea65f-diff)
 
 In `src/babykev/api.py`, line 98 now ends with `# The record that the model reads, and the metadata of each question`.
 
@@ -1619,6 +1655,8 @@ exit code 1. `just docs check` still prints `45 of 45`, because the docment is o
 
 - <a id="tut-13.9-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docment longer than its line, on purpose. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/95ebd81a9d15158c39a8adf35237da700e9334b2/src/babykev/api.py).
   - look at `) -> tuple[dict[str, Any], list[dict[str, Any]]]:  # The record that the model reads, and the metadata of each question`
+
+<a id="tut-13.9-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -1669,6 +1707,8 @@ the formatter are happy, and only the docs check sees the lost docment. `just ch
 - <a id="tut-13.10-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the return type of `to_record`, over three lines. 3 lines added, 1 removed. It comes from `just fmt`. [The file](https://github.com/rahuldave/babykev/blob/54535b100f054ffd8b787c50cac1d3a828770ec9/src/babykev/api.py).
   - look at `]:  # The record that the model reads, and the metadata of each question`
 
+<a id="tut-13.10-src-babykev-api.py-2ea65f-diff"></a>
+
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
 ```diff
@@ -1696,7 +1736,7 @@ the formatter are happy, and only the docs check sees the lost docment. `just ch
 The fix is a docment that fits on the line of the return type, with the type on one line again. The docment of
 before, `The record, and the metadata of each question`, fits, at 98 characters.
 
-[± See the change to `src/babykev/api.py`](#tut-13.11-src-babykev-api.py-2ea65f)
+[± See the change to `src/babykev/api.py`](#tut-13.11-src-babykev-api.py-2ea65f-diff)
 
 In `src/babykev/api.py`, line 98 is `) -> tuple[dict[str, Any], list[dict[str, Any]]]:  # The record, and the metadata of
 each question`, as it was before the mistake.
@@ -1712,6 +1752,8 @@ just docs check
 
 - <a id="tut-13.11-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the return type on one line, with its short docment. 1 line added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/861142a50356963bb5e371fe8226ba73b87eef93/src/babykev/api.py).
   - look at `) -> tuple[dict[str, Any], list[dict[str, Any]]]:  # The record, and the metadata of each question`
+
+<a id="tut-13.11-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -1740,7 +1782,7 @@ just docs check
 `just check` passed with a docment lost. As a line of `check`, `just docs check` runs before each `git commit`,
 through the hook. It goes after the tests, and before the config files.
 
-[± See the change to `justfile`](#tut-13.12-justfile-424f0b)
+[± See the change to `justfile`](#tut-13.12-justfile-424f0b-diff)
 
 In the `justfile`, `just docs check` is line 76, between `just test -q` and `just lint-config`. The comment on line 66
 names the docs.
@@ -1758,6 +1800,8 @@ after the tests, and ends with exit code 0. A function, a parameter or a field w
 
 - <a id="tut-13.12-justfile-424f0b"></a>`justfile`: the docs check, in the gate. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/005b87bdfa2e70c6ceca52dc07197c69702f00be/justfile).
   - look at `    just docs check`
+
+<a id="tut-13.12-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -1817,7 +1861,7 @@ to. A build makes all three again from the code, so they do not belong in git. `
 does not track, and three lines at its end name these, before the first build. A `/` at the start of a line means
 the root of the repository, so `/docs/api/` is only that folder.
 
-[± See the change to `.gitignore`](#tut-14.1-.gitignore-a5cc29)
+[± See the change to `.gitignore`](#tut-14.1-.gitignore-a5cc29-diff)
 
 At the end of `.gitignore`, the comment is on line 222, and `/docs/_site/`, `/docs/api/` and `/docs/_symbols.json` on
 lines 223 to 225.
@@ -1832,6 +1876,8 @@ tail -n 4 .gitignore
 
 - <a id="tut-14.1-.gitignore-a5cc29"></a>`.gitignore`: the files that a build of the docs makes. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/3593f61e4e221b04f00f360fe96e6dc4243b02dd/.gitignore).
   - look at `/docs/_site/`
+
+<a id="tut-14.1-.gitignore-a5cc29-diff"></a>
 
 <details><summary>The diff of <code>.gitignore</code></summary>
 
@@ -1859,7 +1905,7 @@ tail -n 4 .gitignore
 the HTML of every page into `docs/_site`. With no words, the recipe `docs` now runs it. With words, it runs
 `smalldocs api` as before. So the body of the recipe is a script of `sh`.
 
-[± See the change to `justfile`](#tut-14.2-justfile-424f0b)
+[± See the change to `justfile`](#tut-14.2-justfile-424f0b-diff)
 
 In the `justfile`, the recipe `docs` starts at line 79, with its comment. Line 85,
 `if [ "$#" -eq 0 ]; then exec uv run smalldocs render docs; fi`, is the case with no words.
@@ -1882,6 +1928,8 @@ of `.gitignore` from the move before keep them out of git.
 
 - <a id="tut-14.2-justfile-424f0b"></a>`justfile`: with no words, `docs` builds the site. 5 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/64de40516df5aa215bfac1c0198e898ac0960061/justfile).
   - look at `    if [ "$#" -eq 0 ]; then exec uv run smalldocs render docs; fi`
+
+<a id="tut-14.2-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -1915,7 +1963,7 @@ section `api`, which stays as it is. They are the type of the project, its outpu
 theme and a table of contents on each page. With them, a name in backticks, such as `Score`, becomes a link to its
 entry in the reference.
 
-[± See the change to `docs/_smalldocs.yml`](#tut-14.3-docs-_smalldocs.yml-4b0b48)
+[± See the change to `docs/_smalldocs.yml`](#tut-14.3-docs-_smalldocs.yml-4b0b48-diff)
 
 In `docs/_smalldocs.yml`, the sidebar is on lines 8 to 12. It lists the front page, `index.qmd`, then the reference
 pages, `contents: api/*`, under the title Reference. The section `api` is on lines 18 to 21, as before.
@@ -1933,6 +1981,8 @@ reference of `api.py` opens in the browser, with the sidebar on the left.
 
 - <a id="tut-14.3-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the settings of the site, above the reference. 17 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/aee2a9faf7fe05e5d8780c8cf42e82c3d4145330/docs/_smalldocs.yml).
   - look at `        contents: api/*  # the reference pages, which each build makes from the code`
+
+<a id="tut-14.3-docs-_smalldocs.yml-4b0b48-diff"></a>
 
 <details><summary>The diff of <code>docs/_smalldocs.yml</code></summary>
 
@@ -1973,7 +2023,7 @@ The front page, `docs/index.qmd`, says what babykev is, what a request holds, an
 file is Markdown, with a header between two lines `---` that gives the title of the page. The file is new, and comes
 whole, as a patch.
 
-[± See the new file `docs/index.qmd`](#tut-14.4-docs-index.qmd-d6d880)
+[± See the new file `docs/index.qmd`](#tut-14.4-docs-index.qmd-d6d880-diff)
 
 The new file `docs/index.qmd` has 29 lines. Lines 1 to 3 are the header, with `title: babykev`. The list of modules is
 on lines 17 to 19.
@@ -1992,6 +2042,8 @@ the reference of `api.py`, seven of them. `SystemOneRequest`, `Noul`, `Choice` a
 
 - <a id="tut-14.4-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the front page, written by hand. New, 29 lines. [The file](https://github.com/rahuldave/babykev/blob/e849099979801bc865c5a466d2b098b5ac9aa2e6/docs/index.qmd).
   - look at ``A name in backticks, such as `to_answers`, links to its entry.``
+
+<a id="tut-14.4-docs-index.qmd-d6d880-diff"></a>
 
 <details><summary>The diff of <code>docs/index.qmd</code></summary>
 
@@ -2039,7 +2091,7 @@ the reference of `api.py`, seven of them. `SystemOneRequest`, `Noul`, `Choice` a
 The table of the README says where each part of the project is, and it does not list the docs. `docs/` gets a row,
 under the tests.
 
-[± See the change to `README.md`](#tut-14.5-README.md-8ec9a0)
+[± See the change to `README.md`](#tut-14.5-README.md-8ec9a0-diff)
 
 In `README.md`, the row of `docs/` is on line 74.
 
@@ -2053,6 +2105,8 @@ grep -n 'docs/' README.md
 
 - <a id="tut-14.5-README.md-8ec9a0"></a>`README.md`: a row for `docs/`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/e1efb48492d7223fd0442906d2e55a83e0db481e/README.md).
   - look at ``| `docs/` | The docs site. `just docs` builds it into `docs/_site`, with the reference made from the code |``
+
+<a id="tut-14.5-README.md-8ec9a0-diff"></a>
 
 <details><summary>The diff of <code>README.md</code></summary>
 
@@ -2113,7 +2167,7 @@ and the second draws the mask as a grid. smalldocs runs no code, so a page holds
 The page explains packing, the mask, the positions that restart, and pointing, and then what trains. A name in
 backticks, such as `encode()`, links to its entry in the reference, as on the front page.
 
-[± See the new file `docs/guide/model.qmd`](#tut-24.1-docs-guide-model.qmd-3d8904)
+[± See the new file `docs/guide/model.qmd`](#tut-24.1-docs-guide-model.qmd-3d8904-diff)
 
 The new file `docs/guide/model.qmd` has five parts. Packing starts on line 9, the mask on line 33, the positions on
 line 43, pointing on line 48, and what trains on line 57.
@@ -2130,6 +2184,8 @@ the eight links of the page into the reference of `model.py`, `encode` twice. Th
 
 - <a id="tut-24.1-docs-guide-model.qmd-3d8904"></a>`docs/guide/model.qmd`: the four ideas of the model. New, 61 lines. [The file](https://github.com/rahuldave/babykev/blob/b23fa492cea947fd91a783a6ef8c19ee1d4f38eb/docs/guide/model.qmd).
   - look at `## Packing`
+
+<a id="tut-24.1-docs-guide-model.qmd-3d8904-diff"></a>
 
 <details><summary>The diff of <code>docs/guide/model.qmd</code></summary>
 
@@ -2209,7 +2265,7 @@ the eight links of the page into the reference of `model.py`, `encode` twice. Th
 The page draws the mask of the small request of `test_mask.py`, then the grid of a plain causal mask for the same
 request. The first grid is the picture of the test, so `just test` keeps it true.
 
-[± See the new file `docs/guide/mask.qmd`](#tut-24.2-docs-guide-mask.qmd-5cd81a)
+[± See the new file `docs/guide/mask.qmd`](#tut-24.2-docs-guide-mask.qmd-5cd81a-diff)
 
 The new file `docs/guide/mask.qmd` has the grid of the mask on lines 13 to 21. The grid of a plain causal mask is on
 lines 33 to 41.
@@ -2224,6 +2280,8 @@ just docs
 
 - <a id="tut-24.2-docs-guide-mask.qmd-5cd81a"></a>`docs/guide/mask.qmd`: the mask, as a grid. New, 52 lines. [The file](https://github.com/rahuldave/babykev/blob/872a008d4a67bfd58f67b5db28198f4293cc34f5/docs/guide/mask.qmd).
   - look at `## A plain causal mask`
+
+<a id="tut-24.2-docs-guide-mask.qmd-5cd81a-diff"></a>
 
 <details><summary>The diff of <code>docs/guide/mask.qmd</code></summary>
 
@@ -2295,7 +2353,7 @@ The sidebar of the site gets a section, Guide, between the front page and the re
 by one, so that the model comes before the mask. A pattern such as `guide/*` would list them in the order of their
 names.
 
-[± See the change to `docs/_smalldocs.yml`](#tut-24.3-docs-_smalldocs.yml-4b0b48)
+[± See the change to `docs/_smalldocs.yml`](#tut-24.3-docs-_smalldocs.yml-4b0b48-diff)
 
 In `docs/_smalldocs.yml`, the section `Guide` is on lines 11 to 14.
 
@@ -2311,6 +2369,8 @@ grep -o 'href="guide/[^"]*"' docs/_site/index.html
 
 - <a id="tut-24.3-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the section `Guide`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/f19e99afaa9f11778658710d44ef1785dbc40ed0/docs/_smalldocs.yml).
   - look at `      - section: Guide`
+
+<a id="tut-24.3-docs-_smalldocs.yml-4b0b48-diff"></a>
 
 <details><summary>The diff of <code>docs/_smalldocs.yml</code></summary>
 
@@ -2338,7 +2398,7 @@ grep -o 'href="guide/[^"]*"' docs/_site/index.html
 
 A paragraph of the front page links to the two pages.
 
-[± See the change to `docs/index.qmd`](#tut-24.4-docs-index.qmd-d6d880)
+[± See the change to `docs/index.qmd`](#tut-24.4-docs-index.qmd-d6d880-diff)
 
 In `docs/index.qmd`, the new paragraph is on lines 25 and 26.
 
@@ -2354,6 +2414,8 @@ paragraph.
 
 - <a id="tut-24.4-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the links to the guide. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/62f48f0b9de6c97825153cd50a7f131a5c07b0c7/docs/index.qmd).
   - look at ``The pages under Guide explain the model. [The model](guide/model.qmd) gives the four ideas of `model.py`, and``
+
+<a id="tut-24.4-docs-index.qmd-d6d880-diff"></a>
 
 <details><summary>The diff of <code>docs/index.qmd</code></summary>
 
@@ -2380,7 +2442,7 @@ paragraph.
 
 The row of `docs/` in the table of the README names the two pages.
 
-[± See the change to `README.md`](#tut-24.5-README.md-8ec9a0)
+[± See the change to `README.md`](#tut-24.5-README.md-8ec9a0-diff)
 
 In `README.md`, the row of `docs/` is on line 91.
 
@@ -2395,6 +2457,8 @@ just check
 
 - <a id="tut-24.5-README.md-8ec9a0"></a>`README.md`: the guide, in the row of `docs/`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/41d24729682119b9bbb828187c5e9684a2921308/README.md).
   - look at ``The two pages of `docs/guide/` explain the model and its mask |``
+
+<a id="tut-24.5-README.md-8ec9a0-diff"></a>
 
 <details><summary>The diff of <code>README.md</code></summary>
 
@@ -2446,7 +2510,7 @@ The workflow `docs.yaml` has two jobs. The job `build` installs the package and 
 It runs `smalldocs render docs`, the command behind `just docs`, and gives the folder `docs/_site` to Pages. The job
 `deploy` publishes it. The workflow runs after a push to `main`, and a person can also run it from the tab Actions.
 
-[± See the new file `.github/workflows/docs.yaml`](#tut-26.5-.github-workflows-docs.yaml-ce7835)
+[± See the new file `.github/workflows/docs.yaml`](#tut-26.5-.github-workflows-docs.yaml-ce7835-diff)
 
 In the new file `.github/workflows/docs.yaml`, `on` is on lines 6 to 9, and `permissions` on lines 11 to 14. Line 26
 renders the site with the group `docs` alone.
@@ -2468,6 +2532,8 @@ workflows on, on the tab **Actions**. Pages publishes from a workflow when **Set
 
 - <a id="tut-26.5-.github-workflows-docs.yaml-ce7835"></a>`.github/workflows/docs.yaml`: the docs site, built with the group `docs` alone, then published. New, 40 lines. [The file](https://github.com/rahuldave/babykev/blob/606da22657c965404206b25f8fbcccffbe3f2756/.github/workflows/docs.yaml).
   - look at `      - run: uv run --locked --no-default-groups --group docs smalldocs render docs`
+
+<a id="tut-26.5-.github-workflows-docs.yaml-ce7835-diff"></a>
 
 <details><summary>The diff of <code>.github/workflows/docs.yaml</code></summary>
 
@@ -2526,7 +2592,7 @@ workflows on, on the tab **Actions**. Pages publishes from a workflow when **Set
 The README gets a section on GitHub, with the two settings that a fork needs. The table gets a row for
 `.github/workflows/`.
 
-[± See the change to `README.md`](#tut-26.6-README.md-8ec9a0)
+[± See the change to `README.md`](#tut-26.6-README.md-8ec9a0-diff)
 
 In `README.md`, the section is on lines 100 to 112, and the row on line 135.
 
@@ -2543,6 +2609,8 @@ This tutorial ends here. The [whole tutorial](https://rahuldave.com/babykev-walk
 
 - <a id="tut-26.6-README.md-8ec9a0"></a>`README.md`: the section on GitHub, and the row of the workflows. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/88854e32ebcb4647672742cc4ef709eefc5fde0c/README.md).
   - look at `## On GitHub`
+
+<a id="tut-26.6-README.md-8ec9a0-diff"></a>
 
 <details><summary>The diff of <code>README.md</code></summary>
 

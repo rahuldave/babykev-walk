@@ -71,6 +71,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-02 --staged --
   - look at `"pydantic>=2.14.1",`
 - <a id="tut-03.1-uv.lock-8356d8"></a>`uv.lock`: pydantic and the four packages it needs, each with its exact version. 136 lines added. It comes from `uv add pydantic`. [The file](https://github.com/rahuldave/babykev/blob/96502df0a92f6f7090d6f624cda901a271dac9a7/uv.lock){.btn .btn-sm .btn-secondary}
 
+<a id="tut-03.1-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff that <code>uv add pydantic</code> makes in <code>pyproject.toml</code></summary>
 
 ```diff
@@ -135,6 +137,8 @@ git restore --source 96502df0a92f --staged -- :/ && git restore --source e8e2e72
 
 - <a id="tut-03.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a request has a state and its questions by name. Each question is a `Noul`, a `Choice` or a `Score`, and its field `type` says which. New, 111 lines. [The file](https://github.com/rahuldave/babykev/blob/e8e2e72adad9364a58be21dadf6d757e84436b97/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `class SystemOneRequest(BaseModel):`
+
+<a id="tut-03.2-src-babykev-api.py-2ea65f-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/api.py</code></summary>
 

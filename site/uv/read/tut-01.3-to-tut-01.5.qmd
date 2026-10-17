@@ -25,7 +25,7 @@ it, and who wrote it. None of them is a dependency, so the lockfile stays as it 
 `pyproject.toml` still has the words of uv. Its description is a placeholder, `Add your description here`. The patch
 puts in what babykev is.
 
-[± See the change to `pyproject.toml`](#tut-01.3-pyproject.toml-5d07e7){.btn .btn-sm .btn-secondary}
+[± See the change to `pyproject.toml`](#tut-01.3-pyproject.toml-5d07e7-diff){.btn .btn-sm .btn-secondary}
 
 In `pyproject.toml`, the line `description` now says what babykev is.
 
@@ -39,6 +39,8 @@ grep -n description pyproject.toml
 
 - <a id="tut-01.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: the description. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/0497c0dc9d3772df47e79361aa4165e5de8e227d/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `description = "A small decision model: one state, typed questions, a probability for every answer"`
+
+<a id="tut-01.3-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -63,7 +65,7 @@ grep -n description pyproject.toml
 A package says under which licence others may use it. babykev's licence is kev's, the Apache License 2.0.
 `license` names it, and `license-files` names the two files that a package of babykev carries with it.
 
-[± See the change to `pyproject.toml`](#tut-01.4-pyproject.toml-5d07e7){.btn .btn-sm .btn-secondary}
+[± See the change to `pyproject.toml`](#tut-01.4-pyproject.toml-5d07e7-diff){.btn .btn-sm .btn-secondary}
 
 In `pyproject.toml`, `license` and `license-files` now stand under `readme`.
 
@@ -78,6 +80,8 @@ them at the end of `[project]`, so the numbers can differ.
 
 - <a id="tut-01.4-pyproject.toml-5d07e7"></a>`pyproject.toml`: the licence, and the files a package carries. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/414874463b887dedf65c5c74caeac8a064b0e876/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `license-files = ["LICENSE", "NOTICE"]`
+
+<a id="tut-01.4-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -101,7 +105,7 @@ them at the end of `[project]`, so the numbers can differ.
 
 A package names who wrote it. `authors` names Rahul Dave.
 
-[± See the change to `pyproject.toml`](#tut-01.5-pyproject.toml-5d07e7){.btn .btn-sm .btn-secondary}
+[± See the change to `pyproject.toml`](#tut-01.5-pyproject.toml-5d07e7-diff){.btn .btn-sm .btn-secondary}
 
 In `pyproject.toml`, `authors` now stands under `license-files`.
 
@@ -116,6 +120,8 @@ exit code 0. The words of the three moves change no dependency, so `uv.lock` sta
 
 - <a id="tut-01.5-pyproject.toml-5d07e7"></a>`pyproject.toml`: the author. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/7f38877e597f5404208fdca2eabb176077d95a8e/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `authors = [{ name = "Rahul Dave" }]`
+
+<a id="tut-01.5-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 

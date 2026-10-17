@@ -221,6 +221,8 @@ git restore --source e32c7ba9f798 --staged -- :/ && git restore --source e14dffa
 - <a id="tut-01.9-justfile-424f0b"></a>`justfile`: the recipe `setup` and its line. New, 10 lines. [The file](https://github.com/rahuldave/babykev/blob/e14dffa877a2d24a53d67d8dd3d54b17204885b1/justfile).
   - look at `setup:`
 
+<a id="tut-01.9-justfile-424f0b-diff"></a>
+
 <details open><summary>The patch to <code>justfile</code></summary>
 
 ```diff
@@ -289,6 +291,8 @@ git restore --source e14dffa877a2 --staged -- :/ && git restore --source a55c903
 
 - <a id="tut-01.10-justfile-424f0b"></a>`justfile`: the recipe `help`. 12 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a55c90355687e4bf94dfad2277262548ba4ea682/justfile).
   - look at `help *verb:`
+
+<a id="tut-01.10-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -362,6 +366,8 @@ git restore --source a55c90355687 --staged -- :/ && git restore --source 3016e7e
 - <a id="tut-01.11-justfile-424f0b"></a>`justfile`: `setup` answers `help`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/3016e7ee53854d719456c12a48c8c8e620614bde/justfile).
   - look at `@{{ if args == "help" { "just help setup" } else { "uv sync --locked" } }}`
 
+<a id="tut-01.11-justfile-424f0b-diff"></a>
+
 <details open><summary>The patch to <code>justfile</code></summary>
 
 ```diff
@@ -422,6 +428,8 @@ git restore --source 3016e7ee5385 --staged -- :/ && git restore --source 9218f21
 
 - <a id="tut-01.12-justfile-424f0b"></a>`justfile`: the variable `program`, and the branch of `help` that runs the program's help. 6 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/9218f21a784277593cf6930e10389b04e41bf9d0/justfile).
   - look at `program := "babykev"`
+
+<a id="tut-01.12-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -525,6 +533,8 @@ git restore --source ad616a5cc1fc --staged -- :/ && git restore --source 966956d
   - look at `"pytest>=9.1.1",`
 - <a id="tut-02.2-uv.lock-8356d8"></a>`uv.lock`: pytest and the five packages it needs. 71 lines added. It comes from `uv add --group test pytest`. [The file](https://github.com/rahuldave/babykev/blob/966956d738b58505e23586af60f05cd5daceb12f/uv.lock).
 
+<a id="tut-02.2-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff that <code>uv add --group test pytest</code> makes in <code>pyproject.toml</code></summary>
 
 ```diff
@@ -587,6 +597,8 @@ git restore --source 966956d738b5 --staged -- :/ && git restore --source b084070
 
 - <a id="tut-02.3-justfile-424f0b"></a>`justfile`: the recipe `test`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/b0840709e371a548d4b922c57c679ba040dd2c1a/justfile).
   - look at `test *args:`
+
+<a id="tut-02.3-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -688,6 +700,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-06 --staged --
 - <a id="tut-07.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the group `lint`, with ruff. 3 lines added. It comes from `uv add --group lint ruff`. [The file](https://github.com/rahuldave/babykev/blob/5085d2a6ae47a58d6259dfa06679bb2a9be692e1/pyproject.toml).
   - look at `"ruff>=0.17.1",`
 - <a id="tut-07.1-uv.lock-8356d8"></a>`uv.lock`: ruff, at its exact version. 29 lines added. It comes from `uv add --group lint ruff`. [The file](https://github.com/rahuldave/babykev/blob/5085d2a6ae47a58d6259dfa06679bb2a9be692e1/uv.lock).
+
+<a id="tut-07.1-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff that <code>uv add --group lint ruff</code> makes in <code>pyproject.toml</code></summary>
 
@@ -791,6 +805,8 @@ git restore --source 5085d2a6ae47 --staged -- :/ && git restore --source 58d9bdd
 - <a id="tut-07.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the table `[tool.ruff]`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/58d9bddfeea6344a159569664ac9f9ff489173a6/pyproject.toml).
   - look at `line-length = 100`
 
+<a id="tut-07.2-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -891,6 +907,8 @@ git restore --source 58d9bddfeea6 --staged -- :/ && git restore --source ff4c654
 - <a id="tut-07.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: the five settings of the formatter. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/ff4c6545868df1f51d5aa04277cd16b868550f14/pyproject.toml).
   - look at `quote-style = "double"            # "text", not 'text'`
 
+<a id="tut-07.3-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -957,6 +975,8 @@ git restore --source ff4c6545868d --staged -- :/ && git restore --source 03e6443
 - <a id="tut-07.4-justfile-424f0b"></a>`justfile`: the recipe `fmt`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/03e6443db4c837a51df4786117a33b1d20040c88/justfile).
   - look at `fmt *args:`
 
+<a id="tut-07.4-justfile-424f0b-diff"></a>
+
 <details open><summary>The patch to <code>justfile</code></summary>
 
 ```diff
@@ -1016,6 +1036,8 @@ git fetch --quiet --tags --force origin; git restore --source 03e6443db4c8 --sta
 
 - <a id="tut-07.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the same code, in the style of the formatter. 35 lines added, 8 removed. It comes from `just fmt`. [The file](https://github.com/rahuldave/babykev/blob/84b3ac0ce858d907d8d59ffdc9c9096ab8cb2ac4/src/babykev/api.py).
   - look at `        if not 1 <= len(self.criteria) <= MAX_OPTIONS:`
+
+<a id="tut-07.5-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff that <code>just fmt</code> makes in <code>src/babykev/api.py</code></summary>
 
@@ -1201,6 +1223,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-07 --staged --
 - <a id="tut-08.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: a family of rules on each line. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/1a067ec6d90256e2f0142390db307c537909c047/pyproject.toml).
   - look at `    "B",   # bugbear: code that is likely a bug, such as a zip that drops items silently`
 
+<a id="tut-08.1-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -1308,6 +1332,8 @@ git restore --source 1a067ec6d902 --staged -- :/ && git restore --source a6325da
 - <a id="tut-08.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the tests may use `assert`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/a6325da466f16c6379613b62554e1e4cf2144e7e/pyproject.toml).
   - look at `"tests/**" = ["S101"]`
 
+<a id="tut-08.2-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -1377,6 +1403,8 @@ git restore --source a6325da466f1 --staged -- :/ && git restore --source 58d6ece
 
 - <a id="tut-08.3-justfile-424f0b"></a>`justfile`: the recipe `lint`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/58d6ece95cf464e01996ad8dbed1d98e92bcc502/justfile).
   - look at `lint *args:`
+
+<a id="tut-08.3-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -1461,6 +1489,8 @@ git fetch --quiet --tags --force origin; git restore --source ca9cfc3b70b7 --sta
 
 - <a id="tut-08.8-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the imports, sorted. 2 lines added, 1 removed. It comes from `just lint --fix`. [The file](https://github.com/rahuldave/babykev/blob/7cdb1ba696a32050cba1c335892fccb68bb4fd24/src/babykev/api.py).
   - look at `from typing import Any, Literal`
+
+<a id="tut-08.8-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff that <code>just lint --fix</code> makes in <code>src/babykev/api.py</code></summary>
 
@@ -1571,6 +1601,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-10 --staged --
 - <a id="tut-11.1-justfile-424f0b"></a>`justfile`: the recipe `check`, with three checks. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/dbfc285a2adeb4900fc68c863c4850b84004a04e/justfile).
   - look at `    just test -q`
 
+<a id="tut-11.1-justfile-424f0b-diff"></a>
+
 <details open><summary>The patch to <code>justfile</code></summary>
 
 ```diff
@@ -1636,6 +1668,8 @@ git restore --source dbfc285a2ade --staged -- :/ && git restore --source 56dee30
   - look at `"pre-commit>=4.7.0",`
 - <a id="tut-11.2-uv.lock-8356d8"></a>`uv.lock`: the exact version of pre-commit, and of the packages that it needs. 139 lines added, 1 removed. It comes from `uv add --group lint pre-commit`. [The file](https://github.com/rahuldave/babykev/blob/56dee300cda2e0f34bfb18be026897e83bf6981a/uv.lock).
 
+<a id="tut-11.2-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff that <code>uv add --group lint pre-commit</code> makes in <code>pyproject.toml</code></summary>
 
 ```diff
@@ -1695,6 +1729,8 @@ git restore --source 56dee300cda2 --staged -- :/ && git restore --source 0c645eb
 
 - <a id="tut-11.3-.pre-commit-config.yaml-e7d14d"></a>`.pre-commit-config.yaml`: one hook, which runs `just check`. New, 14 lines. [The file](https://github.com/rahuldave/babykev/blob/0c645eb0a770a34bf7fe3f055dfc9ab4c19aa6fe/.pre-commit-config.yaml).
   - look at `        entry: just check`
+
+<a id="tut-11.3-.pre-commit-config.yaml-e7d14d-diff"></a>
 
 <details open><summary>The patch to <code>.pre-commit-config.yaml</code></summary>
 
@@ -1767,6 +1803,8 @@ git restore --source 0c645eb0a770 --staged -- :/ && git restore --source fbe4cca
 - <a id="tut-11.4-justfile-424f0b"></a>`justfile`: the recipe `hook`. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/fbe4cca80366ec49c7fa9c23a11af8b4e1a2bde3/justfile).
   - look at `hook *args:`
 
+<a id="tut-11.4-justfile-424f0b-diff"></a>
+
 <details open><summary>The patch to <code>justfile</code></summary>
 
 ```diff
@@ -1829,6 +1867,8 @@ git restore --source fbe4cca80366 --staged -- :/ && git restore --source 352e33d
 - <a id="tut-11.5-.pre-commit-config.yaml-e7d14d"></a>`.pre-commit-config.yaml`: the hook of large files. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/352e33d87006028ec33ed46ba0e53d48255b3d66/.pre-commit-config.yaml).
   - look at `        args: [--maxkb=1000]`
 
+<a id="tut-11.5-.pre-commit-config.yaml-e7d14d-diff"></a>
+
 <details open><summary>The patch to <code>.pre-commit-config.yaml</code></summary>
 
 ```diff
@@ -1889,6 +1929,8 @@ git restore --source 352e33d87006 --staged -- :/ && git restore --source 64d0f4f
 - <a id="tut-11.6-.pre-commit-config.yaml-e7d14d"></a>`.pre-commit-config.yaml`: the hook of merge conflicts. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/64d0f4f781da1a8520315f899c4231645623280c/.pre-commit-config.yaml).
   - look at `      - id: check-merge-conflict`
 
+<a id="tut-11.6-.pre-commit-config.yaml-e7d14d-diff"></a>
+
 <details open><summary>The patch to <code>.pre-commit-config.yaml</code></summary>
 
 ```diff
@@ -1945,6 +1987,8 @@ git restore --source 64d0f4f781da --staged -- :/ && git restore --source 2d080c9
 
 - <a id="tut-11.7-.pre-commit-config.yaml-e7d14d"></a>`.pre-commit-config.yaml`: the hook that refuses a `.env` file. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/2d080c9e228f2f9959f4eeed801726ea402e66a3/.pre-commit-config.yaml).
   - look at `        language: fail`
+
+<a id="tut-11.7-.pre-commit-config.yaml-e7d14d-diff"></a>
 
 <details open><summary>The patch to <code>.pre-commit-config.yaml</code></summary>
 
@@ -2010,6 +2054,8 @@ git restore --source 2d080c9e228f --staged -- :/ && git restore --source f4fabd3
 - <a id="tut-11.8-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: an import that nothing uses, on purpose. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/f4fabd3272713cb5ac1c26021e4c23fa33ab15e6/src/babykev/cli.py).
   - look at `import os`
 
+<a id="tut-11.8-src-babykev-cli.py-a9e184-diff"></a>
+
 <details open><summary>The patch to <code>src/babykev/cli.py</code></summary>
 
 ```diff
@@ -2062,6 +2108,8 @@ git restore --source f4fabd327271 --staged -- :/ && git restore --source 054c40b
 
 - <a id="tut-11.9-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: the import of `os` goes. 0 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/054c40b6cc1839f8b35dfab81f9f2ae7c9f1aaf0/src/babykev/cli.py).
   - look at `import os`
+
+<a id="tut-11.9-src-babykev-cli.py-a9e184-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/cli.py</code></summary>
 
@@ -2117,6 +2165,8 @@ git fetch --quiet --tags --force origin; git restore --source 054c40b6cc18 --sta
 
 - <a id="tut-11.10-README.md-8ec9a0"></a>`README.md`: a paragraph on `just hook`, and a row of the table. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/cab87c139ebd3b72771ed6db08b02dd7646c7d02/README.md).
   - look at ``Run `just hook` once in each clone. It installs a git hook, which runs `just check` before each commit.``
+
+<a id="tut-11.10-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 
@@ -2207,6 +2257,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-11 --staged --
   - look at `"validate-pyproject>=0.26",`
 - <a id="tut-12.1-uv.lock-8356d8"></a>`uv.lock`: the exact version of validate-pyproject, and of `fastjsonschema`. 23 lines added. It comes from `uv add --group lint validate-pyproject`. [The file](https://github.com/rahuldave/babykev/blob/7506fb7a39f80397361a8e97ceb816f4b6931cd1/uv.lock).
 
+<a id="tut-12.1-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff that <code>uv add --group lint validate-pyproject</code> makes in <code>pyproject.toml</code></summary>
 
 ```diff
@@ -2268,6 +2320,8 @@ git restore --source 7506fb7a39f8 --staged -- :/ && git restore --source 64b71c6
 
 - <a id="tut-12.2-justfile-424f0b"></a>`justfile`: the recipe `lint-config`, with its first check. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/64b71c6c0bdb792769aeef413b2ccead2be00ac4/justfile).
   - look at `lint-config *args:`
+
+<a id="tut-12.2-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -2336,6 +2390,8 @@ git restore --source 64b71c6c0bdb --staged -- :/ && git restore --source 4308e46
 - <a id="tut-12.3-justfile-424f0b"></a>`justfile`: the check of the lockfile. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/4308e46ddc44bbe18fb2ec528e4573e956219a16/justfile).
   - look at `    uv lock --check`
 
+<a id="tut-12.3-justfile-424f0b-diff"></a>
+
 <details open><summary>The patch to <code>justfile</code></summary>
 
 ```diff
@@ -2403,6 +2459,8 @@ git restore --source 4308e46ddc44 --staged -- :/ && git restore --source 9f70971
 - <a id="tut-12.4-justfile-424f0b"></a>`justfile`: one line, which exports `UV_LOCKED` to every recipe. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/9f70971667e9a2fc6cbc1767fe58061ad9f26e22/justfile).
   - look at `export UV_LOCKED := "1"`
 
+<a id="tut-12.4-justfile-424f0b-diff"></a>
+
 <details open><summary>The patch to <code>justfile</code></summary>
 
 ```diff
@@ -2462,6 +2520,8 @@ git restore --source 9f70971667e9 --staged -- :/ && git restore --source 284e4b7
 
 - <a id="tut-12.5-justfile-424f0b"></a>`justfile`: the check of the `justfile`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/284e4b7e241387e68463cb96fde80f81603f99c3/justfile).
   - look at `    just --fmt --check --unstable`
+
+<a id="tut-12.5-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -2528,6 +2588,8 @@ git restore --source 284e4b7e2413 --staged -- :/ && git restore --source 304e0a2
   - look at `"yamllint>=1.38.0",`
 - <a id="tut-12.6-uv.lock-8356d8"></a>`uv.lock`: the exact version of yamllint, and of `pathspec`. 24 lines added. It comes from `uv add --group lint yamllint`. [The file](https://github.com/rahuldave/babykev/blob/304e0a2564ddf8d95a9b3964d6b5b8536032d79d/uv.lock).
 
+<a id="tut-12.6-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff that <code>uv add --group lint yamllint</code> makes in <code>pyproject.toml</code></summary>
 
 ```diff
@@ -2593,6 +2655,8 @@ git restore --source 304e0a2564dd --staged -- :/ && git restore --source 8786cb9
 
 - <a id="tut-12.7-justfile-424f0b"></a>`justfile`: yamllint, the fourth check. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/8786cb9f3dd685412d3c315e4b25d7023dc0ad15/justfile).
   - look at `    uv run yamllint --strict .`
+
+<a id="tut-12.7-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -2661,6 +2725,8 @@ git restore --source 8786cb9f3dd6 --staged -- :/ && git restore --source aee8ff7
 - <a id="tut-12.8-.yamllint-dfe50a"></a>`.yamllint`: the settings of yamllint. New, 3 lines. [The file](https://github.com/rahuldave/babykev/blob/aee8ff779a7d2889f24a61ab979558405a9c3007/.yamllint).
   - look at `ignore-from-file: .gitignore  # the files that git ignores, such as everything in .venv`
 
+<a id="tut-12.8-.yamllint-dfe50a-diff"></a>
+
 <details open><summary>The patch to <code>.yamllint</code></summary>
 
 ```diff
@@ -2712,6 +2778,8 @@ git restore --source aee8ff779a7d --staged -- :/ && git restore --source 44f6865
 
 - <a id="tut-12.9-.yamllint-dfe50a"></a>`.yamllint`: the rule `document-start`, off. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/44f6865153ebeff1c321b4da65ace21285161796/.yamllint).
   - look at `  document-start: disable  # a file need not start with a line of three dashes`
+
+<a id="tut-12.9-.yamllint-dfe50a-diff"></a>
 
 <details open><summary>The patch to <code>.yamllint</code></summary>
 
@@ -2767,6 +2835,8 @@ git restore --source 44f6865153eb --staged -- :/ && git restore --source 063c1a9
 - <a id="tut-12.10-.yamllint-dfe50a"></a>`.yamllint`: lines of up to 100 characters. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/063c1a9ec17bea160da66c14711bb87eb1f54ddb/.yamllint).
   - look at `  line-length: {max: 100}  # as long as a line of the Python code`
 
+<a id="tut-12.10-.yamllint-dfe50a-diff"></a>
+
 <details open><summary>The patch to <code>.yamllint</code></summary>
 
 ```diff
@@ -2821,6 +2891,8 @@ git restore --source 063c1a9ec17b --staged -- :/ && git restore --source a7699bd
 
 - <a id="tut-12.11-justfile-424f0b"></a>`justfile`: `lint-config`, the last check of the gate. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a7699bdb248aa3ff3816137433e5d4482424f3ed/justfile).
   - look at `    just lint-config`
+
+<a id="tut-12.11-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -2881,6 +2953,8 @@ git fetch --quiet --tags --force origin; git restore --source a7699bdb248a --sta
 
 - <a id="tut-12.12-README.md-8ec9a0"></a>`README.md`: a row for `.yamllint`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac/README.md).
   - look at ``| `.yamllint` | The settings of yamllint, which `just lint-config` runs on every YAML file |``
+
+<a id="tut-12.12-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 
@@ -2959,6 +3033,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-12 --staged --
   - look at `"smalldocs>=0.1.5",`
 - <a id="tut-13.1-uv.lock-8356d8"></a>`uv.lock`: the exact version of smalldocs, and of the packages that it needs. 62 lines added. It comes from `uv add --group docs smalldocs`. [The file](https://github.com/rahuldave/babykev/blob/609d58ce5f8c0fb8e7b60548c8ee097766446ff5/uv.lock).
 
+<a id="tut-13.1-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff that <code>uv add --group docs smalldocs</code> makes in <code>pyproject.toml</code></summary>
 
 ```diff
@@ -3036,6 +3112,8 @@ git restore --source 609d58ce5f8c --staged -- :/ && git restore --source 4444b1e
 - <a id="tut-13.2-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the package to document, and the tests to check. New, 5 lines. [The file](https://github.com/rahuldave/babykev/blob/4444b1e809427e92a5dc08a9e9fdbbddab7de830/docs/_smalldocs.yml).
   - look at `  packages: [babykev]`
 
+<a id="tut-13.2-docs-_smalldocs.yml-4b0b48-diff"></a>
+
 <details open><summary>The patch to <code>docs/_smalldocs.yml</code></summary>
 
 ```diff
@@ -3090,6 +3168,8 @@ git restore --source 4444b1e80942 --staged -- :/ && git restore --source a582ad3
 
 - <a id="tut-13.3-justfile-424f0b"></a>`justfile`: the recipe `docs`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/a582ad38e75bb188174b75a5e80405cebcd1259d/justfile).
   - look at `docs *args:`
+
+<a id="tut-13.3-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -3174,6 +3254,8 @@ git fetch --quiet --tags --force origin; git restore --source 861142a50356 --sta
 - <a id="tut-13.12-justfile-424f0b"></a>`justfile`: the docs check, in the gate. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/005b87bdfa2e70c6ceca52dc07197c69702f00be/justfile).
   - look at `    just docs check`
 
+<a id="tut-13.12-justfile-424f0b-diff"></a>
+
 <details open><summary>The patch to <code>justfile</code></summary>
 
 ```diff
@@ -3256,6 +3338,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-13 --staged --
 - <a id="tut-14.1-.gitignore-a5cc29"></a>`.gitignore`: the files that a build of the docs makes. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/3593f61e4e221b04f00f360fe96e6dc4243b02dd/.gitignore).
   - look at `/docs/_site/`
 
+<a id="tut-14.1-.gitignore-a5cc29-diff"></a>
+
 <details open><summary>The patch to <code>.gitignore</code></summary>
 
 ```diff
@@ -3305,7 +3389,7 @@ same line as the command.
 `git status --short --ignored docs` lists the three paths that the build made, each marked `!!`, ignored. The lines
 of `.gitignore` from the move before keep them out of git.
 
-Your copy also lists `?? docs/` first. git does not know the folder yet, because nothing in it is staged.
+Your copy can also list `docs/` itself, or `docs/_smalldocs.yml`, first. That depends on whether you staged the settings of the site.
 
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
@@ -3323,6 +3407,8 @@ git restore --source 3593f61e4e22 --staged -- :/ && git restore --source 64de405
 
 - <a id="tut-14.2-justfile-424f0b"></a>`justfile`: with no words, `docs` builds the site. 5 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/64de40516df5aa215bfac1c0198e898ac0960061/justfile).
   - look at `    if [ "$#" -eq 0 ]; then exec uv run smalldocs render docs; fi`
+
+<a id="tut-14.2-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -3418,6 +3504,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-16 --staged --
   - look at `"ty>=0.0.88",`
 - <a id="tut-17.1-uv.lock-8356d8"></a>`uv.lock`: the exact version of ty. 27 lines added. It comes from `uv add --group lint ty`. [The file](https://github.com/rahuldave/babykev/blob/aaa8fe6d7d1dfbca863fe23dc0d660dd10d36c2b/uv.lock).
 
+<a id="tut-17.1-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff that <code>uv add --group lint ty</code> makes in <code>pyproject.toml</code></summary>
 
 ```diff
@@ -3493,6 +3581,8 @@ git restore --source aaa8fe6d7d1d --staged -- :/ && git restore --source 7866ef7
 
 - <a id="tut-17.2-justfile-424f0b"></a>`justfile`: the recipe `types`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/7866ef7f88d528e2e7ee04d55c68e56ce461cff1/justfile).
   - look at `types *args:`
+
+<a id="tut-17.2-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -3573,6 +3663,8 @@ git restore --source 7866ef7f88d5 --staged -- :/ && git restore --source d5312a3
 - <a id="tut-17.3-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the rule off on the `forward` of `PointerHead`, with the reason. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/d5312a3ec2ed265ca4dbf5c7dd2492c686024696/src/babykev/model.py).
   - look at `    # tensors accepts fewer calls, so ty refuses it. torch only calls forward, and never sets it`
 
+<a id="tut-17.3-src-babykev-model.py-a86a0b-diff"></a>
+
 <details open><summary>The patch to <code>src/babykev/model.py</code></summary>
 
 ```diff
@@ -3631,6 +3723,8 @@ git restore --source d5312a3ec2ed --staged -- :/ && git restore --source f143491
 
 - <a id="tut-17.4-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the rule off on the `forward` of `DecisionModel`, with the reason. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/f14349138824af0b107742451814b1234e72b34a/src/babykev/model.py).
   - look at `    # As in PointerHead, nn.Module declares forward as an attribute, and torch never sets it`
+
+<a id="tut-17.4-src-babykev-model.py-a86a0b-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/model.py</code></summary>
 
@@ -3692,6 +3786,8 @@ git fetch --quiet --tags --force origin; git restore --source f14349138824 --sta
 
 - <a id="tut-17.5-justfile-424f0b"></a>`justfile`: ty, in the gate. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/d4dd1c8d3d3c94aa391b3baff5c5aab706b149b9/justfile).
   - look at `    just types`
+
+<a id="tut-17.5-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -3791,6 +3887,8 @@ git restore --source 117a59e9838e --staged -- :/ && git restore --source 55844b2
 - <a id="tut-18.7-justfile-424f0b"></a>`justfile`: the recipe `smoke`. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/55844b2320b632b40dd3f34f0a6b5bb962551005/justfile).
   - look at `smoke *args:`
 
+<a id="tut-18.7-justfile-424f0b-diff"></a>
+
 <details open><summary>The patch to <code>justfile</code></summary>
 
 ```diff
@@ -3873,6 +3971,8 @@ git restore --source 08acf0a3770d --staged -- :/ && git restore --source 5760413
 
 - <a id="tut-21.4-justfile-424f0b"></a>`justfile`: the floor, in the gate. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/57604134d9590c16b1c4db0b1d1a11509a65345b/justfile).
   - look at `    just test -q --cov-fail-under=90`
+
+<a id="tut-21.4-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -4006,6 +4106,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-24 --staged --
 - <a id="tut-25.1-Dockerfile-6651dd"></a>`Dockerfile`: the stages `uv`, `build` and `run`. New, 36 lines. [The file](https://github.com/rahuldave/babykev/blob/570bb2134f032a64a34d14852c82fa1a199f69f6/Dockerfile).
   - look at `FROM python:3.13-slim-trixie AS run`
 
+<a id="tut-25.1-Dockerfile-6651dd-diff"></a>
+
 <details open><summary>The patch to <code>Dockerfile</code></summary>
 
 ```diff
@@ -4099,6 +4201,8 @@ git restore --source 570bb2134f03 --staged -- :/ && git restore --source 40012bd
 
 - <a id="tut-25.2-Dockerfile-6651dd"></a>`Dockerfile`: the stage `dev`. 31 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/40012bdfeb76ad96615227e9772d387ee5e48495/Dockerfile).
   - look at `FROM python:3.13-slim-trixie AS dev`
+
+<a id="tut-25.2-Dockerfile-6651dd-diff"></a>
 
 <details open><summary>The patch to <code>Dockerfile</code></summary>
 
@@ -4202,6 +4306,8 @@ git restore --source 40012bdfeb76 --staged -- :/ && git restore --source f086240
 - <a id="tut-25.3-.dockerignore-05a721"></a>`.dockerignore`: what a build never copies. New, 16 lines. [The file](https://github.com/rahuldave/babykev/blob/f0862402733db839738f0b350a049b2ee5e2a2aa/.dockerignore).
   - look at `.venv`
 
+<a id="tut-25.3-.dockerignore-05a721-diff"></a>
+
 <details open><summary>The patch to <code>.dockerignore</code></summary>
 
 ```diff
@@ -4270,6 +4376,8 @@ git restore --source f0862402733d --staged -- :/ && git restore --source 3043d16
 
 - <a id="tut-25.4-tests-conftest.py-626af3"></a>`tests/conftest.py`: no deadline, for every test that hypothesis feeds. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/3043d160e0d6e424e7178bd6c86dfeb1aa17abb4/tests/conftest.py).
   - look at `settings.register_profile("babykev", deadline=None)`
+
+<a id="tut-25.4-tests-conftest.py-626af3-diff"></a>
 
 <details open><summary>The patch to <code>tests/conftest.py</code></summary>
 
@@ -4350,6 +4458,8 @@ git restore --source 3043d160e0d6 --staged -- :/ && git restore --source a2cd7c0
 
 - <a id="tut-25.5-justfile-424f0b"></a>`justfile`: the recipe `image`. 33 lines added. [The file](https://github.com/rahuldave/babykev/blob/a2cd7c083154e3f1161449592635e04b8f84cebe/justfile).
   - look at `image *args:`
+
+<a id="tut-25.5-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -4438,6 +4548,8 @@ git restore --source a2cd7c083154 --staged -- :/ && git restore --source ce3646d
   - look at `"hadolint-bin>=2.15.1",`
 - <a id="tut-25.6-uv.lock-8356d8"></a>`uv.lock`: the exact version of hadolint. 13 lines added. It comes from `uv add --group lint hadolint-bin`. [The file](https://github.com/rahuldave/babykev/blob/ce3646d2f0cdacf2177d9ba36355dd4ffc1b2f4a/uv.lock).
 
+<a id="tut-25.6-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff that <code>uv add --group lint hadolint-bin</code> makes in <code>pyproject.toml</code></summary>
 
 ```diff
@@ -4496,6 +4608,8 @@ git restore --source ce3646d2f0cd --staged -- :/ && git restore --source fe092b5
 
 - <a id="tut-25.7-justfile-424f0b"></a>`justfile`: hadolint, in `lint-config`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/fe092b54847ade1223f40297937fe59259096f68/justfile).
   - look at `    uv run hadolint Dockerfile`
+
+<a id="tut-25.7-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -4564,6 +4678,8 @@ git restore --source fe092b54847a --staged -- :/ && git restore --source fd4dc51
 - <a id="tut-25.8-Dockerfile-6651dd"></a>`Dockerfile`: the reason, and the line for hadolint. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/fd4dc51723462cdeaf072a4f2a18472a0cf6a645/Dockerfile).
   - look at `# hadolint ignore=DL3008`
 
+<a id="tut-25.8-Dockerfile-6651dd-diff"></a>
+
 <details open><summary>The patch to <code>Dockerfile</code></summary>
 
 ```diff
@@ -4607,7 +4723,7 @@ network at all.
 just image shell --network none -- just check
 ```
 
-It fails before any check runs. uv cannot download hadolint-bin, with `dns error`. The dev image was built
+It fails before any check runs, with an error from uv. The dev image was built
 before hadolint came into `uv.lock`, and `UV_LOCKED` makes uv install the packages of the lockfile first. An image
 holds the packages of the lockfile at the time of its build.
 
@@ -4634,6 +4750,8 @@ git fetch --quiet --tags --force origin; git restore --source fd4dc5172346 --sta
 
 - <a id="tut-25.9-README.md-8ec9a0"></a>`README.md`: the section on the images, and the row of the `Dockerfile`. 24 lines added. [The file](https://github.com/rahuldave/babykev/blob/6c85dd08f3cd441259b3749ac38cceaf7f2392e0/README.md).
   - look at `## The images`
+
+<a id="tut-25.9-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 
@@ -4749,6 +4867,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-25 --staged --
 - <a id="tut-26.1-.github-workflows-check.yaml-6ceb50"></a>`.github/workflows/check.yaml`: `just check`, after every push. New, 21 lines. [The file](https://github.com/rahuldave/babykev/blob/2f210829183a3c52bb22f1196d50000716a4beec/.github/workflows/check.yaml).
   - look at `      - run: just check`
 
+<a id="tut-26.1-.github-workflows-check.yaml-6ceb50-diff"></a>
+
 <details open><summary>The patch to <code>.github/workflows/check.yaml</code></summary>
 
 ```diff
@@ -4818,6 +4938,8 @@ git restore --source 2f210829183a --staged -- :/ && git restore --source 7b7e22f
 - <a id="tut-26.2-.yamllint-dfe50a"></a>`.yamllint`: the rule `truthy` checks no key. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/7b7e22f04247cefdd2d01adbe6dff64d88a6116c/.yamllint).
   - look at `  truthy: {check-keys: false}  # a key may be a word such as on, which YAML 1.1 reads as true`
 
+<a id="tut-26.2-.yamllint-dfe50a-diff"></a>
+
 <details open><summary>The patch to <code>.yamllint</code></summary>
 
 ```diff
@@ -4871,6 +4993,8 @@ git restore --source 7b7e22f04247 --staged -- :/ && git restore --source bb15f17
 - <a id="tut-26.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: actionlint, in the group `lint`. 1 line added. It comes from `uv add --group lint actionlint-py`. [The file](https://github.com/rahuldave/babykev/blob/bb15f17ccbb62cf1f8a61d67d67674bf9d445c86/pyproject.toml).
   - look at `"actionlint-py>=1.7.12.25",`
 - <a id="tut-26.3-uv.lock-8356d8"></a>`uv.lock`: the exact version of actionlint. 8 lines added. It comes from `uv add --group lint actionlint-py`. [The file](https://github.com/rahuldave/babykev/blob/bb15f17ccbb62cf1f8a61d67d67674bf9d445c86/uv.lock).
+
+<a id="tut-26.3-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff that <code>uv add --group lint actionlint-py</code> makes in <code>pyproject.toml</code></summary>
 
@@ -4928,6 +5052,8 @@ git restore --source bb15f17ccbb6 --staged -- :/ && git restore --source eb0acd1
 
 - <a id="tut-26.4-justfile-424f0b"></a>`justfile`: actionlint, in `lint-config`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/eb0acd148867bdbc6292660b7268b656074fb727/justfile).
   - look at `    uv run actionlint`
+
+<a id="tut-26.4-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -5000,6 +5126,8 @@ git restore --source eb0acd148867 --staged -- :/ && git restore --source 606da22
 
 - <a id="tut-26.5-.github-workflows-docs.yaml-ce7835"></a>`.github/workflows/docs.yaml`: the docs site, built with the group `docs` alone, then published. New, 40 lines. [The file](https://github.com/rahuldave/babykev/blob/606da22657c965404206b25f8fbcccffbe3f2756/.github/workflows/docs.yaml).
   - look at `      - run: uv run --locked --no-default-groups --group docs smalldocs render docs`
+
+<a id="tut-26.5-.github-workflows-docs.yaml-ce7835-diff"></a>
 
 <details open><summary>The patch to <code>.github/workflows/docs.yaml</code></summary>
 
@@ -5096,6 +5224,8 @@ git fetch --quiet --tags --force origin; git restore --source 606da22657c9 --sta
 
 - <a id="tut-26.6-README.md-8ec9a0"></a>`README.md`: the section on GitHub, and the row of the workflows. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/88854e32ebcb4647672742cc4ef709eefc5fde0c/README.md).
   - look at `## On GitHub`
+
+<a id="tut-26.6-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 

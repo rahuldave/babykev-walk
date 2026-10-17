@@ -27,7 +27,7 @@ just setup
 
 ```bash
 sed -n '66,67p' pyproject.toml
-git restore --source tut-08 src tests
+git checkout tut-08 -- src tests
 just lint --statistics
 ```
 
@@ -172,6 +172,8 @@ just lint-config
 - <a id="tut-12-pyproject.toml-5d07e7"></a>`pyproject.toml`: 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac/pyproject.toml){.btn .btn-sm .btn-secondary}
 - <a id="tut-12-uv.lock-8356d8"></a>`uv.lock`: 47 lines added. [The file](https://github.com/rahuldave/babykev/blob/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac/uv.lock){.btn .btn-sm .btn-secondary}
 
+<a id="tut-12-.yamllint-dfe50a-diff"></a>
+
 <details><summary>The diff of <code>.yamllint</code></summary>
 
 ```diff
@@ -185,6 +187,8 @@ just lint-config
 ```
 
 </details>
+
+<a id="tut-12-README.md-8ec9a0-diff"></a>
 
 <details><summary>The diff of <code>README.md</code></summary>
 
@@ -200,6 +204,8 @@ just lint-config
 ```
 
 </details>
+
+<a id="tut-12-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -249,6 +255,8 @@ just lint-config
 ```
 
 </details>
+
+<a id="tut-12-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 

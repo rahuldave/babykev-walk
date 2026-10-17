@@ -30,7 +30,7 @@ The stage `dev` builds the image to work in. It installs git with `apt-get`, and
 as a wheel from PyPI. Then it installs the whole project with every group, into `/opt/venv`. The folder of this
 machine can then be mounted at `/work`, and the image runs it with its own environment.
 
-[± See the change to `Dockerfile`](#tut-25.2-Dockerfile-6651dd){.btn .btn-sm .btn-secondary}
+[± See the change to `Dockerfile`](#tut-25.2-Dockerfile-6651dd-diff){.btn .btn-sm .btn-secondary}
 
 In `Dockerfile`, the comment names the dev image on lines 5 and 6, and the stage `dev` is on lines 41 to 66. Line 64,
 `COPY . .`, copies the folder of the project.
@@ -54,6 +54,8 @@ docker image ls babykev-dev:latest
 
 - <a id="tut-25.2-Dockerfile-6651dd"></a>`Dockerfile`: the stage `dev`. 31 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/40012bdfeb76ad96615227e9772d387ee5e48495/Dockerfile){.btn .btn-sm .btn-secondary}
   - look at `FROM python:3.13-slim-trixie AS dev`
+
+<a id="tut-25.2-Dockerfile-6651dd-diff"></a>
 
 <details><summary>The diff of <code>Dockerfile</code></summary>
 
@@ -114,7 +116,7 @@ docker image ls babykev-dev:latest
 git never tracks. They are the history of git, the environment and the settings of this machine, and what a run or a
 tool writes.
 
-[± See the new file `.dockerignore`](#tut-25.3-.dockerignore-05a721){.btn .btn-sm .btn-secondary}
+[± See the new file `.dockerignore`](#tut-25.3-.dockerignore-05a721-diff){.btn .btn-sm .btn-secondary}
 
 The new file `.dockerignore` names `.git` on line 3 and `.venv` on line 4, and twelve more paths.
 
@@ -138,6 +140,8 @@ docker run --rm -v "$PWD":/work babykev-dev just check
 
 - <a id="tut-25.3-.dockerignore-05a721"></a>`.dockerignore`: what a build never copies. New, 16 lines. [The file](https://github.com/rahuldave/babykev/blob/f0862402733db839738f0b350a049b2ee5e2a2aa/.dockerignore){.btn .btn-sm .btn-secondary}
   - look at `.venv`
+
+<a id="tut-25.3-.dockerignore-05a721-diff"></a>
 
 <details><summary>The diff of <code>.dockerignore</code></summary>
 

@@ -60,6 +60,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-03 --staged --
 - <a id="tut-04.1-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the sample data, and the test that checks each line. New, 27 lines. [The file](https://github.com/rahuldave/babykev/blob/5e134165b7e1feeded775bcfb2269aec951ad39f/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_sample_line_fits_the_contract(line):`
 
+<a id="tut-04.1-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -133,6 +135,8 @@ git restore --source 5e134165b7e1 --staged -- :/ && git restore --source 1ca3952
 - <a id="tut-04.2-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the labels of the sample data. 13 lines added. [The file](https://github.com/rahuldave/babykev/blob/1ca39523b4fdf6c75c244b8c0e0f2371593cfbff/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_sample_line_has_a_usable_label_on_every_question(line):`
 
+<a id="tut-04.2-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -196,6 +200,8 @@ git restore --source 1ca39523b4fd --staged -- :/ && git restore --source 847d160
 
 - <a id="tut-04.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the helper, and the test of the three types. 32 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/847d160f4a2f014bd58eb06030268ce762577cbc/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_request_holds_one_model_per_question_type():`
+
+<a id="tut-04.3-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
@@ -293,6 +299,8 @@ git restore --source 847d160f4a2f --staged -- :/ && git restore --source c2af99c
 - <a id="tut-04.4-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a request with no questions. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/c2af99cdd8e0b6f40e33a1ebcf9aa602904a83ba/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_request_without_questions_is_rejected():`
 
+<a id="tut-04.4-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -355,6 +363,8 @@ git restore --source c2af99cdd8e0 --staged -- :/ && git restore --source 6acc5e7
 - <a id="tut-04.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a type that does not exist. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/6acc5e7d6f228ce76a9083d915f238c3d6696c85/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `question = {"type": "essay", "instructions": "Describe this cheese."}`
 
+<a id="tut-04.5-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -411,6 +421,8 @@ git restore --source 6acc5e7d6f22 --staged -- :/ && git restore --source 3a99587
 - <a id="tut-04.6-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a noul without criteria. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/3a99587d325837f9104661b3d06d9630679dc8eb/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert Noul(type="noul", instructions="Is it blue?").criteria is None`
 
+<a id="tut-04.6-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -463,6 +475,8 @@ git restore --source 3a99587d3258 --staged -- :/ && git restore --source 4653d29
 
 - <a id="tut-04.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a choice of nothing. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/4653d298261d887195e59a2cf00593036151657c/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_choice_without_options_is_rejected():`
+
+<a id="tut-04.7-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
@@ -518,6 +532,8 @@ git restore --source 4653d298261d --staged -- :/ && git restore --source 3addf0f
 
 - <a id="tut-04.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the limit, from both sides. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/3addf0f2bd69e0910ba506a41a240fec5218c77a/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `at_limit = {f"option{i}": None for i in range(MAX_OPTIONS)}`
+
+<a id="tut-04.8-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
@@ -586,6 +602,8 @@ git restore --source 3addf0f2bd69 --staged -- :/ && git restore --source b9a4861
 - <a id="tut-04.9-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a scale of one level. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/b9a4861a26a74623a6daf8c7c776cebe5f30a626/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `Score(type="score", instructions="How firm?", criteria=["Soft"])`
 
+<a id="tut-04.9-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -639,6 +657,8 @@ git fetch --quiet --tags --force origin; git restore --source b9a4861a26a7 --sta
 
 - <a id="tut-04.10-README.md-8ec9a0"></a>`README.md`: the row of the tests. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/1fef13ae49e24d280d05c250289c41d5636feff7/README.md){.btn .btn-sm .btn-secondary}
   - look at ``| `tests/unit/` | The unit tests of the contract and of the command. One test checks every line of the sample data against the contract |``
+
+<a id="tut-04.10-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 

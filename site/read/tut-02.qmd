@@ -39,7 +39,7 @@ uv installs only the group `dev` by default. The setting `default-groups = "all"
 install every group. So each later `uv add --group` needs no other change to `pyproject.toml`. A patch adds the
 table `[tool.uv]` with this setting.
 
-[± See the change to `pyproject.toml`](#tut-02.1-pyproject.toml-5d07e7){.btn .btn-sm .btn-secondary}
+[± See the change to `pyproject.toml`](#tut-02.1-pyproject.toml-5d07e7-diff){.btn .btn-sm .btn-secondary}
 
 At the end of `pyproject.toml`, the new table `[tool.uv]` has the line `default-groups = "all"`, with a comment above
 it.
@@ -57,6 +57,8 @@ later move adds one.
 
 - <a id="tut-02.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the table `[tool.uv]`, so uv installs every dependency group. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/ad616a5cc1fcdf5b7c1672b79d0d2b267b72bd59/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `default-groups = "all"`
+
+<a id="tut-02.1-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -103,6 +105,8 @@ code 5. pytest uses exit code 5 to say that it found no test.
   - look at `"pytest>=9.1.1",`
 - <a id="tut-02.2-uv.lock-8356d8"></a>`uv.lock`: pytest and the five packages it needs. 71 lines added. It comes from `uv add --group test pytest`. [The file](https://github.com/rahuldave/babykev/blob/966956d738b58505e23586af60f05cd5daceb12f/uv.lock){.btn .btn-sm .btn-secondary}
 
+<a id="tut-02.2-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
 ```diff
@@ -126,7 +130,7 @@ code 5. pytest uses exit code 5 to say that it found no test.
 The command that runs the tests is `uv run pytest`, and every task of the project has a recipe. A recipe `test` gives
 the command a short name.
 
-[± See the change to `justfile`](#tut-02.3-justfile-424f0b){.btn .btn-sm .btn-secondary}
+[± See the change to `justfile`](#tut-02.3-justfile-424f0b-diff){.btn .btn-sm .btn-secondary}
 
 At the end of `justfile`, the recipe `test` runs `uv run pytest "$@"`. It sits under a new heading, `quality`.
 
@@ -147,6 +151,8 @@ exit code 5. `just` prints no line of its own about the error. `just help test` 
 
 - <a id="tut-02.3-justfile-424f0b"></a>`justfile`: the recipe `test`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/b0840709e371a548d4b922c57c679ba040dd2c1a/justfile){.btn .btn-sm .btn-secondary}
   - look at `test *args:`
+
+<a id="tut-02.3-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -175,7 +181,7 @@ a function whose name starts with `test_`, in a file whose name starts with `tes
 
 The first test runs `babykev` with no word, then with `help`, `--help` and `-h`, and checks that each prints the help.
 
-[± See the new file `tests/unit/test_cli.py`](#tut-02.4-tests-unit-test_cli.py-44d4a0){.btn .btn-sm .btn-secondary}
+[± See the new file `tests/unit/test_cli.py`](#tut-02.4-tests-unit-test_cli.py-44d4a0-diff){.btn .btn-sm .btn-secondary}
 
 The new file `tests/unit/test_cli.py` has the helper `run`, and the test `test_help_is_printed_for_help_and_for_no_words`.
 
@@ -194,6 +200,8 @@ just test
 
 - <a id="tut-02.4-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: one test, for four ways of asking for help. New, 18 lines. [The file](https://github.com/rahuldave/babykev/blob/72678bd1d656f5bc6e44f2d65b44a1e18b024661/tests/unit/test_cli.py){.btn .btn-sm .btn-secondary}
   - look at `@pytest.mark.parametrize("words", [(), ("help",), ("--help",), ("-h",)])`
+
+<a id="tut-02.4-tests-unit-test_cli.py-44d4a0-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
 
@@ -229,7 +237,7 @@ The tests check the help, and nothing checks what `babykev` does with a word it 
 `babykev train`. It checks that the command ends with exit code 2, and that the message names the word and points to
 the help.
 
-[± See the change to `tests/unit/test_cli.py`](#tut-02.5-tests-unit-test_cli.py-44d4a0){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/unit/test_cli.py`](#tut-02.5-tests-unit-test_cli.py-44d4a0-diff){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_cli.py`, the new test runs `train` inside `pytest.raises(SystemExit)`.
 
@@ -247,6 +255,8 @@ just test -k unknown_command
 
 - <a id="tut-02.5-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: the test of a word that is not a command. 10 lines added. [The file](https://github.com/rahuldave/babykev/blob/9a4100fd1962921bc11cf9f4b22c5326c7a51807/tests/unit/test_cli.py){.btn .btn-sm .btn-secondary}
   - look at `assert exit_info.value.code == 2`
+
+<a id="tut-02.5-tests-unit-test_cli.py-44d4a0-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
 
@@ -276,7 +286,7 @@ just test -k unknown_command
 pytest looks for tests in every folder of the project. The tests are all in `tests/`, and a setting says so.
 `testpaths` in the table `[tool.pytest.ini_options]` names the folder.
 
-[± See the change to `pyproject.toml`](#tut-02.6-pyproject.toml-5d07e7){.btn .btn-sm .btn-secondary}
+[± See the change to `pyproject.toml`](#tut-02.6-pyproject.toml-5d07e7-diff){.btn .btn-sm .btn-secondary}
 
 At the end of `pyproject.toml`, the new table `[tool.pytest.ini_options]` has `testpaths = ["tests"]`.
 
@@ -290,6 +300,8 @@ just test
 
 - <a id="tut-02.6-pyproject.toml-5d07e7"></a>`pyproject.toml`: the settings of pytest. pytest looks for tests in `tests/` alone. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/348290a934c2bd1da0a38f4c3336f66758f8523c/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `testpaths = ["tests"]`
+
+<a id="tut-02.6-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -335,6 +347,8 @@ just test --cov=babykev
   - look at `"pytest-cov>=7.1.0",`
 - <a id="tut-02.7-uv.lock-8356d8"></a>`uv.lock`: coverage and pytest-cov. 103 lines added, 1 removed. It comes from `uv add --group test pytest-cov`. [The file](https://github.com/rahuldave/babykev/blob/326e444b726a914d5f9d0138ca658ed89a979dcd/uv.lock){.btn .btn-sm .btn-secondary}
 
+<a id="tut-02.7-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
 ```diff
@@ -357,7 +371,7 @@ just test --cov=babykev
 A person can forget to type `--cov=babykev`. `addopts` gives pytest options on every run. `--cov=babykev` measures
 the package babykev, and `--cov-report=term-missing` adds a column of the lines that no test ran.
 
-[± See the change to `pyproject.toml`](#tut-02.8-pyproject.toml-5d07e7){.btn .btn-sm .btn-secondary}
+[± See the change to `pyproject.toml`](#tut-02.8-pyproject.toml-5d07e7-diff){.btn .btn-sm .btn-secondary}
 
 At the end of `pyproject.toml`, `addopts` stands under `testpaths`, with a comment above it.
 
@@ -371,6 +385,8 @@ just test
 
 - <a id="tut-02.8-pyproject.toml-5d07e7"></a>`pyproject.toml`: the options of every run. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/f44cc53a91bc7db84283d6a9ded16d9a7bbedf90/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `addopts = "--cov=babykev --cov-report=term-missing"`
+
+<a id="tut-02.8-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -392,7 +408,7 @@ just test
 "Start" in the README does not name `just test`. Its paragraph now says to run it, and that a recipe gives its extra
 words to the tool behind it.
 
-[± See the change to `README.md`](#tut-02.9-README.md-8ec9a0){.btn .btn-sm .btn-secondary}
+[± See the change to `README.md`](#tut-02.9-README.md-8ec9a0-diff){.btn .btn-sm .btn-secondary}
 
 In `README.md`, "Start" now says to run `just test`, and gives `just test -k help` as an example.
 
@@ -406,6 +422,8 @@ pytest runs the 4 tests with `help` in their name, and prints `4 passed, 1 desel
 
 - <a id="tut-02.9-README.md-8ec9a0"></a>`README.md`: `just test` in "Start". 3 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/ab192e5bd8ff3e3b8ad6c0ae5e17be31b7790557/README.md){.btn .btn-sm .btn-secondary}
   - look at `help of the program itself. A recipe gives its extra words to the tool behind it. For example,`
+
+<a id="tut-02.9-README.md-8ec9a0-diff"></a>
 
 <details><summary>The diff of <code>README.md</code></summary>
 
@@ -433,7 +451,7 @@ pytest runs the 4 tests with `help` in their name, and prints `4 passed, 1 desel
 The table of "What is here" has no row for the tests. A row for `tests/unit/` comes in. The row of `pyproject.toml`
 now says that it has the settings of the tools too.
 
-[± See the change to `README.md`](#tut-02.10-README.md-8ec9a0){.btn .btn-sm .btn-secondary}
+[± See the change to `README.md`](#tut-02.10-README.md-8ec9a0-diff){.btn .btn-sm .btn-secondary}
 
 In the table of `README.md`, the new row names `tests/unit/` and `test_cli.py`.
 
@@ -449,6 +467,8 @@ uv installs 8 here. `just test` prints `5 passed`.
 
 - <a id="tut-02.10-README.md-8ec9a0"></a>`README.md`: the row of the tests. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/4640589d80e4f224a4b2c1fd9567e952f564f102/README.md){.btn .btn-sm .btn-secondary}
   - look at ``| `tests/unit/` | The unit tests. `test_cli.py` tests the command `babykev` |``
+
+<a id="tut-02.10-README.md-8ec9a0-diff"></a>
 
 <details><summary>The diff of <code>README.md</code></summary>
 

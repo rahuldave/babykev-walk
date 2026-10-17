@@ -34,7 +34,7 @@ ruff has more than 900 rules. The table `[tool.ruff.lint]` chooses which to chec
 rules has a prefix, such as `E` or `B`. The list has one family on each line, with a comment that says what it
 finds.
 
-[± See the change to `pyproject.toml`](#tut-08.1-pyproject.toml-5d07e7){.btn .btn-sm .btn-secondary}
+[± See the change to `pyproject.toml`](#tut-08.1-pyproject.toml-5d07e7-diff){.btn .btn-sm .btn-secondary}
 
 At the end of `pyproject.toml`, the new table `[tool.ruff.lint]` starts at line 51. `select = [` on line 53 lists
 nine families of rules, from `E` to `N`.
@@ -52,6 +52,8 @@ with `assert`. The other 8 are in `api.py`.
 
 - <a id="tut-08.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: a family of rules on each line. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/1a067ec6d90256e2f0142390db307c537909c047/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `    "B",   # bugbear: code that is likely a bug, such as a zip that drops items silently`
+
+<a id="tut-08.1-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -86,7 +88,7 @@ The 44 `S101` hide the 8 problems of `api.py`. A test is written with `assert`, 
 `python -O`. The table `[tool.ruff.lint.per-file-ignores]` lets the files under `tests/` break `S101`. The package
 still may not use `assert`.
 
-[± See the change to `pyproject.toml`](#tut-08.2-pyproject.toml-5d07e7){.btn .btn-sm .btn-secondary}
+[± See the change to `pyproject.toml`](#tut-08.2-pyproject.toml-5d07e7-diff){.btn .btn-sm .btn-secondary}
 
 At the end of `pyproject.toml`, the new table `[tool.ruff.lint.per-file-ignores]` is on lines 65 to 67. It names
 `S101` for `"tests/**"`.
@@ -102,6 +104,8 @@ once each. The last line says that `--fix` can fix one, and that 2 unsafe fixes 
 
 - <a id="tut-08.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the tests may use `assert`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/a6325da466f16c6379613b62554e1e4cf2144e7e/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `"tests/**" = ["S101"]`
+
+<a id="tut-08.2-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -125,7 +129,7 @@ once each. The last line says that `--fix` can fix one, and that 2 unsafe fixes 
 The command that runs the linter is `uv run ruff check`. The recipe `lint` runs it, and gives it every word after
 `lint`, as `fmt` does.
 
-[± See the change to `justfile`](#tut-08.3-justfile-424f0b){.btn .btn-sm .btn-secondary}
+[± See the change to `justfile`](#tut-08.3-justfile-424f0b-diff){.btn .btn-sm .btn-secondary}
 
 In `justfile`, the recipe `lint` is on lines 34 to 38, between `fmt` and `test`. It runs `uv run ruff check "$@"`.
 
@@ -154,6 +158,8 @@ the recipe. The next parts fix the problems one code at a time, by hand. ruff fi
 
 - <a id="tut-08.3-justfile-424f0b"></a>`justfile`: the recipe `lint`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/58d6ece95cf464e01996ad8dbed1d98e92bcc502/justfile){.btn .btn-sm .btn-secondary}
   - look at `lint *args:`
+
+<a id="tut-08.3-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -184,7 +190,7 @@ lines 3 to 5, and `answer =` lined up in one column. Line 5 is the longest, and 
 order" takes the place of "ordered level descriptions", and says the same in fewer characters. The three lines
 line up again, at column 43.
 
-[± See the change to `src/babykev/api.py`](#tut-08.4-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
+[± See the change to `src/babykev/api.py`](#tut-08.4-src-babykev-api.py-2ea65f-diff){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/api.py`, lines 3 to 5 now have `answer =` at column 43. Line 5 has 97 characters.
 
@@ -200,6 +206,8 @@ The formatter leaves the text of a docstring as it is.
 
 - <a id="tut-08.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the table of the docstring, in 97 characters. 3 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/4a25204449af75e24305189a1395c418ec0295d3/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `Score  -> options = the levels, in order; answer = expected level, legend, probabilities by index`
+
+<a id="tut-08.4-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -228,7 +236,7 @@ The formatter leaves the text of a docstring as it is.
 babykev needs Python 3.13. `JSONContent` on line 11 and `Question` on line 39 become `X | Y`. ruff has no fix for
 these two lines, so a person writes them.
 
-[± See the change to `src/babykev/api.py`](#tut-08.5-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
+[± See the change to `src/babykev/api.py`](#tut-08.5-src-babykev-api.py-2ea65f-diff){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/api.py`, line 11 is now `JSONContent = str | dict | list | int | float | bool | None`, and line 39
 is `Question = Noul | Choice | Score`.
@@ -248,6 +256,8 @@ pydantic reads `X | Y` as it read `Union`.
 
 - <a id="tut-08.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: two unions, written with `|`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/01c4956b31ad768bd11dc5da0c13128a7a3ab0fc/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `JSONContent = str | dict | list | int | float | bool | None`
+
+<a id="tut-08.5-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -282,7 +292,7 @@ pydantic reads `X | Y` as it read `Union`.
 `choice_confidence` is the number of options, and becomes `k`. `L` in `score_confidence` is the number of levels.
 `l` would break another rule, `E741`, because `l` looks like `1` and `I` in many fonts. So `L` becomes `n`.
 
-[± See the change to `src/babykev/api.py`](#tut-08.6-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
+[± See the change to `src/babykev/api.py`](#tut-08.6-src-babykev-api.py-2ea65f-diff){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/api.py`, `k = len(p)` is on line 94, and `n = len(p)` on line 104. Each use of the two names
 changes with them.
@@ -299,6 +309,8 @@ functions, and prints `9 passed, 44 deselected`. A new name changes nothing that
 
 - <a id="tut-08.6-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: two names, in lower case. 6 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/37fed4d2a9bff48f0a928851c8eb640736c7e313/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `    n = len(p)`
+
+<a id="tut-08.6-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -347,7 +359,7 @@ stop the program.
 ruff's own fix writes `strict=False`, which keeps the silent drop and says so. ruff calls it unsafe, and leaves the
 choice to a person. `strict=True` makes `zip` raise a `ValueError` when the lengths differ.
 
-[± See the change to `src/babykev/api.py`](#tut-08.7-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
+[± See the change to `src/babykev/api.py`](#tut-08.7-src-babykev-api.py-2ea65f-diff){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/api.py`, line 121 is now `for p, m in zip(probs, meta, strict=True):`, and line 125 ends with
 `zip(m["keys"], p, strict=True)}`.
@@ -365,6 +377,8 @@ lengths, so nothing raises.
 
 - <a id="tut-08.7-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: two calls of `zip`, with `strict=True`. 2 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/ca9cfc3b70b7a0c926c9407336c217e3f04c73aa/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `    for p, m in zip(probs, meta, strict=True):`
+
+<a id="tut-08.7-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -416,6 +430,8 @@ prints `53 passed`.
 
 - <a id="tut-08.8-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the imports, sorted. 2 lines added, 1 removed. It comes from `just lint --fix`. [The file](https://github.com/rahuldave/babykev/blob/7cdb1ba696a32050cba1c335892fccb68bb4fd24/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `from typing import Any, Literal`
+
+<a id="tut-08.8-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 

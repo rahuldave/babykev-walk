@@ -38,7 +38,7 @@ how to begin, and what each file is.
 A reader of the README cannot yet tell how to start. A section, "Start", says to run `just setup` first, and names
 `just`, `just help VERB` and the help of the program.
 
-[± See the change to `README.md`](#tut-01.13-README.md-8ec9a0){.btn .btn-sm .btn-secondary}
+[± See the change to `README.md`](#tut-01.13-README.md-8ec9a0-diff){.btn .btn-sm .btn-secondary}
 
 In `README.md`, "Start" says to run `just setup` first, and then names `just`, `just help VERB` and
 `uv run babykev help`.
@@ -53,6 +53,8 @@ grep -n '^## ' README.md
 
 - <a id="tut-01.13-README.md-8ec9a0"></a>`README.md`: how to start. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/0d2e163cca5d3eeb9fc8f7223fddd8d7da735fde/README.md){.btn .btn-sm .btn-secondary}
   - look at ``Run `just setup` first. It installs Python and every dependency into `.venv`, exactly as `uv.lock` says.``
+
+<a id="tut-01.13-README.md-8ec9a0-diff"></a>
 
 <details><summary>The diff of <code>README.md</code></summary>
 
@@ -81,7 +83,7 @@ grep -n '^## ' README.md
 A reader still cannot tell what each file of the project is. A section, "What is here", has a table, with a row for
 each file.
 
-[± See the change to `README.md`](#tut-01.14-README.md-8ec9a0){.btn .btn-sm .btn-secondary}
+[± See the change to `README.md`](#tut-01.14-README.md-8ec9a0-diff){.btn .btn-sm .btn-secondary}
 
 In `README.md`, "What is here" is a table of the files of the project, from `pyproject.toml` to `.gitignore`.
 
@@ -97,6 +99,8 @@ Both commands of "Start" work. `just setup` prints `Resolved 1 package` and `Che
 
 - <a id="tut-01.14-README.md-8ec9a0"></a>`README.md`: a table of the files. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/7ad3a06605fadc9f34b5e2d8180145a3e53389a9/README.md){.btn .btn-sm .btn-secondary}
   - look at ``| `justfile` | Every task of the project, one recipe each. `just help` explains them |``
+
+<a id="tut-01.14-README.md-8ec9a0-diff"></a>
 
 <details><summary>The diff of <code>README.md</code></summary>
 

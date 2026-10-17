@@ -75,6 +75,8 @@ git restore --source 6d2401817f1b --staged -- :/ && git restore --source e947449
 - <a id="tut-20.2-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the positions of each question. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/e947449de17438d3aa5ee006bfc98db3944d4457/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_positions_restart_after_the_state(`
 
+<a id="tut-20.2-tests-unit-test_model.py-583145-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
 ```diff

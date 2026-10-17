@@ -80,6 +80,8 @@ git restore --source eb0acd148867 --staged -- :/ && git restore --source 606da22
 - <a id="tut-26.5-.github-workflows-docs.yaml-ce7835"></a>`.github/workflows/docs.yaml`: the docs site, built with the group `docs` alone, then published. New, 40 lines. [The file](https://github.com/rahuldave/babykev/blob/606da22657c965404206b25f8fbcccffbe3f2756/.github/workflows/docs.yaml){.btn .btn-sm .btn-secondary}
   - look at `      - run: uv run --locked --no-default-groups --group docs smalldocs render docs`
 
+<a id="tut-26.5-.github-workflows-docs.yaml-ce7835-diff"></a>
+
 <details open><summary>The patch to <code>.github/workflows/docs.yaml</code></summary>
 
 ```diff
@@ -169,6 +171,8 @@ git fetch --quiet --tags --force origin; git restore --source 606da22657c9 --sta
 
 - <a id="tut-26.6-README.md-8ec9a0"></a>`README.md`: the section on GitHub, and the row of the workflows. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/88854e32ebcb4647672742cc4ef709eefc5fde0c/README.md){.btn .btn-sm .btn-secondary}
   - look at `## On GitHub`
+
+<a id="tut-26.6-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 

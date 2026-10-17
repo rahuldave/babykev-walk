@@ -42,7 +42,7 @@ Training changes the adapter and the head, and the backbone stays as it is. The 
 adapter of rank 4, and takes one backward pass. Then it names every parameter that got a gradient. The fixture
 `model` has no adapter, so the test calls `tiny_backbone` itself.
 
-[± See the change to `tests/unit/test_model.py`](#tut-21.1-tests-unit-test_model.py-583145){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/unit/test_model.py`](#tut-21.1-tests-unit-test_model.py-583145-diff){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_model.py`, the import is on line 18, and the new test is on lines 112 to 130.
 
@@ -86,6 +86,8 @@ reads only the places of `decide_idx` and `opt_idx`.
 
 - <a id="tut-21.1-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: one backward pass with an adapter. 22 lines added. [The file](https://github.com/rahuldave/babykev/blob/0be44c1de17b8acb4e18a964a782584eb26fee97/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_with_an_adapter_only_the_adapter_and_the_head_train(`
+
+<a id="tut-21.1-tests-unit-test_model.py-583145-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
 
@@ -134,7 +136,7 @@ reads only the places of `decide_idx` and `opt_idx`.
 `forward_batch` reads several records in one pass. They are padded to the length of the longest. The test packs the
 record of the fixture and a shorter record, and runs them in one pass. It compares each with a pass of its own.
 
-[± See the change to `tests/unit/test_model.py`](#tut-21.2-tests-unit-test_model.py-583145){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/unit/test_model.py`](#tut-21.2-tests-unit-test_model.py-583145-diff){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_model.py`, the new test is on lines 133 to 146.
 
@@ -159,6 +161,8 @@ numbers in another order. So the last bits of a float can differ.
 
 - <a id="tut-21.2-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a padded pass. 16 lines added. [The file](https://github.com/rahuldave/babykev/blob/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_records_of_different_lengths_answer_in_one_pass_as_alone(`
+
+<a id="tut-21.2-tests-unit-test_model.py-583145-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
 

@@ -29,7 +29,7 @@ the type of each question. The moves of this section add a test for each type.
 `to_answers` turns the probabilities of the model into answers. The answer to a noul is one number, the probability of
 yes.
 
-[± See the change to `tests/unit/test_api.py`](#tut-05.8-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/unit/test_api.py`](#tut-05.8-tests-unit-test_api.py-58d97c-diff){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test gives `to_answers` the probabilities `[0.25, 0.75]`, and expects
 `0.75`.
@@ -44,6 +44,8 @@ just test
 
 - <a id="tut-05.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the answer of a noul. 10 lines added. [The file](https://github.com/rahuldave/babykev/blob/0740c2c246273e99e34494512152d5b97ea4f7b9/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert answers == {"blue": {"type": "noul", "noul": 0.75}}`
+
+<a id="tut-05.8-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
 
@@ -79,7 +81,7 @@ just test
 
 The answer to a choice has its most likely option, a probability for each option, and a confidence.
 
-[± See the change to `tests/unit/test_api.py`](#tut-05.9-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/unit/test_api.py`](#tut-05.9-tests-unit-test_api.py-58d97c-diff){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test gives `[0.1, 0.7, 0.2]`, and expects `goat`.
 
@@ -93,6 +95,8 @@ just test
 
 - <a id="tut-05.9-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the answer of a choice. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/a27b71f6a341bb12029a2d3471d6b3bc19d0d94c/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert answer["choice"] == "goat"`
+
+<a id="tut-05.9-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
 
@@ -121,7 +125,7 @@ just test
 The answer to a score is the expected level, the mean of the levels weighted by their probabilities. For
 `[0.1, 0.2, 0.7]` it is 0 × 0.1 + 1 × 0.2 + 2 × 0.7 = 1.6.
 
-[± See the change to `tests/unit/test_api.py`](#tut-05.10-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/unit/test_api.py`](#tut-05.10-tests-unit-test_api.py-58d97c-diff){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test expects the score `1.6`.
 
@@ -135,6 +139,8 @@ just test
 
 - <a id="tut-05.10-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the answer of a score. 11 lines added. [The file](https://github.com/rahuldave/babykev/blob/be8c681092973e7ac1e12bbd1817da81bea45e7e/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert answer["score"] == pytest.approx(1.6)`
+
+<a id="tut-05.10-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
 
@@ -165,7 +171,7 @@ just test
 A request of three questions must get three answers, each under the id of its question, each of its type. The test
 runs `to_record` and `to_answers` one after the other.
 
-[± See the change to `tests/unit/test_api.py`](#tut-05.11-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/unit/test_api.py`](#tut-05.11-tests-unit-test_api.py-58d97c-diff){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test checks the type of the answer to each of the three questions.
 
@@ -180,6 +186,8 @@ shows them. Coverage says which lines ran. It does not say that a test checked w
 
 - <a id="tut-05.11-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: one answer for each question. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_every_question_gets_an_answer_of_its_own_type():`
+
+<a id="tut-05.11-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
 

@@ -68,6 +68,8 @@ git fetch --quiet --tags --force origin; git restore --source ca9cfc3b70b7 --sta
 - <a id="tut-08.8-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the imports, sorted. 2 lines added, 1 removed. It comes from `just lint --fix`. [The file](https://github.com/rahuldave/babykev/blob/7cdb1ba696a32050cba1c335892fccb68bb4fd24/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `from typing import Any, Literal`
 
+<a id="tut-08.8-src-babykev-api.py-2ea65f-diff"></a>
+
 <details><summary>The diff that <code>just lint --fix</code> makes in <code>src/babykev/api.py</code></summary>
 
 ```diff

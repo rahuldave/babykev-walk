@@ -26,7 +26,7 @@ records a change. smalldocs builds a docs site from the code.
 
 Then the model comes in, with torch and three more packages, as `src/babykev/model.py`. ty checks its types.
 `src/babykev/smoke.py` runs the real model on the sample requests, and `just smoke` runs it. No test calls the model
-or the smoke. `just test` prints `53 passed`, and the total coverage is 32%.
+or the smoke yet, so most of the new lines have no test.
 
 The tests of the model need a model, and the real one is a download of about 1 GB. Here the tests get a tiny model,
 with random weights, from fixtures.
@@ -95,6 +95,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-18 --staged --
 
 - <a id="tut-19.1-tests-tiny.py-70c1c9"></a>`tests/tiny.py`: the tiny tokenizer. New, 23 lines. [The file](https://github.com/rahuldave/babykev/blob/b57593b2f1c324a6349f0f5b58a75754f7f261dc/tests/tiny.py){.btn .btn-sm .btn-secondary}
   - look at `def tiny_tokenizer() -> PreTrainedTokenizerFast:  # A tokenizer with one token per character`
+
+<a id="tut-19.1-tests-tiny.py-70c1c9-diff"></a>
 
 <details open><summary>The patch to <code>tests/tiny.py</code></summary>
 
@@ -206,6 +208,8 @@ git restore --source b57593b2f1c3 --staged -- :/ && git restore --source 2daaf5f
 - <a id="tut-19.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the tests may break `S106`. 3 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/2daaf5f257514e391edb5ad5183c2d2288965de3/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `"tests/**" = ["S101", "S106"]`
 
+<a id="tut-19.2-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -260,6 +264,8 @@ git restore --source 2daaf5f25751 --staged -- :/ && git restore --source a6e3905
 
 - <a id="tut-19.3-tests-tiny.py-70c1c9"></a>`tests/tiny.py`: the tiny backbone. 20 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a6e3905ee0316fdd0b2e0d3baab9f4a65d0588b5/tests/tiny.py){.btn .btn-sm .btn-secondary}
   - look at `def tiny_backbone(`
+
+<a id="tut-19.3-tests-tiny.py-70c1c9-diff"></a>
 
 <details open><summary>The patch to <code>tests/tiny.py</code></summary>
 
@@ -342,6 +348,8 @@ git restore --source a6e3905ee031 --staged -- :/ && git restore --source 14585bb
 
 - <a id="tut-19.4-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `tok`. New, 16 lines. [The file](https://github.com/rahuldave/babykev/blob/14585bbd144a55ac28ff0473f3d3f2c23c03d314/tests/conftest.py){.btn .btn-sm .btn-secondary}
   - look at `@pytest.fixture(scope="session")`
+
+<a id="tut-19.4-tests-conftest.py-626af3-diff"></a>
 
 <details open><summary>The patch to <code>tests/conftest.py</code></summary>
 
@@ -454,6 +462,8 @@ git restore --source 14585bbd144a --staged -- :/ && git restore --source b458ae1
 - <a id="tut-19.5-pyproject.toml-5d07e7"></a>`pyproject.toml`: the root of the project, on the path of pytest. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/b458ae1df2239c8645f7a4eb35832fd2dddc1114/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `pythonpath = ["."]`
 
+<a id="tut-19.5-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -509,6 +519,8 @@ git restore --source b458ae1df223 --staged -- :/ && git restore --source 0806a21
 
 - <a id="tut-19.6-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `model`. 10 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/0806a218722ba7438f265928d3cfbc0b5f0e723e/tests/conftest.py){.btn .btn-sm .btn-secondary}
   - look at `    return DecisionModel("tiny", "cpu", backbone=tiny_backbone(len(tok))).eval()`
+
+<a id="tut-19.6-tests-conftest.py-626af3-diff"></a>
 
 <details open><summary>The patch to <code>tests/conftest.py</code></summary>
 
@@ -576,6 +588,8 @@ git restore --source 0806a218722b --staged -- :/ && git restore --source b4bf249
 
 - <a id="tut-19.7-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `record`. 15 lines added. [The file](https://github.com/rahuldave/babykev/blob/b4bf2491e8505697eaa015738f93178c6bd7f3fc/tests/conftest.py){.btn .btn-sm .btn-secondary}
   - look at `        "state": "Roquefort. A blue cheese from France, made from sheep's milk.",`
+
+<a id="tut-19.7-tests-conftest.py-626af3-diff"></a>
 
 <details open><summary>The patch to <code>tests/conftest.py</code></summary>
 
@@ -667,6 +681,8 @@ git restore --source b4bf2491e850 --staged -- :/ && git restore --source 321a8df
 - <a id="tut-19.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the first test of the model, on the tiny model. New, 20 lines. [The file](https://github.com/rahuldave/babykev/blob/321a8df2c597e0c46d06c9b36c711f0fe270900a/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_probabilities_sum_to_one_for_every_question(`
 
+<a id="tut-19.8-tests-unit-test_model.py-583145-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
 ```diff
@@ -733,6 +749,8 @@ git fetch --quiet --tags --force origin; git restore --source 321a8df2c597 --sta
 
 - <a id="tut-19.9-README.md-8ec9a0"></a>`README.md`: the rows of the fixtures and of the tiny model. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/88b3a9e08db851ce891ecfcfcf26d18892beea90/README.md){.btn .btn-sm .btn-secondary}
   - look at ``| `tests/tiny.py` | A small tokenizer and backbone, built in memory, in place of the real ones |``
+
+<a id="tut-19.9-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 

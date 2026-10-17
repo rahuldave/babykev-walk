@@ -105,6 +105,8 @@ sed -i '' 's/option_text("no", c.get("false"))/option_text("NO", c.get("false"))
 - <a id="step-01-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: adds `run`, `test_an_unknown_command_is_refused_with_exit_code_2`, `test_help_is_printed_for_help_and_for_no_words`. New, 28 lines. [The file](https://github.com/rahuldave/babykev/blob/9cc0343527b93a817207a11a2866752807f0013d/tests/unit/test_cli.py){.btn .btn-sm .btn-secondary}
 - <a id="step-01-uv.lock-8356d8"></a>`uv.lock`: 286 lines added. [The file](https://github.com/rahuldave/babykev/blob/9cc0343527b93a817207a11a2866752807f0013d/uv.lock){.btn .btn-sm .btn-secondary}
 
+<a id="step-01-README.md-8ec9a0-diff"></a>
+
 <details><summary>The diff of <code>README.md</code></summary>
 
 ```diff
@@ -144,6 +146,8 @@ sed -i '' 's/option_text("no", c.get("false"))/option_text("NO", c.get("false"))
 
 </details>
 
+<a id="step-01-data-cheese-sample.jsonl-79f982-diff"></a>
+
 <details><summary>The diff of <code>data/cheese/sample.jsonl</code></summary>
 
 ```diff
@@ -156,6 +160,8 @@ sed -i '' 's/option_text("no", c.get("false"))/option_text("NO", c.get("false"))
 ```
 
 </details>
+
+<a id="step-01-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -175,6 +181,8 @@ sed -i '' 's/option_text("no", c.get("false"))/option_text("NO", c.get("false"))
 ```
 
 </details>
+
+<a id="step-01-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -209,6 +217,8 @@ sed -i '' 's/option_text("no", c.get("false"))/option_text("NO", c.get("false"))
 ```
 
 </details>
+
+<a id="step-01-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -321,6 +331,8 @@ sed -i '' 's/option_text("no", c.get("false"))/option_text("NO", c.get("false"))
 ```
 
 </details>
+
+<a id="step-01-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
 
@@ -622,6 +634,8 @@ sed -i '' 's/option_text("no", c.get("false"))/option_text("NO", c.get("false"))
 ```
 
 </details>
+
+<a id="step-01-tests-unit-test_cli.py-44d4a0-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
 

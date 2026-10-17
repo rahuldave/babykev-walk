@@ -151,6 +151,8 @@ just lint --statistics
 - <a id="step-02-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: adds `round_prob`; changes `score_confidence`, `to_answers`; removes `r2`. 20 lines added, 10 removed. [The file](https://github.com/rahuldave/babykev/blob/4681f251318456e721cb4a7dcecbb9f73d3589cf/src/babykev/api.py){.btn .btn-sm .btn-secondary}
 - <a id="step-02-uv.lock-8356d8"></a>`uv.lock`: 31 lines added. [The file](https://github.com/rahuldave/babykev/blob/4681f251318456e721cb4a7dcecbb9f73d3589cf/uv.lock){.btn .btn-sm .btn-secondary}
 
+<a id="step-02-README.md-8ec9a0-diff"></a>
+
 <details><summary>The diff of <code>README.md</code></summary>
 
 ```diff
@@ -176,6 +178,8 @@ just lint --statistics
 ```
 
 </details>
+
+<a id="step-02-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -212,6 +216,8 @@ just lint --statistics
 ```
 
 </details>
+
+<a id="step-02-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -268,6 +274,8 @@ just lint --statistics
 ```
 
 </details>
+
+<a id="step-02-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 

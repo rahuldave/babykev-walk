@@ -93,6 +93,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-24 --staged --
 - <a id="tut-25.1-Dockerfile-6651dd"></a>`Dockerfile`: the stages `uv`, `build` and `run`. New, 36 lines. [The file](https://github.com/rahuldave/babykev/blob/570bb2134f032a64a34d14852c82fa1a199f69f6/Dockerfile){.btn .btn-sm .btn-secondary}
   - look at `FROM python:3.13-slim-trixie AS run`
 
+<a id="tut-25.1-Dockerfile-6651dd-diff"></a>
+
 <details open><summary>The patch to <code>Dockerfile</code></summary>
 
 ```diff
@@ -184,6 +186,8 @@ git restore --source 570bb2134f03 --staged -- :/ && git restore --source 40012bd
 
 - <a id="tut-25.2-Dockerfile-6651dd"></a>`Dockerfile`: the stage `dev`. 31 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/40012bdfeb76ad96615227e9772d387ee5e48495/Dockerfile){.btn .btn-sm .btn-secondary}
   - look at `FROM python:3.13-slim-trixie AS dev`
+
+<a id="tut-25.2-Dockerfile-6651dd-diff"></a>
 
 <details open><summary>The patch to <code>Dockerfile</code></summary>
 
@@ -285,6 +289,8 @@ git restore --source 40012bdfeb76 --staged -- :/ && git restore --source f086240
 - <a id="tut-25.3-.dockerignore-05a721"></a>`.dockerignore`: what a build never copies. New, 16 lines. [The file](https://github.com/rahuldave/babykev/blob/f0862402733db839738f0b350a049b2ee5e2a2aa/.dockerignore){.btn .btn-sm .btn-secondary}
   - look at `.venv`
 
+<a id="tut-25.3-.dockerignore-05a721-diff"></a>
+
 <details open><summary>The patch to <code>.dockerignore</code></summary>
 
 ```diff
@@ -351,6 +357,8 @@ git restore --source f0862402733d --staged -- :/ && git restore --source 3043d16
 
 - <a id="tut-25.4-tests-conftest.py-626af3"></a>`tests/conftest.py`: no deadline, for every test that hypothesis feeds. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/3043d160e0d6e424e7178bd6c86dfeb1aa17abb4/tests/conftest.py){.btn .btn-sm .btn-secondary}
   - look at `settings.register_profile("babykev", deadline=None)`
+
+<a id="tut-25.4-tests-conftest.py-626af3-diff"></a>
 
 <details open><summary>The patch to <code>tests/conftest.py</code></summary>
 
@@ -429,6 +437,8 @@ git restore --source 3043d160e0d6 --staged -- :/ && git restore --source a2cd7c0
 
 - <a id="tut-25.5-justfile-424f0b"></a>`justfile`: the recipe `image`. 33 lines added. [The file](https://github.com/rahuldave/babykev/blob/a2cd7c083154e3f1161449592635e04b8f84cebe/justfile){.btn .btn-sm .btn-secondary}
   - look at `image *args:`
+
+<a id="tut-25.5-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -515,6 +525,8 @@ git restore --source a2cd7c083154 --staged -- :/ && git restore --source ce3646d
   - look at `"hadolint-bin>=2.15.1",`
 - <a id="tut-25.6-uv.lock-8356d8"></a>`uv.lock`: the exact version of hadolint. 13 lines added. It comes from `uv add --group lint hadolint-bin`. [The file](https://github.com/rahuldave/babykev/blob/ce3646d2f0cdacf2177d9ba36355dd4ffc1b2f4a/uv.lock){.btn .btn-sm .btn-secondary}
 
+<a id="tut-25.6-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff that <code>uv add --group lint hadolint-bin</code> makes in <code>pyproject.toml</code></summary>
 
 ```diff
@@ -571,6 +583,8 @@ git restore --source ce3646d2f0cd --staged -- :/ && git restore --source fe092b5
 
 - <a id="tut-25.7-justfile-424f0b"></a>`justfile`: hadolint, in `lint-config`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/fe092b54847ade1223f40297937fe59259096f68/justfile){.btn .btn-sm .btn-secondary}
   - look at `    uv run hadolint Dockerfile`
+
+<a id="tut-25.7-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -637,6 +651,8 @@ git restore --source fe092b54847a --staged -- :/ && git restore --source fd4dc51
 - <a id="tut-25.8-Dockerfile-6651dd"></a>`Dockerfile`: the reason, and the line for hadolint. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/fd4dc51723462cdeaf072a4f2a18472a0cf6a645/Dockerfile){.btn .btn-sm .btn-secondary}
   - look at `# hadolint ignore=DL3008`
 
+<a id="tut-25.8-Dockerfile-6651dd-diff"></a>
+
 <details open><summary>The patch to <code>Dockerfile</code></summary>
 
 ```diff
@@ -678,7 +694,7 @@ network at all.
 just image shell --network none -- just check
 ```
 
-It fails before any check runs. uv cannot download hadolint-bin, with `dns error`. The dev image was built
+It fails before any check runs, with an error from uv. The dev image was built
 before hadolint came into `uv.lock`, and `UV_LOCKED` makes uv install the packages of the lockfile first. An image
 holds the packages of the lockfile at the time of its build.
 
@@ -705,6 +721,8 @@ git fetch --quiet --tags --force origin; git restore --source fd4dc5172346 --sta
 
 - <a id="tut-25.9-README.md-8ec9a0"></a>`README.md`: the section on the images, and the row of the `Dockerfile`. 24 lines added. [The file](https://github.com/rahuldave/babykev/blob/6c85dd08f3cd441259b3749ac38cceaf7f2392e0/README.md){.btn .btn-sm .btn-secondary}
   - look at `## The images`
+
+<a id="tut-25.9-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 

@@ -64,6 +64,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-13 --staged --
 - <a id="tut-14.1-.gitignore-a5cc29"></a>`.gitignore`: the files that a build of the docs makes. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/3593f61e4e221b04f00f360fe96e6dc4243b02dd/.gitignore){.btn .btn-sm .btn-secondary}
   - look at `/docs/_site/`
 
+<a id="tut-14.1-.gitignore-a5cc29-diff"></a>
+
 <details open><summary>The patch to <code>.gitignore</code></summary>
 
 ```diff
@@ -111,7 +113,7 @@ same line as the command.
 `git status --short --ignored docs` lists the three paths that the build made, each marked `!!`, ignored. The lines
 of `.gitignore` from the move before keep them out of git.
 
-Your copy also lists `?? docs/` first. git does not know the folder yet, because nothing in it is staged.
+Your copy can also list `docs/` itself, or `docs/_smalldocs.yml`, first. That depends on whether you staged the settings of the site.
 
 Check your files against this move. The command prints nothing when they match, and otherwise shows what differs:
 
@@ -129,6 +131,8 @@ git restore --source 3593f61e4e22 --staged -- :/ && git restore --source 64de405
 
 - <a id="tut-14.2-justfile-424f0b"></a>`justfile`: with no words, `docs` builds the site. 5 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/64de40516df5aa215bfac1c0198e898ac0960061/justfile){.btn .btn-sm .btn-secondary}
   - look at `    if [ "$#" -eq 0 ]; then exec uv run smalldocs render docs; fi`
+
+<a id="tut-14.2-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -194,6 +198,8 @@ git restore --source 64de40516df5 --staged -- :/ && git restore --source aee2a9f
 
 - <a id="tut-14.3-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the settings of the site, above the reference. 17 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/aee2a9faf7fe05e5d8780c8cf42e82c3d4145330/docs/_smalldocs.yml){.btn .btn-sm .btn-secondary}
   - look at `        contents: api/*  # the reference pages, which each build makes from the code`
+
+<a id="tut-14.3-docs-_smalldocs.yml-4b0b48-diff"></a>
 
 <details open><summary>The patch to <code>docs/_smalldocs.yml</code></summary>
 
@@ -266,6 +272,8 @@ git restore --source aee2a9faf7fe --staged -- :/ && git restore --source e849099
 
 - <a id="tut-14.4-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the front page, written by hand. New, 29 lines. [The file](https://github.com/rahuldave/babykev/blob/e849099979801bc865c5a466d2b098b5ac9aa2e6/docs/index.qmd){.btn .btn-sm .btn-secondary}
   - look at ``A name in backticks, such as `to_answers`, links to its entry.``
+
+<a id="tut-14.4-docs-index.qmd-d6d880-diff"></a>
 
 <details open><summary>The patch to <code>docs/index.qmd</code></summary>
 
@@ -341,6 +349,8 @@ git fetch --quiet --tags --force origin; git restore --source e84909997980 --sta
 
 - <a id="tut-14.5-README.md-8ec9a0"></a>`README.md`: a row for `docs/`. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/e1efb48492d7223fd0442906d2e55a83e0db481e/README.md){.btn .btn-sm .btn-secondary}
   - look at ``| `docs/` | The docs site. `just docs` builds it into `docs/_site`, with the reference made from the code |``
+
+<a id="tut-14.5-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 

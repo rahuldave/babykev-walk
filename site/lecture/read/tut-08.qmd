@@ -31,10 +31,10 @@ sed -n '291,293p' tests/unit/test_api.py
 git show tut-05:src/babykev/api.py | sed -n '82,90p'
 ```
 
-**The tests find the bugs.** The `git restore` line puts the file of kev back, from `tut-05`, under the tests of today. `just test -k` then runs the seven tests of the confidences and of rounding, and 3 fail. pytest prints `assert 0.77 == 1 ± 0.02` for the sum of the 77 probabilities, and prints `assert 0.5 == 0 ± 1.0e-12` for the confidence of a guess. A scale of one level stops with `ZeroDivisionError` at line 86, and the last line puts today's file back.
+**The tests find the bugs.** The `git checkout` line puts the file of kev back, from `tut-05`, under the tests of today. `just test -k` then runs the seven tests of the confidences and of rounding, and 3 fail. pytest prints `assert 0.77 == 1 ± 0.02` for the sum of the 77 probabilities, and prints `assert 0.5 == 0 ± 1.0e-12` for the confidence of a guess. A scale of one level stops with `ZeroDivisionError` at line 86, and the last line puts today's file back.
 
 ```bash
-git restore --source tut-05 src/babykev/api.py
+git checkout tut-05 -- src/babykev/api.py
 just test -k "rounded_probabilities or score_confidence"
 git restore src/babykev/api.py
 ```
@@ -70,10 +70,10 @@ sed -n '296,298p' tests/unit/test_api.py
 just test -k single_level
 ```
 
-**The formatter, on the file before it.** The `git restore` line takes `api.py` as it was at the end of the fixes, before the formatter and the linter, from `tut-06`. `uv run ruff check --statistics` runs the linter on it first, so that we can count again after the formatter. It prints one line for each code with its count, and then `Found 17 errors.`, which is the total. The codes are `E501`, a line over 100 characters, 6 of them, and `E701`, two statements on one line, 4 of them. The others are `N806`, `UP007` and `B905`, 2 each, and `I001`, 1.
+**The formatter, on the file before it.** The `git checkout` line takes `api.py` as it was at the end of the fixes, before the formatter and the linter, from `tut-06`. `uv run ruff check --statistics` runs the linter on it first, so that we can count again after the formatter. It prints one line for each code with its count, and then `Found 17 errors.`, which is the total. The codes are `E501`, a line over 100 characters, 6 of them, and `E701`, two statements on one line, 4 of them. The others are `N806`, `UP007` and `B905`, 2 each, and `I001`, 1.
 
 ```bash
-git restore --source tut-06 src/babykev/api.py
+git checkout tut-06 -- src/babykev/api.py
 uv run ruff check --statistics
 ```
 
@@ -137,6 +137,8 @@ just fmt --check
 - <a id="tut-08-pyproject.toml-5d07e7"></a>`pyproject.toml`: 18 lines added. [The file](https://github.com/rahuldave/babykev/blob/7cdb1ba696a32050cba1c335892fccb68bb4fd24/pyproject.toml){.btn .btn-sm .btn-secondary}
 - <a id="tut-08-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: changes `Score`, `choice_confidence`, `score_confidence`, `to_answers`. 15 lines added, 14 removed. [The file](https://github.com/rahuldave/babykev/blob/7cdb1ba696a32050cba1c335892fccb68bb4fd24/src/babykev/api.py){.btn .btn-sm .btn-secondary}
 
+<a id="tut-08-justfile-424f0b-diff"></a>
+
 <details><summary>The diff of <code>justfile</code></summary>
 
 ```diff
@@ -156,6 +158,8 @@ just fmt --check
 ```
 
 </details>
+
+<a id="tut-08-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -185,6 +189,8 @@ just fmt --check
 ```
 
 </details>
+
+<a id="tut-08-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 

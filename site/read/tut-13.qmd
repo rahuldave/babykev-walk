@@ -63,6 +63,8 @@ and under it fastcore, markdown-it-py, mdit-py-plugins, pygments and pyyaml. mdu
   - look at `"smalldocs>=0.1.5",`
 - <a id="tut-13.1-uv.lock-8356d8"></a>`uv.lock`: the exact version of smalldocs, and of the packages that it needs. 62 lines added. It comes from `uv add --group docs smalldocs`. [The file](https://github.com/rahuldave/babykev/blob/609d58ce5f8c0fb8e7b60548c8ee097766446ff5/uv.lock){.btn .btn-sm .btn-secondary}
 
+<a id="tut-13.1-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
 ```diff
@@ -89,7 +91,7 @@ has one section, `api`, the reference. It names the package and the address of i
 the files of the tests, which smalldocs holds to the same rule as the package. The file is new, and comes whole, as a
 patch.
 
-[± See the new file `docs/_smalldocs.yml`](#tut-13.2-docs-_smalldocs.yml-4b0b48){.btn .btn-sm .btn-secondary}
+[± See the new file `docs/_smalldocs.yml`](#tut-13.2-docs-_smalldocs.yml-4b0b48-diff){.btn .btn-sm .btn-secondary}
 
 The new file `docs/_smalldocs.yml` has 5 lines. Line 3 names the package, `babykev`, and line 5 names the tests,
 `tests/**/*.py`.
@@ -123,6 +125,8 @@ method, which the linter does not ask for.
 - <a id="tut-13.2-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the package to document, and the tests to check. New, 5 lines. [The file](https://github.com/rahuldave/babykev/blob/4444b1e809427e92a5dc08a9e9fdbbddab7de830/docs/_smalldocs.yml){.btn .btn-sm .btn-secondary}
   - look at `  packages: [babykev]`
 
+<a id="tut-13.2-docs-_smalldocs.yml-4b0b48-diff"></a>
+
 <details><summary>The diff of <code>docs/_smalldocs.yml</code></summary>
 
 ```diff
@@ -142,7 +146,7 @@ method, which the linter does not ask for.
 
 The command that lists the gaps is long. The recipe `docs` gives its words to `smalldocs api`, and adds `--dir docs`.
 
-[± See the change to `justfile`](#tut-13.3-justfile-424f0b){.btn .btn-sm .btn-secondary}
+[± See the change to `justfile`](#tut-13.3-justfile-424f0b-diff){.btn .btn-sm .btn-secondary}
 
 At the end of the `justfile`, the recipe `docs` is on lines 78 to 82. Line 82 runs `uv run smalldocs api "$@" --dir
 docs`.
@@ -160,6 +164,8 @@ just help docs
 
 - <a id="tut-13.3-justfile-424f0b"></a>`justfile`: the recipe `docs`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/a582ad38e75bb188174b75a5e80405cebcd1259d/justfile){.btn .btn-sm .btn-secondary}
   - look at `docs *args:`
+
+<a id="tut-13.3-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -186,7 +192,7 @@ just help docs
 parameter on a line, with its docment beside it, and a docment on its return type, after `-> TYPE:`. The type says
 `int`, and the docment says what the number means.
 
-[± See the change to `src/babykev/api.py`](#tut-13.4-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
+[± See the change to `src/babykev/api.py`](#tut-13.4-src-babykev-api.py-2ea65f-diff){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/api.py`, the signature of `render` is on lines 56 to 59. `indent: int = 0,  # How deeply the value is
 nested. Each level indents by two spaces` is line 58, and `) -> str:  # The text that the model sees` is line 59. The
@@ -208,6 +214,8 @@ The reference of `render` has its signature, its docstring, and a table with a r
 
 - <a id="tut-13.4-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docment on each parameter and each return of seven functions. 24 lines added, 7 removed. [The file](https://github.com/rahuldave/babykev/blob/ae28dff704c768a862e416a894ac42443ab3468c/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `) -> str:  # The text that the model sees`
+
+<a id="tut-13.4-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -297,7 +305,7 @@ The reference of `render` has its signature, its docstring, and a table with a r
 reference leaves it out. smalldocs checks it still, because a reader of the code needs to know what it does. It gets
 a docstring, and a docment on its return, the choice itself.
 
-[± See the change to `src/babykev/api.py`](#tut-13.5-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
+[± See the change to `src/babykev/api.py`](#tut-13.5-src-babykev-api.py-2ea65f-diff){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/api.py`, line 32 is now `def _check(self) -> Self:  # The choice itself, unchanged`, and line 33 is its
 docstring.
@@ -312,6 +320,8 @@ just docs check
 
 - <a id="tut-13.5-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docstring and a docment for `_check`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a064e34557be7fc006863c995c8cd39e85491b31/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `    def _check(self) -> Self:  # The choice itself, unchanged`
+
+<a id="tut-13.5-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -338,7 +348,7 @@ The four classes of a request have no signature to put a docment on. Each field 
 `type: Literal["noul"]`. pydantic takes a description of a field in `Field(description="...")`. It keeps the
 description in the schema of the model, which other programs read, and smalldocs puts it in the reference.
 
-[± See the change to `src/babykev/api.py`](#tut-13.6-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
+[± See the change to `src/babykev/api.py`](#tut-13.6-src-babykev-api.py-2ea65f-diff){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/api.py`, the fields of `Noul` are on lines 19 to 24, and the fields of `SystemOneRequest` on lines 62
 to 65. The `criteria` of `Score`, on lines 49 to 53, keep their limits, `min_length=2` and `max_length=MAX_OPTIONS`,
@@ -359,6 +369,8 @@ the contract.
 
 - <a id="tut-13.6-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a description on every field of the four classes. 22 lines added, 11 removed. [The file](https://github.com/rahuldave/babykev/blob/6ad6c02267070b7c260934e3165ea40aeb49a035/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `    type: Literal["noul"] = Field(description="Marks the question as one of yes or no")`
+
+<a id="tut-13.6-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -434,7 +446,7 @@ The tests are documentation too. A reader learns from them what the code must do
 tests to the same rule as the package. In `test_cli.py`, `run` and the two tests have parameters with no docment.
 Each now has one parameter on a line, with its docment.
 
-[± See the change to `tests/unit/test_cli.py`](#tut-13.7-tests-unit-test_cli.py-44d4a0){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/unit/test_cli.py`](#tut-13.7-tests-unit-test_cli.py-44d4a0-diff){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_cli.py`, the signature of `run` is on lines 8 to 11. The parameters of the two tests are on lines
 19 to 21 and 29 to 30.
@@ -456,6 +468,8 @@ prints `tests/unit/test_cli.py 3 of 3`, and `39 of 45`.
 
 - <a id="tut-13.7-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: a docment on each parameter. 9 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/28caad31e7a7fbab5acefd39c2b2b9e153f096b0/tests/unit/test_cli.py){.btn .btn-sm .btn-secondary}
   - look at `    capsys: pytest.CaptureFixture[str],  # Catches the message of the refusal`
+
+<a id="tut-13.7-tests-unit-test_cli.py-44d4a0-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
 
@@ -504,7 +518,7 @@ prints `tests/unit/test_cli.py 3 of 3`, and `39 of 45`.
 In `test_api.py`, the helper `cheese_request` has no docment on its return. Five tests take parameters from
 `@pytest.mark.parametrize`, with no docment. Each gets its docments.
 
-[± See the change to `tests/unit/test_api.py`](#tut-13.8-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/unit/test_api.py`](#tut-13.8-tests-unit-test_api.py-58d97c-diff){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_api.py`, line 32 is `def cheese_request() -> SystemOneRequest:  # A noul, a choice and a score about
 one cheese`. The test of `option_text` is on lines 155 to 169, with its three parameters on lines 164 to 166.
@@ -524,6 +538,8 @@ complete, and `45 of 45 functions, methods and classes are typed and documented`
 
 - <a id="tut-13.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a docment on each parameter, and on the return of `cheese_request`. 17 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/4bd145b7895a9e6f7841a997995efcd343d0049c/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `    description: JSONContent,  # Its description, or None or "" for none`
+
+<a id="tut-13.8-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
 
@@ -605,7 +621,7 @@ A docment is on the line of its parameter or of its return type, and a line has 
 makes a mistake on purpose. The docment of the return of `to_record` says more, and its line grows to 119
 characters. The next moves show what the formatter makes of it.
 
-[± See the change to `src/babykev/api.py`](#tut-13.9-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
+[± See the change to `src/babykev/api.py`](#tut-13.9-src-babykev-api.py-2ea65f-diff){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/api.py`, line 98 now ends with `# The record that the model reads, and the metadata of each question`.
 
@@ -623,6 +639,8 @@ exit code 1. `just docs check` still prints `45 of 45`, because the docment is o
 
 - <a id="tut-13.9-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: a docment longer than its line, on purpose. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/95ebd81a9d15158c39a8adf35237da700e9334b2/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `) -> tuple[dict[str, Any], list[dict[str, Any]]]:  # The record that the model reads, and the metadata of each question`
+
+<a id="tut-13.9-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -671,6 +689,8 @@ the formatter are happy, and only the docs check sees the lost docment. `just ch
 - <a id="tut-13.10-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the return type of `to_record`, over three lines. 3 lines added, 1 removed. It comes from `just fmt`. [The file](https://github.com/rahuldave/babykev/blob/54535b100f054ffd8b787c50cac1d3a828770ec9/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `]:  # The record that the model reads, and the metadata of each question`
 
+<a id="tut-13.10-src-babykev-api.py-2ea65f-diff"></a>
+
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
 ```diff
@@ -696,7 +716,7 @@ the formatter are happy, and only the docs check sees the lost docment. `just ch
 The fix is a docment that fits on the line of the return type, with the type on one line again. The docment of
 before, `The record, and the metadata of each question`, fits, at 98 characters.
 
-[± See the change to `src/babykev/api.py`](#tut-13.11-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
+[± See the change to `src/babykev/api.py`](#tut-13.11-src-babykev-api.py-2ea65f-diff){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/api.py`, line 98 is `) -> tuple[dict[str, Any], list[dict[str, Any]]]:  # The record, and the metadata of
 each question`, as it was before the mistake.
@@ -712,6 +732,8 @@ just docs check
 
 - <a id="tut-13.11-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the return type on one line, with its short docment. 1 line added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/861142a50356963bb5e371fe8226ba73b87eef93/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `) -> tuple[dict[str, Any], list[dict[str, Any]]]:  # The record, and the metadata of each question`
+
+<a id="tut-13.11-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -738,7 +760,7 @@ just docs check
 `just check` passed with a docment lost. As a line of `check`, `just docs check` runs before each `git commit`,
 through the hook. It goes after the tests, and before the config files.
 
-[± See the change to `justfile`](#tut-13.12-justfile-424f0b){.btn .btn-sm .btn-secondary}
+[± See the change to `justfile`](#tut-13.12-justfile-424f0b-diff){.btn .btn-sm .btn-secondary}
 
 In the `justfile`, `just docs check` is line 76, between `just test -q` and `just lint-config`. The comment on line 66
 names the docs.
@@ -756,6 +778,8 @@ after the tests, and ends with exit code 0. A function, a parameter or a field w
 
 - <a id="tut-13.12-justfile-424f0b"></a>`justfile`: the docs check, in the gate. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/005b87bdfa2e70c6ceca52dc07197c69702f00be/justfile){.btn .btn-sm .btn-secondary}
   - look at `    just docs check`
+
+<a id="tut-13.12-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 

@@ -75,6 +75,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-06 --staged --
   - look at `"ruff>=0.17.1",`
 - <a id="tut-07.1-uv.lock-8356d8"></a>`uv.lock`: ruff, at its exact version. 29 lines added. It comes from `uv add --group lint ruff`. [The file](https://github.com/rahuldave/babykev/blob/5085d2a6ae47a58d6259dfa06679bb2a9be692e1/uv.lock){.btn .btn-sm .btn-secondary}
 
+<a id="tut-07.1-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff that <code>uv add --group lint ruff</code> makes in <code>pyproject.toml</code></summary>
 
 ```diff

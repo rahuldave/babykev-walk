@@ -100,6 +100,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-21 --staged --
 - <a id="tut-22.1-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the picture of a small request. New, 26 lines. [The file](https://github.com/rahuldave/babykev/blob/e7db07241985b2cc80908d108e4229cfb512646b/tests/unit/test_mask.py){.btn .btn-sm .btn-secondary}
   - look at `def test_mask_of_a_small_request() -> None:`
 
+<a id="tut-22.1-tests-unit-test_mask.py-aeb55a-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_mask.py</code></summary>
 
 ```diff
@@ -174,6 +176,8 @@ git restore --source e7db07241985 --staged -- :/ && git restore --source aa4f870
   - look at `"hypothesis>=6.170.0",`
 - <a id="tut-22.2-uv.lock-8356d8"></a>`uv.lock`: the exact versions of hypothesis and sortedcontainers. 80 lines added. It comes from `uv add --group test hypothesis`. [The file](https://github.com/rahuldave/babykev/blob/aa4f870deb9ec19ee18484e187f5d850399fa554/uv.lock){.btn .btn-sm .btn-secondary}
 
+<a id="tut-22.2-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff that <code>uv add --group test hypothesis</code> makes in <code>pyproject.toml</code></summary>
 
 ```diff
@@ -239,6 +243,8 @@ git restore --source aa4f870deb9e --staged -- :/ && git restore --source 857445d
 
 - <a id="tut-22.3-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the shapes, and the first rule. 23 lines added. [The file](https://github.com/rahuldave/babykev/blob/857445da99027d423543017a9face7f2cd41ea19/tests/unit/test_mask.py){.btn .btn-sm .btn-secondary}
   - look at `def test_no_question_sees_another_question(`
+
+<a id="tut-22.3-tests-unit-test_mask.py-aeb55a-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_mask.py</code></summary>
 
@@ -322,6 +328,8 @@ git restore --source 857445da9902 --staged -- :/ && git restore --source 55034fc
 - <a id="tut-22.4-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the causal rule. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/55034fc9085b7ba3a5ac86f3cd40b955a698b642/tests/unit/test_mask.py){.btn .btn-sm .btn-secondary}
   - look at `def test_no_token_sees_a_later_token(`
 
+<a id="tut-22.4-tests-unit-test_mask.py-aeb55a-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_mask.py</code></summary>
 
 ```diff
@@ -381,6 +389,8 @@ git restore --source 55034fc9085b --staged -- :/ && git restore --source 41b4f5f
 
 - <a id="tut-22.5-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the whole rule. 13 lines added. [The file](https://github.com/rahuldave/babykev/blob/41b4f5f236a25a9e8438ba2a00682b5125868a50/tests/unit/test_mask.py){.btn .btn-sm .btn-secondary}
   - look at `def test_what_is_allowed_is_exactly_the_rule(`
+
+<a id="tut-22.5-tests-unit-test_mask.py-aeb55a-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_mask.py</code></summary>
 
@@ -449,6 +459,8 @@ git restore --source 41b4f5f236a2 --staged -- :/ && git restore --source 12e9fb1
 - <a id="tut-22.6-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: rewrite question 2, and questions 1 and 3 keep their answers. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/12e9fb18c4c86cbd1291da858fd6ad39af01929b/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_a_question_cannot_see_its_sibling(`
 
+<a id="tut-22.6-tests-unit-test_model.py-583145-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
 ```diff
@@ -512,6 +524,8 @@ git restore --source 12e9fb18c4c8 --staged -- :/ && git restore --source d3e4a6a
 
 - <a id="tut-22.7-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: three questions in one pass, and each alone. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/d3e4a6a067cd7f481a1bd327af08cb2358429e9c/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_packed_questions_answer_as_they_would_alone(`
+
+<a id="tut-22.7-tests-unit-test_model.py-583145-diff"></a>
 
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
@@ -587,6 +601,8 @@ git restore --source d3e4a6a067cd --staged -- :/ && git restore --source c3e2706
 - <a id="tut-22.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the questions in the reverse order. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/c3e2706e2b1fbc58bda631e173e26145256bc47e/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_the_order_of_questions_does_not_matter(`
 
+<a id="tut-22.8-tests-unit-test_model.py-583145-diff"></a>
+
 <details open><summary>The patch to <code>tests/unit/test_model.py</code></summary>
 
 ```diff
@@ -656,6 +672,8 @@ git restore --source c3e2706e2b1f --staged -- :/ && git restore --source 18bdfee
 - <a id="tut-22.9-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: a mask that blocks only the question just before, on purpose. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/18bdfee89d950245956448ab8377cfc8b90e8595/src/babykev/model.py){.btn .btn-sm .btn-secondary}
   - look at `    same = (s[None, :] == s[:, None]) | (s[None, :] == 0) | (s[None, :] < s[:, None] - 1)`
 
+<a id="tut-22.9-src-babykev-model.py-a86a0b-diff"></a>
+
 <details open><summary>The patch to <code>src/babykev/model.py</code></summary>
 
 ```diff
@@ -715,7 +733,7 @@ comes first and saw only the state with either mask. Question 2 now gets exactly
 
 The smoke went from `6 of 15 right` with the old mask to `4 of 15 right` with the fix, and every test says that the
 fix is right. The first question of each request kept its answer, with the same two decimals. It comes first, so it
-saw only the state with either mask. Nine of the ten other answers changed.
+saw only the state with either mask. Most of the ten other answers changed.
 
 The milk of Coquetdale went from `buffalo` to `cow`, which is right. The milk and the firmness of Amou, and the
 intensity of Loma Alta, were right with the old mask, and are wrong now. The count fell, and the fix is still right.
@@ -769,6 +787,8 @@ git restore --source 18bdfee89d95 --staged -- :/ && git restore --source 5f63fb4
 
 - <a id="tut-22.10-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the state, or the same question. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/5f63fb463f94ae6c82a647db8a4b86d4a3d6caa1/src/babykev/model.py){.btn .btn-sm .btn-secondary}
   - look at `    same = (s[None, :] == s[:, None]) | (s[None, :] == 0)`
+
+<a id="tut-22.10-src-babykev-model.py-a86a0b-diff"></a>
 
 <details open><summary>The patch to <code>src/babykev/model.py</code></summary>
 

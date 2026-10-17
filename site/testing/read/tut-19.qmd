@@ -23,7 +23,7 @@ records a change. smalldocs builds a docs site from the code.
 
 Then the model comes in, with torch and three more packages, as `src/babykev/model.py`. ty checks its types.
 `src/babykev/smoke.py` runs the real model on the sample requests, and `just smoke` runs it. No test calls the model
-or the smoke. `just test` prints `53 passed`, and the total coverage is 32%.
+or the smoke yet, so most of the new lines have no test.
 
 The tests of the model need a model, and the real one is a download of about 1 GB. Here the tests get a tiny model,
 with random weights, from fixtures.
@@ -45,7 +45,7 @@ The tiny tokenizer has one token for each printable character, and the five deli
 tokenizer of the base model, it turns the text of a delimiter into the delimiter. `tests/tiny.py` is a helper of the
 tests, and not a test, so pytest does not collect it.
 
-[± See the new file `tests/tiny.py`](#tut-19.1-tests-tiny.py-70c1c9){.btn .btn-sm .btn-secondary}
+[± See the new file `tests/tiny.py`](#tut-19.1-tests-tiny.py-70c1c9-diff){.btn .btn-sm .btn-secondary}
 
 The new file `tests/tiny.py` has 23 lines, and `tiny_tokenizer` on lines 11 to 23.
 
@@ -76,6 +76,8 @@ token, and no secret. The next move answers it.
 
 - <a id="tut-19.1-tests-tiny.py-70c1c9"></a>`tests/tiny.py`: the tiny tokenizer. New, 23 lines. [The file](https://github.com/rahuldave/babykev/blob/b57593b2f1c324a6349f0f5b58a75754f7f261dc/tests/tiny.py){.btn .btn-sm .btn-secondary}
   - look at `def tiny_tokenizer() -> PreTrainedTokenizerFast:  # A tokenizer with one token per character`
+
+<a id="tut-19.1-tests-tiny.py-70c1c9-diff"></a>
 
 <details><summary>The diff of <code>tests/tiny.py</code></summary>
 
@@ -115,7 +117,7 @@ token, and no secret. The next move answers it.
 `S106` reads the name of a parameter, and not what the value is. The tests already may use `assert`, by a line of
 `[tool.ruff.lint.per-file-ignores]`. The same line lets them break `S106`. The package still may not.
 
-[± See the change to `pyproject.toml`](#tut-19.2-pyproject.toml-5d07e7){.btn .btn-sm .btn-secondary}
+[± See the change to `pyproject.toml`](#tut-19.2-pyproject.toml-5d07e7-diff){.btn .btn-sm .btn-secondary}
 
 In `pyproject.toml`, the comment is on lines 89 and 90, and line 91 is `"tests/**" = ["S101", "S106"]`.
 
@@ -129,6 +131,8 @@ just lint
 
 - <a id="tut-19.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the tests may break `S106`. 3 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/2daaf5f257514e391edb5ad5183c2d2288965de3/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `"tests/**" = ["S101", "S106"]`
+
+<a id="tut-19.2-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -154,7 +158,7 @@ The backbone is the language model under the head. `tiny_backbone` builds the co
 layers of 32 numbers, where the real one has 24 layers of 896. Its weights are random, from a seed, so they are the
 same at every run.
 
-[± See the change to `tests/tiny.py`](#tut-19.3-tests-tiny.py-70c1c9){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/tiny.py`](#tut-19.3-tests-tiny.py-70c1c9-diff){.btn .btn-sm .btn-secondary}
 
 In `tests/tiny.py`, `tiny_backbone` is on lines 27 to 42.
 
@@ -168,6 +172,8 @@ It prints `24224`, the parameters of the tiny backbone. The backbone of Qwen2.5-
 
 - <a id="tut-19.3-tests-tiny.py-70c1c9"></a>`tests/tiny.py`: the tiny backbone. 20 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/a6e3905ee0316fdd0b2e0d3baab9f4a65d0588b5/tests/tiny.py){.btn .btn-sm .btn-secondary}
   - look at `def tiny_backbone(`
+
+<a id="tut-19.3-tests-tiny.py-70c1c9-diff"></a>
 
 <details><summary>The diff of <code>tests/tiny.py</code></summary>
 
@@ -218,7 +224,7 @@ passes in what it returns. `monkeypatch` and `capsys` are fixtures of pytest. py
 any test, and every test file can use the fixtures in it, with no import. The first fixture, `tok`, is the tiny
 tokenizer. `scope="session"` builds it once for the whole run.
 
-[± See the new file `tests/conftest.py`](#tut-19.4-tests-conftest.py-626af3){.btn .btn-sm .btn-secondary}
+[± See the new file `tests/conftest.py`](#tut-19.4-tests-conftest.py-626af3-diff){.btn .btn-sm .btn-secondary}
 
 The new file `tests/conftest.py` imports `tiny_tokenizer` from `tests.tiny` on line 10, and has the fixture `tok` on
 lines 13 to 16.
@@ -235,6 +241,8 @@ Python, and not the root of the project. So `tests.tiny` cannot be found. The ne
 
 - <a id="tut-19.4-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `tok`. New, 16 lines. [The file](https://github.com/rahuldave/babykev/blob/14585bbd144a55ac28ff0473f3d3f2c23c03d314/tests/conftest.py){.btn .btn-sm .btn-secondary}
   - look at `@pytest.fixture(scope="session")`
+
+<a id="tut-19.4-tests-conftest.py-626af3-diff"></a>
 
 <details><summary>The diff of <code>tests/conftest.py</code></summary>
 
@@ -267,7 +275,7 @@ Python, and not the root of the project. So `tests.tiny` cannot be found. The ne
 The setting `pythonpath` of pytest puts folders on the path of Python. `"."` is the root of the project, where the
 folder `tests` is.
 
-[± See the change to `pyproject.toml`](#tut-19.5-pyproject.toml-5d07e7){.btn .btn-sm .btn-secondary}
+[± See the change to `pyproject.toml`](#tut-19.5-pyproject.toml-5d07e7-diff){.btn .btn-sm .btn-secondary}
 
 In `pyproject.toml`, the comment is on line 57, and line 58 is `pythonpath = ["."]`.
 
@@ -290,6 +298,8 @@ just test --fixtures
 
 - <a id="tut-19.5-pyproject.toml-5d07e7"></a>`pyproject.toml`: the root of the project, on the path of pytest. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/b458ae1df2239c8645f7a4eb35832fd2dddc1114/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `pythonpath = ["."]`
+
+<a id="tut-19.5-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -315,7 +325,7 @@ The fixture `model` is a `DecisionModel` on the tiny backbone, on the CPU, with 
 the backbone needs to know the number of tokens. A fixture can ask for another fixture. `model` has the default scope,
 so pytest builds it again for each test, and no test can spoil it for the next.
 
-[± See the change to `tests/conftest.py`](#tut-19.6-tests-conftest.py-626af3){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/conftest.py`](#tut-19.6-tests-conftest.py-626af3-diff){.btn .btn-sm .btn-secondary}
 
 In `tests/conftest.py`, the fixture `model` is on lines 20 to 25.
 
@@ -330,6 +340,8 @@ new import.
 
 - <a id="tut-19.6-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `model`. 10 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/0806a218722ba7438f265928d3cfbc0b5f0e723e/tests/conftest.py){.btn .btn-sm .btn-secondary}
   - look at `    return DecisionModel("tiny", "cpu", backbone=tiny_backbone(len(tok))).eval()`
+
+<a id="tut-19.6-tests-conftest.py-626af3-diff"></a>
 
 <details><summary>The diff of <code>tests/conftest.py</code></summary>
 
@@ -366,7 +378,7 @@ new import.
 The fixture `record` is one record about Roquefort, in the form that `to_record` returns. It has a state, and three
 questions of 2, 3 and 3 options.
 
-[± See the change to `tests/conftest.py`](#tut-19.7-tests-conftest.py-626af3){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/conftest.py`](#tut-19.7-tests-conftest.py-626af3-diff){.btn .btn-sm .btn-secondary}
 
 In `tests/conftest.py`, the fixture `record` is on lines 30 to 40.
 
@@ -381,6 +393,8 @@ docstring.
 
 - <a id="tut-19.7-tests-conftest.py-626af3"></a>`tests/conftest.py`: the fixture `record`. 15 lines added. [The file](https://github.com/rahuldave/babykev/blob/b4bf2491e8505697eaa015738f93178c6bd7f3fc/tests/conftest.py){.btn .btn-sm .btn-secondary}
   - look at `        "state": "Roquefort. A blue cheese from France, made from sheep's milk.",`
+
+<a id="tut-19.7-tests-conftest.py-626af3-diff"></a>
 
 <details><summary>The diff of <code>tests/conftest.py</code></summary>
 
@@ -423,7 +437,7 @@ The first test asks for the three fixtures. It packs the record with the tiny to
 the head. Each question gets one probability per option, and they sum to 1. Nothing is trained, so the probabilities
 mean nothing. The test checks what is true of any probabilities.
 
-[± See the new file `tests/unit/test_model.py`](#tut-19.8-tests-unit-test_model.py-583145){.btn .btn-sm .btn-secondary}
+[± See the new file `tests/unit/test_model.py`](#tut-19.8-tests-unit-test_model.py-583145-diff){.btn .btn-sm .btn-secondary}
 
 The new file `tests/unit/test_model.py` has one test, on lines 11 to 20.
 
@@ -457,6 +471,8 @@ In tut-19.5, before this test, `model.py` was at 33%, and the total at 45%.
 
 - <a id="tut-19.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the first test of the model, on the tiny model. New, 20 lines. [The file](https://github.com/rahuldave/babykev/blob/321a8df2c597e0c46d06c9b36c711f0fe270900a/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_probabilities_sum_to_one_for_every_question(`
+
+<a id="tut-19.8-tests-unit-test_model.py-583145-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
 
@@ -493,7 +509,7 @@ In tut-19.5, before this test, `model.py` was at 33%, and the total at 45%.
 The table of the README gets a row for each of the two new files. The row of `tests/unit/` names the tests of the
 model.
 
-[± See the change to `README.md`](#tut-19.9-README.md-8ec9a0){.btn .btn-sm .btn-secondary}
+[± See the change to `README.md`](#tut-19.9-README.md-8ec9a0-diff){.btn .btn-sm .btn-secondary}
 
 In `README.md`, the row of `tests/unit/` is on line 83, and the two new rows are on lines 84 and 85.
 
@@ -508,6 +524,8 @@ helpers and the fixtures in it.
 
 - <a id="tut-19.9-README.md-8ec9a0"></a>`README.md`: the rows of the fixtures and of the tiny model. 3 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/88b3a9e08db851ce891ecfcfcf26d18892beea90/README.md){.btn .btn-sm .btn-secondary}
   - look at ``| `tests/tiny.py` | A small tokenizer and backbone, built in memory, in place of the real ones |``
+
+<a id="tut-19.9-README.md-8ec9a0-diff"></a>
 
 <details><summary>The diff of <code>README.md</code></summary>
 

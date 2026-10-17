@@ -163,6 +163,8 @@ just check
 - <a id="step-04-tests-unit-test_docs.py-31dd08"></a>`tests/unit/test_docs.py`: adds `_hidden`, `bare`, `class Box`, `class Thing`, `example`, `greet`, `size`, `span`, `test_a_return_that_is_not_none_needs_a_docment`, `test_an_unknown_module_is_a_lookup_error`, `test_check_holds_the_tests_to_the_convention_too`, `test_check_prints_a_count_per_module_then_every_gap_and_fails`, `test_gaps_names_what_each_symbol_is_missing`, `test_help_and_a_bad_word`, `test_inventory_knows_the_line_of_each_symbol`, `test_inventory_lists_the_public_symbols_in_source_order`, `test_list_prints_one_line_per_symbol`, `test_markdown_has_a_heading_a_signature_a_docstring_and_a_table_per_function`, `test_markdown_has_no_links_and_no_ids`, `test_markdown_shows_a_class_and_its_public_methods_only`, `test_markdown_shows_a_pydantic_model_as_a_table_of_fields`, `test_markdown_writes_a_type_alias_by_its_name`, `test_module_prints_the_markdown_and_an_unknown_name_is_refused`. New, 265 lines. [The file](https://github.com/rahuldave/babykev/blob/d27a7f152ade46e9024f0b97481b85fcce07a16c/tests/unit/test_docs.py){.btn .btn-sm .btn-secondary}
 - <a id="step-04-uv.lock-8356d8"></a>`uv.lock`: 14 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/d27a7f152ade46e9024f0b97481b85fcce07a16c/uv.lock){.btn .btn-sm .btn-secondary}
 
+<a id="step-04-README.md-8ec9a0-diff"></a>
+
 <details><summary>The diff of <code>README.md</code></summary>
 
 ```diff
@@ -206,6 +208,8 @@ just check
 
 </details>
 
+<a id="step-04-docs-.gitignore-402aec-diff"></a>
+
 <details><summary>The diff of <code>docs/.gitignore</code></summary>
 
 ```diff
@@ -215,6 +219,8 @@ just check
 ```
 
 </details>
+
+<a id="step-04-docs-_quarto.yml-ee884f-diff"></a>
 
 <details><summary>The diff of <code>docs/_quarto.yml</code></summary>
 
@@ -243,6 +249,8 @@ just check
 ```
 
 </details>
+
+<a id="step-04-docs-apidocs.py-e63616-diff"></a>
 
 <details><summary>The diff of <code>docs/apidocs.py</code></summary>
 
@@ -338,6 +346,8 @@ just check
 
 </details>
 
+<a id="step-04-docs-index.qmd-d6d880-diff"></a>
+
 <details><summary>The diff of <code>docs/index.qmd</code></summary>
 
 ```diff
@@ -367,6 +377,8 @@ just check
 
 </details>
 
+<a id="step-04-docs-linkify.lua-9e5197-diff"></a>
+
 <details><summary>The diff of <code>docs/linkify.lua</code></summary>
 
 ```diff
@@ -393,6 +405,8 @@ just check
 ```
 
 </details>
+
+<a id="step-04-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -432,6 +446,8 @@ just check
 
 </details>
 
+<a id="step-04-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
 ```diff
@@ -458,6 +474,8 @@ just check
 ```
 
 </details>
+
+<a id="step-04-src-babykev-cli.py-a9e184-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/cli.py</code></summary>
 
@@ -498,6 +516,8 @@ just check
 ```
 
 </details>
+
+<a id="step-04-src-babykev-docs.py-267fa4-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/docs.py</code></summary>
 
@@ -914,6 +934,8 @@ just check
 
 </details>
 
+<a id="step-04-tests-unit-test_cli.py-44d4a0-diff"></a>
+
 <details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
 
 ```diff
@@ -940,6 +962,8 @@ just check
 ```
 
 </details>
+
+<a id="step-04-tests-unit-test_docs.py-31dd08-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_docs.py</code></summary>
 

@@ -36,7 +36,7 @@ The probabilities of an answer must sum to 1. The test makes a choice of 77 opti
 each. `pytest.approx(1, abs=0.02)` accepts any number from 0.98 to 1.02. The test fails on purpose, because it finds
 a bug of kev.
 
-[± See the change to `tests/unit/test_api.py`](#tut-06.1-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/unit/test_api.py`](#tut-06.1-tests-unit-test_api.py-58d97c-diff){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the new test sums the probabilities of 77 equal options.
 
@@ -58,6 +58,8 @@ Lines 89 and 90 are `r2`, which rounds to two decimals. 1/77 is about 0.013, and
 
 - <a id="tut-06.1-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the sum of the rounded probabilities. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/9012b28ceacd0bcc3971154a5df2f822e551443d/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `    assert sum(answer["probabilities"].values()) == pytest.approx(1, abs=0.02)`
+
+<a id="tut-06.1-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
 
@@ -86,7 +88,7 @@ Lines 89 and 90 are `r2`, which rounds to two decimals. 1/77 is about 0.013, and
 Two decimals lose too much, and 77 equal options sum to 0.77. `round_prob` takes the place of `r2`, and rounds to four
 decimals. Each 1/77 becomes 0.013, and the 77 probabilities sum to 1.001, within 0.02 of 1.
 
-[± See the change to `src/babykev/api.py`](#tut-06.2-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
+[± See the change to `src/babykev/api.py`](#tut-06.2-src-babykev-api.py-2ea65f-diff){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/api.py`, `round_prob` stands where `r2` was, and `to_answers` calls it.
 
@@ -101,6 +103,8 @@ just test
 
 - <a id="tut-06.2-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: four decimals. 8 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/27e93dd7ee76e609084a1d8a1c1cfbb4f7811da4/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `    return round(float(x), 4)`
+
+<a id="tut-06.2-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -144,7 +148,7 @@ just test
 Confidence runs from 1, when the model is sure, to 0, when it knows nothing. A choice that gives every option the same
 probability is a guess.
 
-[± See the change to `tests/unit/test_api.py`](#tut-06.3-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/unit/test_api.py`](#tut-06.3-tests-unit-test_api.py-58d97c-diff){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test gives `choice_confidence` four equal probabilities.
 
@@ -158,6 +162,8 @@ pytest prints `1 passed`.
 
 - <a id="tut-06.3-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a guess between four options. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/27f1f23cc392446dd80918636dfc7a3c52692aae/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert choice_confidence([0.25] * 4) == pytest.approx(0)`
+
+<a id="tut-06.3-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
 
@@ -192,7 +198,7 @@ pytest prints `1 passed`.
 
 All the probability on one option is certainty, with three options or with one.
 
-[± See the change to `tests/unit/test_api.py`](#tut-06.4-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/unit/test_api.py`](#tut-06.4-tests-unit-test_api.py-58d97c-diff){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test checks `[0, 1, 0]` and `[1.0]`.
 
@@ -206,6 +212,8 @@ pytest prints `2 passed`.
 
 - <a id="tut-06.4-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: certainty. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/9ded0b3177719bb849eda76972daa2f5368af069/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert choice_confidence([0, 1, 0]) == pytest.approx(1)`
+
+<a id="tut-06.4-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
 
@@ -231,7 +239,7 @@ pytest prints `2 passed`.
 Between a guess and certainty, confidence follows the probability of the most likely option. `[0.5, 0.25, 0.25]` gets
 0.25.
 
-[± See the change to `tests/unit/test_api.py`](#tut-06.5-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/unit/test_api.py`](#tut-06.5-tests-unit-test_api.py-58d97c-diff){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test expects 0.25 for `[0.5, 0.25, 0.25]`.
 
@@ -245,6 +253,8 @@ pytest prints `3 passed`.
 
 - <a id="tut-06.5-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a confidence between 0 and 1. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/890fbe0900f6a0f59232ca9d94ce4cc439e21dde/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert choice_confidence([0.5, 0.25, 0.25]) == pytest.approx(0.25)`
+
+<a id="tut-06.5-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
 
@@ -269,7 +279,7 @@ pytest prints `3 passed`.
 A score has its own confidence, which measures how close the probabilities sit to the most likely level. All the
 probability on one level is certainty, wherever the level is. The test runs for each of three levels.
 
-[± See the change to `tests/unit/test_api.py`](#tut-06.6-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/unit/test_api.py`](#tut-06.6-tests-unit-test_api.py-58d97c-diff){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the parametrized test puts 1.0 on level 0, 1 and 2 in turn.
 
@@ -283,6 +293,8 @@ pytest prints `6 passed`.
 
 - <a id="tut-06.6-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: certainty, on each level. 9 lines added. [The file](https://github.com/rahuldave/babykev/blob/d2564e48ae134802f1d48cc079cfe3b92db14639/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `def test_score_confidence_is_one_when_certain(level):`
+
+<a id="tut-06.6-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
 
@@ -317,7 +329,7 @@ pytest prints `6 passed`.
 
 Doubt between two neighbouring levels is closer to certain than doubt between the two ends of the scale.
 
-[± See the change to `tests/unit/test_api.py`](#tut-06.7-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/unit/test_api.py`](#tut-06.7-tests-unit-test_api.py-58d97c-diff){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test compares `[0.5, 0.5, 0, 0]` with `[0.5, 0, 0, 0.5]`.
 
@@ -331,6 +343,8 @@ pytest prints `7 passed`.
 
 - <a id="tut-06.7-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: near is better than far. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/795356b136ab4b1b1c22c8e63b8175a1a6f6d6de/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert score_confidence([0.5, 0.5, 0, 0]) > score_confidence([0.5, 0, 0, 0.5])`
+
+<a id="tut-06.7-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
 
@@ -355,7 +369,7 @@ pytest prints `7 passed`.
 A score that gives every level the same probability is a guess, as it is for a choice, and its confidence must be 0.
 The test fails on purpose, because it finds the second bug of kev.
 
-[± See the change to `tests/unit/test_api.py`](#tut-06.8-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/unit/test_api.py`](#tut-06.8-tests-unit-test_api.py-58d97c-diff){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the test gives `score_confidence` three equal probabilities.
 
@@ -383,6 +397,8 @@ places from it, so the spread is 1/3 × 0 + 1/3 × 1 + 1/3 × 2 = 1 place. The l
 - <a id="tut-06.8-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: a guess between three levels. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/72a00ec85ae4b6f3b591cf06fc65903a56f1f7fa/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `assert score_confidence([1 / 3] * 3) == pytest.approx(0)`
 
+<a id="tut-06.8-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -406,7 +422,7 @@ places from it, so the spread is 1/3 × 0 + 1/3 × 1 + 1/3 × 2 = 1 place. The l
 A guess gets confidence 0.5, because the code measures the spread against the length of the scale. The fix measures it
 against the spread of a guess around the middle level.
 
-[± See the change to `src/babykev/api.py`](#tut-06.9-src-babykev-api.py-2ea65f){.btn .btn-sm .btn-secondary}
+[± See the change to `src/babykev/api.py`](#tut-06.9-src-babykev-api.py-2ea65f-diff){.btn .btn-sm .btn-secondary}
 
 In `src/babykev/api.py`, `score_confidence` now computes `spread` and `guess`, and divides one by the other.
 
@@ -434,6 +450,8 @@ hold a scale of one level, so no test reaches it.
 
 - <a id="tut-06.9-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: the spread of a guess, as the measure. 12 lines added, 4 removed. [The file](https://github.com/rahuldave/babykev/blob/e97355545c4001a361257c532330f8784aa51b79/src/babykev/api.py){.btn .btn-sm .btn-secondary}
   - look at `    guess = sum(abs(i - (L - 1) / 2) for i in range(L)) / L`
+
+<a id="tut-06.9-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -472,7 +490,7 @@ hold a scale of one level, so no test reaches it.
 Line 90 runs in no test. A scale of one level leaves nothing to doubt, so its confidence is 1, and a test that calls
 `score_confidence` itself can say so.
 
-[± See the change to `tests/unit/test_api.py`](#tut-06.10-tests-unit-test_api.py-58d97c){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/unit/test_api.py`](#tut-06.10-tests-unit-test_api.py-58d97c-diff){.btn .btn-sm .btn-secondary}
 
 At the end of `tests/unit/test_api.py`, the new test calls `score_confidence([1.0])`.
 
@@ -486,6 +504,8 @@ just test
 
 - <a id="tut-06.10-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: the test calls the function itself. 5 lines added. [The file](https://github.com/rahuldave/babykev/blob/910716f0cec79c3f31afb34cf3a2593f0cd51315/tests/unit/test_api.py){.btn .btn-sm .btn-secondary}
   - look at `    assert score_confidence([1.0]) == 1.0`
+
+<a id="tut-06.10-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
 

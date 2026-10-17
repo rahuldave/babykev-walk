@@ -67,6 +67,8 @@ just check
 - <a id="tut-14-docs-index.qmd-d6d880"></a>`docs/index.qmd`: New, 29 lines. [The file](https://github.com/rahuldave/babykev/blob/e1efb48492d7223fd0442906d2e55a83e0db481e/docs/index.qmd){.btn .btn-sm .btn-secondary}
 - <a id="tut-14-justfile-424f0b"></a>`justfile`: 5 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/e1efb48492d7223fd0442906d2e55a83e0db481e/justfile){.btn .btn-sm .btn-secondary}
 
+<a id="tut-14-.gitignore-a5cc29-diff"></a>
+
 <details><summary>The diff of <code>.gitignore</code></summary>
 
 ```diff
@@ -83,6 +85,8 @@ just check
 
 </details>
 
+<a id="tut-14-README.md-8ec9a0-diff"></a>
+
 <details><summary>The diff of <code>README.md</code></summary>
 
 ```diff
@@ -97,6 +101,8 @@ just check
 ```
 
 </details>
+
+<a id="tut-14-docs-_smalldocs.yml-4b0b48-diff"></a>
 
 <details><summary>The diff of <code>docs/_smalldocs.yml</code></summary>
 
@@ -126,6 +132,8 @@ just check
 ```
 
 </details>
+
+<a id="tut-14-docs-index.qmd-d6d880-diff"></a>
 
 <details><summary>The diff of <code>docs/index.qmd</code></summary>
 
@@ -163,6 +171,8 @@ just check
 ```
 
 </details>
+
+<a id="tut-14-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 

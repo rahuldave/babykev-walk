@@ -35,7 +35,7 @@ torch has several builds of each version. On Linux, the build on PyPI brings the
 NVIDIA. PyTorch keeps a build for the CPU alone on an index of its own, `https://download.pytorch.org/whl/cpu`. An
 index is a server of packages, as PyPI is. The patch names the index in `pyproject.toml`.
 
-[± See the change to `pyproject.toml`](#tut-15.1-pyproject.toml-5d07e7){.btn .btn-sm .btn-secondary}
+[± See the change to `pyproject.toml`](#tut-15.1-pyproject.toml-5d07e7-diff){.btn .btn-sm .btn-secondary}
 
 In `pyproject.toml`, the comment is on lines 25 and 26. The index is on lines 27 to 30, with its name `pytorch-cpu`,
 its address and `explicit = true`.
@@ -54,6 +54,8 @@ lockfile does not change.
 
 - <a id="tut-15.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the index of PyTorch. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/b44da7cc2f35c24f23c9f056eb9ec6681a3111e0/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `url = "https://download.pytorch.org/whl/cpu"`
+
+<a id="tut-15.1-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -108,6 +110,8 @@ exit code 1. `pyproject.toml` names torch, and `uv.lock` does not have it. `just
 
 - <a id="tut-15.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: torch, in the dependencies, and its source. 4 lines added. It comes from `uv add torch --index pytorch-cpu --frozen`. [The file](https://github.com/rahuldave/babykev/blob/a263314ef270d756122972876e80270ed4cde130/pyproject.toml){.btn .btn-sm .btn-secondary}
   - look at `torch = { index = "pytorch-cpu" }`
+
+<a id="tut-15.2-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -203,6 +207,8 @@ It prints the version of transformers, and no warning. numpy came with transform
   - look at `"transformers>=5.20.0",`
 - <a id="tut-15.4-uv.lock-8356d8"></a>`uv.lock`: the exact version of transformers, and of the packages that it needs. 419 lines added. It comes from `uv add transformers`. [The file](https://github.com/rahuldave/babykev/blob/92f659c4e74206cfb776c114d474c2be2501be81/uv.lock){.btn .btn-sm .btn-secondary}
 
+<a id="tut-15.4-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
 ```diff
@@ -250,6 +256,8 @@ from its index.
   - look at `"peft>=0.21.2",`
 - <a id="tut-15.5-uv.lock-8356d8"></a>`uv.lock`: the exact version of peft, and of the packages that it needs. 71 lines added. It comes from `uv add peft`. [The file](https://github.com/rahuldave/babykev/blob/4b43f5a9f99a891891ac42cb03e3927957e9116c/uv.lock){.btn .btn-sm .btn-secondary}
 
+<a id="tut-15.5-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
 ```diff
@@ -296,6 +304,8 @@ no `babykev`.
   - look at `"safetensors>=0.8.0",`
 - <a id="tut-15.6-uv.lock-8356d8"></a>`uv.lock`: safetensors, as a dependency of babykev. 2 lines added. It comes from `uv add safetensors`. [The file](https://github.com/rahuldave/babykev/blob/8176ced7157929f551e3722149016dbc31d42601/uv.lock){.btn .btn-sm .btn-secondary}
 
+<a id="tut-15.6-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
 ```diff
@@ -318,7 +328,7 @@ no `babykev`.
 The README says what the project installs. A paragraph under "Start" names the four packages of the model, and
 what they cost on disk.
 
-[± See the change to `README.md`](#tut-15.7-README.md-8ec9a0){.btn .btn-sm .btn-secondary}
+[± See the change to `README.md`](#tut-15.7-README.md-8ec9a0-diff){.btn .btn-sm .btn-secondary}
 
 In `README.md`, the new paragraph is on lines 61 to 63.
 
@@ -334,6 +344,8 @@ du -sh .venv .venv/lib/python3.13/site-packages/torch
 
 - <a id="tut-15.7-README.md-8ec9a0"></a>`README.md`: a paragraph on the packages of the model. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/c7037ec460963acd41edf1f63a6a03d2e52e5bae/README.md){.btn .btn-sm .btn-secondary}
   - look at `The model needs four packages, torch, transformers, peft and safetensors. torch is the build for the CPU,`
+
+<a id="tut-15.7-README.md-8ec9a0-diff"></a>
 
 <details><summary>The diff of <code>README.md</code></summary>
 

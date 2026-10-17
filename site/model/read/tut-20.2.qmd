@@ -40,7 +40,7 @@ the other half, in the last part of this walk.
 
 The positions of each question begin right after the state, so a question looks the same wherever it comes.
 
-[± See the change to `tests/unit/test_model.py`](#tut-20.2-tests-unit-test_model.py-583145){.btn .btn-sm .btn-secondary}
+[± See the change to `tests/unit/test_model.py`](#tut-20.2-tests-unit-test_model.py-583145-diff){.btn .btn-sm .btn-secondary}
 
 In `tests/unit/test_model.py`, the new test is on lines 38 to 47.
 
@@ -61,6 +61,8 @@ to 47 check that the positions of each question run from that count upward.
 
 - <a id="tut-20.2-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the positions of each question. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/e947449de17438d3aa5ee006bfc98db3944d4457/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
   - look at `def test_positions_restart_after_the_state(`
+
+<a id="tut-20.2-tests-unit-test_model.py-583145-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
 

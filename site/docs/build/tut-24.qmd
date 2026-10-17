@@ -85,6 +85,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-23 --staged --
 - <a id="tut-24.1-docs-guide-model.qmd-3d8904"></a>`docs/guide/model.qmd`: the four ideas of the model. New, 61 lines. [The file](https://github.com/rahuldave/babykev/blob/b23fa492cea947fd91a783a6ef8c19ee1d4f38eb/docs/guide/model.qmd){.btn .btn-sm .btn-secondary}
   - look at `## Packing`
 
+<a id="tut-24.1-docs-guide-model.qmd-3d8904-diff"></a>
+
 <details open><summary>The patch to <code>docs/guide/model.qmd</code></summary>
 
 ```diff
@@ -192,6 +194,8 @@ git restore --source b23fa492cea9 --staged -- :/ && git restore --source 872a008
 - <a id="tut-24.2-docs-guide-mask.qmd-5cd81a"></a>`docs/guide/mask.qmd`: the mask, as a grid. New, 52 lines. [The file](https://github.com/rahuldave/babykev/blob/872a008d4a67bfd58f67b5db28198f4293cc34f5/docs/guide/mask.qmd){.btn .btn-sm .btn-secondary}
   - look at `## A plain causal mask`
 
+<a id="tut-24.2-docs-guide-mask.qmd-5cd81a-diff"></a>
+
 <details open><summary>The patch to <code>docs/guide/mask.qmd</code></summary>
 
 ````diff
@@ -293,6 +297,8 @@ git restore --source 872a008d4a67 --staged -- :/ && git restore --source f19e99a
 - <a id="tut-24.3-docs-_smalldocs.yml-4b0b48"></a>`docs/_smalldocs.yml`: the section `Guide`. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/f19e99afaa9f11778658710d44ef1785dbc40ed0/docs/_smalldocs.yml){.btn .btn-sm .btn-secondary}
   - look at `      - section: Guide`
 
+<a id="tut-24.3-docs-_smalldocs.yml-4b0b48-diff"></a>
+
 <details open><summary>The patch to <code>docs/_smalldocs.yml</code></summary>
 
 ```diff
@@ -350,6 +356,8 @@ git restore --source f19e99afaa9f --staged -- :/ && git restore --source 62f48f0
 - <a id="tut-24.4-docs-index.qmd-d6d880"></a>`docs/index.qmd`: the links to the guide. 3 lines added. [The file](https://github.com/rahuldave/babykev/blob/62f48f0b9de6c97825153cd50a7f131a5c07b0c7/docs/index.qmd){.btn .btn-sm .btn-secondary}
   - look at ``The pages under Guide explain the model. [The model](guide/model.qmd) gives the four ideas of `model.py`, and``
 
+<a id="tut-24.4-docs-index.qmd-d6d880-diff"></a>
+
 <details open><summary>The patch to <code>docs/index.qmd</code></summary>
 
 ```diff
@@ -404,6 +412,8 @@ git fetch --quiet --tags --force origin; git restore --source 62f48f0b9de6 --sta
 
 - <a id="tut-24.5-README.md-8ec9a0"></a>`README.md`: the guide, in the row of `docs/`. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/41d24729682119b9bbb828187c5e9684a2921308/README.md){.btn .btn-sm .btn-secondary}
   - look at ``The two pages of `docs/guide/` explain the model and its mask |``
+
+<a id="tut-24.5-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 

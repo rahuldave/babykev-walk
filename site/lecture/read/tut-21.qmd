@@ -204,6 +204,8 @@ EOF
 - <a id="tut-21-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: adds `test_records_of_different_lengths_answer_in_one_pass_as_alone`, `test_with_an_adapter_only_the_adapter_and_the_head_train`. 38 lines added. [The file](https://github.com/rahuldave/babykev/blob/922d6ba2495756622ad215301da7c48f2ec33fa9/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
 - <a id="tut-21-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: adds `test_smoke_reports_on_every_question_of_the_sample`. 17 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/922d6ba2495756622ad215301da7c48f2ec33fa9/tests/unit/test_smoke.py){.btn .btn-sm .btn-secondary}
 
+<a id="tut-21-README.md-8ec9a0-diff"></a>
+
 <details><summary>The diff of <code>README.md</code></summary>
 
 ```diff
@@ -221,6 +223,8 @@ EOF
 ```
 
 </details>
+
+<a id="tut-21-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -246,6 +250,8 @@ EOF
 ```
 
 </details>
+
+<a id="tut-21-tests-unit-test_model.py-583145-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
 
@@ -302,6 +308,8 @@ EOF
 ```
 
 </details>
+
+<a id="tut-21-tests-unit-test_smoke.py-89db04-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_smoke.py</code></summary>
 

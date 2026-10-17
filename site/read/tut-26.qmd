@@ -38,7 +38,7 @@ out a push of a tag.
 
 [GitHub Actions](https://docs.github.com/actions) runs commands on GitHub's machines. A workflow, a YAML file in `.github/workflows/`, says when it runs, such as after every push, and which commands its jobs run. Each run shows its log on the page of the repository.
 
-[± See the new file `.github/workflows/check.yaml`](#tut-26.1-.github-workflows-check.yaml-6ceb50){.btn .btn-sm .btn-secondary}
+[± See the new file `.github/workflows/check.yaml`](#tut-26.1-.github-workflows-check.yaml-6ceb50-diff){.btn .btn-sm .btn-secondary}
 
 The new file `.github/workflows/check.yaml` has `on` on lines 5 to 8, and what the job `check` runs on lines 16
 to 21.
@@ -55,6 +55,8 @@ word `on` as true. GitHub reads it as the name `on`, and every workflow has it. 
 
 - <a id="tut-26.1-.github-workflows-check.yaml-6ceb50"></a>`.github/workflows/check.yaml`: `just check`, after every push. New, 21 lines. [The file](https://github.com/rahuldave/babykev/blob/2f210829183a3c52bb22f1196d50000716a4beec/.github/workflows/check.yaml){.btn .btn-sm .btn-secondary}
   - look at `      - run: just check`
+
+<a id="tut-26.1-.github-workflows-check.yaml-6ceb50-diff"></a>
 
 <details><summary>The diff of <code>.github/workflows/check.yaml</code></summary>
 
@@ -92,7 +94,7 @@ word `on` as true. GitHub reads it as the name `on`, and every workflow has it. 
 The rule `truthy` of yamllint has the option `check-keys`. With `false`, the rule checks the values and not the keys.
 A value of `on` or `yes` is still a warning.
 
-[± See the change to `.yamllint`](#tut-26.2-.yamllint-dfe50a){.btn .btn-sm .btn-secondary}
+[± See the change to `.yamllint`](#tut-26.2-.yamllint-dfe50a-diff){.btn .btn-sm .btn-secondary}
 
 In `.yamllint`, line 7 is `truthy: {check-keys: false}`, with its reason.
 
@@ -106,6 +108,8 @@ just lint-config
 
 - <a id="tut-26.2-.yamllint-dfe50a"></a>`.yamllint`: the rule `truthy` checks no key. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/7b7e22f04247cefdd2d01adbe6dff64d88a6116c/.yamllint){.btn .btn-sm .btn-secondary}
   - look at `  truthy: {check-keys: false}  # a key may be a word such as on, which YAML 1.1 reads as true`
+
+<a id="tut-26.2-.yamllint-dfe50a-diff"></a>
 
 <details><summary>The diff of <code>.yamllint</code></summary>
 
@@ -147,6 +151,8 @@ The first line is the version of actionlint.
   - look at `"actionlint-py>=1.7.12.25",`
 - <a id="tut-26.3-uv.lock-8356d8"></a>`uv.lock`: the exact version of actionlint. 8 lines added. It comes from `uv add --group lint actionlint-py`. [The file](https://github.com/rahuldave/babykev/blob/bb15f17ccbb62cf1f8a61d67d67674bf9d445c86/uv.lock){.btn .btn-sm .btn-secondary}
 
+<a id="tut-26.3-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
 ```diff
@@ -169,7 +175,7 @@ The first line is the version of actionlint.
 actionlint finds the workflows of the project itself, in `.github/workflows/`. The command behind the new line comes
 first.
 
-[± See the change to `justfile`](#tut-26.4-justfile-424f0b){.btn .btn-sm .btn-secondary}
+[± See the change to `justfile`](#tut-26.4-justfile-424f0b-diff){.btn .btn-sm .btn-secondary}
 
 In the `justfile`, the comment on line 81 names the workflows, and line 93 is `uv run actionlint`.
 
@@ -184,6 +190,8 @@ actionlint prints nothing, and ends with exit code 0. It finds no problem in `ch
 
 - <a id="tut-26.4-justfile-424f0b"></a>`justfile`: actionlint, in `lint-config`. 2 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/eb0acd148867bdbc6292660b7268b656074fb727/justfile){.btn .btn-sm .btn-secondary}
   - look at `    uv run actionlint`
+
+<a id="tut-26.4-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -217,7 +225,7 @@ The workflow `docs.yaml` has two jobs. The job `build` installs the package and 
 It runs `smalldocs render docs`, the command behind `just docs`, and gives the folder `docs/_site` to Pages. The job
 `deploy` publishes it. The workflow runs after a push to `main`, and a person can also run it from the tab Actions.
 
-[± See the new file `.github/workflows/docs.yaml`](#tut-26.5-.github-workflows-docs.yaml-ce7835){.btn .btn-sm .btn-secondary}
+[± See the new file `.github/workflows/docs.yaml`](#tut-26.5-.github-workflows-docs.yaml-ce7835-diff){.btn .btn-sm .btn-secondary}
 
 In the new file `.github/workflows/docs.yaml`, `on` is on lines 6 to 9, and `permissions` on lines 11 to 14. Line 26
 renders the site with the group `docs` alone.
@@ -239,6 +247,8 @@ workflows on, on the tab **Actions**. Pages publishes from a workflow when **Set
 
 - <a id="tut-26.5-.github-workflows-docs.yaml-ce7835"></a>`.github/workflows/docs.yaml`: the docs site, built with the group `docs` alone, then published. New, 40 lines. [The file](https://github.com/rahuldave/babykev/blob/606da22657c965404206b25f8fbcccffbe3f2756/.github/workflows/docs.yaml){.btn .btn-sm .btn-secondary}
   - look at `      - run: uv run --locked --no-default-groups --group docs smalldocs render docs`
+
+<a id="tut-26.5-.github-workflows-docs.yaml-ce7835-diff"></a>
 
 <details><summary>The diff of <code>.github/workflows/docs.yaml</code></summary>
 
@@ -295,7 +305,7 @@ workflows on, on the tab **Actions**. Pages publishes from a workflow when **Set
 The README gets a section on GitHub, with the two settings that a fork needs. The table gets a row for
 `.github/workflows/`.
 
-[± See the change to `README.md`](#tut-26.6-README.md-8ec9a0){.btn .btn-sm .btn-secondary}
+[± See the change to `README.md`](#tut-26.6-README.md-8ec9a0-diff){.btn .btn-sm .btn-secondary}
 
 In `README.md`, the section is on lines 100 to 112, and the row on line 135.
 
@@ -310,6 +320,8 @@ just check
 
 - <a id="tut-26.6-README.md-8ec9a0"></a>`README.md`: the section on GitHub, and the row of the workflows. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/88854e32ebcb4647672742cc4ef709eefc5fde0c/README.md){.btn .btn-sm .btn-secondary}
   - look at `## On GitHub`
+
+<a id="tut-26.6-README.md-8ec9a0-diff"></a>
 
 <details><summary>The diff of <code>README.md</code></summary>
 

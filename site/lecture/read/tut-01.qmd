@@ -69,6 +69,8 @@ sed -n '12,13p' pyproject.toml
 - <a id="tut-01-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: adds `main`. New, 21 lines. [The file](https://github.com/rahuldave/babykev/blob/7ad3a06605fadc9f34b5e2d8180145a3e53389a9/src/babykev/cli.py){.btn .btn-sm .btn-secondary}
 - <a id="tut-01-uv.lock-8356d8"></a>`uv.lock`: New, 8 lines. [The file](https://github.com/rahuldave/babykev/blob/7ad3a06605fadc9f34b5e2d8180145a3e53389a9/uv.lock){.btn .btn-sm .btn-secondary}
 
+<a id="tut-01-.python-version-7696e9-diff"></a>
+
 <details><summary>The diff of <code>.python-version</code></summary>
 
 ```diff
@@ -77,6 +79,8 @@ sed -n '12,13p' pyproject.toml
 ```
 
 </details>
+
+<a id="tut-01-README.md-8ec9a0-diff"></a>
 
 <details><summary>The diff of <code>README.md</code></summary>
 
@@ -109,6 +113,8 @@ sed -n '12,13p' pyproject.toml
 ```
 
 </details>
+
+<a id="tut-01-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -144,6 +150,8 @@ sed -n '12,13p' pyproject.toml
 
 </details>
 
+<a id="tut-01-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
 ```diff
@@ -168,6 +176,8 @@ sed -n '12,13p' pyproject.toml
 ```
 
 </details>
+
+<a id="tut-01-src-babykev-cli.py-a9e184-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/cli.py</code></summary>
 

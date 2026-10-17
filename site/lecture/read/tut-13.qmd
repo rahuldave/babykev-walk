@@ -66,7 +66,7 @@ just test -k help_is_printed
 **The gaps, as they were.** `just docs check` holds every function, method and class to one rule. A parameter and a return value need a type and a docment, a function needs a docstring, and a field needs a description. A return of `None` needs no docment. The `git restore` line takes the code and the tests of `tut-12`, and `just docs check` then prints `24 of 45 functions, methods and classes are typed and documented`, with exit code 1. Above that line it prints the count for each file, `babykev.api 0 of 12` to `tests/unit/test_cli.py 0 of 3`, and 46 gaps, one to a line.
 
 ```bash
-git restore --source tut-12 src tests
+git checkout tut-12 -- src tests
 just docs check
 ```
 
@@ -122,6 +122,8 @@ git restore src/babykev/api.py
 - <a id="tut-13-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: changes `run`, `test_an_unknown_command_is_refused_with_exit_code_2`, `test_help_is_printed_for_help_and_for_no_words`. 9 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/005b87bdfa2e70c6ceca52dc07197c69702f00be/tests/unit/test_cli.py){.btn .btn-sm .btn-secondary}
 - <a id="tut-13-uv.lock-8356d8"></a>`uv.lock`: 62 lines added. [The file](https://github.com/rahuldave/babykev/blob/005b87bdfa2e70c6ceca52dc07197c69702f00be/uv.lock){.btn .btn-sm .btn-secondary}
 
+<a id="tut-13-docs-_smalldocs.yml-4b0b48-diff"></a>
+
 <details><summary>The diff of <code>docs/_smalldocs.yml</code></summary>
 
 ```diff
@@ -134,6 +136,8 @@ git restore src/babykev/api.py
 ```
 
 </details>
+
+<a id="tut-13-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -163,6 +167,8 @@ git restore src/babykev/api.py
 
 </details>
 
+<a id="tut-13-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
 ```diff
@@ -179,6 +185,8 @@ git restore src/babykev/api.py
 ```
 
 </details>
+
+<a id="tut-13-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -319,6 +327,8 @@ git restore src/babykev/api.py
 
 </details>
 
+<a id="tut-13-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -390,6 +400,8 @@ git restore src/babykev/api.py
 ```
 
 </details>
+
+<a id="tut-13-tests-unit-test_cli.py-44d4a0-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
 

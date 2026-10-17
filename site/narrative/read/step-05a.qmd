@@ -148,6 +148,8 @@ just test -k notebook
 - <a id="step-05a-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: adds `test_a_question_cannot_see_its_sibling`, `test_packed_equals_separate_for_any_record`, `test_packed_questions_answer_as_they_would_alone`, `test_the_order_of_questions_does_not_matter`; changes `test_a_packed_record_has_exactly_the_delimiters_its_shape_needs`, `test_a_tokenizer_alone_would_let_text_forge_a_delimiter`, `test_packing_marks_every_part_with_its_delimiter`, `test_user_text_cannot_forge_a_delimiter`. 69 lines added, 6 removed. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/tests/unit/test_model.py){.btn .btn-sm .btn-secondary}
 - <a id="step-05a-tests-unit-test_notebooks.py-057539"></a>`tests/unit/test_notebooks.py`: adds `printed`, `test_notebook_prints_what_its_stored_outputs_show`, `test_there_is_a_notebook_to_check`. New, 42 lines. [The file](https://github.com/rahuldave/babykev/blob/c954af4beae61eaab89bcb2d4724eea4f2706703/tests/unit/test_notebooks.py){.btn .btn-sm .btn-secondary}
 
+<a id="step-05a-README.md-8ec9a0-diff"></a>
+
 <details><summary>The diff of <code>README.md</code></summary>
 
 ```diff
@@ -186,6 +188,8 @@ just test -k notebook
 
 </details>
 
+<a id="step-05a-docs-_quarto.yml-ee884f-diff"></a>
+
 <details><summary>The diff of <code>docs/_quarto.yml</code></summary>
 
 ```diff
@@ -201,6 +205,8 @@ just test -k notebook
 ```
 
 </details>
+
+<a id="step-05a-docs-guide-00_model.qmd-42835e-diff"></a>
 
 <details><summary>The diff of <code>docs/guide/00_model.qmd</code></summary>
 
@@ -264,6 +270,8 @@ just test -k notebook
 ```
 
 </details>
+
+<a id="step-05a-docs-guide-01_mask.ipynb-f6e9ba-diff"></a>
 
 <details><summary>The diff of <code>docs/guide/01_mask.ipynb</code></summary>
 
@@ -538,6 +546,8 @@ just test -k notebook
 
 </details>
 
+<a id="step-05a-justfile-424f0b-diff"></a>
+
 <details><summary>The diff of <code>justfile</code></summary>
 
 ```diff
@@ -562,6 +572,8 @@ just test -k notebook
 
 </details>
 
+<a id="step-05a-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
 ```diff
@@ -578,6 +590,8 @@ just test -k notebook
 ```
 
 </details>
+
+<a id="step-05a-src-babykev-model.py-a86a0b-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/model.py</code></summary>
 
@@ -624,6 +638,8 @@ just test -k notebook
 
 </details>
 
+<a id="step-05a-tests-conftest.py-626af3-diff"></a>
+
 <details><summary>The diff of <code>tests/conftest.py</code></summary>
 
 ```diff
@@ -645,6 +661,8 @@ just test -k notebook
 ```
 
 </details>
+
+<a id="step-05a-tests-unit-test_mask.py-aeb55a-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_mask.py</code></summary>
 
@@ -731,6 +749,8 @@ just test -k notebook
 ```
 
 </details>
+
+<a id="step-05a-tests-unit-test_model.py-583145-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
 
@@ -858,6 +878,8 @@ just test -k notebook
 ```
 
 </details>
+
+<a id="step-05a-tests-unit-test_notebooks.py-057539-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_notebooks.py</code></summary>
 

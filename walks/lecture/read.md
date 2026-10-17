@@ -70,6 +70,8 @@ sed -n '12,13p' pyproject.toml
 - <a id="tut-01-src-babykev-cli.py-a9e184"></a>`src/babykev/cli.py`: adds `main`. New, 21 lines. [The file](https://github.com/rahuldave/babykev/blob/7ad3a06605fadc9f34b5e2d8180145a3e53389a9/src/babykev/cli.py).
 - <a id="tut-01-uv.lock-8356d8"></a>`uv.lock`: New, 8 lines. [The file](https://github.com/rahuldave/babykev/blob/7ad3a06605fadc9f34b5e2d8180145a3e53389a9/uv.lock).
 
+<a id="tut-01-.python-version-7696e9-diff"></a>
+
 <details><summary>The diff of <code>.python-version</code></summary>
 
 ```diff
@@ -78,6 +80,8 @@ sed -n '12,13p' pyproject.toml
 ```
 
 </details>
+
+<a id="tut-01-README.md-8ec9a0-diff"></a>
 
 <details><summary>The diff of <code>README.md</code></summary>
 
@@ -110,6 +114,8 @@ sed -n '12,13p' pyproject.toml
 ```
 
 </details>
+
+<a id="tut-01-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -145,6 +151,8 @@ sed -n '12,13p' pyproject.toml
 
 </details>
 
+<a id="tut-01-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
 ```diff
@@ -169,6 +177,8 @@ sed -n '12,13p' pyproject.toml
 ```
 
 </details>
+
+<a id="tut-01-src-babykev-cli.py-a9e184-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/cli.py</code></summary>
 
@@ -289,6 +299,8 @@ sed -i '' 's/option_text("no", c.get("false"))/option_text("NO", c.get("false"))
 ### What changed
 
 - <a id="tut-05-tests-unit-test_api.py-58d97c"></a>`tests/unit/test_api.py`: adds `test_choice_answer_names_the_most_likely_option`, `test_choice_becomes_one_option_per_criterion_in_order`, `test_every_question_gets_an_answer_of_its_own_type`, `test_noul_answer_is_the_probability_of_yes`, `test_noul_becomes_no_then_yes`, `test_noul_criteria_describe_no_and_yes`, `test_option_text_adds_a_description_only_when_there_is_one`, `test_record_keeps_the_state_and_the_order_of_questions`, `test_render_flattens_json_into_text`, `test_score_answer_is_the_expected_level`, `test_score_becomes_one_option_per_level_with_a_legend`. 132 lines added. [The file](https://github.com/rahuldave/babykev/blob/c2f89d37a513382eb2209c2c393e6a4c5a6eb50f/tests/unit/test_api.py).
+
+<a id="tut-05-tests-unit-test_api.py-58d97c-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
 
@@ -466,10 +478,10 @@ sed -n '291,293p' tests/unit/test_api.py
 git show tut-05:src/babykev/api.py | sed -n '82,90p'
 ```
 
-**The tests find the bugs.** The `git restore` line puts the file of kev back, from `tut-05`, under the tests of today. `just test -k` then runs the seven tests of the confidences and of rounding, and 3 fail. pytest prints `assert 0.77 == 1 ± 0.02` for the sum of the 77 probabilities, and prints `assert 0.5 == 0 ± 1.0e-12` for the confidence of a guess. A scale of one level stops with `ZeroDivisionError` at line 86, and the last line puts today's file back.
+**The tests find the bugs.** The `git checkout` line puts the file of kev back, from `tut-05`, under the tests of today. `just test -k` then runs the seven tests of the confidences and of rounding, and 3 fail. pytest prints `assert 0.77 == 1 ± 0.02` for the sum of the 77 probabilities, and prints `assert 0.5 == 0 ± 1.0e-12` for the confidence of a guess. A scale of one level stops with `ZeroDivisionError` at line 86, and the last line puts today's file back.
 
 ```bash
-git restore --source tut-05 src/babykev/api.py
+git checkout tut-05 -- src/babykev/api.py
 just test -k "rounded_probabilities or score_confidence"
 git restore src/babykev/api.py
 ```
@@ -505,10 +517,10 @@ sed -n '296,298p' tests/unit/test_api.py
 just test -k single_level
 ```
 
-**The formatter, on the file before it.** The `git restore` line takes `api.py` as it was at the end of the fixes, before the formatter and the linter, from `tut-06`. `uv run ruff check --statistics` runs the linter on it first, so that we can count again after the formatter. It prints one line for each code with its count, and then `Found 17 errors.`, which is the total. The codes are `E501`, a line over 100 characters, 6 of them, and `E701`, two statements on one line, 4 of them. The others are `N806`, `UP007` and `B905`, 2 each, and `I001`, 1.
+**The formatter, on the file before it.** The `git checkout` line takes `api.py` as it was at the end of the fixes, before the formatter and the linter, from `tut-06`. `uv run ruff check --statistics` runs the linter on it first, so that we can count again after the formatter. It prints one line for each code with its count, and then `Found 17 errors.`, which is the total. The codes are `E501`, a line over 100 characters, 6 of them, and `E701`, two statements on one line, 4 of them. The others are `N806`, `UP007` and `B905`, 2 each, and `I001`, 1.
 
 ```bash
-git restore --source tut-06 src/babykev/api.py
+git checkout tut-06 -- src/babykev/api.py
 uv run ruff check --statistics
 ```
 
@@ -572,6 +584,8 @@ just fmt --check
 - <a id="tut-08-pyproject.toml-5d07e7"></a>`pyproject.toml`: 18 lines added. [The file](https://github.com/rahuldave/babykev/blob/7cdb1ba696a32050cba1c335892fccb68bb4fd24/pyproject.toml).
 - <a id="tut-08-src-babykev-api.py-2ea65f"></a>`src/babykev/api.py`: changes `Score`, `choice_confidence`, `score_confidence`, `to_answers`. 15 lines added, 14 removed. [The file](https://github.com/rahuldave/babykev/blob/7cdb1ba696a32050cba1c335892fccb68bb4fd24/src/babykev/api.py).
 
+<a id="tut-08-justfile-424f0b-diff"></a>
+
 <details><summary>The diff of <code>justfile</code></summary>
 
 ```diff
@@ -591,6 +605,8 @@ just fmt --check
 ```
 
 </details>
+
+<a id="tut-08-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -620,6 +636,8 @@ just fmt --check
 ```
 
 </details>
+
+<a id="tut-08-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -722,7 +740,7 @@ just setup
 
 ```bash
 sed -n '66,67p' pyproject.toml
-git restore --source tut-08 src tests
+git checkout tut-08 -- src tests
 just lint --statistics
 ```
 
@@ -867,6 +885,8 @@ just lint-config
 - <a id="tut-12-pyproject.toml-5d07e7"></a>`pyproject.toml`: 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac/pyproject.toml).
 - <a id="tut-12-uv.lock-8356d8"></a>`uv.lock`: 47 lines added. [The file](https://github.com/rahuldave/babykev/blob/cbbf9bedfc2ba814fc979c43fd2770f5464e3aac/uv.lock).
 
+<a id="tut-12-.yamllint-dfe50a-diff"></a>
+
 <details><summary>The diff of <code>.yamllint</code></summary>
 
 ```diff
@@ -880,6 +900,8 @@ just lint-config
 ```
 
 </details>
+
+<a id="tut-12-README.md-8ec9a0-diff"></a>
 
 <details><summary>The diff of <code>README.md</code></summary>
 
@@ -895,6 +917,8 @@ just lint-config
 ```
 
 </details>
+
+<a id="tut-12-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -944,6 +968,8 @@ just lint-config
 ```
 
 </details>
+
+<a id="tut-12-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
@@ -1022,7 +1048,7 @@ just test -k help_is_printed
 **The gaps, as they were.** `just docs check` holds every function, method and class to one rule. A parameter and a return value need a type and a docment, a function needs a docstring, and a field needs a description. A return of `None` needs no docment. The `git restore` line takes the code and the tests of `tut-12`, and `just docs check` then prints `24 of 45 functions, methods and classes are typed and documented`, with exit code 1. Above that line it prints the count for each file, `babykev.api 0 of 12` to `tests/unit/test_cli.py 0 of 3`, and 46 gaps, one to a line.
 
 ```bash
-git restore --source tut-12 src tests
+git checkout tut-12 -- src tests
 just docs check
 ```
 
@@ -1078,6 +1104,8 @@ git restore src/babykev/api.py
 - <a id="tut-13-tests-unit-test_cli.py-44d4a0"></a>`tests/unit/test_cli.py`: changes `run`, `test_an_unknown_command_is_refused_with_exit_code_2`, `test_help_is_printed_for_help_and_for_no_words`. 9 lines added, 3 removed. [The file](https://github.com/rahuldave/babykev/blob/005b87bdfa2e70c6ceca52dc07197c69702f00be/tests/unit/test_cli.py).
 - <a id="tut-13-uv.lock-8356d8"></a>`uv.lock`: 62 lines added. [The file](https://github.com/rahuldave/babykev/blob/005b87bdfa2e70c6ceca52dc07197c69702f00be/uv.lock).
 
+<a id="tut-13-docs-_smalldocs.yml-4b0b48-diff"></a>
+
 <details><summary>The diff of <code>docs/_smalldocs.yml</code></summary>
 
 ```diff
@@ -1090,6 +1118,8 @@ git restore src/babykev/api.py
 ```
 
 </details>
+
+<a id="tut-13-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -1119,6 +1149,8 @@ git restore src/babykev/api.py
 
 </details>
 
+<a id="tut-13-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
 ```diff
@@ -1135,6 +1167,8 @@ git restore src/babykev/api.py
 ```
 
 </details>
+
+<a id="tut-13-src-babykev-api.py-2ea65f-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/api.py</code></summary>
 
@@ -1275,6 +1309,8 @@ git restore src/babykev/api.py
 
 </details>
 
+<a id="tut-13-tests-unit-test_api.py-58d97c-diff"></a>
+
 <details><summary>The diff of <code>tests/unit/test_api.py</code></summary>
 
 ```diff
@@ -1346,6 +1382,8 @@ git restore src/babykev/api.py
 ```
 
 </details>
+
+<a id="tut-13-tests-unit-test_cli.py-44d4a0-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_cli.py</code></summary>
 
@@ -1449,6 +1487,8 @@ just check
 - <a id="tut-14-docs-index.qmd-d6d880"></a>`docs/index.qmd`: New, 29 lines. [The file](https://github.com/rahuldave/babykev/blob/e1efb48492d7223fd0442906d2e55a83e0db481e/docs/index.qmd).
 - <a id="tut-14-justfile-424f0b"></a>`justfile`: 5 lines added, 2 removed. [The file](https://github.com/rahuldave/babykev/blob/e1efb48492d7223fd0442906d2e55a83e0db481e/justfile).
 
+<a id="tut-14-.gitignore-a5cc29-diff"></a>
+
 <details><summary>The diff of <code>.gitignore</code></summary>
 
 ```diff
@@ -1465,6 +1505,8 @@ just check
 
 </details>
 
+<a id="tut-14-README.md-8ec9a0-diff"></a>
+
 <details><summary>The diff of <code>README.md</code></summary>
 
 ```diff
@@ -1479,6 +1521,8 @@ just check
 ```
 
 </details>
+
+<a id="tut-14-docs-_smalldocs.yml-4b0b48-diff"></a>
 
 <details><summary>The diff of <code>docs/_smalldocs.yml</code></summary>
 
@@ -1508,6 +1552,8 @@ just check
 ```
 
 </details>
+
+<a id="tut-14-docs-index.qmd-d6d880-diff"></a>
 
 <details><summary>The diff of <code>docs/index.qmd</code></summary>
 
@@ -1545,6 +1591,8 @@ just check
 ```
 
 </details>
+
+<a id="tut-14-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -1766,6 +1814,8 @@ EOF
 - <a id="tut-21-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: adds `test_records_of_different_lengths_answer_in_one_pass_as_alone`, `test_with_an_adapter_only_the_adapter_and_the_head_train`. 38 lines added. [The file](https://github.com/rahuldave/babykev/blob/922d6ba2495756622ad215301da7c48f2ec33fa9/tests/unit/test_model.py).
 - <a id="tut-21-tests-unit-test_smoke.py-89db04"></a>`tests/unit/test_smoke.py`: adds `test_smoke_reports_on_every_question_of_the_sample`. 17 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/922d6ba2495756622ad215301da7c48f2ec33fa9/tests/unit/test_smoke.py).
 
+<a id="tut-21-README.md-8ec9a0-diff"></a>
+
 <details><summary>The diff of <code>README.md</code></summary>
 
 ```diff
@@ -1783,6 +1833,8 @@ EOF
 ```
 
 </details>
+
+<a id="tut-21-justfile-424f0b-diff"></a>
 
 <details><summary>The diff of <code>justfile</code></summary>
 
@@ -1808,6 +1860,8 @@ EOF
 ```
 
 </details>
+
+<a id="tut-21-tests-unit-test_model.py-583145-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
 
@@ -1864,6 +1918,8 @@ EOF
 ```
 
 </details>
+
+<a id="tut-21-tests-unit-test_smoke.py-89db04-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_smoke.py</code></summary>
 
@@ -1924,12 +1980,12 @@ just setup
 just test
 ```
 
-**The mask of the last stop, under the new tests.** The `git restore` line takes `model.py` from `tut-21`, with line 159 as it came in. `just test` then fails 6 tests and passes 76. Three are tests of the mask, the picture and two rules. Three are the tests on the tiny model that keep questions apart.
+**The mask of the last stop, under the new tests.** The `git checkout` line takes `model.py` from `tut-21`, with line 159 as it came in. `just test` then fails 6 tests and passes 76. Three are tests of the mask, the picture and two rules. Three are the tests on the tiny model that keep questions apart.
 
 The rule that no token sees a later token still passes, because the old mask was causal. The hook runs `just check`, and `just check` runs these tests, so git would refuse this code now.
 
 ```bash
-git restore --source tut-21 src/babykev/model.py
+git checkout tut-21 -- src/babykev/model.py
 just test
 git restore src/babykev/model.py
 ```
@@ -1940,10 +1996,10 @@ git restore src/babykev/model.py
 sed -n '28,39p' tests/unit/test_mask.py
 ```
 
-Suppose someone fixed the mask in another way, so that a question cannot see the question just before it, and sees the others. The `git restore` line takes such a fix from the history, two changes before `tut-22`, and `git diff` shows its line 159. The here document of the last stop then prints `ok` six times. Its picture has only two questions, so it cannot tell the fix from the right one.
+Suppose someone fixed the mask in another way, so that a question cannot see the question just before it, and sees the others. The `git checkout` line takes such a fix from the history, two changes before `tut-22`, and `git diff` shows its line 159. The here document of the last stop then prints `ok` six times. Its picture has only two questions, so it cannot tell the fix from the right one.
 
 ```bash
-git restore --source tut-22~2 src/babykev/model.py
+git checkout tut-22~2 -- src/babykev/model.py
 git diff src/babykev/model.py
 uv run python - <<'EOF'
 from babykev.model import branch_mask
@@ -1986,7 +2042,7 @@ git restore src/babykev/model.py
 
 ```bash
 sed -n '149,160p' tests/unit/test_model.py
-git restore --source tut-21 src/babykev/model.py
+git checkout tut-21 -- src/babykev/model.py
 just test -k a_question_cannot_see_its_sibling
 git restore src/babykev/model.py
 ```
@@ -2013,6 +2069,8 @@ uv run python -c "import json; print(sum(1 / (2 if q['type'] == 'noul' else len(
 - <a id="tut-22-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: adds `test_a_question_cannot_see_its_sibling`, `test_packed_questions_answer_as_they_would_alone`, `test_the_order_of_questions_does_not_matter`. 38 lines added. [The file](https://github.com/rahuldave/babykev/blob/9bfadf5448a5951580b313a781b277f343aa6e30/tests/unit/test_model.py).
 - <a id="tut-22-uv.lock-8356d8"></a>`uv.lock`: 80 lines added. [The file](https://github.com/rahuldave/babykev/blob/9bfadf5448a5951580b313a781b277f343aa6e30/uv.lock).
 
+<a id="tut-22-README.md-8ec9a0-diff"></a>
+
 <details><summary>The diff of <code>README.md</code></summary>
 
 ```diff
@@ -2029,6 +2087,8 @@ uv run python -c "import json; print(sum(1 / (2 if q['type'] == 'noul' else len(
 
 </details>
 
+<a id="tut-22-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
 ```diff
@@ -2043,6 +2103,8 @@ uv run python -c "import json; print(sum(1 / (2 if q['type'] == 'noul' else len(
 ```
 
 </details>
+
+<a id="tut-22-src-babykev-model.py-a86a0b-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/model.py</code></summary>
 
@@ -2059,6 +2121,8 @@ uv run python -c "import json; print(sum(1 / (2 if q['type'] == 'noul' else len(
 ```
 
 </details>
+
+<a id="tut-22-tests-unit-test_mask.py-aeb55a-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_mask.py</code></summary>
 
@@ -2137,6 +2201,8 @@ uv run python -c "import json; print(sum(1 / (2 if q['type'] == 'noul' else len(
 ```
 
 </details>
+
+<a id="tut-22-tests-unit-test_model.py-583145-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
 
@@ -2347,6 +2413,8 @@ just lint-config
 - <a id="tut-26-pyproject.toml-5d07e7"></a>`pyproject.toml`: 1 line added. [The file](https://github.com/rahuldave/babykev/blob/88854e32ebcb4647672742cc4ef709eefc5fde0c/pyproject.toml).
 - <a id="tut-26-uv.lock-8356d8"></a>`uv.lock`: 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/88854e32ebcb4647672742cc4ef709eefc5fde0c/uv.lock).
 
+<a id="tut-26-.github-workflows-check.yaml-6ceb50-diff"></a>
+
 <details><summary>The diff of <code>.github/workflows/check.yaml</code></summary>
 
 ```diff
@@ -2375,6 +2443,8 @@ just lint-config
 ```
 
 </details>
+
+<a id="tut-26-.github-workflows-docs.yaml-ce7835-diff"></a>
 
 <details><summary>The diff of <code>.github/workflows/docs.yaml</code></summary>
 
@@ -2424,6 +2494,8 @@ just lint-config
 
 </details>
 
+<a id="tut-26-.yamllint-dfe50a-diff"></a>
+
 <details><summary>The diff of <code>.yamllint</code></summary>
 
 ```diff
@@ -2435,6 +2507,8 @@ just lint-config
 ```
 
 </details>
+
+<a id="tut-26-README.md-8ec9a0-diff"></a>
 
 <details><summary>The diff of <code>README.md</code></summary>
 
@@ -2471,6 +2545,8 @@ just lint-config
 
 </details>
 
+<a id="tut-26-justfile-424f0b-diff"></a>
+
 <details><summary>The diff of <code>justfile</code></summary>
 
 ```diff
@@ -2494,6 +2570,8 @@ just lint-config
 ```
 
 </details>
+
+<a id="tut-26-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 

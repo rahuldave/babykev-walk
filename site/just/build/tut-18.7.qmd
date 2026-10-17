@@ -78,6 +78,8 @@ git restore --source 117a59e9838e --staged -- :/ && git restore --source 55844b2
 - <a id="tut-18.7-justfile-424f0b"></a>`justfile`: the recipe `smoke`. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/55844b2320b632b40dd3f34f0a6b5bb962551005/justfile){.btn .btn-sm .btn-secondary}
   - look at `smoke *args:`
 
+<a id="tut-18.7-justfile-424f0b-diff"></a>
+
 <details open><summary>The patch to <code>justfile</code></summary>
 
 ```diff

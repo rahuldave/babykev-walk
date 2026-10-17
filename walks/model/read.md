@@ -56,7 +56,7 @@ read its docstring first.
 `model.py` turns a language model into a model that decides. It has 274 lines, and four ideas, which its docstring
 names. The file comes in whole, as a patch.
 
-[± See the new file `src/babykev/model.py`](#tut-16.1-src-babykev-model.py-a86a0b)
+[± See the new file `src/babykev/model.py`](#tut-16.1-src-babykev-model.py-a86a0b-diff)
 
 `src/babykev/model.py` is new, with 274 lines. The docstring of the module is on lines 1 to 18. The functions that
 pack a record are on lines 78 to 142, and the mask is on lines 145 to 162. The head is on lines 165 to 184, and
@@ -145,6 +145,8 @@ the decoder, and the layers stay as they are. The fourth idea reads `last_hidden
 
 - <a id="tut-16.1-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the model. It packs a request into tokens, masks it, and points at the options. New, 274 lines. [The file](https://github.com/rahuldave/babykev/blob/c4c288ccc7e47190fd3d3340cbbbb7cf63b77d93/src/babykev/model.py).
   - look at `class DecisionModel(nn.Module):`
+
+<a id="tut-16.1-src-babykev-model.py-a86a0b-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/model.py</code></summary>
 
@@ -480,7 +482,7 @@ The first test asks for the three fixtures. It packs the record with the tiny to
 the head. Each question gets one probability per option, and they sum to 1. Nothing is trained, so the probabilities
 mean nothing. The test checks what is true of any probabilities.
 
-[± See the new file `tests/unit/test_model.py`](#tut-19.8-tests-unit-test_model.py-583145)
+[± See the new file `tests/unit/test_model.py`](#tut-19.8-tests-unit-test_model.py-583145-diff)
 
 The new file `tests/unit/test_model.py` has one test, on lines 11 to 20.
 
@@ -516,6 +518,8 @@ Every test in the rest of this walk asks for these fixtures, and runs on the tin
 
 - <a id="tut-19.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the first test of the model, on the tiny model. New, 20 lines. [The file](https://github.com/rahuldave/babykev/blob/321a8df2c597e0c46d06c9b36c711f0fe270900a/tests/unit/test_model.py).
   - look at `def test_probabilities_sum_to_one_for_every_question(`
+
+<a id="tut-19.8-tests-unit-test_model.py-583145-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
 
@@ -609,7 +613,7 @@ check the whole sequence, token by token.
 The test packs a small record, the state `ab` and one question `x?` with the options `n` and `y`. With one token per
 character, it can write down every token that it expects.
 
-[± See the change to `tests/unit/test_model.py`](#tut-20.1-tests-unit-test_model.py-583145)
+[± See the change to `tests/unit/test_model.py`](#tut-20.1-tests-unit-test_model.py-583145-diff)
 
 In `tests/unit/test_model.py`, the new test is on lines 23 to 35.
 
@@ -636,6 +640,8 @@ run, and not what a test checks.
 
 - <a id="tut-20.1-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the tokens of a packed record. 16 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/6d2401817f1bc2d56de4f3021cfceaa80d5b80f9/tests/unit/test_model.py).
   - look at `def test_packing_marks_every_part_with_its_delimiter(`
+
+<a id="tut-20.1-tests-unit-test_model.py-583145-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
 
@@ -705,7 +711,7 @@ the other half, in the last part of this walk.
 
 The positions of each question begin right after the state, so a question looks the same wherever it comes.
 
-[± See the change to `tests/unit/test_model.py`](#tut-20.2-tests-unit-test_model.py-583145)
+[± See the change to `tests/unit/test_model.py`](#tut-20.2-tests-unit-test_model.py-583145-diff)
 
 In `tests/unit/test_model.py`, the new test is on lines 38 to 47.
 
@@ -726,6 +732,8 @@ to 47 check that the positions of each question run from that count upward.
 
 - <a id="tut-20.2-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the positions of each question. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/e947449de17438d3aa5ee006bfc98db3944d4457/tests/unit/test_model.py).
   - look at `def test_positions_restart_after_the_state(`
+
+<a id="tut-20.2-tests-unit-test_model.py-583145-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
 
@@ -794,7 +802,7 @@ A caller writes the state, the instructions and the options. A tokenizer turns t
 decide token, wherever it is. So text could close an option early, or make a question of its own. This test shows the
 danger, before the next test shows the defence.
 
-[± See the change to `tests/unit/test_model.py`](#tut-20.5-tests-unit-test_model.py-583145)
+[± See the change to `tests/unit/test_model.py`](#tut-20.5-tests-unit-test_model.py-583145-diff)
 
 In `tests/unit/test_model.py`, the new test is on lines 68 to 73.
 
@@ -810,6 +818,8 @@ tokens. pytest prints `1 passed`. The danger is real.
 
 - <a id="tut-20.5-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the danger, a forged delimiter. 9 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/1782e1e6803efd49be04e682f3453e39c1c2fc23/tests/unit/test_model.py).
   - look at `def test_a_tokenizer_alone_would_let_text_forge_a_delimiter(`
+
+<a id="tut-20.5-tests-unit-test_model.py-583145-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
 
@@ -848,7 +858,7 @@ tokens. pytest prints `1 passed`. The danger is real.
 `user_tokens` rewrites `<|name|>` to `<¦name¦>` before it tokenizes, so the text of a delimiter is ordinary text. The
 test runs once for each of the five delimiters.
 
-[± See the change to `tests/unit/test_model.py`](#tut-20.6-tests-unit-test_model.py-583145)
+[± See the change to `tests/unit/test_model.py`](#tut-20.6-tests-unit-test_model.py-583145-diff)
 
 In `tests/unit/test_model.py`, the new test is on lines 76 to 83.
 
@@ -879,6 +889,8 @@ token of the text is a delimiter.
 
 - <a id="tut-20.6-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the defence, for each of the five delimiters. 11 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/e30ea2eb52ae23815152f60b09d07d9d0dd1fd3a/tests/unit/test_model.py).
   - look at `def test_user_text_cannot_forge_a_delimiter(`
+
+<a id="tut-20.6-tests-unit-test_model.py-583145-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
 
@@ -947,7 +959,7 @@ into probabilities with a softmax.
 The head takes the hidden state of a decide token and those of the options, and gives one logit for each option. The
 test builds a head alone, with no model, and gives it five options.
 
-[± See the change to `tests/unit/test_model.py`](#tut-20.7-tests-unit-test_model.py-583145)
+[± See the change to `tests/unit/test_model.py`](#tut-20.7-tests-unit-test_model.py-583145-diff)
 
 In `tests/unit/test_model.py`, the new test is on lines 87 to 90.
 
@@ -968,6 +980,8 @@ The test builds a head alone, of width 32 and `dp` 8, and gives it the vector of
 
 - <a id="tut-20.7-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: five options in, five logits out. 8 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/455b6a8ae64dae7e79fea6dd6b8434d11eb8f542/tests/unit/test_model.py).
   - look at `def test_pointer_head_gives_one_logit_per_option() -> None:`
+
+<a id="tut-20.7-tests-unit-test_model.py-583145-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
 
@@ -1035,7 +1049,7 @@ Training changes the adapter and the head, and the backbone stays as it is. The 
 adapter of rank 4, and takes one backward pass. Then it names every parameter that got a gradient. The fixture
 `model` has no adapter, so the test calls `tiny_backbone` itself.
 
-[± See the change to `tests/unit/test_model.py`](#tut-21.1-tests-unit-test_model.py-583145)
+[± See the change to `tests/unit/test_model.py`](#tut-21.1-tests-unit-test_model.py-583145-diff)
 
 In `tests/unit/test_model.py`, the import is on line 18, and the new test is on lines 112 to 130.
 
@@ -1079,6 +1093,8 @@ reads only the places of `decide_idx` and `opt_idx`.
 
 - <a id="tut-21.1-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: one backward pass with an adapter. 22 lines added. [The file](https://github.com/rahuldave/babykev/blob/0be44c1de17b8acb4e18a964a782584eb26fee97/tests/unit/test_model.py).
   - look at `def test_with_an_adapter_only_the_adapter_and_the_head_train(`
+
+<a id="tut-21.1-tests-unit-test_model.py-583145-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
 
@@ -1129,7 +1145,7 @@ reads only the places of `decide_idx` and `opt_idx`.
 `forward_batch` reads several records in one pass. They are padded to the length of the longest. The test packs the
 record of the fixture and a shorter record, and runs them in one pass. It compares each with a pass of its own.
 
-[± See the change to `tests/unit/test_model.py`](#tut-21.2-tests-unit-test_model.py-583145)
+[± See the change to `tests/unit/test_model.py`](#tut-21.2-tests-unit-test_model.py-583145-diff)
 
 In `tests/unit/test_model.py`, the new test is on lines 133 to 146.
 
@@ -1154,6 +1170,8 @@ numbers in another order. So the last bits of a float can differ.
 
 - <a id="tut-21.2-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: a padded pass. 16 lines added. [The file](https://github.com/rahuldave/babykev/blob/e6248c7e2cf3b6b45f11e0ecfdd7f25a23745aac/tests/unit/test_model.py).
   - look at `def test_records_of_different_lengths_answer_in_one_pass_as_alone(`
+
+<a id="tut-21.2-tests-unit-test_model.py-583145-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
 
@@ -1227,7 +1245,7 @@ The first test draws the mask of one small request by hand. The request has a st
 of two tokens each, so its segments are `[0, 0, 1, 1, 2, 2]`. Row i of the picture is token i, and column j is token
 j. `#` means that token i may attend to token j, and `.` means that it may not.
 
-[± See the new file `tests/unit/test_mask.py`](#tut-22.1-tests-unit-test_mask.py-aeb55a)
+[± See the new file `tests/unit/test_mask.py`](#tut-22.1-tests-unit-test_mask.py-aeb55a-diff)
 
 The new file `tests/unit/test_mask.py` has `allowed` on lines 8 to 12, and the test on lines 15 to 26.
 
@@ -1257,6 +1275,8 @@ covered. It does the wrong thing for its task.
 
 - <a id="tut-22.1-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the picture of a small request. New, 26 lines. [The file](https://github.com/rahuldave/babykev/blob/e7db07241985b2cc80908d108e4229cfb512646b/tests/unit/test_mask.py).
   - look at `def test_mask_of_a_small_request() -> None:`
+
+<a id="tut-22.1-tests-unit-test_mask.py-aeb55a-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_mask.py</code></summary>
 
@@ -1322,6 +1342,8 @@ It prints the version of hypothesis that uv installed.
   - look at `"hypothesis>=6.170.0",`
 - <a id="tut-22.2-uv.lock-8356d8"></a>`uv.lock`: the exact versions of hypothesis and sortedcontainers. 80 lines added. It comes from `uv add --group test hypothesis`. [The file](https://github.com/rahuldave/babykev/blob/aa4f870deb9ec19ee18484e187f5d850399fa554/uv.lock).
 
+<a id="tut-22.2-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff of <code>pyproject.toml</code></summary>
 
 ```diff
@@ -1348,7 +1370,7 @@ may be. `shapes` draws a state of 1 to 6 tokens, then up to 4 questions of 1 to 
 shape as `encode` does. The test states the rule that no token of a question attends to a token of another question.
 `@given(shapes)` runs it on up to 100 shapes.
 
-[± See the change to `tests/unit/test_mask.py`](#tut-22.3-tests-unit-test_mask.py-aeb55a)
+[± See the change to `tests/unit/test_mask.py`](#tut-22.3-tests-unit-test_mask.py-aeb55a-diff)
 
 In `tests/unit/test_mask.py`, `shapes` is on line 10, `segments` on lines 13 to 18, and the new test on lines 42 to
 49.
@@ -1373,6 +1395,8 @@ mask. hypothesis keeps the failing shape in the folder `.hypothesis`, and tries 
 
 - <a id="tut-22.3-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the shapes, and the first rule. 23 lines added. [The file](https://github.com/rahuldave/babykev/blob/857445da99027d423543017a9face7f2cd41ea19/tests/unit/test_mask.py).
   - look at `def test_no_question_sees_another_question(`
+
+<a id="tut-22.3-tests-unit-test_mask.py-aeb55a-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_mask.py</code></summary>
 
@@ -1427,7 +1451,7 @@ mask. hypothesis keeps the failing shape in the folder `.hypothesis`, and tries 
 The second rule is the causal part of the mask. Nothing above the diagonal is allowed, so a token never attends to a
 token after it.
 
-[± See the change to `tests/unit/test_mask.py`](#tut-22.4-tests-unit-test_mask.py-aeb55a)
+[± See the change to `tests/unit/test_mask.py`](#tut-22.4-tests-unit-test_mask.py-aeb55a-diff)
 
 In `tests/unit/test_mask.py`, the new test is on lines 52 to 57.
 
@@ -1441,6 +1465,8 @@ pytest prints `1 passed`. The causal part of the mask was never wrong. Only the 
 
 - <a id="tut-22.4-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the causal rule. 8 lines added. [The file](https://github.com/rahuldave/babykev/blob/55034fc9085b7ba3a5ac86f3cd40b955a698b642/tests/unit/test_mask.py).
   - look at `def test_no_token_sees_a_later_token(`
+
+<a id="tut-22.4-tests-unit-test_mask.py-aeb55a-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_mask.py</code></summary>
 
@@ -1471,7 +1497,7 @@ The last rule says the whole of it, in plain Python. Token i may attend to token
 in the state or in the question of i. The test builds that table for every pair of tokens, and compares it with the
 mask.
 
-[± See the change to `tests/unit/test_mask.py`](#tut-22.5-tests-unit-test_mask.py-aeb55a)
+[± See the change to `tests/unit/test_mask.py`](#tut-22.5-tests-unit-test_mask.py-aeb55a-diff)
 
 In `tests/unit/test_mask.py`, the new test is on lines 60 to 70.
 
@@ -1487,6 +1513,8 @@ alone, so they are unit tests.
 
 - <a id="tut-22.5-tests-unit-test_mask.py-aeb55a"></a>`tests/unit/test_mask.py`: the whole rule. 13 lines added. [The file](https://github.com/rahuldave/babykev/blob/41b4f5f236a25a9e8438ba2a00682b5125868a50/tests/unit/test_mask.py).
   - look at `def test_what_is_allowed_is_exactly_the_rule(`
+
+<a id="tut-22.5-tests-unit-test_mask.py-aeb55a-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_mask.py</code></summary>
 
@@ -1522,7 +1550,7 @@ The rules check the mask alone. The next three tests check what the mask is for,
 must get the answer that it would get if it were the only question. The first test rewrites question 2 of the record,
 and the answers to questions 1 and 3 must not move, to the last bit.
 
-[± See the change to `tests/unit/test_model.py`](#tut-22.6-tests-unit-test_model.py-583145)
+[± See the change to `tests/unit/test_model.py`](#tut-22.6-tests-unit-test_model.py-583145-diff)
 
 In `tests/unit/test_model.py`, the new test is on lines 149 to 160.
 
@@ -1540,6 +1568,8 @@ question 1 comes first and sees only the state. The tiny model is untrained, so 
 
 - <a id="tut-22.6-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: rewrite question 2, and questions 1 and 3 keep their answers. 14 lines added. [The file](https://github.com/rahuldave/babykev/blob/12e9fb18c4c86cbd1291da858fd6ad39af01929b/tests/unit/test_model.py).
   - look at `def test_a_question_cannot_see_its_sibling(`
+
+<a id="tut-22.6-tests-unit-test_model.py-583145-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
 
@@ -1575,7 +1605,7 @@ question 1 comes first and sees only the state. The tiny model is untrained, so 
 The second test of isolation packs the three questions of the record in one pass. Then it asks each question in a
 record of its own, with the same state. The answers must be the same, to within `1e-6`.
 
-[± See the change to `tests/unit/test_model.py`](#tut-22.7-tests-unit-test_model.py-583145)
+[± See the change to `tests/unit/test_model.py`](#tut-22.7-tests-unit-test_model.py-583145-diff)
 
 In `tests/unit/test_model.py`, the new test is on lines 163 to 172.
 
@@ -1590,6 +1620,8 @@ The test fails on question 2. Packed, it gets `[0.3321, 0.3346, 0.3333]`, and al
 
 - <a id="tut-22.7-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: three questions in one pass, and each alone. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/d3e4a6a067cd7f481a1bd327af08cb2358429e9c/tests/unit/test_model.py).
   - look at `def test_packed_questions_answer_as_they_would_alone(`
+
+<a id="tut-22.7-tests-unit-test_model.py-583145-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
 
@@ -1623,7 +1655,7 @@ The test fails on question 2. Packed, it gets `[0.3321, 0.3346, 0.3333]`, and al
 The positions of every question restart after the state. So a question must get the same answer first or last. The
 third test of isolation asks the questions in the reverse order.
 
-[± See the change to `tests/unit/test_model.py`](#tut-22.8-tests-unit-test_model.py-583145)
+[± See the change to `tests/unit/test_model.py`](#tut-22.8-tests-unit-test_model.py-583145-diff)
 
 In `tests/unit/test_model.py`, the new test is on lines 175 to 184.
 
@@ -1650,6 +1682,8 @@ smoke runs again after them.
 
 - <a id="tut-22.8-tests-unit-test_model.py-583145"></a>`tests/unit/test_model.py`: the questions in the reverse order. 12 lines added. [The file](https://github.com/rahuldave/babykev/blob/c3e2706e2b1fbc58bda631e173e26145256bc47e/tests/unit/test_model.py).
   - look at `def test_the_order_of_questions_does_not_matter(`
+
+<a id="tut-22.8-tests-unit-test_model.py-583145-diff"></a>
 
 <details><summary>The diff of <code>tests/unit/test_model.py</code></summary>
 
@@ -1684,7 +1718,7 @@ The mistake of this move is on purpose. The picture failed on rows 5 and 6, wher
 fix blocks only the question just before a question. A token sees its own question, the state, and any question two
 or more before it. The fix makes the picture right.
 
-[± See the change to `src/babykev/model.py`](#tut-22.9-src-babykev-model.py-a86a0b)
+[± See the change to `src/babykev/model.py`](#tut-22.9-src-babykev-model.py-a86a0b-diff)
 
 In `src/babykev/model.py`, line 159 now ends with `| (s[None, :] < s[:, None] - 1)`. A token may see a question
 whose number is less than its own minus one.
@@ -1706,6 +1740,8 @@ longer sees. A rule for every shape found the size with three questions.
 
 - <a id="tut-22.9-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: a mask that blocks only the question just before, on purpose. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/18bdfee89d950245956448ab8377cfc8b90e8595/src/babykev/model.py).
   - look at `    same = (s[None, :] == s[:, None]) | (s[None, :] == 0) | (s[None, :] < s[:, None] - 1)`
+
+<a id="tut-22.9-src-babykev-model.py-a86a0b-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/model.py</code></summary>
 
@@ -1733,7 +1769,7 @@ The line of the mask becomes kev's line. A token may attend to a token of the st
 of its own question, `s[None, :] == s[:, None]`. `causal`, on line 158, keeps out every token after it, and line 160
 joins the two. The docstring of `branch_mask`, lines 150 to 154, has stated this rule from the start.
 
-[± See the change to `src/babykev/model.py`](#tut-22.10-src-babykev-model.py-a86a0b)
+[± See the change to `src/babykev/model.py`](#tut-22.10-src-babykev-model.py-a86a0b-diff)
 
 In `src/babykev/model.py`, line 159 is `same = (s[None, :] == s[:, None]) | (s[None, :] == 0)`.
 
@@ -1754,7 +1790,7 @@ The smoke prints `4 of 15 right`. Questions 2 and 3 of each request now read onl
 the questions before them. The model is untrained, so the count is a guess, and a right answer is chance.
 
 In tut-18, with the old mask, the smoke printed `6 of 15 right`. The first question of each request keeps its answer,
-with the same two decimals. It comes first, so it saw only the state with either mask. Nine of the ten other answers
+with the same two decimals. It comes first, so it saw only the state with either mask. Most of the ten other answers
 changed. Both counts are guesses.
 
 The small request shows the fix too.
@@ -1768,7 +1804,7 @@ comes first and saw only the state with either mask. Question 2 now gets exactly
 
 The smoke went from `6 of 15 right` with the old mask to `4 of 15 right` with the fix, and every test says that the
 fix is right. The first question of each request kept its answer, with the same two decimals. It comes first, so it
-saw only the state with either mask. Nine of the ten other answers changed.
+saw only the state with either mask. Most of the ten other answers changed.
 
 The milk of Coquetdale went from `buffalo` to `cow`, which is right. The milk and the firmness of Amou, and the
 intensity of Loma Alta, were right with the old mask, and are wrong now. The count fell, and the fix is still right.
@@ -1810,6 +1846,8 @@ the guide on the model and one on the mask. Then it builds the images and the wo
 
 - <a id="tut-22.10-src-babykev-model.py-a86a0b"></a>`src/babykev/model.py`: the state, or the same question. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/5f63fb463f94ae6c82a647db8a4b86d4a3d6caa1/src/babykev/model.py).
   - look at `    same = (s[None, :] == s[:, None]) | (s[None, :] == 0)`
+
+<a id="tut-22.10-src-babykev-model.py-a86a0b-diff"></a>
 
 <details><summary>The diff of <code>src/babykev/model.py</code></summary>
 

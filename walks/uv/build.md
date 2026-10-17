@@ -198,6 +198,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-00 --staged --
 - <a id="tut-01.1-src-babykev-__init__.py-a40393"></a>`src/babykev/__init__.py`: the function that the command runs. It prints a greeting. New, 2 lines. It comes from `uv init --package --name babykev --python 3.13`. [The file](https://github.com/rahuldave/babykev/blob/eac75e0becc78c9a872e734ea715ac3903947844/src/babykev/__init__.py).
   - look at `print("Hello from babykev!")`
 
+<a id="tut-01.1-.python-version-7696e9-diff"></a>
+
 <details><summary>The diff that <code>uv init --package --name babykev --python 3.13</code> makes in <code>.python-version</code></summary>
 
 ```diff
@@ -206,6 +208,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-00 --staged --
 ```
 
 </details>
+
+<a id="tut-01.1-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff that <code>uv init --package --name babykev --python 3.13</code> makes in <code>pyproject.toml</code></summary>
 
@@ -228,6 +232,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-00 --staged --
 ```
 
 </details>
+
+<a id="tut-01.1-src-babykev-__init__.py-a40393-diff"></a>
 
 <details><summary>The diff that <code>uv init --package --name babykev --python 3.13</code> makes in <code>src/babykev/__init__.py</code></summary>
 
@@ -372,6 +378,8 @@ git restore --source 489f27fad816 --staged -- :/ && git restore --source 0497c0d
 - <a id="tut-01.3-pyproject.toml-5d07e7"></a>`pyproject.toml`: the description. 1 line added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/0497c0dc9d3772df47e79361aa4165e5de8e227d/pyproject.toml).
   - look at `description = "A small decision model: one state, typed questions, a probability for every answer"`
 
+<a id="tut-01.3-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -470,6 +478,8 @@ git restore --source 0497c0dc9d37 --staged -- :/ && git restore --source 4148744
 - <a id="tut-01.4-pyproject.toml-5d07e7"></a>`pyproject.toml`: the licence, and the files a package carries. 2 lines added. [The file](https://github.com/rahuldave/babykev/blob/414874463b887dedf65c5c74caeac8a064b0e876/pyproject.toml).
   - look at `license-files = ["LICENSE", "NOTICE"]`
 
+<a id="tut-01.4-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -565,6 +575,8 @@ git restore --source 414874463b88 --staged -- :/ && git restore --source 7f38877
 
 - <a id="tut-01.5-pyproject.toml-5d07e7"></a>`pyproject.toml`: the author. 1 line added. [The file](https://github.com/rahuldave/babykev/blob/7f38877e597f5404208fdca2eabb176077d95a8e/pyproject.toml).
   - look at `authors = [{ name = "Rahul Dave" }]`
+
+<a id="tut-01.5-pyproject.toml-5d07e7-diff"></a>
 
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
@@ -693,6 +705,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-01 --staged --
 - <a id="tut-02.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the table `[tool.uv]`, so uv installs every dependency group. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/ad616a5cc1fcdf5b7c1672b79d0d2b267b72bd59/pyproject.toml).
   - look at `default-groups = "all"`
 
+<a id="tut-02.1-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -752,6 +766,8 @@ git restore --source ad616a5cc1fc --staged -- :/ && git restore --source 966956d
 - <a id="tut-02.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: the group `test`, with pytest. 5 lines added. It comes from `uv add --group test pytest`. [The file](https://github.com/rahuldave/babykev/blob/966956d738b58505e23586af60f05cd5daceb12f/pyproject.toml).
   - look at `"pytest>=9.1.1",`
 - <a id="tut-02.2-uv.lock-8356d8"></a>`uv.lock`: pytest and the five packages it needs. 71 lines added. It comes from `uv add --group test pytest`. [The file](https://github.com/rahuldave/babykev/blob/966956d738b58505e23586af60f05cd5daceb12f/uv.lock).
+
+<a id="tut-02.2-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff that <code>uv add --group test pytest</code> makes in <code>pyproject.toml</code></summary>
 
@@ -815,6 +831,8 @@ git restore --source 966956d738b5 --staged -- :/ && git restore --source b084070
 
 - <a id="tut-02.3-justfile-424f0b"></a>`justfile`: the recipe `test`. 6 lines added. [The file](https://github.com/rahuldave/babykev/blob/b0840709e371a548d4b922c57c679ba040dd2c1a/justfile).
   - look at `test *args:`
+
+<a id="tut-02.3-justfile-424f0b-diff"></a>
 
 <details open><summary>The patch to <code>justfile</code></summary>
 
@@ -898,6 +916,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-02 --staged --
 - <a id="tut-03.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the first dependency. `>=2.14.1` is the version that `uv add` found, as the lowest version to accept. 3 lines added, 1 removed. It comes from `uv add pydantic`. [The file](https://github.com/rahuldave/babykev/blob/96502df0a92f6f7090d6f624cda901a271dac9a7/pyproject.toml).
   - look at `"pydantic>=2.14.1",`
 - <a id="tut-03.1-uv.lock-8356d8"></a>`uv.lock`: pydantic and the four packages it needs, each with its exact version. 136 lines added. It comes from `uv add pydantic`. [The file](https://github.com/rahuldave/babykev/blob/96502df0a92f6f7090d6f624cda901a271dac9a7/uv.lock).
+
+<a id="tut-03.1-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff that <code>uv add pydantic</code> makes in <code>pyproject.toml</code></summary>
 
@@ -987,6 +1007,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-06 --staged --
 - <a id="tut-07.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the group `lint`, with ruff. 3 lines added. It comes from `uv add --group lint ruff`. [The file](https://github.com/rahuldave/babykev/blob/5085d2a6ae47a58d6259dfa06679bb2a9be692e1/pyproject.toml).
   - look at `"ruff>=0.17.1",`
 - <a id="tut-07.1-uv.lock-8356d8"></a>`uv.lock`: ruff, at its exact version. 29 lines added. It comes from `uv add --group lint ruff`. [The file](https://github.com/rahuldave/babykev/blob/5085d2a6ae47a58d6259dfa06679bb2a9be692e1/uv.lock).
+
+<a id="tut-07.1-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff that <code>uv add --group lint ruff</code> makes in <code>pyproject.toml</code></summary>
 
@@ -1116,6 +1138,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-14 --staged --
 - <a id="tut-15.1-pyproject.toml-5d07e7"></a>`pyproject.toml`: the index of PyTorch. 7 lines added. [The file](https://github.com/rahuldave/babykev/blob/b44da7cc2f35c24f23c9f056eb9ec6681a3111e0/pyproject.toml).
   - look at `url = "https://download.pytorch.org/whl/cpu"`
 
+<a id="tut-15.1-pyproject.toml-5d07e7-diff"></a>
+
 <details open><summary>The patch to <code>pyproject.toml</code></summary>
 
 ```diff
@@ -1181,6 +1205,8 @@ git restore --source b44da7cc2f35 --staged -- :/ && git restore --source a263314
 
 - <a id="tut-15.2-pyproject.toml-5d07e7"></a>`pyproject.toml`: torch, in the dependencies, and its source. 4 lines added. It comes from `uv add torch --index pytorch-cpu --frozen`. [The file](https://github.com/rahuldave/babykev/blob/a263314ef270d756122972876e80270ed4cde130/pyproject.toml).
   - look at `torch = { index = "pytorch-cpu" }`
+
+<a id="tut-15.2-pyproject.toml-5d07e7-diff"></a>
 
 <details><summary>The diff that <code>uv add torch --index pytorch-cpu --frozen</code> makes in <code>pyproject.toml</code></summary>
 
@@ -1303,6 +1329,8 @@ git restore --source 92e81476ed9c --staged -- :/ && git restore --source 92f659c
   - look at `"transformers>=5.20.0",`
 - <a id="tut-15.4-uv.lock-8356d8"></a>`uv.lock`: the exact version of transformers, and of the packages that it needs. 419 lines added. It comes from `uv add transformers`. [The file](https://github.com/rahuldave/babykev/blob/92f659c4e74206cfb776c114d474c2be2501be81/uv.lock).
 
+<a id="tut-15.4-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff that <code>uv add transformers</code> makes in <code>pyproject.toml</code></summary>
 
 ```diff
@@ -1363,6 +1391,8 @@ git restore --source 92f659c4e742 --staged -- :/ && git restore --source 4b43f5a
   - look at `"peft>=0.21.2",`
 - <a id="tut-15.5-uv.lock-8356d8"></a>`uv.lock`: the exact version of peft, and of the packages that it needs. 71 lines added. It comes from `uv add peft`. [The file](https://github.com/rahuldave/babykev/blob/4b43f5a9f99a891891ac42cb03e3927957e9116c/uv.lock).
 
+<a id="tut-15.5-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff that <code>uv add peft</code> makes in <code>pyproject.toml</code></summary>
 
 ```diff
@@ -1422,6 +1452,8 @@ git restore --source 4b43f5a9f99a --staged -- :/ && git restore --source 8176ced
   - look at `"safetensors>=0.8.0",`
 - <a id="tut-15.6-uv.lock-8356d8"></a>`uv.lock`: safetensors, as a dependency of babykev. 2 lines added. It comes from `uv add safetensors`. [The file](https://github.com/rahuldave/babykev/blob/8176ced7157929f551e3722149016dbc31d42601/uv.lock).
 
+<a id="tut-15.6-pyproject.toml-5d07e7-diff"></a>
+
 <details><summary>The diff that <code>uv add safetensors</code> makes in <code>pyproject.toml</code></summary>
 
 ```diff
@@ -1478,6 +1510,8 @@ git fetch --quiet --tags --force origin; git restore --source 8176ced71579 --sta
 
 - <a id="tut-15.7-README.md-8ec9a0"></a>`README.md`: a paragraph on the packages of the model. 4 lines added. [The file](https://github.com/rahuldave/babykev/blob/c7037ec460963acd41edf1f63a6a03d2e52e5bae/README.md).
   - look at `The model needs four packages, torch, transformers, peft and safetensors. torch is the build for the CPU,`
+
+<a id="tut-15.7-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 
@@ -1589,6 +1623,8 @@ git fetch --quiet --tags --force origin; git restore --source tut-24 --staged --
 - <a id="tut-25.1-Dockerfile-6651dd"></a>`Dockerfile`: the stages `uv`, `build` and `run`. New, 36 lines. [The file](https://github.com/rahuldave/babykev/blob/570bb2134f032a64a34d14852c82fa1a199f69f6/Dockerfile).
   - look at `FROM python:3.13-slim-trixie AS run`
 
+<a id="tut-25.1-Dockerfile-6651dd-diff"></a>
+
 <details open><summary>The patch to <code>Dockerfile</code></summary>
 
 ```diff
@@ -1698,6 +1734,8 @@ git restore --source 570bb2134f03 --staged -- :/ && git restore --source 40012bd
 - <a id="tut-25.2-Dockerfile-6651dd"></a>`Dockerfile`: the stage `dev`. 31 lines added, 1 removed. [The file](https://github.com/rahuldave/babykev/blob/40012bdfeb76ad96615227e9772d387ee5e48495/Dockerfile).
   - look at `FROM python:3.13-slim-trixie AS dev`
 
+<a id="tut-25.2-Dockerfile-6651dd-diff"></a>
+
 <details open><summary>The patch to <code>Dockerfile</code></summary>
 
 ```diff
@@ -1800,6 +1838,8 @@ git restore --source 40012bdfeb76 --staged -- :/ && git restore --source f086240
 - <a id="tut-25.3-.dockerignore-05a721"></a>`.dockerignore`: what a build never copies. New, 16 lines. [The file](https://github.com/rahuldave/babykev/blob/f0862402733db839738f0b350a049b2ee5e2a2aa/.dockerignore).
   - look at `.venv`
 
+<a id="tut-25.3-.dockerignore-05a721-diff"></a>
+
 <details open><summary>The patch to <code>.dockerignore</code></summary>
 
 ```diff
@@ -1870,7 +1910,7 @@ network at all.
 just image shell --network none -- just check
 ```
 
-It fails before any check runs. uv cannot download hadolint-bin, with `dns error`. The dev image was built
+It fails before any check runs, with an error from uv. The dev image was built
 before hadolint came into `uv.lock`, and `UV_LOCKED` makes uv install the packages of the lockfile first. An image
 holds the packages of the lockfile at the time of its build.
 
@@ -1897,6 +1937,8 @@ git fetch --quiet --tags --force origin; git restore --source fd4dc5172346 --sta
 
 - <a id="tut-25.9-README.md-8ec9a0"></a>`README.md`: the section on the images, and the row of the `Dockerfile`. 24 lines added. [The file](https://github.com/rahuldave/babykev/blob/6c85dd08f3cd441259b3749ac38cceaf7f2392e0/README.md).
   - look at `## The images`
+
+<a id="tut-25.9-README.md-8ec9a0-diff"></a>
 
 <details open><summary>The patch to <code>README.md</code></summary>
 
